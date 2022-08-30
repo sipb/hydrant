@@ -125,6 +125,7 @@ export class Firehose {
       this.selectedNonClasses = this.selectedNonClasses.filter(
         (activity_) => activity_.id !== activity.id
       );
+      this.setViewedActivity(undefined);
     }
     this.updateActivities();
   }
