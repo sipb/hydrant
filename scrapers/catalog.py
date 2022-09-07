@@ -4,8 +4,15 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-# TODO: rewrite from sublist_ws.py
 BASE_URL = "http://student.mit.edu/catalog/search.cgi"
+
+def get_old_course_num(html):
+    course_title = html.find("h3").get_text()
+    # Old course number is on 2nd line if the text is not "(New)"
+    title_split = course_title.split('\n')
+    if len(title_split) > 2 and title_split[1] != "(New)":
+        return title_split[1][1:-1]
+    return None
 
 # Level is obtained in sublist_ws.py but not used in combiner
 def get_level(html):
@@ -92,6 +99,7 @@ def scrape_classes(course_nums):
         if not html:
             unknown_courses.append(course_num)
             continue
+
         no_next = is_not_offered_next_year(html)
         level = get_level(html)
         repeat = is_repeat_allowed(html)
@@ -106,6 +114,9 @@ def scrape_classes(course_nums):
             "level": level,
             "final": final,
         }
+        if (old_course_num := get_old_course_num(html)):
+            courses[course_num]["old_num"] = old_course_num
+
     with open("sublist", "w") as f:
         json.dump(courses, f)
     print("Unknown courses: ", unknown_courses)
