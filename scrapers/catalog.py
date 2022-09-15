@@ -121,10 +121,109 @@ def scrape_classes(course_nums):
         json.dump(courses, f)
     print("Unknown courses: ", unknown_courses)
 
+def get_course_data(filtered_html):
+    no_next = is_not_offered_next_year(filtered_html)
+    level = get_level(filtered_html)
+    repeat = is_repeat_allowed(filtered_html)
+    half = get_half(filtered_html)
+    final = has_final(filtered_html)
+
+    course_data = {
+        "no_next": no_next,
+        "repeat": repeat,
+        "half": half,
+        "url": "", # urls are all just empty
+        "level": level,
+        "final": final,
+    }
+    if (old_course_num := get_old_course_num(filtered_html)):
+        course_data["old_num"] = old_course_num
+
+    return course_data
+
 def run():
     with open("all_classes") as f:
         class_num_list = json.load(f)
     scrape_classes(class_num_list)
 
+HOME_URL = "http://student.mit.edu/catalog"
+def get_home_catalog_links():
+    r = requests.get(HOME_URL + "/index.cgi")
+    html = BeautifulSoup(r.content, "html.parser")
+    list_items = html.find_all("li")
+    hrefs = []
+    for li in list_items:
+        ele = li.find("a", href=True)
+        if ele:
+            hrefs.append(ele["href"])
+    return hrefs
+
+def get_all_catalog_links(initial_hrefs):
+    hrefs = []
+    for il in initial_hrefs:
+        r = requests.get(f"{HOME_URL}/{il}")
+        html = BeautifulSoup(r.content, "html.parser")
+        # Links should be in the only table in the #contentmini div 
+        table = html.find("div", id="contentmini").find("table")
+        # The table doesn't make the first page a link
+        hrefs.append(il)
+        hrefs.extend([ele["href"] for ele in table.findAll("a", href=True)])
+    return hrefs
+
+
+def scrape_courses_from_page(courses, href):
+    '''Fills courses with course data from the href'''
+    r = requests.get(f"{HOME_URL}/{href}")
+    # The "html.parser" parses pretty badly
+    html = BeautifulSoup(r.content, "lxml")
+
+    pretty = html.split()
+    print(pretty)
+
+
+    first_ele = html.find("a", href=False)
+    current_course = [first_ele]
+    course_nums = [first_ele["name"]]
+    for sib in first_ele.next_siblings:
+        # Each class seems be split with an <a> element with nothing inside 
+        # but with a name attribute that is the course number. There are other
+        # <a> elements inside but they are not on the same level, so they won't
+        # be caught by next_sibling
+        if sib.name == "a" and sib.get("href") is None:
+            # If there is nothing between the <a> elements, that means they are
+            # range classes (e.g 11.S196-11.S199). So we continue as we haven't
+            # reached the html that contains actual data, but we keep track of
+            # the course numbers we see
+            most_recent_elem = current_course[-1]
+            if most_recent_elem.name == "a" and most_recent_elem.get("href") is None:
+                course_nums.append(sib["name"])
+                continue
+            filtered_html = BeautifulSoup()
+            filtered_html.extend(current_course)
+            course_data = get_course_data(filtered_html)
+            for course_num in course_nums:
+                courses[course_num] = course_data
+            # Move to the next course
+            current_course = [sib]
+            course_nums = [sib["name"]]
+            continue
+        current_course.append(sib)
+    # Last element
+    if current_course and current_course[0].name == "a" and current_course[0].get("href") is None:
+        filtered_html = BeautifulSoup()
+        filtered_html.extend(current_course)
+        course_data = get_course_data(filtered_html)
+        for course_num in course_nums:
+            courses[course_num] = course_data
+
 if __name__ == "__main__":
-    run()
+    home_hrefs = get_home_catalog_links()
+    all_hrefs = get_all_catalog_links(home_hrefs)
+    all_hrefs = ["m4g.html"]
+    courses = dict()
+    for href in all_hrefs:
+        scrape_courses_from_page(courses, href)
+    print(courses["15.THG"])
+    # with open('new_lol', "w") as f:
+    #     json.dump(courses, f)
+
