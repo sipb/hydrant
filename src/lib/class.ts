@@ -171,7 +171,10 @@ export class Sections {
 
 /** An entire class, e.g. 6.036, and its selected sections. */
 export class Class {
-  /** The RawClass being wrapped around. */
+  /**
+   * The RawClass being wrapped around. Nothing outside Class should touch
+   * this; instead use the Class getters like cls.id, cls.number, etc.
+   */
   readonly rawClass: RawClass;
   /** The sections associated with this class. */
   readonly sections: Array<Sections>;
