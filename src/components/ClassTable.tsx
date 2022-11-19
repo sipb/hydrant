@@ -126,7 +126,7 @@ function ClassInput(props: {
           <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
           <Input
             type="text"
-            placeholder="Class number or name"
+            placeholder="Class number, name, or instructor"
             _placeholder={{ opacity: 1 }}
             value={classInput}
             onChange={(e) => onClassInputChange(e.target.value)}
