@@ -32,6 +32,7 @@ type ClassTableRow = {
   hours: string;
   name: string;
   class: Class;
+  inCharge: string;
 };
 
 type ClassFilter = (cls: Class) => boolean;
@@ -74,6 +75,7 @@ function ClassInput(props: {
           numbers,
           name: simplifyString(realName ?? data.name),
           class: data.class,
+          inCharge: simplifyString(data.inCharge),
         };
       }),
     [rowData]
@@ -85,7 +87,8 @@ function ClassInput(props: {
       searchResults.current = processedRows.filter(
         (row) =>
           row.numbers.some((number) => classNumberMatch(input, number)) ||
-          row.name.includes(simplifyInput)
+          row.name.includes(simplifyInput) ||
+          row.inCharge.includes(simplifyInput)
       );
       const index = new Set(searchResults.current.map((cls) => cls.numbers[0]));
       setInputFilter(() => (cls: Class) => index.has(cls.number));
@@ -307,13 +310,14 @@ export function ClassTable(props: {
   const rowData = useMemo(() => {
     const rows: Array<ClassTableRow> = [];
     classes.forEach((cls) => {
-      const { number, evals, name } = cls;
+      const { number, evals, name, description } = cls;
       rows.push({
         number: number,
         rating: evals.rating.slice(0, 3), // remove the "/7.0" if exists
         hours: evals.hours,
         name: name,
         class: cls,
+        inCharge: description.inCharge,
       });
     });
     return rows;
