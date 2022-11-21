@@ -2,8 +2,8 @@ import json
 import copy
 import datetime
 
-with open("ws") as f:
-    ws = json.load(f)
+with open("ws_froad") as f:
+    ws_froad = json.load(f)
 
 with open("sublist") as f:
     sublist = json.load(f)
@@ -24,43 +24,9 @@ def all_virtual(sections):
     return True
 
 
-for c in ws:
-    classes[c] = {
-        "no": c,
-        "co": ws[c]["course"],
-        "cl": ws[c]["class"],
-        "tb": ws[c]["tba"],
-        "s": ws[c]["sections"],
-        "l": ws[c]["l"],
-        "r": ws[c]["r"],
-        "b": ws[c]["b"],
-        "lr": ws[c]["l_raw"],
-        "rr": ws[c]["r_raw"],
-        "br": ws[c]["b_raw"],
-    }
+for c, info in ws_froad:
+    classes[c] = info
 
-    classes[c]["hh"] = ws[c]["HASS-H"]
-    classes[c]["ha"] = ws[c]["HASS-A"]
-    classes[c]["hs"] = ws[c]["HASS-S"]
-    classes[c]["he"] = ws[c]["HASS-E"]
-    classes[c]["ci"] = ws[c]["CI-H"]
-    classes[c]["cw"] = ws[c]["CI-HW"]
-    classes[c]["re"] = ws[c]["REST"]
-    classes[c]["la"] = ws[c]["LAB"]
-    classes[c]["pl"] = ws[c]["pLAB"]
-    classes[c]["u1"] = ws[c]["units1"]
-    classes[c]["u2"] = ws[c]["units2"]
-    classes[c]["u3"] = ws[c]["units3"]
-    classes[c]["le"] = ws[c]["level"]
-    classes[c]["sa"] = ws[c]["same_as"]
-    classes[c]["mw"] = ws[c]["meets_with"]
-    classes[c]["lm"] = ws[c]["limited"]
-    classes[c]["t"] = ws[c]["terms"]
-    classes[c]["pr"] = ws[c]["prereq"]
-    classes[c]["d"] = ws[c]["desc"]
-    classes[c]["n"] = ws[c]["name"]
-
-    classes[c]["i"] = ws[c]["in-charge"]
     classes[c]["v"] = all_virtual(ws[c]["l"] + ws[c]["r"] + ws[c]["b"])
 
     if c in sublist:

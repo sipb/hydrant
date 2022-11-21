@@ -1,4 +1,4 @@
-# TODO: rewrite from coursews.py
+# TODO: rewrite from fireroadws.py, and rename
 from scrapers import utils
 import json
 
