@@ -1,12 +1,12 @@
 import json
 
 GIR_REWRITE = {
-    'GIR:CAL1': 'Calculus I (GIR)',
-    'GIR:CAL2': 'Calculus II (GIR)',
-    'GIR:PHY1': 'Physics I (GIR)',
-    'GIR:PHY2': 'Physics II (GIR)',
-    'GIR:CHEM': 'Chemistry (GIR)',
-    'GIR:BIOL': 'Biology (GIR)',
+    "GIR:CAL1": "Calculus I (GIR)",
+    "GIR:CAL2": "Calculus II (GIR)",
+    "GIR:PHY1": "Physics I (GIR)",
+    "GIR:PHY2": "Physics II (GIR)",
+    "GIR:CHEM": "Chemistry (GIR)",
+    "GIR:BIOL": "Biology (GIR)",
 }
 
 TIMESLOTS = 30
@@ -78,6 +78,7 @@ def find_timeslot(day, slot, pm):
         return DAYS[day] + EVE_TIMES[slot]
     return DAYS[day] + TIMES[slot]
 
+
 def grouper(iterable, n):
     """
     grouper("ABCDEFG", 3) -> ABC DEF
@@ -86,6 +87,7 @@ def grouper(iterable, n):
     """
     args = [iter(iterable)] * n
     return zip(*args)
+
 
 def get_term_info():
     """Get the latest term info."""
