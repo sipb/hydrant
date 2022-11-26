@@ -1,22 +1,94 @@
 import json
 
+GIR_REWRITE = {
+    'GIR:CAL1': 'Calculus I (GIR)',
+    'GIR:CAL2': 'Calculus II (GIR)',
+    'GIR:PHY1': 'Physics I (GIR)',
+    'GIR:PHY2': 'Physics II (GIR)',
+    'GIR:CHEM': 'Chemistry (GIR)',
+    'GIR:BIOL': 'Biology (GIR)',
+}
+
+TIMESLOTS = 30
+
+DAYS = {
+    "M": 0,
+    "T": TIMESLOTS,
+    "W": TIMESLOTS * 2,
+    "R": TIMESLOTS * 3,
+    "F": TIMESLOTS * 4,
+}
+
+TIMES = {
+    "8": 0,
+    "8.30": 1,
+    "9": 2,
+    "9.30": 3,
+    "10": 4,
+    "10.30": 5,
+    "11": 6,
+    "11.30": 7,
+    "12": 8,
+    "12.30": 9,
+    "1": 10,
+    "1.30": 11,
+    "2": 12,
+    "2.30": 13,
+    "3": 14,
+    "3.30": 15,
+    "4": 16,
+    "4.30": 17,
+    "5": 18,
+    "5.30": 19,
+    "6": 20,
+    "6.30": 21,
+    "7": 22,
+    "7.30": 23,
+}
+
+EVE_TIMES = {
+    "12": 8,
+    "12.30": 9,
+    "1": 10,
+    "1.30": 11,
+    "2": 12,
+    "2.30": 13,
+    "3": 14,
+    "3.30": 15,
+    "4": 16,
+    "4.30": 17,
+    "5": 18,
+    "5.30": 19,
+    "6": 20,
+    "6.30": 21,
+    "7": 22,
+    "7.30": 23,
+    "8": 24,
+    "8.30": 25,
+    "9": 26,
+    "9.30": 27,
+    "10": 28,
+    "10.30": 29,
+}
+
+
+def find_timeslot(day, slot, pm):
+    """find_timeslot("W", "11.30", False) -> 67"""
+    if pm:
+        return DAYS[day] + EVE_TIMES[slot]
+    return DAYS[day] + TIMES[slot]
+
+def grouper(iterable, n):
+    """
+    grouper("ABCDEFG", 3) -> ABC DEF
+
+    From https://docs.python.org/3/library/itertools.html#itertools-recipes.
+    """
+    args = [iter(iterable)] * n
+    return zip(*args)
 
 def get_term_info():
     """Get the latest term info."""
     with open("../public/latestTerm.json") as f:
         term_info = json.load(f)
     return term_info
-
-
-def get_term_catalog_name():
-    """Get the latest term's catalog name, e.g. 2023FA for Fall 2022."""
-    url_name = get_term_info()["urlName"]
-    semester = url_name[0]
-    year = int(url_name[1:])
-    if semester == "f":
-        # catalog names are based on school year, so +1 to real year
-        return f"20{year + 1}FA"
-    elif semester == "s":
-        return f"20{year}SP"
-    else:
-        return f"20{year}JA"

@@ -1,3 +1,21 @@
+"""
+We get some of our data from scraping the catalog site.
+
+run() scrapes this data and writes it to catalog.json, in the format:
+
+{
+    "6.3900": {
+        "on": "6.036",
+        "nx": true | false,
+        "rp": true | false,
+        "hf": false | 1 | 2,
+        "u": "https://introml.mit.edu",
+        "f": true | false,
+        "lm": true | false,
+    }
+}
+"""
+
 import json
 import re
 import requests
@@ -9,19 +27,10 @@ BASE_URL = "http://student.mit.edu/catalog"
 def get_old_course_num(html):
     course_title = html.find("h3").get_text()
     # Old course number is on 2nd line if the text is not "(New)"
-    title_split = course_title.split('\n')
+    title_split = course_title.split("\n")
     if len(title_split) > 2 and title_split[1] != "(New)":
         return title_split[1][1:-1]
     return None
-
-
-# Level is obtained in sublist_ws.py but not used in combiner
-def get_level(html):
-    if html.find(attrs={"src": "/icns/under.gif"}):
-        return "U"
-    elif html.find(attrs={"src": "/icns/grad.gif"}):
-        return "G"
-    raise Exception("Level not found")
 
 
 def is_not_offered_next_year(html):
@@ -37,6 +46,18 @@ def is_repeat_allowed(html):
     return False
 
 
+def get_url(html):
+    if url := html.find(text=re.compile("https?://(?!whereis)")):
+        return url
+    return ""
+
+
+def has_final(html):
+    if html.find(text="+final"):
+        return True
+    return False
+
+
 def get_half(html):
     # Returns 1 for 1st half, 2 for 2nd half, False if not a half semester course
     if html.find(text=re.compile("first half of term")):
@@ -46,29 +67,31 @@ def get_half(html):
     return False
 
 
-def has_final(html):
-    if html.find(text="+final"):
+def is_limited(html):
+    # TODO: can we do better?
+    if html.find(text=re.compile("[Ll]imited")):
         return True
     return False
 
 
 def get_course_data(filtered_html):
     no_next = is_not_offered_next_year(filtered_html)
-    level = get_level(filtered_html)
     repeat = is_repeat_allowed(filtered_html)
-    half = get_half(filtered_html)
+    url = get_url(filtered_html)
     final = has_final(filtered_html)
+    half = get_half(filtered_html)
+    limited = is_limited(filtered_html)
 
     course_data = {
-        "no_next": no_next,
-        "repeat": repeat,
-        "half": half,
-        "url": "",  # urls are all just empty
-        "level": level,
-        "final": final,
+        "nx": no_next,
+        "rp": repeat,
+        "u": url,
+        "f": final,
+        "hf": half,
+        "lm": limited,
     }
-    if (old_course_num := get_old_course_num(filtered_html)):
-        course_data["old_num"] = old_course_num
+    if old_course_num := get_old_course_num(filtered_html):
+        course_data["on"] = old_course_num
 
     return course_data
 
@@ -81,9 +104,9 @@ def get_home_catalog_links():
 
 
 def get_all_catalog_links(initial_hrefs):
-    '''
+    """
     Find all links from the headers before the subject listings
-    '''
+    """
     hrefs = []
     for il in initial_hrefs:
         r = requests.get(f"{BASE_URL}/{il}")
@@ -92,16 +115,15 @@ def get_all_catalog_links(initial_hrefs):
         tables = html.find("div", id="contentmini").find_all("table")
         hrefs.append(il)
         for table in tables:
-            hrefs.extend(
-                [ele["href"] for ele in table.findAll("a", href=True)])
+            hrefs.extend([ele["href"] for ele in table.findAll("a", href=True)])
     return hrefs
 
 
 def get_anchors_with_classname(element):
-    '''
+    """
     Returns the anchors with the class name if the element itself is one or
     anchors are inside of the element. Otherwise, returns None.
-    '''
+    """
     anchors = None
     # This is the usualy case, where it's one element
     if element.name == "a" and element.get("href") is None:
@@ -118,7 +140,7 @@ def get_anchors_with_classname(element):
 
 
 def scrape_courses_from_page(courses, href):
-    '''Fills courses with course data from the href'''
+    """Fills courses with course data from the href"""
     r = requests.get(f"{BASE_URL}/{href}")
     # The "html.parser" parses pretty badly
     html = BeautifulSoup(r.content, "lxml")
@@ -130,7 +152,7 @@ def scrape_courses_from_page(courses, href):
     course_nums_list = []
     contents = []
     for ele in classes_content.contents:
-        if (anchors := get_anchors_with_classname(ele)):
+        if anchors := get_anchors_with_classname(ele):
             new_course_nums = [anchor["name"] for anchor in anchors]
             # This means the course listed is a class range (e.g. 11.S196-11.S199)
             # Therefore, we continue looking for content but also add an extra course_num
@@ -160,7 +182,8 @@ def run():
     for href in all_hrefs:
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)
-    with open("all_classes", "w") as f:
+    print(f"Got {len(courses)} courses")
+    with open("catalog.json", "w") as f:
         json.dump(courses, f)
 
 
