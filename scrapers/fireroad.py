@@ -160,8 +160,8 @@ def get_course_data(courses, course):
             "u2": course["lab_units"],
             "u3": course["preparation_units"],
             "le": course["level"],
-            "sa": course.get("joint_subjects", []),
-            "mw": course.get("meets_with_subjects", []),
+            "sa": ", ".join(course.get("joint_subjects", [])),
+            "mw": ", ".join(course.get("meets_with_subjects", [])),
         }
     )
 

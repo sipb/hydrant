@@ -16,14 +16,19 @@ OVERRIDES = {
 
 
 def run():
+    courses = dict()
     with open("fireroad.json") as f:
-        courses = json.load(f)
+        fireroad = json.load(f)
     with open("catalog.json") as f:
         catalog = json.load(f)
 
-    for course, info in catalog.items():
-        if course in courses:
-            courses[course].update(info)
+    # The key needs to be in BOTH fireroad and catalog to make it:
+    # If it's not in Fireroad, we don't have its schedule.
+    # If it's not in catalog, it's not offered this semester.
+    for course in set(fireroad) & set(catalog):
+        courses[course] = fireroad[course]
+        courses[course].update(catalog[course])
+
     for course, info in OVERRIDES.items():
         courses[course].update(info)
 
