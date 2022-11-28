@@ -5,11 +5,14 @@ import { Firehose } from "../lib/firehose";
 
 /** Given a urlName like i22, return its corresponding URL. */
 function toFullUrl(urlName: string, latestUrlName: string): string {
-  if (urlName === latestUrlName) {
-    return "index.html";
+  const url = new URL(window.location.href);
+  Array.from(url.searchParams.keys()).forEach((key) => {
+    url.searchParams.delete(key);
+  })
+  if (urlName !== latestUrlName) {
+    url.searchParams.set("t", urlName);
   }
-  const { semesterFull } = new Term({ urlName });
-  return `semesters/${urlName}/${semesterFull}.html`;
+  return url.href;
 }
 
 /** Given a urlName like "i22", return the previous one, "f21". */
@@ -25,10 +28,10 @@ function getLastUrlName(urlName: string): string {
 }
 
 /** urlNames that don't have a Firehose */
-const EXCLUDED_URLS = ["i21", "i20"];
+const EXCLUDED_URLS = ["i23"];
 
 /** Earliest urlName we have a Firehose for. */
-const EARLIEST_URL = "f17";
+const EARLIEST_URL = "f22";
 
 /** Return all urlNames before the given one. */
 function getUrlNames(latestTerm: string): Array<string> {
@@ -54,13 +57,7 @@ export function Header(props: { firehose: Firehose }) {
 
   return (
     <Flex align="end" gap={3}>
-      <Image
-        src={logoSrc}
-        alt="Hydrant logo"
-        h="40px"
-        pos="relative"
-        top={2}
-      />
+      <Image src={logoSrc} alt="Hydrant logo" h="40px" pos="relative" top={2} />
       <Select
         size="sm"
         w="fit-content"

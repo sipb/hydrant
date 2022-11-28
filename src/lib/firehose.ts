@@ -360,7 +360,9 @@ export class Firehose {
   /** Return a URL that can be opened to recover the state. */
   urlify(): string {
     const encoded = urlencode(this.deflate());
-    return `${document.location.origin}${document.location.pathname}?s=${encoded}`;
+    const url = new URL(window.location.href);
+    url.searchParams.set("s", encoded);
+    return url.href;
   }
 
   /** Initialize the state from either the URL or localStorage. */
@@ -369,8 +371,8 @@ export class Firehose {
     if (preferences) {
       this.preferences = preferences;
     }
-    const params = new URLSearchParams(document.location.search);
-    const param = params.get("s");
+    const url = new URL(window.location.href);
+    const save = url.searchParams.get("s");
     const saves = this.store.get("saves");
     if (saves) {
       this.saves = saves;
@@ -379,8 +381,8 @@ export class Firehose {
       this.saves = [];
       this.addSave(true);
     }
-    if (param) {
-      this.inflate(urldecode(param));
+    if (save) {
+      this.inflate(urldecode(save));
     } else {
       this.loadSave(this.saves[0]!.id);
     }

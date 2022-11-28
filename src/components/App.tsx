@@ -49,10 +49,11 @@ function useFirehose(): {
   };
 
   useEffect(() => {
-    // TODO update fetch url name: path might be wrong
+    const params = new URLSearchParams(document.location.search);
+    const term = params.get("t") ?? "latest";
     Promise.all([
       fetchNoCache<TermInfo>("latestTerm.json"),
-      fetchNoCache<SemesterData>("full.json"),
+      fetchNoCache<SemesterData>(`${term}.json`),
     ]).then(([latestTerm, { classes, lastUpdated, termInfo }]) => {
       const classesMap = new Map(Object.entries(classes));
       const firehoseObj = new Firehose(
