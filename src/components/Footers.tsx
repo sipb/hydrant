@@ -93,15 +93,59 @@ function PreferencesModal(props: {
   );
 }
 
+function AboutModal() {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <Link onClick={() => setVisible(true)}>About</Link>
+      <Modal isOpen={visible} onClose={() => setVisible(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Hydrant</ModalHeader>
+          <ModalBody>
+            <Flex direction="column" gap={4}>
+              <Text>
+                Hydrant is a student-run class planner for MIT students,
+                maintained by SIPB, the{" "}
+                <Link href="https://sipb.mit.edu/">
+                  Student Information Processing Board
+                </Link>
+                .
+              </Text>
+              <Text>
+                We welcome contributions! View the source code or file issues on{" "}
+                <Link href="https://github.com/cjquines/firehose">Github</Link>,
+                or come to a SIPB meeting and ask how to help.
+              </Text>
+              <Text>
+                We'd like to thank Edward Fan for creating{" "}
+                <Link href="https://firehose.guide/">Firehose</Link>, the basis
+                for Hydrant, and the{" "}
+                <Link href="https://fireroad.mit.edu/">FireRoad</Link> team for
+                collaborating with us.
+              </Text>
+            </Flex>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setVisible(false)}>Close</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
+
 /** The footer on the bottom of the calendar. */
 export function LeftFooter(props: {
   preferences: Preferences;
   firehose: Firehose;
 }) {
   const { preferences, firehose } = props;
-  const year = new Date().getFullYear();
 
   const [isExporting, setIsExporting] = useState(false);
+  // TODO: fix gcal export
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onCalendarExport = useCalendarExport(
     firehose,
     () => setIsExporting(false),
@@ -112,74 +156,31 @@ export function LeftFooter(props: {
     <Flex
       direction="column"
       align="center"
-      gap={0.5}
+      gap={2}
       opacity={0.3}
       _hover={{ opacity: 1 }}
       transition="0.5s opacity"
     >
-      <Flex gap={2} align="center">
+      <Flex gap={4} align="center">
         <PreferencesModal preferences={preferences} firehose={firehose} />
         <Tooltip
-          label={isExporting ? "Loading..." : "Sign in with Google and export to Google Calendar."}
+          label={
+            isExporting
+              ? "Loading..."
+              : "Google Calendar export is currently broken, we're fixing it!"
+          }
         >
           {isExporting ? (
             <Spinner m={3} />
           ) : (
-            <Image
-              src="img/calendar-button.png"
-              alt="Sign in with Google"
-              onClick={() => {
-                setIsExporting(true);
-                onCalendarExport();
-              }}
-              style={{ cursor: "pointer" }}
-            />
+            <Image src="img/calendar-button.png" alt="Sign in with Google" />
           )}
         </Tooltip>
       </Flex>
-      <Text mt={2} fontSize="sm">
-        Beta by{" "}
-        <Link href="mailto:cjq@mit.edu" color="inherit">
-          CJ Quines
-        </Link>
-        . Firehose &copy;{year}{" "}
-        <Link href="mailto:edwardf@alum.mit.edu" color="inherit">
-          Edward Fan
-        </Link>
-        .
-      </Text>
-      <Text fontSize="sm">
-        Subject descriptions and evaluations &copy;{year} Massachusetts
-        Institute of Technology.
-      </Text>
-    </Flex>
-  );
-}
-
-/** The footer on the bottom of the activity description. */
-export function RightFooter(props: { firehose: Firehose }) {
-  const { firehose } = props;
-  return (
-    <Flex
-      direction="column"
-      align="center"
-      gap={0.5}
-      opacity={0.3}
-      _hover={{ opacity: 1 }}
-      transition="0.5s opacity"
-    >
       <Text>Last updated: {firehose.lastUpdated}.</Text>
-      <Text>
-        Questions? Issues? Feedback?{" "}
-        <Link href="mailto:cjq@mit.edu">Send me an email!</Link>
-      </Text>
-      <Text>
-        Looking for the old Firehose? It's been moved{" "}
-        <Link href="https://firehose.guide/old_www/evaluations.html">here</Link>
-        .
-      </Text>
       <Flex gap={4}>
-        <Link href="https://github.com/edfan/firehose">GitHub</Link>
+        <AboutModal />
+        <Link href="mailto:sipb-hydrant@mit.edu">Contact</Link>
         <Link href="privacy.html">Privacy Policy</Link>
       </Flex>
     </Flex>

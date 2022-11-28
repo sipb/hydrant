@@ -1,4 +1,4 @@
-import { Flex, Image, Link, Select } from "@chakra-ui/react";
+import { Flex, Image, Select, useColorModeValue } from "@chakra-ui/react";
 
 import { Term } from "../lib/dates";
 import { Firehose } from "../lib/firehose";
@@ -47,13 +47,20 @@ function getUrlNames(latestTerm: string): Array<string> {
 /** Header above the left column, with logo and semester selection. */
 export function Header(props: { firehose: Firehose }) {
   const { firehose } = props;
+  const logoSrc = useColorModeValue("img/logo.svg", "img/logo-dark.svg");
   const toUrl = (urlName: string) =>
     toFullUrl(urlName, firehose.latestTerm.urlName);
   const defaultValue = toUrl(firehose.term.urlName);
 
   return (
-    <Flex align="end">
-      <Image src="img/logo.png" alt="Firehose logo" h="40px" />
+    <Flex align="end" gap={3}>
+      <Image
+        src={logoSrc}
+        alt="Hydrant logo"
+        h="40px"
+        pos="relative"
+        top={2}
+      />
       <Select
         size="sm"
         w="fit-content"
@@ -73,7 +80,6 @@ export function Header(props: { firehose: Firehose }) {
           );
         })}
       </Select>
-      <Link href="https://mit.turbovote.org/">Register to vote!</Link>
     </Flex>
   );
 }

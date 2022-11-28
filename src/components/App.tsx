@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {
-  Box,
   ChakraProvider,
   Flex,
-  Link,
   Spinner,
   extendTheme,
   useColorMode,
@@ -18,7 +16,7 @@ import { DEFAULT_STATE, FirehoseState } from "../lib/state";
 import { ActivityDescription } from "./ActivityDescription";
 import { Calendar } from "./Calendar";
 import { ClassTable } from "./ClassTable";
-import { LeftFooter, RightFooter } from "./Footers";
+import { LeftFooter } from "./Footers";
 import { Header } from "./Header";
 import { ScheduleOption } from "./ScheduleOption";
 import { ScheduleSwitcher } from "./ScheduleSwitcher";
@@ -92,19 +90,6 @@ function FirehoseApp() {
 
   return (
     <>
-      <Box
-        w="100%"
-        p={4}
-        fontSize="sm"
-        textAlign="center"
-        borderBottom="1px"
-        borderBottomColor="gray.400"
-      >
-        This version is in beta. Saved info may disappear without warning.{" "}
-        <Link href="https://forms.gle/Fh1N3Uy1Kcjf5hnQ9">
-          Share your feedback!
-        </Link>
-      </Box>
       {!firehose ? (
         <Flex w="100%" h="100vh" align="center" justify="center">
           <Spinner />
@@ -151,7 +136,6 @@ function FirehoseApp() {
                 firehose={firehose}
               />
             ) : null}
-            <RightFooter firehose={firehose} />
           </Flex>
         </Flex>
       )}
