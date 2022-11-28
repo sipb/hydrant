@@ -36,7 +36,7 @@ def run():
     now = datetime.datetime.now().strftime("%Y-%m-%d %l:%M %p")
     obj = {
         "termInfo": term_info,
-        "lastUpdate": now,
+        "lastUpdated": now,
         "classes": courses,
     }
 
