@@ -46,16 +46,17 @@ def parse_section(section):
     return [slots, place]
 
 
-def parse_schedule(raw_class, course):
+def parse_schedule(course):
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
     """
     schedule = course["schedule"]
     section_tba = False
+    result = {}
 
     # Kinds of sections that exist.
-    raw_class["s"] = []
+    result["s"] = []
     section_kinds = {"Lecture": "l", "Recitation": "r", "Lab": "b"}
 
     for chunk in schedule.split(";"):
@@ -66,45 +67,44 @@ def parse_schedule(raw_class, course):
 
         # The key is "l", "r", or "b".
         kind = section_kinds[name]
-        raw_class["s"].append(kind)
+        result["s"].append(kind)
 
         # Raw section times, e.g. T9.301-11 or TR1,F2.
-        raw_class[kind + "r"] = sections
+        result[kind + "r"] = sections
 
         # Section timeslots and rooms.
-        raw_class[kind] = []
+        result[kind] = []
         for info in sections:
             if info == "TBA":
                 section_tba = True
             else:
-                raw_class[kind].append(parse_section(info))
+                result[kind].append(parse_section(info))
 
     # True if some schedule is not scheduled yet.
-    raw_class["tb"] = section_tba
+    result["tb"] = section_tba
+    return result
 
 
-def parse_attributes(raw_class, course):
+def parse_attributes(course):
     hass_code = course.get("hass_attribute", "X")[-1]
     comms_code = course.get("communication_requirement", "")
     gir_attr = course.get("gir_attribute", "")
 
-    raw_class.update(
-        {
-            "hh": hass_code == "H",
-            "ha": hass_code == "A",
-            "hs": hass_code == "S",
-            "he": hass_code == "E",
-            "ci": comms_code == "CI-H",
-            "cw": comms_code == "CI-HW",
-            "re": gir_attr == "REST",
-            "la": gir_attr == "LAB",
-            "pl": gir_attr == "LAB2",
-        }
-    )
+    return {
+        "hh": hass_code == "H",
+        "ha": hass_code == "A",
+        "hs": hass_code == "S",
+        "he": hass_code == "E",
+        "ci": comms_code == "CI-H",
+        "cw": comms_code == "CI-HW",
+        "re": gir_attr == "REST",
+        "la": gir_attr == "LAB",
+        "pl": gir_attr == "LAB2",
+    }
 
 
-def parse_terms(raw_class, course):
-    raw_class["t"] = [
+def parse_terms(course):
+    terms = [
         name
         for name, attr in [
             ("FA", "offered_fall"),
@@ -114,15 +114,16 @@ def parse_terms(raw_class, course):
         ]
         if course[attr]
     ]
+    return {"t": terms}
 
 
-def parse_prereqs(raw_class, course):
+def parse_prereqs(course):
     prereqs = course.get("prerequisites", "")
     for gir, gir_rw in utils.GIR_REWRITE.items():
         prereqs = prereqs.replace(gir, gir_rw)
     if not prereqs:
         prereqs = "None"
-    raw_class["pr"] = prereqs
+    return {"pr": prereqs}
 
 
 def get_course_data(courses, course):
@@ -145,14 +146,14 @@ def get_course_data(courses, course):
 
     # tb, s, l, r, b, lr, rr, br
     try:
-        parse_schedule(raw_class, course)
+        raw_class.update(parse_schedule(course))
     except:
         # if we can't parse the schedule, warn
         print(f"Can't parse schedule: {course_code}")
         return False
 
     # hh, ha, hs, he, ci, cw, re, la, pl
-    parse_attributes(raw_class, course)
+    raw_class.update(parse_attributes(course))
 
     raw_class.update(
         {
@@ -166,8 +167,8 @@ def get_course_data(courses, course):
     )
 
     # t, pr
-    parse_terms(raw_class, course)
-    parse_prereqs(raw_class, course)
+    raw_class.update(parse_terms(course))
+    raw_class.update(parse_prereqs(course))
 
     raw_class.update(
         {

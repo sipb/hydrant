@@ -1,3 +1,4 @@
+import itertools
 import json
 
 GIR_REWRITE = {
@@ -79,6 +80,15 @@ def find_timeslot(day, slot, pm):
     return DAYS[day] + TIMES[slot]
 
 
+def zip_strict(*iterables):
+    """zip(strict=True) polyfill."""
+    sentinel = object()
+    for tuple in itertools.zip_longest(*iterables, fillvalue=sentinel):
+        if any(sentinel is t for t in tuple):
+            raise ValueError('Iterables have different lengths')
+        yield tuple
+
+
 def grouper(iterable, n):
     """
     grouper("ABCDEFG", 3) -> ABC DEF
@@ -86,7 +96,7 @@ def grouper(iterable, n):
     From https://docs.python.org/3/library/itertools.html#itertools-recipes.
     """
     args = [iter(iterable)] * n
-    return zip(*args)
+    return zip_strict(*args)
 
 
 def get_term_info():
