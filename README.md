@@ -1,4 +1,4 @@
-# Firehose
+# Hydrant
 
 ## Setup
 
@@ -44,14 +44,14 @@ Let's say you're updating from e.g. Spring 2023 to Fall 2023.
 
 *I want to change...*
 
-- *...the data available to Firehose.*
+- *...the data available to Hydrant.*
   - The entry point is `scrapers/update.py`.
   - This goes through `src/components/App.tsx`, which looks for the data.
-  - The exit point is through the constructor of `Firehose` in `src/lib/firehose.ts`.
-- *...the way Firehose behaves.*
+  - The exit point is through the constructor of `Hydrant` in `src/lib/firehose.ts`.
+- *...the way Hydrant behaves.*
   - The entry point is `src/lib/firehose.ts`.
-  - The exit point is through `src/components/App.tsx`, which constructs `Firehose` and passes it down.
-- *...the way Firehose looks.*
+  - The exit point is through `src/components/App.tsx`, which constructs `Hydrant` and passes it down.
+- *...the way Hydrant looks.*
   - The entry point is `src/components/App.tsx`.
   - We use [Chakra UI](https://chakra-ui.com/) as our component library. Avoid writing CSS.
 
@@ -64,4 +64,4 @@ Try to introduce as few technologies as possible to keep this mostly future-proo
 - it's tiny and used in only a small part of the app
   - e.g. msgpack-lite is only used for URL encoding, nanoid is only used to make IDs
 - it's a big, popular, well-documented project that's been around for several years
-  - e.g. FullCalendar has been around since old Firehose, Chakra UI has a large community
+  - e.g. FullCalendar has been around since old Hydrant, Chakra UI has a large community
