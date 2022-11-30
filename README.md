@@ -64,4 +64,4 @@ Try to introduce as few technologies as possible to keep this mostly future-proo
 - it's tiny and used in only a small part of the app
   - e.g. msgpack-lite is only used for URL encoding, nanoid is only used to make IDs
 - it's a big, popular, well-documented project that's been around for several years
-  - e.g. FullCalendar has been around since old Hydrant, Chakra UI has a large community
+  - e.g. FullCalendar has been around since 2010, Chakra UI has a large community
