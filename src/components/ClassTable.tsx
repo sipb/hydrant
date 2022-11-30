@@ -17,7 +17,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { Class, Flags } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 
 import "@ag-grid-community/core/dist/styles/ag-grid.css";
 import "@ag-grid-community/core/dist/styles/agGridAlpineFont.css";
@@ -48,9 +48,9 @@ function ClassInput(props: {
   rowData: Array<ClassTableRow>;
   /** Callback for updating the class filter. */
   setInputFilter: SetClassFilter;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { rowData, setInputFilter, firehose } = props;
+  const { rowData, setInputFilter, state } = props;
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
@@ -105,12 +105,12 @@ function ClassInput(props: {
       numbers?.some((number) => classNumberMatch(number, classInput, true))
     ) {
       // first check if the first result matches
-      firehose.toggleActivity(cls);
+      state.toggleActivity(cls);
       onClassInputChange("");
-    } else if (firehose.classes.has(classInput)) {
+    } else if (state.classes.has(classInput)) {
       // else check if this number exists exactly
-      const cls = firehose.classes.get(classInput);
-      firehose.toggleActivity(cls);
+      const cls = state.classes.get(classInput);
+      state.toggleActivity(cls);
     }
   };
 
@@ -174,11 +174,11 @@ const CLASS_FLAGS = CLASS_FLAGS_1.concat(CLASS_FLAGS_2).concat(CLASS_FLAGS_3);
 function ClassFlags(props: {
   /** Callback for updating the class filter. */
   setFlagsFilter: SetClassFilter;
-  firehose: Firehose;
+  state: State;
   /** Callback for updating the grid filter manually. */
   updateFilter: () => void;
 }) {
-  const { setFlagsFilter, firehose, updateFilter } = props;
+  const { setFlagsFilter, state, updateFilter } = props;
 
   // Map from flag to whether it's on.
   const [flags, setFlags] = useState<Map<keyof Flags | "fits", boolean>>(() => {
@@ -195,20 +195,20 @@ function ClassFlags(props: {
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
   useEffect(() => {
-    firehose.fitsScheduleCallback = () => flags.get("fits") && updateFilter();
-  }, [firehose, flags, updateFilter]);
+    state.fitsScheduleCallback = () => flags.get("fits") && updateFilter();
+  }, [state, flags, updateFilter]);
 
   const onChange = (flag: keyof Flags | "fits", value: boolean) => {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
     setFlags(newFlags);
 
-    // careful! we have to wrap it with a () => because otherwise react will
+    // careful! we have to wrap it with a () => because otherwise React will
     // think it's an updater function instead of the actual function.
     setFlagsFilter(() => (cls: Class) => {
       let result = true;
       newFlags.forEach((value, flag) => {
-        if (value && flag === "fits" && !firehose.fitsSchedule(cls)) {
+        if (value && flag === "fits" && !state.fitsSchedule(cls)) {
           result = false;
         } else if (value && flag !== "fits" && !cls.flags[flag]) {
           result = false;
@@ -264,9 +264,9 @@ function ClassFlags(props: {
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable(props: {
   classes: Map<string, Class>;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { classes, firehose } = props;
+  const { classes, state } = props;
   const gridRef = useRef<AgGridReact>(null);
 
   // Setup table columns
@@ -344,14 +344,14 @@ export function ClassTable(props: {
       <ClassInput
         rowData={rowData}
         setInputFilter={setInputFilter}
-        firehose={firehose}
+        state={state}
       />
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
-        firehose={firehose}
+        state={state}
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
-      <Box className="ag-theme-firehose">
+      <Box className="ag-theme-hydrant">
         <AgGridReact
           ref={gridRef}
           columnDefs={columnDefs}
@@ -360,8 +360,8 @@ export function ClassTable(props: {
           enableCellTextSelection={true}
           isExternalFilterPresent={() => true}
           doesExternalFilterPass={doesExternalFilterPass}
-          onRowClicked={(e) => firehose.setViewedActivity(e.data.class)}
-          onRowDoubleClicked={(e) => firehose.toggleActivity(e.data.class)}
+          onRowClicked={(e) => state.setViewedActivity(e.data.class)}
+          onRowDoubleClicked={(e) => state.toggleActivity(e.data.class)}
           onGridReady={() => gridRef.current?.columnApi?.autoSizeAllColumns()}
           // these have to be set here, not in css:
           headerHeight={40}

@@ -1,28 +1,28 @@
 import { Button, CloseButton, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 
 export function ScheduleOption(props: {
   selectedOption: number;
   totalOptions: number;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { selectedOption, totalOptions, firehose } = props;
+  const { selectedOption, totalOptions, state } = props;
   const [tooManyOptions, setTooManyOptions] = useState(true);
 
   return (
     <Flex direction="column" align="end" gap={2} mt={-5}>
       <Flex gap={2}>
         <Button
-          onClick={() => firehose.selectOption(selectedOption - 1)}
+          onClick={() => state.selectOption(selectedOption - 1)}
           size="xs"
         >
           &larr;
         </Button>{" "}
         {selectedOption + 1} of {totalOptions}
         <Button
-          onClick={() => firehose.selectOption(selectedOption + 1)}
+          onClick={() => state.selectOption(selectedOption + 1)}
           size="xs"
         >
           &rarr;

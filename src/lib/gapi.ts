@@ -3,7 +3,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { Activity } from "./activity";
 import { CALENDAR_COLOR } from "./colors";
 import { Term } from "./dates";
-import { Firehose } from "./firehose";
+import { State } from "./state";
 
 /** Timezone string. */
 const TIMEZONE = "America/New_York";
@@ -63,13 +63,13 @@ function toEvents(
 
 /** Hook that returns an export calendar function. */
 export function useCalendarExport(
-  firehose: Firehose,
+  state: State,
   onSuccess?: () => void,
   onError?: () => void
 ): () => void {
   /** Insert a new calendar for this semester. */
   const insertCalendar = async (): Promise<string> => {
-    const calendarName = `Firehose: ${firehose.term.niceName}`;
+    const calendarName = `Hydrant: ${state.term.niceName}`;
     const resp = await gapi.client.calendar.calendars.insert(
       {},
       { summary: calendarName }
@@ -77,7 +77,7 @@ export function useCalendarExport(
     return resp.result.id!;
   };
 
-  /** Set the background of the calendar to the Firehose color. */
+  /** Set the background of the calendar to the State color. */
   const setCalendarBackground = async (calendarId: string) => {
     const resp = await gapi.client.calendar.calendarList.get({ calendarId });
     const calendar = resp.result;
@@ -92,8 +92,8 @@ export function useCalendarExport(
   /** Add the classes / non-classes to the calendar. */
   const addCalendarEvents = async (calendarId: string) => {
     const batch = gapi.client.newBatch();
-    firehose.selectedActivities
-      .flatMap((activity) => toEvents(activity, firehose.term))
+    state.selectedActivities
+      .flatMap((activity) => toEvents(activity, state.term))
       .forEach((resource) =>
         batch.add(
           gapi.client.calendar.events.insert({

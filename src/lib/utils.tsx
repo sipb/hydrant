@@ -2,7 +2,7 @@ import { Link } from "@chakra-ui/react";
 // @ts-ignore
 import Msgpack from "msgpack-lite";
 
-import { Firehose } from "./firehose";
+import { State } from "./state";
 
 //========================================================================
 // Class utilities:
@@ -60,14 +60,14 @@ export function classNumberMatch(
 }
 
 /** Wrapper to link all classes in a given string. */
-export function linkClasses(firehose: Firehose, str: string): JSX.Element {
+export function linkClasses(state: State, str: string): JSX.Element {
   return (
     <>
       {str.split(/([0-9]*[A-Z]*\.[0-9A-Z]+)/).map((text, i) => {
-        const cls = firehose.classes.get(text);
+        const cls = state.classes.get(text);
         if (!cls) return text;
         return (
-          <Link key={i} onClick={() => firehose.setViewedActivity(cls)}>
+          <Link key={i} onClick={() => state.setViewedActivity(cls)}>
             {text}
           </Link>
         );

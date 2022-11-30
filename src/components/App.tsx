@@ -9,9 +9,9 @@ import {
 } from "@chakra-ui/react";
 
 import { Term, TermInfo } from "../lib/dates";
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 import { RawClass } from "../lib/rawClass";
-import { DEFAULT_STATE, FirehoseState } from "../lib/state";
+import { DEFAULT_STATE, HydrantState } from "../lib/schema";
 
 import { ActivityDescription } from "./ActivityDescription";
 import { Calendar } from "./Calendar";
@@ -31,16 +31,16 @@ type SemesterData = {
   termInfo: TermInfo;
 };
 
-/** Hook to fetch data and initialize Firehose object. */
-function useFirehose(): {
-  firehose?: Firehose;
-  state: FirehoseState;
+/** Hook to fetch data and initialize State object. */
+function useHydrant(): {
+  hydrant?: State;
+  state: HydrantState;
 } {
   const [loading, setLoading] = useState(true);
-  const firehoseRef = useRef<Firehose>();
-  const firehose = firehoseRef.current;
+  const hydrantRef = useRef<State>();
+  const hydrant = hydrantRef.current;
 
-  const [state, setState] = useState<FirehoseState>(DEFAULT_STATE);
+  const [state, setState] = useState<HydrantState>(DEFAULT_STATE);
 
   /** Fetch from the url, which is JSON of type T. */
   const fetchNoCache = async <T,>(url: string): Promise<T> => {
@@ -56,85 +56,85 @@ function useFirehose(): {
       fetchNoCache<SemesterData>(`${term}.json`),
     ]).then(([latestTerm, { classes, lastUpdated, termInfo }]) => {
       const classesMap = new Map(Object.entries(classes));
-      const firehoseObj = new Firehose(
+      const hydrantObj = new State(
         classesMap,
         new Term(termInfo),
         lastUpdated,
         new Term(latestTerm)
       );
-      firehoseRef.current = firehoseObj;
+      hydrantRef.current = hydrantObj;
       setLoading(false);
       // @ts-ignore
-      window.firehose = firehoseObj;
+      window.hydrant = hydrantObj;
     });
   }, []);
 
   const { colorMode, toggleColorMode } = useColorMode();
   useEffect(() => {
-    if (loading || !firehose) return;
+    if (loading || !hydrant) return;
     // if colorScheme changes, change colorMode to match
-    firehose.callback = (newState: FirehoseState) => {
+    hydrant.callback = (newState: HydrantState) => {
       setState(newState);
       if (colorMode !== newState.preferences.colorScheme.colorMode) {
         toggleColorMode?.();
       }
     };
-    firehose?.updateState();
-  }, [colorMode, firehose, loading, toggleColorMode]);
+    hydrant?.updateState();
+  }, [colorMode, hydrant, loading, toggleColorMode]);
 
-  return { firehose, state };
+  return { hydrant, state };
 }
 
 /** The application entry. */
-function FirehoseApp() {
-  const { firehose, state } = useFirehose();
+function HydrantApp() {
+  const { hydrant, state } = useHydrant();
 
   return (
     <>
-      {!firehose ? (
+      {!hydrant ? (
         <Flex w="100%" h="100vh" align="center" justify="center">
           <Spinner />
         </Flex>
       ) : (
         <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
           <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-            <Header firehose={firehose} />
+            <Header state={hydrant} />
             <ScheduleOption
               selectedOption={state.selectedOption}
               totalOptions={state.totalOptions}
-              firehose={firehose}
+              state={hydrant}
             />
             <Calendar
               selectedActivities={state.selectedActivities}
               viewedActivity={state.viewedActivity}
-              firehose={firehose}
+              state={hydrant}
             />
             <LeftFooter
               preferences={state.preferences}
-              firehose={firehose}
+              state={hydrant}
             />
           </Flex>
           <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
             <ScheduleSwitcher
               saveId={state.saveId}
               saves={state.saves}
-              firehose={firehose}
+              state={hydrant}
             />
             <SelectedActivities
               selectedActivities={state.selectedActivities}
               units={state.units}
               hours={state.hours}
               warnings={state.warnings}
-              firehose={firehose}
+              state={hydrant}
             />
             <ClassTable
-              classes={firehose.classes} // this is a constant; no need to add to state
-              firehose={firehose}
+              classes={hydrant.classes} // this is a constant; no need to add to state
+              state={hydrant}
             />
             {state.viewedActivity ? (
               <ActivityDescription
                 activity={state.viewedActivity}
-                firehose={firehose}
+                state={hydrant}
               />
             ) : null}
           </Flex>
@@ -166,7 +166,7 @@ export function App() {
   return (
     <ChakraProvider theme={theme}>
       <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
-        <FirehoseApp />
+        <HydrantApp />
       </GoogleOAuthProvider>
     </ChakraProvider>
   );

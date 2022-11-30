@@ -1,7 +1,7 @@
 import { Flex, Image, Select, useColorModeValue } from "@chakra-ui/react";
 
 import { Term } from "../lib/dates";
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 
 /** Given a urlName like i22, return its corresponding URL. */
 function toFullUrl(urlName: string, latestUrlName: string): string {
@@ -27,10 +27,10 @@ function getLastUrlName(urlName: string): string {
   }
 }
 
-/** urlNames that don't have a Firehose */
+/** urlNames that don't have a State */
 const EXCLUDED_URLS = ["i23"];
 
-/** Earliest urlName we have a Firehose for. */
+/** Earliest urlName we have a State for. */
 const EARLIEST_URL = "f22";
 
 /** Return all urlNames before the given one. */
@@ -48,12 +48,12 @@ function getUrlNames(latestTerm: string): Array<string> {
 }
 
 /** Header above the left column, with logo and semester selection. */
-export function Header(props: { firehose: Firehose }) {
-  const { firehose } = props;
+export function Header(props: { state: State }) {
+  const { state } = props;
   const logoSrc = useColorModeValue("img/logo.svg", "img/logo-dark.svg");
   const toUrl = (urlName: string) =>
-    toFullUrl(urlName, firehose.latestTerm.urlName);
-  const defaultValue = toUrl(firehose.term.urlName);
+    toFullUrl(urlName, state.latestTerm.urlName);
+  const defaultValue = toUrl(state.term.urlName);
 
   return (
     <Flex align="end" gap={3}>
@@ -68,7 +68,7 @@ export function Header(props: { firehose: Firehose }) {
           window.location.href = elt.options[elt.selectedIndex].value;
         }}
       >
-        {getUrlNames(firehose.latestTerm.urlName).map((urlName) => {
+        {getUrlNames(state.latestTerm.urlName).map((urlName) => {
           const { niceName } = new Term({ urlName });
           return (
             <option key={urlName} value={toUrl(urlName)}>

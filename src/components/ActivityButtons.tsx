@@ -17,7 +17,7 @@ import { HexColorPicker } from "react-colorful";
 import { Activity, NonClass, Timeslot } from "../lib/activity";
 import { Class, LockOption, SectionLockOption, Sections } from "../lib/class";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 
 import { ColorButton } from "./SelectedActivities";
 
@@ -47,9 +47,9 @@ function ToggleButton(
 function ClassManualOption(props: {
   secs: Sections;
   sec: SectionLockOption;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { secs, sec, firehose } = props;
+  const { secs, sec, state } = props;
   const [isChecked, label] = (() => {
     if (sec === LockOption.Auto) {
       return [!secs.locked, "Auto (default)"];
@@ -63,7 +63,7 @@ function ClassManualOption(props: {
   return (
     <Radio
       isChecked={isChecked}
-      onChange={() => firehose.lockSection(secs, sec)}
+      onChange={() => state.lockSection(secs, sec)}
     >
       {label}
     </Radio>
@@ -71,8 +71,8 @@ function ClassManualOption(props: {
 }
 
 /** Div containing section manual selection interface. */
-function ClassManualSections(props: { cls: Class; firehose: Firehose }) {
-  const { cls, firehose } = props;
+function ClassManualSections(props: { cls: Class; state: State }) {
+  const { cls, state } = props;
 
   const renderOptions = () => {
     return cls.sections.map((secs) => {
@@ -86,7 +86,7 @@ function ClassManualSections(props: { cls: Class; firehose: Firehose }) {
                 key={i}
                 secs={secs}
                 sec={sec}
-                firehose={firehose}
+                state={state}
               />
             ))}
           </Flex>
@@ -101,20 +101,20 @@ function ClassManualSections(props: { cls: Class; firehose: Firehose }) {
 /** Div containing color selection interface. */
 function ActivityColor(props: {
   activity: Activity;
-  firehose: Firehose;
+  state: State;
   onHide: () => void;
 }) {
-  const { activity, firehose, onHide } = props;
+  const { activity, state, onHide } = props;
   const initColor = activity.backgroundColor;
   const [color, setColor] = useState(initColor);
 
   const onReset = () => {
-    firehose.setBackgroundColor(activity, undefined);
+    state.setBackgroundColor(activity, undefined);
     onHide();
   };
   const onCancel = onHide;
   const onConfirm = () => {
-    firehose.setBackgroundColor(activity, color);
+    state.setBackgroundColor(activity, color);
     onHide();
   };
 
@@ -134,17 +134,17 @@ function ActivityColor(props: {
 }
 
 /** Buttons in class description to add/remove class, and lock sections. */
-export function ClassButtons(props: { cls: Class; firehose: Firehose }) {
-  const { cls, firehose } = props;
+export function ClassButtons(props: { cls: Class; state: State }) {
+  const { cls, state } = props;
 
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
-  const isSelected = firehose.isSelectedActivity(cls);
+  const isSelected = state.isSelectedActivity(cls);
 
   return (
     <Flex direction="column" gap={2}>
       <ButtonGroup>
-        <Button onClick={() => firehose.toggleActivity(cls)}>
+        <Button onClick={() => state.toggleActivity(cls)}>
           {isSelected ? "Remove class" : "Add class"}
         </Button>
         {isSelected && (
@@ -159,12 +159,12 @@ export function ClassButtons(props: { cls: Class; firehose: Firehose }) {
         )}
       </ButtonGroup>
       {isSelected && showManual && (
-        <ClassManualSections cls={cls} firehose={firehose} />
+        <ClassManualSections cls={cls} state={state} />
       )}
       {isSelected && showColors && (
         <ActivityColor
           activity={cls}
-          firehose={firehose}
+          state={state}
           onHide={() => setShowColors(false)}
         />
       )}
@@ -173,8 +173,8 @@ export function ClassButtons(props: { cls: Class; firehose: Firehose }) {
 }
 
 /** Form to add a timeslot to a non-class. */
-function NonClassAddTime(props: { activity: NonClass; firehose: Firehose }) {
-  const { activity, firehose } = props;
+function NonClassAddTime(props: { activity: NonClass; state: State }) {
+  const { activity, state } = props;
   const [days, setDays] = useState(
     Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false]))
   );
@@ -184,7 +184,7 @@ function NonClassAddTime(props: { activity: NonClass; firehose: Firehose }) {
     e.preventDefault();
     for (const day in days) {
       if (!days[day]) continue;
-      firehose.addTimeslot(
+      state.addTimeslot(
         activity,
         Timeslot.fromStartEnd(
           Slot.fromDayString(day, times.start),
@@ -240,11 +240,11 @@ function NonClassAddTime(props: { activity: NonClass; firehose: Firehose }) {
  */
 export function NonClassButtons(props: {
   activity: NonClass;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { activity, firehose } = props;
+  const { activity, state } = props;
 
-  const isSelected = firehose.isSelectedActivity(activity);
+  const isSelected = state.isSelectedActivity(activity);
   const [isRenaming, setIsRenaming] = useState(false);
   const [name, setName] = useState(activity.name);
   const [showColors, setShowColors] = useState(false);
@@ -260,7 +260,7 @@ export function NonClassButtons(props: {
         />
       );
       const onConfirm = () => {
-        firehose.renameNonClass(activity, name);
+        state.renameNonClass(activity, name);
         setIsRenaming(false);
       };
       const onCancel = () => {
@@ -282,7 +282,7 @@ export function NonClassButtons(props: {
     };
     const renderButtons = () => (
       <>
-        <Button onClick={() => firehose.toggleActivity(activity)}>
+        <Button onClick={() => state.toggleActivity(activity)}>
           {isSelected ? "Remove activity" : "Add activity"}
         </Button>
         <Button onClick={onRename}>Rename activity</Button>
@@ -304,7 +304,7 @@ export function NonClassButtons(props: {
       {isSelected && showColors && (
         <ActivityColor
           activity={activity}
-          firehose={firehose}
+          state={state}
           onHide={() => setShowColors(false)}
         />
       )}
@@ -312,7 +312,7 @@ export function NonClassButtons(props: {
         Click and drag on an empty time in the calendar to add the times for
         your activity. Or add one manually:
       </Text>
-      <NonClassAddTime activity={activity} firehose={firehose} />
+      <NonClassAddTime activity={activity} state={state} />
     </Flex>
   );
 }

@@ -13,7 +13,7 @@ import { ReactNode } from "react";
 
 import { Activity, NonClass } from "../lib/activity";
 import { Class, Flags } from "../lib/class";
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";
 
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
@@ -116,16 +116,16 @@ function ClassTypes(props: { cls: Class }) {
 }
 
 /** List of related classes, appears after flags and before description. */
-function ClassRelated(props: { cls: Class; firehose: Firehose }) {
-  const { cls, firehose } = props;
+function ClassRelated(props: { cls: Class; state: State }) {
+  const { cls, state } = props;
   const { prereq, same, meets } = cls.related;
 
   return (
     <>
-      <Text>Prereq: {linkClasses(firehose, prereq)}</Text>
-      {same !== "" && <Text>Same class as: {linkClasses(firehose, same)}</Text>}
+      <Text>Prereq: {linkClasses(state, prereq)}</Text>
+      {same !== "" && <Text>Same class as: {linkClasses(state, same)}</Text>}
       {meets !== "" && (
-        <Text> Meets with: {linkClasses(firehose, meets)} </Text>
+        <Text> Meets with: {linkClasses(state, meets)} </Text>
       )}
     </>
   );
@@ -146,14 +146,14 @@ function ClassEval(props: { cls: Class }) {
 }
 
 /** Class description, person in-charge, and any URLs afterward. */
-function ClassBody(props: { cls: Class; firehose: Firehose }) {
-  const { cls, firehose } = props;
+function ClassBody(props: { cls: Class; state: State }) {
+  const { cls, state } = props;
   const { description, inCharge, extraUrls } = cls.description;
 
   return (
     <Flex direction="column" gap={2}>
       <Text lang="en" style={{ hyphens: "auto" }}>
-        {linkClasses(firehose, decode(description))}
+        {linkClasses(state, decode(description))}
       </Text>
       {inCharge !== "" && <Text>In-charge: {inCharge}.</Text>}
       {extraUrls.length > 0 && (
@@ -170,8 +170,8 @@ function ClassBody(props: { cls: Class; firehose: Firehose }) {
 }
 
 /** Full class description, from title to URLs at the end. */
-function ClassDescription(props: { cls: Class; firehose: Firehose }) {
-  const { cls, firehose } = props;
+function ClassDescription(props: { cls: Class; state: State }) {
+  const { cls, state } = props;
 
   return (
     <Flex direction="column" gap={4}>
@@ -180,11 +180,11 @@ function ClassDescription(props: { cls: Class; firehose: Firehose }) {
       </Heading>
       <Flex direction="column" gap={0.5}>
         <ClassTypes cls={cls} />
-        <ClassRelated cls={cls} firehose={firehose} />
+        <ClassRelated cls={cls} state={state} />
         <ClassEval cls={cls} />
       </Flex>
-      <ClassButtons cls={cls} firehose={firehose} />
-      <ClassBody cls={cls} firehose={firehose} />
+      <ClassButtons cls={cls} state={state} />
+      <ClassBody cls={cls} state={state} />
     </Flex>
   );
 }
@@ -192,19 +192,19 @@ function ClassDescription(props: { cls: Class; firehose: Firehose }) {
 /** Full non-class activity description, from title to timeslots. */
 function NonClassDescription(props: {
   activity: NonClass;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { activity, firehose } = props;
+  const { activity, state } = props;
 
   return (
     <Flex direction="column" gap={4}>
-      <NonClassButtons activity={activity} firehose={firehose} />
+      <NonClassButtons activity={activity} state={state} />
       <Flex direction="column" gap={2}>
         {activity.timeslots?.map((t) => (
           <Flex key={t.toString()} align="center" gap={2}>
             <Button
               size="sm"
-              onClick={() => firehose.removeTimeslot(activity, t)}
+              onClick={() => state.removeTimeslot(activity, t)}
             >
               Remove
             </Button>
@@ -219,13 +219,13 @@ function NonClassDescription(props: {
 /** Activity description, whether class or non-class. */
 export function ActivityDescription(props: {
   activity: Activity;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { activity, firehose } = props;
+  const { activity, state } = props;
 
   return activity instanceof Class ? (
-    <ClassDescription cls={activity} firehose={firehose} />
+    <ClassDescription cls={activity} state={state} />
   ) : (
-    <NonClassDescription activity={activity} firehose={firehose} />
+    <NonClassDescription activity={activity} state={state} />
   );
 }

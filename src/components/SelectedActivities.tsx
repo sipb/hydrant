@@ -5,7 +5,7 @@ import { ComponentProps } from "react";
 import { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 
 export function ColorButton(
   props: ComponentProps<"button"> & { color: string }
@@ -27,14 +27,14 @@ export function ColorButton(
 }
 
 /** A button representing a single, selected activity. */
-function ActivityButton(props: { activity: Activity; firehose: Firehose }) {
-  const { activity, firehose } = props;
+function ActivityButton(props: { activity: Activity; state: State }) {
+  const { activity, state } = props;
   const color = activity.backgroundColor;
   return (
     <ColorButton
       color={color}
-      onClick={() => firehose.setViewedActivity(activity)}
-      onDoubleClick={() => firehose.removeActivity(activity)}
+      onClick={() => state.setViewedActivity(activity)}
+      onDoubleClick={() => state.removeActivity(activity)}
     >
       {activity.buttonName}
     </ColorButton>
@@ -47,9 +47,9 @@ export function SelectedActivities(props: {
   units: number;
   hours: number;
   warnings: Array<string>;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { selectedActivities, units, hours, warnings, firehose } = props;
+  const { selectedActivities, units, hours, warnings, state } = props;
 
   return (
     <Flex direction="column" gap={2}>
@@ -62,12 +62,12 @@ export function SelectedActivities(props: {
           <ActivityButton
             key={activity instanceof Class ? activity.number : activity.id}
             activity={activity}
-            firehose={firehose}
+            state={state}
           />
         ))}
         <Button
           leftIcon={<AddIcon />}
-          onClick={() => firehose.addActivity()}
+          onClick={() => state.addActivity()}
           size="sm"
         >
           Activity

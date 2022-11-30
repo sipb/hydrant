@@ -1,4 +1,4 @@
-import { Preferences, Save } from "./state";
+import { Preferences, Save } from "./schema";
 
 export type TermStore = {
   saves: Save[];
@@ -20,7 +20,7 @@ export class Store {
 
   /** Convert a key to a local storage key. */
   toKey(key: string, global: boolean): string {
-    return global ? `firehose-${key}` : `firehose-${this.term}-${key}`;
+    return global ? `${key}` : `${this.term}-${key}`;
   }
 
   /** Return the corresponding, term-specific saved value. */

@@ -8,3 +8,7 @@ __pycache__
 # node
 /node_modules
 /build
+
+deploy.sh
+
+.idea

@@ -17,15 +17,15 @@ import {
 import { useRef, useState } from "react";
 
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 import { useCalendarExport } from "../lib/gapi";
-import { DEFAULT_PREFERENCES, Preferences } from "../lib/state";
+import { DEFAULT_PREFERENCES, Preferences } from "../lib/schema";
 
 function PreferencesModal(props: {
-  firehose: Firehose;
+  state: State;
   preferences: Preferences;
 }) {
-  const { preferences: originalPreferences, firehose } = props;
+  const { preferences: originalPreferences, state } = props;
   const [visible, setVisible] = useState(false);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
   const initialPreferencesRef = useRef(DEFAULT_PREFERENCES);
@@ -39,17 +39,17 @@ function PreferencesModal(props: {
 
   const previewPreferences = (newPreferences: Preferences) => {
     setPreferences(newPreferences);
-    firehose.setPreferences(newPreferences, false);
+    state.setPreferences(newPreferences, false);
   };
 
   const onCancel = () => {
     setPreferences(initialPreferences);
-    firehose.setPreferences(initialPreferences);
+    state.setPreferences(initialPreferences);
     setVisible(false);
   };
 
   const onConfirm = () => {
-    firehose.setPreferences(preferences);
+    state.setPreferences(preferences);
     setVisible(false);
   };
 
@@ -115,7 +115,7 @@ function AboutModal() {
               </Text>
               <Text>
                 We welcome contributions! View the source code or file issues on{" "}
-                <Link href="https://github.com/cjquines/firehose">Github</Link>,
+                <Link href="https://github.com/sipb/hydrant">Github</Link>,
                 or come to a SIPB meeting and ask how to help.
               </Text>
               <Text>
@@ -139,15 +139,15 @@ function AboutModal() {
 /** The footer on the bottom of the calendar. */
 export function LeftFooter(props: {
   preferences: Preferences;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { preferences, firehose } = props;
+  const { preferences, state } = props;
 
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onCalendarExport = useCalendarExport(
-    firehose,
+    state,
     () => setIsExporting(false),
     () => setIsExporting(false)
   );
@@ -162,7 +162,7 @@ export function LeftFooter(props: {
       transition="0.5s opacity"
     >
       <Flex gap={4} align="center">
-        <PreferencesModal preferences={preferences} firehose={firehose} />
+        <PreferencesModal preferences={preferences} state={state} />
         <Tooltip
           label={
             isExporting
@@ -177,7 +177,7 @@ export function LeftFooter(props: {
           )}
         </Tooltip>
       </Flex>
-      <Text>Last updated: {firehose.lastUpdated}.</Text>
+      <Text>Last updated: {state.lastUpdated}.</Text>
       <Flex gap={4}>
         <AboutModal />
         <Link href="mailto:sipb-hydrant@mit.edu">Contact</Link>

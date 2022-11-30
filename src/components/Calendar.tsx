@@ -6,7 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { Activity, NonClass, Timeslot } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Slot } from "../lib/dates";
-import { Firehose } from "../lib/firehose";
+import { State } from "../lib/state";
 
 import "./Calendar.scss";
 
@@ -17,9 +17,9 @@ import "./Calendar.scss";
 export function Calendar(props: {
   selectedActivities: Array<Activity>;
   viewedActivity: Activity | undefined;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { selectedActivities, viewedActivity, firehose } = props;
+  const { selectedActivities, viewedActivity, state } = props;
 
   const renderEvent = ({ event }: { event: EventApi; timeText: string }) => {
     return (
@@ -56,7 +56,7 @@ export function Calendar(props: {
       eventContent={renderEvent}
       eventClick={(e) => {
         // extendedProps: non-standard props of {@link Event.eventInputs}
-        firehose.setViewedActivity(e.event.extendedProps.activity);
+        state.setViewedActivity(e.event.extendedProps.activity);
       }}
       headerToolbar={false}
       height="auto"
@@ -77,7 +77,7 @@ export function Calendar(props: {
       selectable={viewedActivity instanceof NonClass}
       select={(e) => {
         viewedActivity instanceof NonClass &&
-          firehose.addTimeslot(
+          state.addTimeslot(
             viewedActivity,
             Timeslot.fromStartEnd(
               Slot.fromStartDate(e.start),

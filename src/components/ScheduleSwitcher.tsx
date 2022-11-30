@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { ComponentProps, useState } from "react";
 
-import { Firehose } from "../lib/firehose";
-import { Save } from "../lib/state";
+import { State } from "../lib/state";
+import { Save } from "../lib/schema";
 
 function SmallButton(props: ComponentProps<"button">) {
   const { children, ...otherProps } = props;
@@ -26,11 +26,11 @@ function SmallButton(props: ComponentProps<"button">) {
 }
 
 function SelectWithWarn(props: {
-  firehose: Firehose;
+  state: State;
   saveId: string;
   saves: Array<Save>;
 }) {
-  const { firehose, saveId, saves } = props;
+  const { state, saveId, saves } = props;
   const [confirmSave, setConfirmSave] = useState("");
   const confirmName = saves.find((save) => save.id === confirmSave)?.name;
   return (
@@ -42,7 +42,7 @@ function SelectWithWarn(props: {
           if (!saveId) {
             setConfirmSave(e.target.value);
           } else {
-            firehose.loadSave(e.target.value);
+            state.loadSave(e.target.value);
           }
         }}
         width="fit-content"
@@ -71,7 +71,7 @@ function SelectWithWarn(props: {
             </Button>
             <Button
               onClick={() => {
-                firehose.loadSave(confirmSave);
+                state.loadSave(confirmSave);
                 setConfirmSave("");
               }}
             >
@@ -85,11 +85,11 @@ function SelectWithWarn(props: {
 }
 
 function DeleteModal(props: {
-  firehose: Firehose;
+  state: State;
   saveId: string;
   name: string;
 }) {
-  const { firehose, saveId, name } = props;
+  const { state, saveId, name } = props;
   const [show, setShow] = useState(false);
 
   return (
@@ -106,7 +106,7 @@ function DeleteModal(props: {
             </Button>
             <Button
               onClick={() => {
-                firehose.removeSave(saveId);
+                state.removeSave(saveId);
                 setShow(false);
               }}
             >
@@ -119,10 +119,10 @@ function DeleteModal(props: {
   );
 }
 
-function ExportModal(props: { firehose: Firehose }) {
-  const { firehose } = props;
+function ExportModal(props: { state: State }) {
+  const { state } = props;
   const [show, setShow] = useState(false);
-  const link = firehose.urlify();
+  const link = state.urlify();
   const { hasCopied, onCopy } = useClipboard(link);
 
   return (
@@ -154,9 +154,9 @@ function ExportModal(props: { firehose: Firehose }) {
 export function ScheduleSwitcher(props: {
   saveId: string;
   saves: Array<Save>;
-  firehose: Firehose;
+  state: State;
 }) {
-  const { saveId, saves, firehose } = props;
+  const { saveId, saves, state } = props;
 
   const currentName = saves.find((save) => save.id === saveId)?.name!;
   const [isRenaming, setIsRenaming] = useState(false);
@@ -174,7 +174,7 @@ export function ScheduleSwitcher(props: {
         />
       );
       const onConfirm = () => {
-        firehose.renameSave(saveId, name);
+        state.renameSave(saveId, name);
         setIsRenaming(false);
       };
       const onCancel = () => {
@@ -191,22 +191,22 @@ export function ScheduleSwitcher(props: {
     }
 
     const renderHeading = () => (
-      <SelectWithWarn firehose={firehose} saveId={saveId} saves={saves} />
+      <SelectWithWarn state={state} saveId={saveId} saves={saves} />
     );
     const onRename = () => setIsRenaming(true);
-    const onSave = () => firehose.addSave(Boolean(saveId));
+    const onSave = () => state.addSave(Boolean(saveId));
     const renderButtons = () => (
       <>
         {saveId && <SmallButton onClick={onRename}>Rename</SmallButton>}
         {saveId && (
           <DeleteModal
-            firehose={firehose}
+            state={state}
             saveId={saveId}
             name={saves.find((save) => save.id === saveId)!.name}
           />
         )}
         <SmallButton onClick={onSave}>{saveId ? "New" : "Save"}</SmallButton>
-        <ExportModal firehose={firehose} />
+        <ExportModal state={state} />
       </>
     );
     return [renderHeading, renderButtons];
