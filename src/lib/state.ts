@@ -132,7 +132,6 @@ export class State {
 
   /** Add activity if it exists, remove if it doesn't. */
   toggleActivity(activity?: Activity): void {
-    console.log("toggling", activity);
     if (!activity) return;
     this.isSelectedActivity(activity)
       ? this.removeActivity(activity)

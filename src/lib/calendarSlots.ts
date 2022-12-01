@@ -91,7 +91,7 @@ export function scheduleSlots(
         } else {
           // locked to having no section, do nothing
         }
-      } else {
+      } else if (secs.sections.length > 0) {
         freeSections.push(secs);
       }
     }
