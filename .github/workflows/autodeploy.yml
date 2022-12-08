@@ -25,7 +25,6 @@ jobs:
       uses: wsmoses/action-deploy-scripts@main
       with:
         locker: 'hydrant'
-        remote: scrubbing-bubbles
         privateKey: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         local: build
         remote: hydrant/test_deploy
