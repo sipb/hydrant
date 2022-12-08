@@ -21,12 +21,11 @@ jobs:
       run: npm install
     - name: Run build
       run: npm run build
-    - name: Remove latest.json
-      run: rm build/latest.json
-    - name: Deploy to Scripts
-      uses: wsmoses/action-deploy-scripts@main
+    - name: Archive build artifacts
+      working-directory: build
+      uses: actions/upload-artifact@v3
       with:
-        locker: 'hydrant'
-        privateKey: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-        local: build
-        remote: hydrant/test_deploy
+        name: build
+        path: |
+          .
+          !latest.json
