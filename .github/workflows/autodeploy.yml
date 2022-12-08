@@ -22,10 +22,9 @@ jobs:
     - name: Run build
       run: npm run build
     - name: Archive build artifacts
-      working-directory: build
       uses: actions/upload-artifact@v3
       with:
-        name: build
+        name: built-site
         path: |
-          .
-          !latest.json
+          build
+          !build/latest.json
