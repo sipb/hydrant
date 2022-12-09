@@ -3,7 +3,6 @@ name: Autodeploy branch
 on:
   push:
     branches:
-     - test-deploy
      - deploy
 
 jobs:
