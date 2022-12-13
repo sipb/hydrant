@@ -1,0 +1,36 @@
+# scripts.mit.edu sample crontab as of Thu Dec  8 11:50:46 EST 2022
+# To load this crontab, run "cronload crontab" in your cron_scripts directory
+# (On athena, you must run "add scripts" before cronload)
+
+# This line sets a reasonable default path
+PATH=/mit/hydrant/cron_scripts:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R6/bin
+
+# This line mails the STDOUT and STDERR of every cron script to a person
+# (can be useful for debugging)
+# You can always redirect the output of individual commands to /dev/null
+MAILTO="sipb-hydrant@mit.edu"
+# If you do not want to receive any mail from cron, use the line below instead
+#MAILTO=""
+
+# Update data pulled from the most recent APIs; then plop it down in production
+# This runs every hour, on the 0th minute.
+0 * * * * cronic update_latest.sh /afs/sipb.mit.edu/project/hydrant/web_scripts/updating/hydrant /afs/sipb.mit.edu/project/hydrant/web_scripts/hydrant
+
+# Here's a reminder of the cron line format:
+
+#  * * * * * command to be executed
+#  - - - - -
+#  | | | | |
+#  | | | | ----- day of week (0 - 6) (Sunday=0)
+#  | | | ------- month (1 - 12)
+#  | | --------- day of month (1 - 31)
+#  | ----------- hour (0 - 23)
+#  ------------- min (0 - 59)
+
+# For example, the following cron line would write "Work harder!" to STDOUT
+# every 20 minutes from 8am - 5pm on weekdays
+# (and this message would thus be e-mailed to the address above on each run) 
+
+# 0,20,40 8-17 * * 1-5 echo "Work harder!"
+
+# See http://en.wikipedia.org/wiki/Cron (or google for crontab) for more info
