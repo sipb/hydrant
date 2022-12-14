@@ -11,13 +11,13 @@ from hmac import digest
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 
-LOCKER_DIR = "/afs/sipb.mit.edu/project/hydrant/"
+LOCKER_DIR = "/afs/sipb.mit.edu/project/hydrant"
 
-OUTPUT_DIR = LOCKER_DIR + "web_scripts/hydrant/"
+OUTPUT_DIR = path.join(LOCKER_DIR, "web_scripts/hydrant")
 
-CI_SECRETS_DIR = LOCKER_DIR + "ci_secrets/"
-HASH_SECRET = CI_SECRETS_DIR + "hash_secret"
-GITHUB_TOKEN = CI_SECRETS_DIR + "github_token"
+CI_SECRETS_DIR = path.join(LOCKER_DIR, "ci_secrets")
+HASH_SECRET = path.join(CI_SECRETS_DIR, "hash_secret")
+GITHUB_TOKEN = path.join(CI_SECRETS_DIR, "github_token")
 
 
 def main():
