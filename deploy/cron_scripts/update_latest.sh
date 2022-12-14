@@ -22,6 +22,8 @@ OUT="$2"
 
 cd "$DIR/scrapers"
 
+# make sure we're in the right branch:
+git checkout -f deploy
 # -q means quietly; don't report anything in stdout or stderr.
 git pull -q
 
