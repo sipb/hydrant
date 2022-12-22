@@ -15,7 +15,7 @@ export function ScheduleOption(props: {
     <Flex direction="column" align="end" gap={2} mt={-5}>
       <Flex gap={2}>
         <Button
-          onClick={() => state.selectOption(selectedOption - 1)}
+          onClick={() => state.selectOption((selectedOption - 1 + totalOptions) % totalOptions)}
           size="xs"
         >
           &larr;
