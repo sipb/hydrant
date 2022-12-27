@@ -14,7 +14,7 @@ MAILTO="sipb-hydrant@mit.edu"
 
 # Update data pulled from the most recent APIs; then plop it down in production
 # This runs every hour, on the 0th minute.
-0 * * * * cronic update_latest.sh /afs/sipb.mit.edu/project/hydrant/web_scripts/updating/hydrant /afs/sipb.mit.edu/project/hydrant/web_scripts/hydrant
+0 * * * * cronic update_latest.sh /afs/sipb.mit.edu/project/hydrant/hydrant /afs/sipb.mit.edu/project/hydrant/web_scripts/hydrant
 
 # Here's a reminder of the cron line format:
 

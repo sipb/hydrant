@@ -35,4 +35,4 @@ The entire backend is the `latest.json` file in `~/web_scripts/hydrant/latest.js
 
 We have a [cron job](https://en.wikipedia.org/wiki/Cron) that runs every hour that updates this file. Cron is configured with a crontab file, in `~/cron_scripts/crontab`. There's a line (the one starting with `0 * * * *`) that calls the `~/cron_scripts/update_latest.sh` every hour.
 
-The `~/cron_scripts/update_latest.sh` pulls the latest version of the `deploy` branch on GitHub to the folder `~/web_scripts/updating/hydrant`. Inside that folder, it then runs the `scrapers/update.py` script. Then it copies the `latest.json` from that folder to `~/web_scripts/hydrant`, where it is served to the internet.
+The `~/cron_scripts/update_latest.sh` pulls the latest version of the `deploy` branch on GitHub to the folder `~/hydrant`. Inside that folder, it then runs the `scrapers/update.py` script. Then it copies the `latest.json` from that folder to `~/web_scripts/hydrant`, where it is served to the internet.

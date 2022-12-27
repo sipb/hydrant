@@ -13,7 +13,7 @@ set -e
 }
 
 # Hydrant base directory, i.e. the one that has the copy of the repo, with
-# all the scripts in it. In the locker, this is ~/web_scripts/updating/hydrant
+# all the scripts in it. In the locker, this is ~/hydrant
 DIR="$1"
 
 # The output directory, i.e. the one that has the folder being served to the
