@@ -6,12 +6,12 @@ If you're in the `sipb-hydrant` list, you can login to Athena and do `ssh hydran
 
 Our repo has a copy at `~/hydrant` with symlinks to other places. In particular:
 
-- `~/README.md` links to `deploy/README.md`.
-- `~/cron_scripts` links to `deploy/cron_scripts`.
-- `~/web_scripts/notify_build.py` links to `deploy/web_scripts/notify_build.py`.
+- `~/README.md` links to `~/hydrant/deploy/README.md`.
+- `~/cron_scripts` links to `~/hydrant/deploy/cron_scripts`.
+- `~/web_scripts/notify_build.py` links to `~/hydrant/deploy/web_scripts/notify_build.py`.
   - Nothing else in `~/web_scripts` should be in the repo.
 - Nothing in `~/ci_secrets` should be in the repo.
-  - It has a `README` file, though. Read it in the locker!
+  - But read the `~/ci_secrets/README` file!
 
 ## Frontend
 
@@ -24,6 +24,8 @@ The server's frontend updates based on the `deploy` branch on GitHub, so any cha
 2. Once the build is done, CI fires a GitHub webhook (https://github.com/sipb/hydrant/settings/hooks). This one is pointed at (https://hydrant.scripts.mit.edu/report_build.py); hosted at `~/web_scripts/report_build.py` in the locker.
 
   The webhook does something called a [POST request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST). You can think of it as running the `~/web_scripts/report_build.py` script and giving it input, except we're giving the input through the internet. The input is taken in through `stdin`, and is encoded with JSON.
+
+  You can look at the output of the webhook in the Github hooks settings: (https://github.com/sipb/hydrant/settings/hooks).
 
 3. The script grabs the URL to the 'artifact'* and downloads it. The relevant API docs are on GitHub at (https://docs.github.com/en/rest/actions/artifacts).
 

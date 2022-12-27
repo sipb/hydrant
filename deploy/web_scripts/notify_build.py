@@ -14,6 +14,7 @@ from zipfile import ZipFile
 LOCKER_DIR = "/afs/sipb.mit.edu/project/hydrant"
 
 OUTPUT_DIR = path.join(LOCKER_DIR, "web_scripts/hydrant")
+ERROR_LOG = path.join(LOCKER_DIR, "error_log")
 
 CI_SECRETS_DIR = path.join(LOCKER_DIR, "ci_secrets")
 HASH_SECRET = path.join(CI_SECRETS_DIR, "hash_secret")
@@ -83,4 +84,4 @@ if __name__ == "__main__":
         print(main())
     except Exception as e:
         print(e, file=stdout)
-        print(e, file=open("/mit/hydrant/error_log", "w"))
+        print(e, file=open(ERROR_LOG, "w"))
