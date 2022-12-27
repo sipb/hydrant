@@ -2,7 +2,9 @@
 
 This file, and other contents of this folder, should be mirrored in `/afs/sipb/project/hydrant`. This folder is called our *locker*.
 
-If you're in the `sipb-hydrant` list, you can login to Athena and do `ssh hydrant@scripts`. You'll sign in to the Scripts account, whose home folder `~` is `/afs/sipb/project/hydrant`. In particular:
+If you're in the `sipb-hydrant` list, you can login to Athena and do `ssh hydrant@scripts`. You'll sign in to the Scripts account, whose home folder `~` is `/afs/sipb/project/hydrant`.
+
+Our repo has a copy at `~/hydrant` with symlinks to other places. In particular:
 
 - `~/README.md` links to `deploy/README.md`.
 - `~/cron_scripts` links to `deploy/cron_scripts`.
