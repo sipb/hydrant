@@ -15,9 +15,9 @@ OUT_DIR="/afs/sipb.mit.edu/project/hydrant/web_scripts/hydrant"
 
 cd "$REPO_DIR/scrapers"
 
-# make sure we're in the right branch:
-git checkout -f deploy
 # -q means quietly; don't report anything in stdout or stderr.
+# make sure we're in the right branch:
+git checkout -f deploy -q
 git pull -q
 
 # The scripts machine we use has Python 3.6, so use that.
