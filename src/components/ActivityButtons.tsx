@@ -12,14 +12,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { ComponentProps, FormEvent, useState } from "react";
-import { HexColorPicker } from "react-colorful";
+import { HexColorPicker, HexColorInput } from "react-colorful";
 
 import { Activity, NonClass, Timeslot } from "../lib/activity";
+import { textColor } from "../lib/colors";
 import { Class, LockOption, SectionLockOption, Sections } from "../lib/class";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
 import { State } from "../lib/state";
-
-import { ColorButton } from "./SelectedActivities";
 
 /**
  * A button that toggles the active value, and is outlined if active, solid
@@ -122,9 +121,18 @@ function ActivityColor(props: {
     <Flex gap={2}>
       <HexColorPicker color={color} onChange={setColor} />
       <Flex direction="column" gap={2}>
-        <ColorButton color={color} style={{ cursor: "default" }}>
-          {activity.buttonName}
-        </ColorButton>
+        <HexColorInput
+          color={color}
+          onChange={setColor}
+          prefixed
+          style={{
+            backgroundColor: color,
+            borderColor: color,
+            color: textColor(color),
+            cursor: "text",
+          }}
+          className="chakra-button css-1d0ox2v" // FIXME
+        />
         <Button onClick={onReset}>Reset</Button>
         <Button onClick={onCancel}>Cancel</Button>
         <Button onClick={onConfirm}>Confirm</Button>
