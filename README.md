@@ -24,6 +24,8 @@ To update the frontend, you can run `npm start`, which will open a browser tab t
 
 To update the backend, `cd scrapers` then run `python update.py`.
 
+Make sure to update the backend before you run the frontend for the first time.
+
 ### Changing semesters
 
 Let's say you're updating from e.g. Spring 2023 to Fall 2023.
