@@ -33,6 +33,7 @@ export type Flags = {
   notcih: boolean;
   final: boolean;
   nofinal: boolean;
+  nopreq: boolean;
   le9units: boolean;
   half: number | false;
   limited: boolean;
@@ -285,6 +286,7 @@ export class Class {
       notcih: !this.rawClass.ci && !this.rawClass.cw,
       final: this.rawClass.f,
       nofinal: !this.rawClass.f,
+      nopreq: this.rawClass.pr === "None",
       le9units: this.totalUnits <= 9,
       half: this.rawClass.hf,
       limited: this.rawClass.lm,
