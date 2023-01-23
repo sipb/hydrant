@@ -146,6 +146,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["fits", "Fits schedule"],
   ["nofinal", "No final"],
+  ["nopreq", "No prereq"]
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
