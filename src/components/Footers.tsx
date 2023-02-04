@@ -176,6 +176,9 @@ export function LeftFooter(props: {
             <Image src="img/calendar-button.png" alt="Sign in with Google" />
           )}
         </Tooltip>
+        <Button onClick={onCalendarExport}>
+          {isExporting ? <Spinner m={3} /> : "Generate .ics file"}
+        </Button>
       </Flex>
       <Text>Last updated: {state.lastUpdated}.</Text>
       <Flex gap={4}>
