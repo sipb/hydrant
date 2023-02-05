@@ -18,7 +18,7 @@ import { useRef, useState } from "react";
 
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { State } from "../lib/state";
-import { useCalendarExport } from "../lib/gapi";
+import { useICSExport } from "../lib/gapi";
 import { DEFAULT_PREFERENCES, Preferences } from "../lib/schema";
 
 function PreferencesModal(props: {
@@ -145,8 +145,7 @@ export function LeftFooter(props: {
 
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onCalendarExport = useCalendarExport(
+  const onICSExport = useICSExport(
     state,
     () => setIsExporting(false),
     () => setIsExporting(false)
@@ -176,6 +175,9 @@ export function LeftFooter(props: {
             <Image src="img/calendar-button.png" alt="Sign in with Google" />
           )}
         </Tooltip>
+        <Button onClick={onICSExport}>
+          {isExporting ? <Spinner m={3} /> : "Generate .ics file"}
+        </Button>
       </Flex>
       <Text>Last updated: {state.lastUpdated}.</Text>
       <Flex gap={4}>

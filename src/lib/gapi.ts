@@ -1,4 +1,5 @@
 import { useGoogleLogin } from "@react-oauth/google";
+import { EventAttributes, DateArray, createEvents } from "ics";
 
 import { Activity } from "./activity";
 import { CALENDAR_COLOR } from "./colors";
@@ -26,6 +27,34 @@ function toISOString(date: Date): string {
   ].join("");
 }
 
+/** Returns a date as a UTC date array */
+function toDateArray(date: Date): DateArray {
+  return [
+    date.getUTCFullYear(),
+    date.getUTCMonth() + 1,
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+  ];
+}
+
+/** Downloads a file with the given text data */
+function download(filename: string, text: string) {
+  var element = document.createElement("a");
+  element.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+  );
+  element.setAttribute("download", filename);
+
+  element.style.display = "none";
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
 /** Returns a date as an RRULE string without a timezone. */
 function toRRuleString(date: Date): string {
   return Array.from(toISOString(date))
@@ -34,7 +63,7 @@ function toRRuleString(date: Date): string {
 }
 
 /** Return a list of events for an activity that happen on a given term. */
-function toEvents(
+function toGoogleCalendarEvents(
   activity: Activity,
   term: Term
 ): Array<gapi.client.calendar.Event> {
@@ -61,8 +90,35 @@ function toEvents(
   );
 }
 
+function toICSEvents(activity: Activity, term: Term): Array<EventAttributes> {
+  return activity.events.flatMap((event) =>
+    event.slots.map((slot) => {
+      const startDate = term.startDateFor(slot.startSlot);
+      const startDateEnd = term.startDateFor(slot.endSlot);
+      const endDate = term.endDateFor(slot.startSlot);
+      const exDates = term.exDatesFor(slot.startSlot);
+      const rDate = term.rDateFor(slot.startSlot);
+      console.log(event.name, startDate);
+      return {
+        title: event.name,
+        location: event.room,
+        start: toDateArray(startDate),
+        startInputType: "utc",
+        end: toDateArray(startDateEnd),
+        endInputType: "utc",
+        recurrenceRule: [
+          // for some reason, gcal wants UNTIL to be a date, not time
+          `FREQ=WEEKLY;UNTIL=${toRRuleString(endDate).split("T")[0]}`,
+          `EXDATE;TZID=${TIMEZONE}:${exDates.map(toRRuleString).join(",")}`,
+          rDate && `RDATE;TZID=${TIMEZONE}:${toRRuleString(rDate)}`,
+        ].filter((t): t is string => t !== undefined)[0],
+      };
+    })
+  );
+}
+
 /** Hook that returns an export calendar function. */
-export function useCalendarExport(
+export function useGoogleCalendarExport(
   state: State,
   onSuccess?: () => void,
   onError?: () => void
@@ -93,7 +149,7 @@ export function useCalendarExport(
   const addCalendarEvents = async (calendarId: string) => {
     const batch = gapi.client.newBatch();
     state.selectedActivities
-      .flatMap((activity) => toEvents(activity, state.term))
+      .flatMap((activity) => toGoogleCalendarEvents(activity, state.term))
       .forEach((resource) =>
         batch.add(
           gapi.client.calendar.events.insert({
@@ -127,4 +183,26 @@ export function useCalendarExport(
   });
 
   return onCalendarExport;
+}
+
+export function useICSExport(
+  state: State,
+  onSuccess?: () => void,
+  onError?: () => void
+): () => void {
+  return async () => {
+    const events = state.selectedActivities.flatMap((activity) =>
+      toICSEvents(activity, state.term)
+    );
+    const calendarName = `Hydrant: ${state.term.niceName}`;
+    events.forEach((event) => {
+      event.calName = calendarName;
+    });
+    console.log(events);
+    createEvents(events, (error, value) => {
+      if (error) onError?.();
+      download(`${state.term.urlName}.ics`, value);
+      onSuccess?.();
+    });
+  };
 }
