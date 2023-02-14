@@ -55,7 +55,8 @@ def main():
 
     # For each known artifact:
     success = False
-    for artifact in artifact_info.get("artifacts", []):
+    artifacts = artifact_info.get("artifacts", [])
+    for artifact in artifacts:
         # check that its name is correct,
         if artifact.get("name") != "built-site":
             continue
@@ -74,7 +75,7 @@ def main():
                 zfh.extractall(OUTPUT_DIR)
         success = True
         break
-    return "Fetched artifact successfully" if success else "Could not find artifact :("
+    return "Fetched artifact successfully" if success else "Could not find artifact among {}: {}".format(len(artifacts), ", ".join(a.get("name") for a in artifacts))
 
 
 if __name__ == "__main__":
