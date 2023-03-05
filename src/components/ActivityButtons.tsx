@@ -20,8 +20,6 @@ import { textColor } from "../lib/colors";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
 import { State } from "../lib/state";
 
-import { ColorButton } from "./SelectedActivities";
-
 /**
  * A button that toggles the active value, and is outlined if active, solid
  * if not.
