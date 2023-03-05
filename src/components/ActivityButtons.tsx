@@ -16,7 +16,7 @@ import { HexColorPicker } from "react-colorful";
 
 import { Activity, NonClass, Timeslot } from "../lib/activity";
 import { Class, LockOption, SectionLockOption, Sections } from "../lib/class";
-import { textColor } from "../lib/colors";
+import { textColor, canonicalizeColor } from "../lib/colors";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
 import { State } from "../lib/state";
 
@@ -105,7 +105,9 @@ function ActivityColor(props: {
   };
   const onCancel = onHide;
   const onConfirm = () => {
-    state.setBackgroundColor(activity, color);
+    // Try to set new color to input but fall back to old color
+    const canon = canonicalizeColor(input);
+    state.setBackgroundColor(activity, canon ? canon : color);
     onHide();
   };
 
@@ -117,6 +119,8 @@ function ActivityColor(props: {
     }
   }, []);
 
+  const isError = input !== "" ? canonicalizeColor(input) === undefined : false;
+
   return (
     <Flex gap={2}>
       <HexColorPicker color={color} onChange={setColor} />
@@ -124,17 +128,24 @@ function ActivityColor(props: {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (input.match(/#[0-9a-fA-F]{5,6}/i)) {
-              setColor(input);
+            const canon = canonicalizeColor(input);
+            if (canon) {
+              setColor(canon);
               setInput("");
             }
           }}
         >
           <Input
+            // Wide enough to hold everything, but keeps buttons below small
+            width={"12ch"}
             ref={inputElement}
             style={{ backgroundColor: color }}
             placeholder={color}
-            _placeholder={{ color: textColor(color), opacity: 0.6 }}
+            _placeholder={{
+              color: textColor(color),
+              opacity: 0.6,
+            }}
+            focusBorderColor={isError ? "crimson" : "green.300"}
             color={textColor(color)}
             value={input}
             onChange={(e) => {
@@ -164,18 +175,24 @@ export function ClassButtons(props: { cls: Class; state: State }) {
           {isSelected ? "Remove class" : "Add class"}
         </Button>
         {isSelected && (
-          <ToggleButton active={showManual} handleClick={() => {
-            setShowManual(!showManual);
-            setShowColors(false); // untoggle colors
-          }}>
+          <ToggleButton
+            active={showManual}
+            handleClick={() => {
+              setShowManual(!showManual);
+              setShowColors(false); // untoggle colors
+            }}
+          >
             Edit sections
           </ToggleButton>
         )}
         {isSelected && (
-          <ToggleButton active={showColors} handleClick={() => {
-            setShowColors(!showColors);
-            setShowManual(false); // untoggle manual section assignment
-          }}>
+          <ToggleButton
+            active={showColors}
+            handleClick={() => {
+              setShowColors(!showColors);
+              setShowManual(false); // untoggle manual section assignment
+            }}
+          >
             Edit color
           </ToggleButton>
         )}
@@ -306,7 +323,12 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
         </Button>
         <Button onClick={onRename}>Rename activity</Button>
         {isSelected && (
-          <ToggleButton active={showColors} handleClick={() => {setShowColors(!showColors)}}>
+          <ToggleButton
+            active={showColors}
+            handleClick={() => {
+              setShowColors(!showColors);
+            }}
+          >
             Edit color
           </ToggleButton>
         )}

@@ -134,5 +134,26 @@ export function textColor(color: string): string {
   return brightness > 128 ? "#000000" : "#ffffff";
 }
 
+/** Return a standard #AABBCC representation from an input color */
+export function canonicalizeColor(code: string): string | undefined {
+  code = code.trim();
+  let fiveSix = code.match(/^#?[0-9a-f]{5,6}$/gi);
+  if (fiveSix) {
+    return code.startsWith("#") ? code : `#${code}`;
+  }
+  let triplet = code.match(/^#?[0-9a-f]{3}$/gi);
+  if (triplet) {
+    const expanded =
+      code.slice(-3, -2) +
+      code.slice(-3, -2) +
+      code.slice(-2, -1) +
+      code.slice(-2, -1) +
+      code.slice(-1) +
+      code.slice(-1);
+    return code.startsWith("#") ? expanded : `#${expanded}`;
+  }
+  return undefined;
+}
+
 /** The Google calendar background color. */
 export const CALENDAR_COLOR = "#DB5E45";
