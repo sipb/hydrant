@@ -121,19 +121,22 @@ function ActivityColor(props: {
 
   const isError = input !== "" ? canonicalizeColor(input) === undefined : false;
 
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const canon = canonicalizeColor(input);
+    if (canon) {
+      setColor(canon);
+      setInput("");
+    }
+  }
+
   return (
     <Flex gap={2}>
       <HexColorPicker color={color} onChange={setColor} />
       <Flex direction="column" gap={2}>
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const canon = canonicalizeColor(input);
-            if (canon) {
-              setColor(canon);
-              setInput("");
-            }
-          }}
+          onSubmit={handleSubmit}
+          onBlur={handleSubmit}
         >
           <Input
             // Wide enough to hold everything, but keeps buttons below small
