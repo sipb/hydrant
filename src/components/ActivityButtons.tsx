@@ -11,15 +11,14 @@ import {
   Select,
   Text,
 } from "@chakra-ui/react";
-import { ComponentProps, FormEvent, useState } from "react";
+import { ComponentProps, FormEvent, useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 
 import { Activity, NonClass, Timeslot } from "../lib/activity";
 import { Class, LockOption, SectionLockOption, Sections } from "../lib/class";
+import { textColor, canonicalizeColor } from "../lib/colors";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
 import { State } from "../lib/state";
-
-import { ColorButton } from "./SelectedActivities";
 
 /**
  * A button that toggles the active value, and is outlined if active, solid
@@ -28,14 +27,14 @@ import { ColorButton } from "./SelectedActivities";
 function ToggleButton(
   props: ComponentProps<"button"> & {
     active: boolean;
-    setActive: (value: boolean) => void;
+    handleClick: () => void;
   }
 ) {
-  const { children, active, setActive, ...otherProps } = props;
+  const { children, active, handleClick, ...otherProps } = props;
   return (
     <Button
       {...otherProps}
-      onClick={() => setActive(!active)}
+      onClick={handleClick}
       variant={active ? "outline" : "solid"}
     >
       {children}
@@ -61,10 +60,7 @@ function ClassManualOption(props: {
   })();
 
   return (
-    <Radio
-      isChecked={isChecked}
-      onChange={() => state.lockSection(secs, sec)}
-    >
+    <Radio isChecked={isChecked} onChange={() => state.lockSection(secs, sec)}>
       {label}
     </Radio>
   );
@@ -82,12 +78,7 @@ function ClassManualSections(props: { cls: Class; state: State }) {
           <FormLabel>{secs.name}</FormLabel>
           <Flex direction="column">
             {options.map((sec, i) => (
-              <ClassManualOption
-                key={i}
-                secs={secs}
-                sec={sec}
-                state={state}
-              />
+              <ClassManualOption key={i} secs={secs} sec={sec} state={state} />
             ))}
           </Flex>
         </FormControl>
@@ -114,17 +105,57 @@ function ActivityColor(props: {
   };
   const onCancel = onHide;
   const onConfirm = () => {
-    state.setBackgroundColor(activity, color);
+    // Try to set new color to input but fall back to old color
+    const canon = canonicalizeColor(input);
+    state.setBackgroundColor(activity, canon ? canon : color);
     onHide();
   };
+
+  const [input, setInput] = useState<string>("");
+  const inputElement = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (inputElement.current) {
+      inputElement.current.focus();
+    }
+  }, []);
+
+  const isError = input !== "" ? canonicalizeColor(input) === undefined : false;
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const canon = canonicalizeColor(input);
+    if (canon) {
+      setColor(canon);
+      setInput("");
+    }
+  }
 
   return (
     <Flex gap={2}>
       <HexColorPicker color={color} onChange={setColor} />
       <Flex direction="column" gap={2}>
-        <ColorButton color={color} style={{ cursor: "default" }}>
-          {activity.buttonName}
-        </ColorButton>
+        <form
+          onSubmit={handleSubmit}
+          onBlur={handleSubmit}
+        >
+          <Input
+            // Wide enough to hold everything, but keeps buttons below small
+            width={"12ch"}
+            ref={inputElement}
+            style={{ backgroundColor: color }}
+            placeholder={color}
+            _placeholder={{
+              color: textColor(color),
+              opacity: 0.6,
+            }}
+            focusBorderColor={isError ? "crimson" : "green.300"}
+            color={textColor(color)}
+            value={input}
+            onChange={(e) => {
+              setInput(e.target.value);
+            }}
+          />
+        </form>
         <Button onClick={onReset}>Reset</Button>
         <Button onClick={onCancel}>Cancel</Button>
         <Button onClick={onConfirm}>Confirm</Button>
@@ -136,7 +167,6 @@ function ActivityColor(props: {
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class; state: State }) {
   const { cls, state } = props;
-
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -148,12 +178,24 @@ export function ClassButtons(props: { cls: Class; state: State }) {
           {isSelected ? "Remove class" : "Add class"}
         </Button>
         {isSelected && (
-          <ToggleButton active={showManual} setActive={setShowManual}>
+          <ToggleButton
+            active={showManual}
+            handleClick={() => {
+              setShowManual(!showManual);
+              setShowColors(false); // untoggle colors
+            }}
+          >
             Edit sections
           </ToggleButton>
         )}
         {isSelected && (
-          <ToggleButton active={showColors} setActive={setShowColors}>
+          <ToggleButton
+            active={showColors}
+            handleClick={() => {
+              setShowColors(!showColors);
+              setShowManual(false); // untoggle manual section assignment
+            }}
+          >
             Edit color
           </ToggleButton>
         )}
@@ -238,10 +280,7 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
 /**
  * Buttons in non-class description to rename it, or add/edit/remove timeslots.
  */
-export function NonClassButtons(props: {
-  activity: NonClass;
-  state: State;
-}) {
+export function NonClassButtons(props: { activity: NonClass; state: State }) {
   const { activity, state } = props;
 
   const isSelected = state.isSelectedActivity(activity);
@@ -287,7 +326,12 @@ export function NonClassButtons(props: {
         </Button>
         <Button onClick={onRename}>Rename activity</Button>
         {isSelected && (
-          <ToggleButton active={showColors} setActive={setShowColors}>
+          <ToggleButton
+            active={showColors}
+            handleClick={() => {
+              setShowColors(!showColors);
+            }}
+          >
             Edit color
           </ToggleButton>
         )}
