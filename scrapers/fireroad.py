@@ -57,28 +57,35 @@ def parse_schedule(course):
 
     # Kinds of sections that exist.
     result["s"] = []
-    section_kinds = {"Lecture": "l", "Recitation": "r", "Lab": "b"}
+    section_kinds = (
+        "Lecture",
+        "Recitation",
+        "Lab",
+        "Design"
+    )
 
     for chunk in schedule.split(";"):
         name, *sections = chunk.split(",")
 
         if name not in section_kinds:
-            continue  # TODO: handle arbitrary section kinds
+            print(f"Unknown section kind: {name}")
+            continue
 
-        # The key is "l", "r", or "b".
-        kind = section_kinds[name]
+        # The key is lowercase
+        kind = name.lower()
         result["s"].append(kind)
 
         # Raw section times, e.g. T9.301-11 or TR1,F2.
-        result[kind + "r"] = sections
+        result[kind + "RawSections"] = sections
 
         # Section timeslots and rooms.
-        result[kind] = []
+        kindSectionsName = kind + "Sections"
+        result[kindSectionsName] = []
         for info in sections:
             if info == "TBA":
                 section_tba = True
             else:
-                result[kind].append(parse_section(info))
+                result[kindSectionsName].append(parse_section(info))
 
     # True if some schedule is not scheduled yet.
     result["tb"] = section_tba
@@ -147,9 +154,9 @@ def get_course_data(courses, course):
     # tb, s, l, r, b, lr, rr, br
     try:
         raw_class.update(parse_schedule(course))
-    except:
+    except Exception as e:
         # if we can't parse the schedule, warn
-        print(f"Can't parse schedule: {course_code}")
+        print(f"Can't parse schedule {course_code}: {e}")
         return False
 
     # hh, ha, hs, he, ci, cw, re, la, pl

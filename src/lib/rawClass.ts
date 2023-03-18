@@ -17,20 +17,24 @@ export type RawClass = {
   /** True if some section is not scheduled yet */
   tb: boolean;
 
-  /** Kinds of sections (among LECTURE, RECITATION, LAB) that exist */
-  s: Array<"l" | "r" | "b">;
+  /** Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist */
+  s: Array<"lecture" | "recitation" | "lab" | "design">;
   /** Lecture timeslots and rooms */
-  l: Array<RawSection>;
+  lectureSections: Array<RawSection>;
   /** Recitation timeslots and rooms */
-  r: Array<RawSection>;
+  recitationSections: Array<RawSection>;
   /** Lab timeslots and rooms */
-  b: Array<RawSection>;
+  labSections: Array<RawSection>;
+  /** Design timeslots and rooms */
+  designSections: Array<RawSection>;
   /** Raw lecture times, e.g. T9.301-11 or TR1,F2 */
-  lr: Array<string>;
+  lectureRawSections: Array<string>;
   /** Raw recitation times, e.g. T9.301-11 or TR1,F2 */
-  rr: Array<string>;
+  recitationRawSections: Array<string>;
   /** Raw lab times, e.g. T9.301-11 or TR1,F2 */
-  br: Array<string>;
+  labRawSections: Array<string>;
+  /** Raw design times, e.g. T9.301-11 or TR1,F2 */
+  designRawSections: Array<string>;
 
   /** True if HASS-H */
   hh: boolean;

@@ -8,6 +8,7 @@ enum SectionKind {
   LECTURE,
   RECITATION,
   LAB,
+  DESIGN,
 }
 
 /** Flags. */
@@ -126,6 +127,8 @@ export class Sections {
         return "lec";
       case SectionKind.RECITATION:
         return "rec";
+      case SectionKind.DESIGN:
+        return "des";
       default:
         return "lab";
     }
@@ -138,6 +141,8 @@ export class Sections {
         return "Lecture";
       case SectionKind.RECITATION:
         return "Recitation";
+      case SectionKind.DESIGN:
+        return "Design";
       default:
         return "Lab";
     }
@@ -187,13 +192,38 @@ export class Class {
   constructor(rawClass: RawClass, colorScheme: ColorScheme) {
     this.rawClass = rawClass;
     this.sections = rawClass.s
-      .map((kind) =>
-        kind === "l"
-          ? new Sections(this, SectionKind.LECTURE, rawClass.lr, rawClass.l)
-          : kind === "r"
-          ? new Sections(this, SectionKind.RECITATION, rawClass.rr, rawClass.r)
-          : new Sections(this, SectionKind.LAB, rawClass.br, rawClass.b)
-      )
+      .map((kind) => {
+        switch (kind) {
+          case "lecture":
+            return new Sections(
+              this,
+              SectionKind.LECTURE,
+              rawClass.lectureRawSections,
+              rawClass.lectureSections
+            );
+          case "recitation":
+            return new Sections(
+              this,
+              SectionKind.RECITATION,
+              rawClass.recitationRawSections,
+              rawClass.recitationSections
+            );
+          case "design":
+            return new Sections(
+              this,
+              SectionKind.DESIGN,
+              rawClass.designRawSections,
+              rawClass.designSections
+            );
+          default:
+            return new Sections(
+              this,
+              SectionKind.LAB,
+              rawClass.labRawSections,
+              rawClass.labSections
+            );
+        }
+      })
       .sort((a, b) => a.kind - b.kind);
     this.backgroundColor = fallbackColor(colorScheme);
   }
