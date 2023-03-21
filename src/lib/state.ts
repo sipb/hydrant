@@ -327,10 +327,12 @@ export class State {
   }
 
   /** Add a new save. If reset, then make the new save blank. */
-  addSave(reset: boolean): void {
+  addSave(
+    reset: boolean,
+    name: string = `Schedule ${this.saves.length + 1}`
+  ): void {
     const id = nanoid(8);
     this.saveId = id;
-    const name = `Schedule ${this.saves.length + 1}`;
     this.saves.push({ id, name });
     if (reset) this.reset();
     this.storeSave(id);
