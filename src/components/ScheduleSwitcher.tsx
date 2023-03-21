@@ -195,9 +195,11 @@ export function ScheduleSwitcher(props: {
     );
     const onRename = () => setIsRenaming(true);
     const onSave = () => state.addSave(Boolean(saveId));
+    const onCopy = () => state.addSave(false, `${currentName} copy`);
     const renderButtons = () => (
       <>
         {saveId && <SmallButton onClick={onRename}>Rename</SmallButton>}
+        <SmallButton onClick={onCopy}>Copy</SmallButton>
         {saveId && (
           <DeleteModal
             state={state}
