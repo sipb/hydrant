@@ -24,15 +24,6 @@ from bs4 import BeautifulSoup, Tag
 BASE_URL = "http://student.mit.edu/catalog"
 
 
-def get_old_course_num(html):
-    course_title = html.find("h3").get_text()
-    # Old course number is on 2nd line if the text is not "(New)"
-    title_split = course_title.split("\n")
-    if len(title_split) > 2 and title_split[1] != "(New)":
-        return title_split[1][1:-1]
-    return None
-
-
 def is_not_offered_next_year(html):
     # determines if it is not offered next year
     if html.find(attrs={"src": "/icns/nonext.gif"}):
@@ -91,10 +82,6 @@ def get_course_data(filtered_html):
         "hf": half,
         "lm": limited,
     }
-
-    old_course_num = get_old_course_num(filtered_html)
-    if old_course_num:
-        course_data["on"] = old_course_num
 
     return course_data
 

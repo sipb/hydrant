@@ -189,6 +189,9 @@ def get_course_data(courses, course):
 
     # nx, rp, u, f, hf, lm are from catalog.json, not here
 
+    if "old_id" in course:
+        raw_class["on"] = course["old_id"]
+
     raw_class.update(
         {
             "ra": course.get("rating", 0),
