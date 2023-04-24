@@ -33,8 +33,9 @@ def run():
         courses[course] = fireroad[course]
         courses[course].update(catalog[course])
 
-    for course, info in OVERRIDES.items() & courses:
-        courses[course].update(info)
+    for course, info in OVERRIDES.items():
+        if course in courses:
+            courses[course].update(info)
 
     term_info = utils.get_term_info()
     now = datetime.datetime.now().strftime("%Y-%m-%d %l:%M %p")
