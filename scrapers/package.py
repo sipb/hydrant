@@ -33,7 +33,7 @@ def run():
         courses[course] = fireroad[course]
         courses[course].update(catalog[course])
 
-    for course, info in OVERRIDES.items():
+    for course, info in OVERRIDES.items() & courses:
         courses[course].update(info)
 
     term_info = utils.get_term_info()
