@@ -38,7 +38,7 @@ def run():
             courses[course].update(info)
 
     term_info = utils.get_term_info()
-    now = datetime.datetime.now().strftime("%Y-%m-%d %l:%M %p")
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M %p") 
     obj = {
         "termInfo": term_info,
         "lastUpdated": now,
