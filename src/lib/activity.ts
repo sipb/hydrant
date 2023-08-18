@@ -119,6 +119,7 @@ export class NonClass {
   /** Is the color set by the user (as opposed to chosen automatically?) */
   manualColor: boolean = false;
   timeslots: Array<Timeslot> = [];
+  room: string | undefined = undefined;
 
   constructor(colorScheme: ColorScheme) {
     this.id = nanoid(8);
@@ -137,7 +138,7 @@ export class NonClass {
 
   /** Get all calendar events corresponding to this activity. */
   get events(): Array<Event> {
-    return [new Event(this, this.name, this.timeslots)];
+    return [new Event(this, this.name, this.timeslots, this.room)];
   }
 
   /**

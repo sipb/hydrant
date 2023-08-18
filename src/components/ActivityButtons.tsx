@@ -285,8 +285,11 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
 
   const isSelected = state.isSelectedActivity(activity);
   const [isRenaming, setIsRenaming] = useState(false);
-  const [name, setName] = useState(activity.name);
+  const [isRelocating, setIsRelocating] = useState(false);
   const [showColors, setShowColors] = useState(false);
+
+  const [name, setName] = useState(activity.name);
+  const [room, setRoom] = useState(activity.room);
 
   const [renderHeading, renderButtons] = (() => {
     if (isRenaming) {
@@ -312,6 +315,29 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
         </>
       );
       return [renderHeading, renderButtons];
+    } else if(isRelocating) {
+      const renderHeading = () => (
+        <Input
+          value={room}
+          onChange={(e) => setRoom(e.target.value)}
+          fontWeight="bold"
+          placeholder="room"
+        />
+      );
+      const onConfirm = () => {
+        state.relocateNonClass(activity, room);
+        setIsRelocating(false);
+      };
+      const onCancel = () => {
+        setIsRelocating(false);
+      };
+      const renderButtons = () => (
+        <>
+          <Button onClick={onConfirm}>Confirm</Button>
+          <Button onClick={onCancel}>Cancel</Button>
+        </>
+      );
+      return [renderHeading, renderButtons];
     }
 
     const renderHeading = () => <Heading size="sm">{activity.name}</Heading>;
@@ -319,12 +345,17 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       setName(activity.name);
       setIsRenaming(true);
     };
+    const onRelocate = () => {
+      setRoom(activity.room);
+      setIsRelocating(true);
+    };
     const renderButtons = () => (
       <>
         <Button onClick={() => state.toggleActivity(activity)}>
           {isSelected ? "Remove activity" : "Add activity"}
         </Button>
         <Button onClick={onRename}>Rename activity</Button>
+        <Button onClick={onRelocate}>Edit location</Button>
         {isSelected && (
           <ToggleButton
             active={showColors}
