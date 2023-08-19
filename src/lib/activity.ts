@@ -169,17 +169,19 @@ export class NonClass {
       ]),
       this.name,
       this.backgroundColor,
+      !!this.room ? this.room : "",
     ];
     return res;
   }
 
   /** Inflate a non-class activity with info from the output of deflate. */
   inflate(parsed: Array<Array<RawTimeslot> | string>): void {
-    const [timeslots, name, backgroundColor] = parsed;
+    const [timeslots, name, backgroundColor, room] = parsed;
     this.timeslots = (timeslots as Array<RawTimeslot>).map(
       (slot) => new Timeslot(...slot)
     );
     this.name = name as string;
+    this.room = room=="" ? undefined : room as string;
     if (backgroundColor) {
       this.manualColor = true;
       this.backgroundColor = backgroundColor as string;
