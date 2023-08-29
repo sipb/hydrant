@@ -169,7 +169,7 @@ export class NonClass {
       ]),
       this.name,
       this.backgroundColor,
-      !!this.room ? this.room : "",
+      this.room ?? "",
     ];
     return res;
   }
