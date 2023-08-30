@@ -119,6 +119,7 @@ export class NonClass {
   /** Is the color set by the user (as opposed to chosen automatically?) */
   manualColor: boolean = false;
   timeslots: Array<Timeslot> = [];
+  room: string | undefined = undefined;
 
   constructor(colorScheme: ColorScheme) {
     this.id = nanoid(8);
@@ -137,7 +138,7 @@ export class NonClass {
 
   /** Get all calendar events corresponding to this activity. */
   get events(): Array<Event> {
-    return [new Event(this, this.name, this.timeslots)];
+    return [new Event(this, this.name, this.timeslots, this.room)];
   }
 
   /**
@@ -168,17 +169,19 @@ export class NonClass {
       ]),
       this.name,
       this.backgroundColor,
+      this.room ?? "",
     ];
     return res;
   }
 
   /** Inflate a non-class activity with info from the output of deflate. */
   inflate(parsed: Array<Array<RawTimeslot> | string>): void {
-    const [timeslots, name, backgroundColor] = parsed;
+    const [timeslots, name, backgroundColor, room] = parsed;
     this.timeslots = (timeslots as Array<RawTimeslot>).map(
       (slot) => new Timeslot(...slot)
     );
     this.name = name as string;
+    this.room = room=="" ? undefined : room as string;
     if (backgroundColor) {
       this.manualColor = true;
       this.backgroundColor = backgroundColor as string;

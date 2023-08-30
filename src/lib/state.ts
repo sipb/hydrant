@@ -163,6 +163,15 @@ export class State {
     this.updateState();
   }
 
+  /** Changes the room for a given non-class. */
+  relocateNonClass(nonClass: NonClass, room: string | undefined): void {
+    const nonClass_ = this.selectedNonClasses.find(
+      (nonClass_) => nonClass_.id === nonClass.id
+    )!;
+    nonClass_.room = room;
+    this.updateState();
+  }
+
   /** Add the timeslot to currently viewed activity. */
   addTimeslot(nonClass: NonClass, slot: Timeslot): void {
     nonClass.addTimeslot(slot);
