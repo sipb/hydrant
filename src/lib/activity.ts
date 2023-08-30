@@ -181,7 +181,7 @@ export class NonClass {
       (slot) => new Timeslot(...slot)
     );
     this.name = name as string;
-    this.room = room=="" ? undefined : room as string;
+    this.room = (room as string) || undefined;
     if (backgroundColor) {
       this.manualColor = true;
       this.backgroundColor = backgroundColor as string;
