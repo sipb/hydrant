@@ -1,4 +1,4 @@
-import { AddIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { AddIcon, ChatIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { ComponentProps } from "react";
 
@@ -73,7 +73,8 @@ export function SelectedActivities(props: {
           Activity
         </Button>
         <Button 
-          leftIcon={<ExternalLinkIcon />}
+          leftIcon={<ChatIcon />}
+          rightIcon={<ExternalLinkIcon />}
           onClick={
             () => {
               var classNumbers : string[] = []
@@ -88,7 +89,7 @@ export function SelectedActivities(props: {
             }
           }
           size="sm"
-        >Join Your Classes</Button>
+        >Join group chats on Matrix</Button>
       </Flex>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
