@@ -5,6 +5,7 @@ public/latest.json
 
 # python
 __pycache__
+/venv
 
 # node
 /node_modules
