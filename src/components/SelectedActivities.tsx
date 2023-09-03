@@ -72,6 +72,23 @@ export function SelectedActivities(props: {
         >
           Activity
         </Button>
+        <Button 
+          leftIcon={<ExternalLinkIcon />}
+          onClick={
+            () => {
+              var classNumbers : string[] = []
+              for(var i = 0; i < selectedActivities.length; i++){
+                var activity : Activity = selectedActivities[i]
+                if(activity instanceof Class){
+                  classNumbers.push(activity.number)
+                }
+              }
+              console.log(classNumbers)
+              window.open("https://www.google.com") //replace with actual call using classNumbers
+            }
+          }
+          size="sm"
+        >Join Your Classes</Button>
       </Flex>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
