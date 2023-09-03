@@ -81,8 +81,14 @@ export function SelectedActivities(props: {
                 (activity) => activity instanceof Class
               ) as Class[];
               const classNumbers = selectedClasses.map((activity) => activity.number);
-              console.log(classNumbers)
-              window.open("https://www.google.com") //replace with actual call using classNumbers
+              
+              // Redirect user to the UI to choose group chats on Matrix
+              // Documented in https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
+              const MATRIX_LINK = 'https://matrix.mit.edu/classes';
+              const referrerQuery = '?via=Hydrant';
+              const numbersQuery = classNumbers.map((number) => `&class=${number}`).join('');
+              const link = MATRIX_LINK + referrerQuery + numbersQuery;
+              window.open(link);
             }
           }
           size="sm"
