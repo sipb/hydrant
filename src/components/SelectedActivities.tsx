@@ -77,13 +77,10 @@ export function SelectedActivities(props: {
           rightIcon={<ExternalLinkIcon />}
           onClick={
             () => {
-              var classNumbers : string[] = []
-              for(var i = 0; i < selectedActivities.length; i++){
-                var activity : Activity = selectedActivities[i]
-                if(activity instanceof Class){
-                  classNumbers.push(activity.number)
-                }
-              }
+              const selectedClasses = selectedActivities.filter(
+                (activity) => activity instanceof Class
+              ) as Class[];
+              const classNumbers = selectedClasses.map((activity) => activity.number);
               console.log(classNumbers)
               window.open("https://www.google.com") //replace with actual call using classNumbers
             }
