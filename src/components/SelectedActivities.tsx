@@ -52,7 +52,7 @@ export function SelectedActivities(props: {
   const { selectedActivities, units, hours, warnings, state } = props;
 
   // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
-  const matrixLink = `https://matrix.mit.edu/classes?via=Hydrant${(selectedActivities
+  const matrixLink = `https://matrix.mit.edu/classes/import?via=Hydrant${(selectedActivities
     .filter((activity) => activity instanceof Class) as Class[])
     .map((cls) => `&class=${cls.number}`)
     .join('')
