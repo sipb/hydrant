@@ -1,5 +1,5 @@
 import { AddIcon, ChatIcon, ExternalLinkIcon } from "@chakra-ui/icons";
-import { Button, Flex, Link, Text } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import { ComponentProps } from "react";
 
 import { Activity } from "../lib/activity";
