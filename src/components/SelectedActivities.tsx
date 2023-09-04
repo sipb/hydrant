@@ -1,5 +1,5 @@
 import { AddIcon, ChatIcon, ExternalLinkIcon } from "@chakra-ui/icons";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Link, Text } from "@chakra-ui/react";
 import { ComponentProps } from "react";
 
 import { Activity } from "../lib/activity";
@@ -51,6 +51,13 @@ export function SelectedActivities(props: {
 }) {
   const { selectedActivities, units, hours, warnings, state } = props;
 
+  // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
+  const matrixLink = `https://matrix.mit.edu/classes?via=Hydrant${(selectedActivities
+    .filter((activity) => activity instanceof Class) as Class[])
+    .map((cls) => `&class=${cls.number}`)
+    .join('')
+  }`;
+
   return (
     <Flex direction="column" gap={2}>
       <Flex gap={8} justify="center">
@@ -72,22 +79,12 @@ export function SelectedActivities(props: {
         >
           Activity
         </Button>
-        <Button 
-          leftIcon={<ChatIcon />}
-          rightIcon={<ExternalLinkIcon />}
-          onClick={
-            () => {
-              const link = `https://matrix.mit.edu/classes?via=Hydrant${
-                (selectedActivities
-                  .filter((activity) => activity instanceof Class) as Class[])
-                  .map((cls) => `&class=${cls.number}`)
-                  .join('')
-              }`;
-              window.open(link);
-            }
-          }
-          size="sm"
-        >Join group chats on Matrix</Button>
+        <a href={matrixLink} target="_blank">
+          <Button
+            leftIcon={<ChatIcon />}
+            rightIcon={<ExternalLinkIcon />}
+            size="sm">Join group chats on Matrix</Button>
+        </a>
       </Flex>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
