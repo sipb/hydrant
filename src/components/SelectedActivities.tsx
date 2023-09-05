@@ -1,4 +1,4 @@
-import { AddIcon, ChatIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { ComponentProps } from "react";
 
@@ -6,7 +6,6 @@ import { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
 import { State } from "../lib/state";
-import { MatrixLink } from "./MatrixLink";
 
 export function ColorButton(
   props: ComponentProps<"button"> & { color: string }
@@ -73,7 +72,6 @@ export function SelectedActivities(props: {
         >
           Activity
         </Button>
-        <MatrixLink selectedActivities={selectedActivities} />
       </Flex>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">

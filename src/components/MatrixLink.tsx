@@ -16,7 +16,7 @@ export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
 
   return (
     <>
-      <a href={matrixLink} target="_blank">
+      <a href={matrixLink} target="_blank" rel="noreferrer">
         <Button
           leftIcon={<ChatIcon />}
           rightIcon={<ExternalLinkIcon />}

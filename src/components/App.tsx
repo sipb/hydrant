@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {
+  Center,
   ChakraProvider,
   Flex,
   Spinner,
@@ -24,6 +25,7 @@ import { SelectedActivities } from "./SelectedActivities";
 
 import "@fontsource/inter/variable.css";
 import "./App.scss";
+import { MatrixLink } from "./MatrixLink";
 
 type SemesterData = {
   classes: { [cls: string]: RawClass };
@@ -120,6 +122,9 @@ function HydrantApp() {
               saves={state.saves}
               state={hydrant}
             />
+            <Center>
+              <MatrixLink selectedActivities={state.selectedActivities}/>
+            </Center>
             <SelectedActivities
               selectedActivities={state.selectedActivities}
               units={state.units}
