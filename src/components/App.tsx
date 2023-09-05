@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {
   Button,
+  Center,
   ChakraProvider,
   Flex,
-  Image,
+  HStack,
   Spinner,
   Tooltip,
   extendTheme,
@@ -29,6 +30,7 @@ import "@fontsource/inter/variable.css";
 import "./App.scss";
 import { MatrixLink } from "./MatrixLink";
 import { useICSExport } from "../lib/gapi";
+import { CalendarIcon } from "@chakra-ui/icons";
 
 type SemesterData = {
   classes: { [cls: string]: RawClass };
@@ -133,25 +135,35 @@ function HydrantApp() {
               saves={state.saves}
               state={hydrant}
             />
-            <Flex gap={4} align="center">
-              <Tooltip
-                label={
-                  isExporting
-                    ? "Loading..."
-                    : "Google Calendar export is currently broken, we're fixing it!"
-                }
-              >
-                {isExporting ? (
-                  <Spinner m={3} />
-                ) : (
-                  <Image src="img/calendar-button.png" alt="Sign in with Google" />
-                )}
-              </Tooltip>
-              <Button onClick={onICSExport}>
-                {isExporting ? <Spinner m={3} /> : "Generate .ics file"}
-              </Button>
-              <MatrixLink selectedActivities={state.selectedActivities}/>
-            </Flex>
+            <Center>
+              <HStack gap={2}>
+                {/* <Tooltip
+                  label={
+                    isExporting
+                      ? "Loading..."
+                      : "Google Calendar export is currently broken, we're fixing it!"
+                  }
+                >
+                  {isExporting ? (
+                    <Spinner m={3} />
+                  ) : (
+                    <Image src="img/calendar-button.png" alt="Sign in with Google" />
+                  )}
+                </Tooltip> */}
+                <Tooltip
+                  label={
+                    isExporting
+                      ? "Loading..."
+                      : "At the moment, only manually exporting to an .ics file is supported. " +
+                        "We are still working on fixing Google Calendar export!"
+                  }>
+                  <Button size="sm" leftIcon={<CalendarIcon/>} onClick={onICSExport}>
+                    {isExporting ? <Spinner m={3} /> : "Import to my calendar"}
+                  </Button>
+                </Tooltip>
+                <MatrixLink selectedActivities={state.selectedActivities}/>
+              </HStack>
+            </Center>
             <SelectedActivities
               selectedActivities={state.selectedActivities}
               units={state.units}
