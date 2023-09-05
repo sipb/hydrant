@@ -5,6 +5,7 @@ import { State } from "../lib/state";
 import { useState, useRef } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 function PreferencesModal(props: {
   state: State;
@@ -40,7 +41,10 @@ function PreferencesModal(props: {
 
   return (
     <>
-      <Button onClick={onOpen}>Preferences</Button>
+      <Button
+        onClick={onOpen}
+        rightIcon={preferences.colorScheme.colorMode === 'light' ? <MoonIcon/> : <SunIcon/>}
+      >Change theme</Button>
       <Modal isOpen={visible} onClose={onCancel}>
         <ModalOverlay />
         <ModalContent>
