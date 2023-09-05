@@ -156,9 +156,6 @@ export function LeftFooter(props: {
       direction="column"
       align="center"
       gap={2}
-      opacity={0.3}
-      _hover={{ opacity: 1 }}
-      transition="0.5s opacity"
     >
       <Flex gap={4} align="center">
         <PreferencesModal preferences={preferences} state={state} />
