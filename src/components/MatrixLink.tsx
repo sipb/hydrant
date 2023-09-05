@@ -7,7 +7,7 @@ import { ChatIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
   const { selectedActivities } = props;
 
-   // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
+  // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
   const matrixLink = `https://matrix.mit.edu/classes/import?via=Hydrant${(selectedActivities
     .filter((activity) => activity instanceof Class) as Class[])
     .map((cls) => `&class=${cls.number}`)
@@ -18,6 +18,7 @@ export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
     <>
       <a href={matrixLink} target="_blank" rel="noreferrer">
         <Button
+          colorScheme="teal"
           leftIcon={<ChatIcon />}
           rightIcon={<ExternalLinkIcon />}
           size="sm">Join group chats on Matrix</Button>

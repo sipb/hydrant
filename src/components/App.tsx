@@ -157,7 +157,7 @@ function HydrantApp() {
                       : "At the moment, only manually exporting to an .ics file is supported. " +
                         "We are still working on fixing Google Calendar export!"
                   }>
-                  <Button size="sm" leftIcon={<CalendarIcon/>} onClick={onICSExport}>
+                  <Button colorScheme="blue" size="sm" leftIcon={<CalendarIcon/>} onClick={onICSExport}>
                     {isExporting ? <Spinner m={3} /> : "Import to my calendar"}
                   </Button>
                 </Tooltip>
