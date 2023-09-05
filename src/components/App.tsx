@@ -110,7 +110,9 @@ function HydrantApp() {
       ) : (
         <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
           <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-            <Header state={hydrant} />
+            <Header
+              preferences={state.preferences}
+              state={hydrant} />
             <ScheduleOption
               selectedOption={state.selectedOption}
               totalOptions={state.totalOptions}
@@ -122,7 +124,6 @@ function HydrantApp() {
               state={hydrant}
             />
             <LeftFooter
-              preferences={state.preferences}
               state={hydrant}
             />
           </Flex>

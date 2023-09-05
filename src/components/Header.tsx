@@ -1,7 +1,82 @@
-import { Flex, Image, Select, useColorModeValue } from "@chakra-ui/react";
+import { Button, Flex, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, useColorModeValue } from "@chakra-ui/react";
 
 import { Term } from "../lib/dates";
 import { State } from "../lib/state";
+import { useState, useRef } from "react";
+import { COLOR_SCHEME_PRESETS } from "../lib/colors";
+import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
+
+function PreferencesModal(props: {
+  state: State;
+  preferences: Preferences;
+}) {
+  const { preferences: originalPreferences, state } = props;
+  const [visible, setVisible] = useState(false);
+  const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
+  const initialPreferencesRef = useRef(DEFAULT_PREFERENCES);
+  const initialPreferences = initialPreferencesRef.current;
+
+  const onOpen = () => {
+    initialPreferencesRef.current = originalPreferences;
+    setPreferences(originalPreferences);
+    setVisible(true);
+  };
+
+  const previewPreferences = (newPreferences: Preferences) => {
+    setPreferences(newPreferences);
+    state.setPreferences(newPreferences, false);
+  };
+
+  const onCancel = () => {
+    setPreferences(initialPreferences);
+    state.setPreferences(initialPreferences);
+    setVisible(false);
+  };
+
+  const onConfirm = () => {
+    state.setPreferences(preferences);
+    setVisible(false);
+  };
+
+  return (
+    <>
+      <Button onClick={onOpen}>Preferences</Button>
+      <Modal isOpen={visible} onClose={onCancel}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Preferences</ModalHeader>
+          <ModalBody>
+            <Flex gap={4}>
+              Color scheme:
+              <Select
+                value={preferences.colorScheme.name}
+                onChange={(e) => {
+                  const colorScheme = COLOR_SCHEME_PRESETS.find(
+                    ({ name }) => name === e.target.value
+                  );
+                  if (!colorScheme) return;
+                  previewPreferences({ ...preferences, colorScheme });
+                }}
+              >
+                {COLOR_SCHEME_PRESETS.map(({ name }) => (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
+                ))}
+              </Select>
+            </Flex>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onCancel} mr={2}>
+              Cancel
+            </Button>
+            <Button onClick={onConfirm}>Save</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 /** Given a urlName like i22, return its corresponding URL. */
 function toFullUrl(urlName: string, latestUrlName: string): string {
@@ -48,8 +123,8 @@ function getUrlNames(latestTerm: string): Array<string> {
 }
 
 /** Header above the left column, with logo and semester selection. */
-export function Header(props: { state: State }) {
-  const { state } = props;
+export function Header(props: { state: State, preferences: Preferences }) {
+  const { state, preferences } = props;
   const logoSrc = useColorModeValue("img/logo.svg", "img/logo-dark.svg");
   const toUrl = (urlName: string) =>
     toFullUrl(urlName, state.latestTerm.urlName);
@@ -77,6 +152,7 @@ export function Header(props: { state: State }) {
           );
         })}
       </Select>
+      <PreferencesModal preferences={preferences} state={state} />
     </Flex>
   );
 }
