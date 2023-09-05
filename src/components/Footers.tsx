@@ -18,7 +18,6 @@ import { useRef, useState } from "react";
 
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { State } from "../lib/state";
-import { useICSExport } from "../lib/gapi";
 import { DEFAULT_PREFERENCES, Preferences } from "../lib/schema";
 
 function PreferencesModal(props: {
@@ -143,39 +142,13 @@ export function LeftFooter(props: {
 }) {
   const { preferences, state } = props;
 
-  const [isExporting, setIsExporting] = useState(false);
-  // TODO: fix gcal export
-  const onICSExport = useICSExport(
-    state,
-    () => setIsExporting(false),
-    () => setIsExporting(false)
-  );
-
   return (
     <Flex
       direction="column"
       align="center"
       gap={2}
     >
-      <Flex gap={4} align="center">
-        <PreferencesModal preferences={preferences} state={state} />
-        <Tooltip
-          label={
-            isExporting
-              ? "Loading..."
-              : "Google Calendar export is currently broken, we're fixing it!"
-          }
-        >
-          {isExporting ? (
-            <Spinner m={3} />
-          ) : (
-            <Image src="img/calendar-button.png" alt="Sign in with Google" />
-          )}
-        </Tooltip>
-        <Button onClick={onICSExport}>
-          {isExporting ? <Spinner m={3} /> : "Generate .ics file"}
-        </Button>
-      </Flex>
+      <PreferencesModal preferences={preferences} state={state} />
       <Text>Last updated: {state.lastUpdated}.</Text>
       <Flex gap={4}>
         <AboutModal />

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {
-  Center,
+  Button,
   ChakraProvider,
   Flex,
+  Image,
   Spinner,
+  Tooltip,
   extendTheme,
   useColorMode,
 } from "@chakra-ui/react";
@@ -26,6 +28,7 @@ import { SelectedActivities } from "./SelectedActivities";
 import "@fontsource/inter/variable.css";
 import "./App.scss";
 import { MatrixLink } from "./MatrixLink";
+import { useICSExport } from "../lib/gapi";
 
 type SemesterData = {
   classes: { [cls: string]: RawClass };
@@ -90,6 +93,13 @@ function useHydrant(): {
 /** The application entry. */
 function HydrantApp() {
   const { hydrant, state } = useHydrant();
+  const [isExporting, setIsExporting] = useState(false);
+  // TODO: fix gcal export
+  const onICSExport = useICSExport(
+    hydrant!,
+    () => setIsExporting(false),
+    () => setIsExporting(false)
+  );
 
   return (
     <>
@@ -122,9 +132,25 @@ function HydrantApp() {
               saves={state.saves}
               state={hydrant}
             />
-            <Center>
+            <Flex gap={4} align="center">
+              <Tooltip
+                label={
+                  isExporting
+                    ? "Loading..."
+                    : "Google Calendar export is currently broken, we're fixing it!"
+                }
+              >
+                {isExporting ? (
+                  <Spinner m={3} />
+                ) : (
+                  <Image src="img/calendar-button.png" alt="Sign in with Google" />
+                )}
+              </Tooltip>
+              <Button onClick={onICSExport}>
+                {isExporting ? <Spinner m={3} /> : "Generate .ics file"}
+              </Button>
               <MatrixLink selectedActivities={state.selectedActivities}/>
-            </Center>
+            </Flex>
             <SelectedActivities
               selectedActivities={state.selectedActivities}
               units={state.units}
