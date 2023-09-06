@@ -1,7 +1,6 @@
 import {
   Button,
   Flex,
-  Image,
   Link,
   Modal,
   ModalBody,
@@ -9,89 +8,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
-  Spinner,
   Text,
-  Tooltip,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
-import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { State } from "../lib/state";
-import { useICSExport } from "../lib/gapi";
-import { DEFAULT_PREFERENCES, Preferences } from "../lib/schema";
-
-function PreferencesModal(props: {
-  state: State;
-  preferences: Preferences;
-}) {
-  const { preferences: originalPreferences, state } = props;
-  const [visible, setVisible] = useState(false);
-  const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
-  const initialPreferencesRef = useRef(DEFAULT_PREFERENCES);
-  const initialPreferences = initialPreferencesRef.current;
-
-  const onOpen = () => {
-    initialPreferencesRef.current = originalPreferences;
-    setPreferences(originalPreferences);
-    setVisible(true);
-  };
-
-  const previewPreferences = (newPreferences: Preferences) => {
-    setPreferences(newPreferences);
-    state.setPreferences(newPreferences, false);
-  };
-
-  const onCancel = () => {
-    setPreferences(initialPreferences);
-    state.setPreferences(initialPreferences);
-    setVisible(false);
-  };
-
-  const onConfirm = () => {
-    state.setPreferences(preferences);
-    setVisible(false);
-  };
-
-  return (
-    <>
-      <Button onClick={onOpen}>Preferences</Button>
-      <Modal isOpen={visible} onClose={onCancel}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Preferences</ModalHeader>
-          <ModalBody>
-            <Flex gap={4}>
-              Color scheme:
-              <Select
-                value={preferences.colorScheme.name}
-                onChange={(e) => {
-                  const colorScheme = COLOR_SCHEME_PRESETS.find(
-                    ({ name }) => name === e.target.value
-                  );
-                  if (!colorScheme) return;
-                  previewPreferences({ ...preferences, colorScheme });
-                }}
-              >
-                {COLOR_SCHEME_PRESETS.map(({ name }) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </Select>
-            </Flex>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onCancel} mr={2}>
-              Cancel
-            </Button>
-            <Button onClick={onConfirm}>Save</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
 
 function AboutModal() {
   const [visible, setVisible] = useState(false);
@@ -138,47 +59,16 @@ function AboutModal() {
 
 /** The footer on the bottom of the calendar. */
 export function LeftFooter(props: {
-  preferences: Preferences;
   state: State;
 }) {
-  const { preferences, state } = props;
-
-  const [isExporting, setIsExporting] = useState(false);
-  // TODO: fix gcal export
-  const onICSExport = useICSExport(
-    state,
-    () => setIsExporting(false),
-    () => setIsExporting(false)
-  );
+  const { state } = props;
 
   return (
     <Flex
       direction="column"
       align="center"
       gap={2}
-      opacity={0.3}
-      _hover={{ opacity: 1 }}
-      transition="0.5s opacity"
     >
-      <Flex gap={4} align="center">
-        <PreferencesModal preferences={preferences} state={state} />
-        <Tooltip
-          label={
-            isExporting
-              ? "Loading..."
-              : "Google Calendar export is currently broken, we're fixing it!"
-          }
-        >
-          {isExporting ? (
-            <Spinner m={3} />
-          ) : (
-            <Image src="img/calendar-button.png" alt="Sign in with Google" />
-          )}
-        </Tooltip>
-        <Button onClick={onICSExport}>
-          {isExporting ? <Spinner m={3} /> : "Generate .ics file"}
-        </Button>
-      </Flex>
       <Text>Last updated: {state.lastUpdated}.</Text>
       <Flex gap={4}>
         <AboutModal />
