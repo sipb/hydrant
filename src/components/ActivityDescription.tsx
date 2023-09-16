@@ -43,8 +43,8 @@ function TypeSpan(props: { flag?: string; title: string }) {
 }
 
 /** Header for class description; contains flags and related classes. */
-function ClassTypes(props: { cls: Class }) {
-  const { cls } = props;
+function ClassTypes(props: { cls: Class, state: State }) {
+  const { cls, state } = props;
   const { flags, totalUnits, units } = cls;
 
   /**
@@ -58,9 +58,13 @@ function ClassTypes(props: { cls: Class }) {
       .map(([flag, title]) => (
         <TypeSpan key={flag} flag={flag} title={title} />
       ));
+  
+  const currentYear = parseInt(state.term.fullRealYear);
+  const nextAcademicYearStart = state.term.semester === "f" ? currentYear + 1 : currentYear;
+  const nextAcademicYearEnd = nextAcademicYearStart + 1;
 
   const types1 = makeFlags([
-    ["nonext", "Not offered 2021-2022"],
+    ["nonext", `Not offered ${nextAcademicYearStart}-${nextAcademicYearEnd}`],
     ["under", "Undergrad"],
     ["grad", "Graduate"],
   ]);
@@ -179,7 +183,7 @@ function ClassDescription(props: { cls: Class; state: State }) {
         {cls.number}: {cls.name}
       </Heading>
       <Flex direction="column" gap={0.5}>
-        <ClassTypes cls={cls} />
+        <ClassTypes cls={cls} state={state} />
         <ClassRelated cls={cls} state={state} />
         <ClassEval cls={cls} />
       </Flex>
