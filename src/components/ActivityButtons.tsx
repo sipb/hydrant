@@ -75,7 +75,7 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
     setIsOverriding(true);
   };
   const onConfirm = () => {
-    secs.roomOverride = room;
+    secs.roomOverride = room.trim();
     setIsOverriding(false);
     state.updateActivities();
   };
@@ -87,10 +87,10 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
         value={room}
         onChange={e => setRoom(e.target.value)}
         fontWeight="bold"
-        placeholder="room" />
+        placeholder="Somewhere" />
         <Button onClick={onConfirm}><CheckIcon/></Button>
         <Button onClick={onCancel} ><CloseIcon/></Button></Flex>
-    : (<Flex><Button onClick={onRelocate}>Override Location</Button></Flex>);
+    : (<Flex><Button onClick={onRelocate}>Change Location</Button></Flex>);
 
 }
 
