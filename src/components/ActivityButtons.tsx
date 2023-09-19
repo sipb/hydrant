@@ -77,7 +77,7 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
   const onConfirm = () => {
     secs.roomOverride = room;
     setIsOverriding(false);
-    state.updateState();
+    state.updateActivities();
   };
   const onCancel = () => {
     setIsOverriding(false);

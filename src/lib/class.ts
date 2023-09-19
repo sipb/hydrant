@@ -452,10 +452,12 @@ export class Class {
         ? null
         : secs.sections.findIndex((sec) => sec === secs.selected)
     );
+    const sectionLocs = this.sections.map((secs) => secs.roomOverride);
     while (sections.at(-1) === null) sections.pop();
     return [
       this.number,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
+      ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
       ...(sections.length > 0 ? sections : []), // number
     ];
   }
@@ -473,7 +475,15 @@ export class Class {
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
+    let sectionLocs: Array<any> | null = null;
+    if (Array.isArray(parsed[offset])) {
+      sectionLocs = parsed[offset];
+      offset += 1;
+    }
     this.sections.forEach((secs, i) => {
+      if (sectionLocs && typeof sectionLocs[i] === "string") {
+        secs.roomOverride = sectionLocs[i];
+      }
       const parse = parsed[i + offset];
       if (!parse && parse !== 0) {
         secs.locked = false;
