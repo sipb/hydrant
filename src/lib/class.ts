@@ -104,6 +104,10 @@ export class Sections {
   locked: boolean;
   /** Currently selected section out of these. None is null. */
   selected: Section | null;
+  /** Overridden location for this particular section. */
+  roomOverride: string = "";
+
+
 
   constructor(
     cls: Class,
@@ -155,7 +159,7 @@ export class Sections {
           this.cls,
           `${this.cls.number} ${this.shortName}`,
           this.selected.timeslots,
-          this.selected.room,
+          this.roomOverride.length ? this.roomOverride : this.selected.room,
           this.cls.half
         )
       : null;
@@ -188,6 +192,8 @@ export class Class {
   backgroundColor: string;
   /** Is the color set by the user (as opposed to chosen automatically?) */
   manualColor: boolean = false;
+
+  customLocation: string | undefined = undefined;
 
   constructor(rawClass: RawClass, colorScheme: ColorScheme) {
     this.rawClass = rawClass;

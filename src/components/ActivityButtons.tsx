@@ -19,6 +19,7 @@ import { Class, LockOption, SectionLockOption, Sections } from "../lib/class";
 import { textColor, canonicalizeColor } from "../lib/colors";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
 import { State } from "../lib/state";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 /**
  * A button that toggles the active value, and is outlined if active, solid
@@ -66,6 +67,33 @@ function ClassManualOption(props: {
   );
 }
 
+function OverrideLocations(props: { state: State; secs: Sections }) {
+  const [isOverriding, setIsOverriding] = useState(false);
+  const { state, secs } = props;
+  const [room, setRoom] = useState(secs.roomOverride);
+  const onRelocate = () => {
+    setIsOverriding(true);
+  };
+  const onConfirm = () => {
+    secs.roomOverride = room;
+    setIsOverriding(false);
+    state.updateState();
+  };
+  const onCancel = () => {
+    setIsOverriding(false);
+  };
+  return isOverriding
+    ? <Flex gap={1} mr = {1}><Input
+        value={room}
+        onChange={e => setRoom(e.target.value)}
+        fontWeight="bold"
+        placeholder="room" />
+        <Button onClick={onConfirm}><CheckIcon/></Button>
+        <Button onClick={onCancel} ><CloseIcon/></Button></Flex>
+    : (<Flex><Button onClick={onRelocate}>Override Location</Button></Flex>);
+
+}
+
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class; state: State }) {
   const { cls, state } = props;
@@ -80,6 +108,7 @@ function ClassManualSections(props: { cls: Class; state: State }) {
             {options.map((sec, i) => (
               <ClassManualOption key={i} secs={secs} sec={sec} state={state} />
             ))}
+            <OverrideLocations secs={secs} state={state} />
           </Flex>
         </FormControl>
       );
