@@ -83,14 +83,14 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
     setIsOverriding(false);
   };
   return isOverriding
-    ? <Flex gap={1} mr = {1}><Input
+    ? <Flex gap={1} mr = {1} mt = {2}><Input
         value={room}
         onChange={e => setRoom(e.target.value)}
         fontWeight="bold"
-        placeholder="Somewhere" />
+        placeholder="26-100" />
         <Button onClick={onConfirm}><CheckIcon/></Button>
         <Button onClick={onCancel} ><CloseIcon/></Button></Flex>
-    : (<Flex><Button onClick={onRelocate}>Change Location</Button></Flex>);
+    : (<Flex mt = {2}><Button onClick={onRelocate}>Custom Location</Button></Flex>);
 
 }
 
@@ -350,7 +350,7 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
           value={room}
           onChange={(e) => setRoom(e.target.value)}
           fontWeight="bold"
-          placeholder="room"
+          placeholder="W20-557"
         />
       );
       const onConfirm = () => {

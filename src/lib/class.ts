@@ -107,8 +107,6 @@ export class Sections {
   /** Overridden location for this particular section. */
   roomOverride: string = "";
 
-
-
   constructor(
     cls: Class,
     kind: SectionKind,
@@ -159,7 +157,7 @@ export class Sections {
           this.cls,
           `${this.cls.number} ${this.shortName}`,
           this.selected.timeslots,
-          this.roomOverride.length ? this.roomOverride : this.selected.room,
+          this.roomOverride || this.selected.room,
           this.cls.half
         )
       : null;
