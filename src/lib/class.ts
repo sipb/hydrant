@@ -104,6 +104,8 @@ export class Sections {
   locked: boolean;
   /** Currently selected section out of these. None is null. */
   selected: Section | null;
+  /** Overridden location for this particular section. */
+  roomOverride: string = "";
 
   constructor(
     cls: Class,
@@ -155,7 +157,7 @@ export class Sections {
           this.cls,
           `${this.cls.number} ${this.shortName}`,
           this.selected.timeslots,
-          this.selected.room,
+          this.roomOverride || this.selected.room,
           this.cls.half
         )
       : null;
@@ -188,6 +190,8 @@ export class Class {
   backgroundColor: string;
   /** Is the color set by the user (as opposed to chosen automatically?) */
   manualColor: boolean = false;
+
+  customLocation: string | undefined = undefined;
 
   constructor(rawClass: RawClass, colorScheme: ColorScheme) {
     this.rawClass = rawClass;
@@ -446,10 +450,12 @@ export class Class {
         ? null
         : secs.sections.findIndex((sec) => sec === secs.selected)
     );
+    const sectionLocs = this.sections.map((secs) => secs.roomOverride);
     while (sections.at(-1) === null) sections.pop();
     return [
       this.number,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
+      ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
       ...(sections.length > 0 ? sections : []), // number
     ];
   }
@@ -467,7 +473,15 @@ export class Class {
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
+    let sectionLocs: Array<any> | null = null;
+    if (Array.isArray(parsed[offset])) {
+      sectionLocs = parsed[offset];
+      offset += 1;
+    }
     this.sections.forEach((secs, i) => {
+      if (sectionLocs && typeof sectionLocs[i] === "string") {
+        secs.roomOverride = sectionLocs[i];
+      }
       const parse = parsed[i + offset];
       if (!parse && parse !== 0) {
         secs.locked = false;
