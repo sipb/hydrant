@@ -86,7 +86,6 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
     ? <Flex gap={1} mr = {1} mt = {2}><Input
         value={room}
         onChange={e => setRoom(e.target.value)}
-        fontWeight="bold"
         placeholder="26-100" />
         <Button onClick={onConfirm}><CheckIcon/></Button>
         <Button onClick={onCancel} ><CloseIcon/></Button></Flex>
@@ -349,7 +348,6 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
         <Input
           value={room}
           onChange={(e) => setRoom(e.target.value)}
-          fontWeight="bold"
           placeholder="W20-557"
         />
       );
