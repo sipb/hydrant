@@ -89,7 +89,7 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
         placeholder="26-100" />
         <Button onClick={onConfirm}><CheckIcon/></Button>
         <Button onClick={onCancel} ><CloseIcon/></Button></Flex>
-    : (<Flex mt = {2}><Button onClick={onRelocate}>{secs.roomOverride ? "Change" : "Add"} Custom Location</Button></Flex>);
+    : (<Flex mt = {2}><Button onClick={onRelocate}>{secs.roomOverride ? "Change" : "Add"} custom location</Button></Flex>);
 
 }
 
