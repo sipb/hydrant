@@ -73,6 +73,7 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
   const [room, setRoom] = useState(secs.roomOverride);
   const onRelocate = () => {
     setIsOverriding(true);
+    setRoom(secs.roomOverride);
   };
   const onConfirm = () => {
     secs.roomOverride = room.trim();
