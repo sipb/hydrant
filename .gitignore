@@ -9,6 +9,10 @@ __pycache__
 # node
 /node_modules
 /build
+/server
+
+# build tooling
+/.parcel-cache
 
 deploy.sh
 

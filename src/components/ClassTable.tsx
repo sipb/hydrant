@@ -138,7 +138,7 @@ function ClassInput(props: {
   );
 }
 
-type FilterGroup = Array<[keyof Flags | "fits", string, string?]>;
+type FilterGroup = Array<[keyof Flags | "fits", string, URL?]>;
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
@@ -151,8 +151,8 @@ const CLASS_FLAGS_1: FilterGroup = [
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
 const CLASS_FLAGS_2: FilterGroup = [
-  ["under", "Undergrad", "img/under.gif"],
-  ["grad", "Graduate", "img/grad.gif"],
+  ["under", "Undergrad", new URL("../assets/under.gif", import.meta.url)],
+  ["grad", "Graduate", new URL("../assets/grad.gif", import.meta.url)],
   ["le9units", "≤ 9 units"],
   ["half", "Half-term"],
   ["limited", "Limited enrollment"],
@@ -160,11 +160,11 @@ const CLASS_FLAGS_2: FilterGroup = [
 
 /** Second row of hidden filter IDs. */
 const CLASS_FLAGS_3: FilterGroup = [
-  ["rest", "REST", "img/rest.gif"],
-  ["Lab", "Institute Lab", "img/Lab.gif"],
-  ["hassA", "HASS-A", "img/hassA.gif"],
-  ["hassH", "HASS-H", "img/hassH.gif"],
-  ["hassS", "HASS-S", "img/hassS.gif"],
+  ["rest", "REST", new URL("../assets/rest.gif", import.meta.url)],
+  ["Lab", "Institute Lab", new URL("../assets/Lab.gif", import.meta.url)],
+  ["hassA", "HASS-A", new URL("../assets/hassA.gif", import.meta.url)],
+  ["hassH", "HASS-H", new URL("../assets/hassH.gif", import.meta.url)],
+  ["hassS", "HASS-S", new URL("../assets/hassS.gif", import.meta.url)],
   ["cihw", "CI-HW"],
   ["notcih", "Not CI-H"],
 ];
@@ -230,7 +230,7 @@ function ClassFlags(props: {
               onClick={() => onChange(flag, !checked)}
               variant={checked ? "solid" : "outline"}
             >
-              {image ? <Image src={image} alt={label} /> : label}
+              {image ? <Image src={image.href} alt={label} /> : label}
             </Button>
           );
           return image ? <Tooltip label={label}>{content}</Tooltip> : content;

@@ -147,7 +147,7 @@ function HydrantApp() {
                   {isExporting ? (
                     <Spinner m={3} />
                   ) : (
-                    <Image src="img/calendar-button.png" alt="Sign in with Google" />
+                    <Image src={new URL('../assets/calendar-button.png', import.meta.url)} alt="Sign in with Google" />
                   )}
                 </Tooltip> */}
                 <Tooltip
