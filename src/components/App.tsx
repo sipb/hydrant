@@ -51,7 +51,7 @@ function useHydrant(): {
 
   /** Fetch from the url, which is JSON of type T. */
   const fetchNoCache = async <T,>(url: string): Promise<T> => {
-    const res = await fetch(url, { cache: "no-cache" });
+    const res = await fetch(new URL(url, process.env.API_BASE), { cache: "no-cache" });
     return res.json() as Promise<T>;
   };
 
