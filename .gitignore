@@ -1,7 +1,8 @@
 # artifacts
 scrapers/catalog.json
 scrapers/fireroad.json
-public/latest.json
+
+src-server/data/latest.json
 
 # python
 __pycache__
