@@ -420,7 +420,7 @@ export class Class {
     if (this.course === "6") {
       extraUrls.push({
         label: "HKN Underground Guide",
-        url: `https://underground-guide.mit.edu/search?q=${this.number}`,
+        url: `https://underground-guide.mit.edu/search?q=${this.oldNumber ?? this.number}`,
       });
     }
     if (this.course === "18") {
