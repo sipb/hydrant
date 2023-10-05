@@ -270,6 +270,11 @@ export class Class {
     return [this.rawClass.u1, this.rawClass.u2, this.rawClass.u3];
   }
 
+  /** Returns whether this class has a variable/arranged number of units. */
+  get isVariableUnits(): boolean {
+    return this.rawClass.vu;
+  }
+
   /** Total class units, usually 12. */
   get totalUnits(): number {
     return this.rawClass.u1 + this.rawClass.u2 + this.rawClass.u3;
@@ -321,7 +326,7 @@ export class Class {
       final: this.rawClass.f,
       nofinal: !this.rawClass.f,
       nopreq: this.rawClass.pr === "None",
-      le9units: this.totalUnits <= 9,
+      le9units: this.totalUnits <= 9 && !this.isVariableUnits,
       half: this.rawClass.hf,
       limited: this.rawClass.lm,
     };
@@ -370,17 +375,31 @@ export class Class {
   } {
     const suffixes: Array<string> = [];
     const messages: Array<string> = [];
-    if (this.rawClass.h === 0) {
-      suffixes.push("*");
-      messages.push(
-        "* Class does not have evaluations, so its hours were set to units."
-      );
-    }
     if (this.rawClass.tb) {
       suffixes.push("+");
       messages.push(
         "+ Class has at least one section yet to be scheduled—check course catalog."
       );
+    }
+    if (this.rawClass.vu) {
+      if (this.rawClass.h === 0) {
+        suffixes.push("^");
+        messages.push(
+          "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours."
+        )
+      } else {
+        suffixes.push("#");
+        messages.push(
+          "# This class has an arranged number of units and its units were not counted in the total."
+        )
+      }
+    } else {
+      if (this.rawClass.h === 0) {
+        suffixes.push("*");
+        messages.push(
+          "* Class does not have evaluations, so its hours were set to units."
+        );
+      }
     }
     return { suffix: suffixes.join(""), messages };
   }

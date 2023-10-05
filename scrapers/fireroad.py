@@ -161,17 +161,20 @@ def get_course_data(courses, course):
 
     # hh, ha, hs, he, ci, cw, re, la, pl
     raw_class.update(parse_attributes(course))
-
     raw_class.update(
         {
             "u1": course["lecture_units"],
             "u2": course["lab_units"],
             "u3": course["preparation_units"],
             "le": course["level"],
+            "vu": course["is_variable_units"],
             "sa": ", ".join(course.get("joint_subjects", [])),
             "mw": ", ".join(course.get("meets_with_subjects", [])),
         }
     )
+    # This should be the case with variable-units classes, but just to make sure.
+    if raw_class["vu"]:
+        raw_class["u1"] = raw_class["u2"] = raw_class["u3"] = 0
 
     # t, pr
     raw_class.update(parse_terms(course))
