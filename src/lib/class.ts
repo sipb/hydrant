@@ -418,7 +418,7 @@ export class Class {
       extraUrls.unshift({ label: "More Info", url: this.rawClass.u });
     }
     if (this.course === "6") {
-      const number = this.oldNumber ? this.oldNumber : this.number;
+      const number = this.oldNumber ?? this.number;
       extraUrls.push({
         label: "HKN Underground Guide",
         url: `https://underground-guide.mit.edu/search?q=${number}`,
