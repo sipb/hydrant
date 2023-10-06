@@ -17,11 +17,11 @@ import { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";
 
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
-
+import flagURLs from 'url:../assets/*.gif'
 const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
 
 /** A small image indicating a flag, like Spring or CI-H. */
-function TypeSpan(props: { flag?: string; title: string }) {
+function TypeSpan(props: { flag?: keyof Flags; title: string }) {
   const { flag, title } = props;
   const { colorMode } = useColorMode();
   const filter =
@@ -32,7 +32,7 @@ function TypeSpan(props: { flag?: string; title: string }) {
       <Image
         alt={title}
         boxSize="1em"
-        src={`img/${flag}.gif`}
+        src={flagURLs[flag]}
         display="inline-block"
         filter={filter}
       />

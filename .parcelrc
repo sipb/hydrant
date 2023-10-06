@@ -1,0 +1,5 @@
+{
+    "extends": "@parcel/config-default",
+    "resolvers": ["@parcel/resolver-glob", "..."],
+    "reporters": ["...", "./scripts/parcel-dev-reporter.js"]
+}

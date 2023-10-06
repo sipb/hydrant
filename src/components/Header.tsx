@@ -129,7 +129,10 @@ function getUrlNames(latestTerm: string): Array<string> {
 /** Header above the left column, with logo and semester selection. */
 export function Header(props: { state: State, preferences: Preferences }) {
   const { state, preferences } = props;
-  const logoSrc = useColorModeValue("img/logo.svg", "img/logo-dark.svg");
+  const logoSrc = useColorModeValue(
+    new URL("../assets/logo.svg", import.meta.url),
+    new URL("../assets/logo-dark.svg", import.meta.url)
+  ).href;
   const toUrl = (urlName: string) =>
     toFullUrl(urlName, state.latestTerm.urlName);
   const defaultValue = toUrl(state.term.urlName);

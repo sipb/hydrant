@@ -101,6 +101,6 @@ def grouper(iterable, n):
 
 def get_term_info():
     """Get the latest term info."""
-    with open("../public/latestTerm.json") as f:
+    with open("../src-server/data/latestTerm.json") as f:
         term_info = json.load(f)
     return term_info

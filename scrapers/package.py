@@ -86,7 +86,7 @@ def run():
         "classes": courses,
     }
 
-    with open("../public/latest.json", "w") as f:
+    with open("../src-server/data/latest.json", "w") as f:
         json.dump(obj, f, separators=(",", ":"))
     print(f"Got {len(courses)} courses")
 
