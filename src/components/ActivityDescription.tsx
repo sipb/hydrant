@@ -100,6 +100,11 @@ function ClassTypes(props: { cls: Class, state: State }) {
     ) : (
       ""
     );
+  
+  const unitsDescription =
+    cls.isVariableUnits
+      ? "Units arranged"
+      : `${totalUnits} units: ${units.join("-")}`;
 
   return (
     <Flex gap={4} align="center">
@@ -112,7 +117,7 @@ function ClassTypes(props: { cls: Class, state: State }) {
         {halfType}
       </Flex>
       <Text>
-        {totalUnits} units: {units.join("-")}
+        {unitsDescription}
       </Text>
       {flags.final ? <Text>Has final</Text> : null}
     </Flex>

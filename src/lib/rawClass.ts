@@ -61,6 +61,11 @@ export type RawClass = {
   u2: number;
   /** Outside class units */
   u3: number;
+  /**
+   * Does this class have an arranged number of units?
+   * If true, u1, u2, u3 are set to zero.
+   */
+  vu: boolean;
 
   /** Level: "U" undergrad, "G" grad */
   le: "U" | "G";
