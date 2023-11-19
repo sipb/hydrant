@@ -1,5 +1,6 @@
 import { useGoogleLogin } from "@react-oauth/google";
-import { EventAttributes, DateArray, createEvents } from "ics";
+import { ICalCalendar, ICalEventData } from "ical-generator";
+import { tzlib_get_ical_block } from "timezones-ical-library";
 
 import { Activity } from "./activity";
 import { CALENDAR_COLOR } from "./colors";
@@ -25,17 +26,6 @@ function toISOString(date: Date): string {
     ":",
     pad(date.getSeconds()),
   ].join("");
-}
-
-/** Returns a date as a UTC date array */
-function toDateArray(date: Date): DateArray {
-  return [
-    date.getUTCFullYear(),
-    date.getUTCMonth() + 1,
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-  ];
 }
 
 /** Downloads a file with the given text data */
@@ -90,7 +80,7 @@ function toGoogleCalendarEvents(
   );
 }
 
-function toICSEvents(activity: Activity, term: Term): Array<EventAttributes> {
+function toICalEvents(activity: Activity, term: Term): Array<ICalEventData> {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
       const startDate = term.startDateFor(slot.startSlot);
@@ -100,13 +90,12 @@ function toICSEvents(activity: Activity, term: Term): Array<EventAttributes> {
       const rDate = term.rDateFor(slot.startSlot);
       console.log(event.name, startDate);
       return {
-        title: event.name,
+        summary: event.name,
         location: event.room,
-        start: toDateArray(startDate),
-        startInputType: "utc",
-        end: toDateArray(startDateEnd),
-        endInputType: "utc",
-        recurrenceRule: [
+        start: startDate,
+        end: startDateEnd,
+        timezone: TIMEZONE,
+        repeating: [
           // for some reason, gcal wants UNTIL to be a date, not time
           `FREQ=WEEKLY;UNTIL=${toRRuleString(endDate).split("T")[0]}`,
           `EXDATE;TZID=${TIMEZONE}:${exDates.map(toRRuleString).join(",")}`,
@@ -191,18 +180,23 @@ export function useICSExport(
   onError?: () => void
 ): () => void {
   return async () => {
-    const events = state.selectedActivities.flatMap((activity) =>
-      toICSEvents(activity, state.term)
-    );
-    const calendarName = `Hydrant: ${state.term.niceName}`;
-    events.forEach((event) => {
-      event.calName = calendarName;
+    const cal = new ICalCalendar({
+      name: `Hydrant: ${state.term.niceName}`,
+      timezone: {
+        name: TIMEZONE,
+        generator: (zone) => tzlib_get_ical_block(zone)[0],
+      },
+      events: state.selectedActivities.flatMap((activity) =>
+        toICalEvents(activity, state.term)
+      ),
     });
-    console.log(events);
-    createEvents(events, (error, value) => {
-      if (error) onError?.();
-      download(`${state.term.urlName}.ics`, value);
-      onSuccess?.();
-    });
+    console.log(cal);
+
+    try {
+      download(`${state.term.urlName}.ics`, cal.toString());
+    } catch (err) {
+      onError?.();
+    }
+    onSuccess?.();
   };
 }
