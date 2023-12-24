@@ -13,7 +13,7 @@ import json
 import requests
 import utils
 
-URL = "https://fireroad-dev.mit.edu/courses/all?full=true"
+URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
 def parse_timeslot(day, slot):
