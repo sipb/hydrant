@@ -26,9 +26,9 @@ To spin up the site, we need two steps:
 
 (2) We then can update the frontend, via running `npm start`. This will open a browser tab that updates live as you edit code.
 
-If this is the **first time** you're spinning up the website, the two steps have to be taken in order: step (1) then step (2). If not followed, you'll see a blank frontend.
+If this is the **first time** you're spinning up the website, the two steps have to be taken in order: step (1), and then step (2). If not followed, you'll see a blank frontend.
 
-Subsequently, the step order doesn't matter to bring up the site (since you'd already have locally cached data). Though backend commands are still necessary for keeping the data updated.
+After the first-time, the step order doesn't matter to bring up the site; in fact, you could even skip backend step (1) -- since you'd already have locally cached data. Though backend commands are still necessary for keeping the data updated.
 
 ### Changing semesters
 
