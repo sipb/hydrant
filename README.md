@@ -20,11 +20,15 @@ In the root directory, run:
 
 There's the frontend, which is the website and the interface. Then there's the backend, or the schedules, which are the files that have information about class schedules.
 
-To update the frontend, you can run `npm start`, which will open a browser tab that updates live as you edit code.
+To spin up the site, we need two steps:
 
-To update the backend, `cd scrapers` then run `python update.py`.
+(1) We need to update the backend to get the data. `cd scrapers` then run `python update.py`.
 
-Make sure to update the backend before you run the frontend for the first time.
+(2) We then can update the frontend, via running `npm start`. This will open a browser tab that updates live as you edit code.
+
+If this is the **first time** you're spinning up the website, the two steps have to be taken in order: step (1), and then step (2). If not followed, you'll see a blank frontend.
+
+After the first time, the step order doesn't matter to bring up the site; in fact, backend step (1) can even be skipped -- since you'd already have locally cached data. Though backend commands are still necessary if you'd like to keep the data updated.
 
 ### Changing semesters
 
