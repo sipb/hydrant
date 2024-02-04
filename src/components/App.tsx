@@ -93,10 +93,14 @@ function useHydrant(): {
   return { hydrant, state };
 }
 
-// TODO: document this integration API through callbacks
-// For now, the only application which can import from Hydrant is Matrix.
-// Once we add more, we could make a nice
-// "[Application name] would like to access your Hydrant class list" with an allow/deny
+/**
+ * "Integration callbacks" allow other SIPB projects to integrate with Hydrant by redirecting to
+ * https://hydrant.mit.edu/#/export with a `callback` as a query parameter.
+ * 
+ * Currently, the only application that uses this is the Matrix class group chat picker,
+ * but in the future, a prompt "[Application name] would like to access your Hydrant class list"
+ * could be implemented.
+ */
 const ALLOWED_INTEGRATION_CALLBACKS = [
   "http://localhost:5173/classes/hydrantCallback",
   "https://matrix.mit.edu/classes/hydrantCallback"
@@ -106,11 +110,13 @@ const ALLOWED_INTEGRATION_CALLBACKS = [
 function HydrantApp() {
   const { hydrant, state } = useHydrant();
 
-  // this has must be in the URL to trigger an export and send you to an allowed callback
+  // Integration callback URL
   const EXPORT_URL_HASH = "#/export";
   const hash = window.location.hash;
+  // Detect whether to load the Hydrant app or an integration callback instead
   const hasIntegrationCallback = hash.startsWith(EXPORT_URL_HASH);
 
+  // Integration callback hook
   useEffect(() => {
     // only trigger this code if the URL asked for it
     if (!hasIntegrationCallback) return;
@@ -122,14 +128,12 @@ function HydrantApp() {
     const callback = params.get("callback");
     if (!callback || !ALLOWED_INTEGRATION_CALLBACKS.includes(callback)) {
       console.warn("callback", callback, "not in allowed callbacks list!");
+      window.alert(`${callback} is not allowed to read your class list!`);
       return;
     }
-
-    // TODO: avoid code repetition with MatrixLink.tsx
     const encodedClasses = (hydrant.selectedActivities.filter((activity) => activity instanceof Class) as Class[])
       .map((cls) => `&class=${cls.number}`)
       .join('');
-    
     const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
     window.location.replace(filledCallback);
   }, [hydrant]);
@@ -142,7 +146,6 @@ function HydrantApp() {
     () => setIsExporting(false)
   );
 
-  // show loading indicator if we are using the integration
   return (
     <>
       {(!hydrant || hasIntegrationCallback) ? (
