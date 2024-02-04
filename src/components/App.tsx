@@ -136,7 +136,7 @@ function HydrantApp() {
       .join('');
     const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
     window.location.replace(filledCallback);
-  }, [hydrant]);
+  }, [hydrant, hasIntegrationCallback, hash]);
 
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
