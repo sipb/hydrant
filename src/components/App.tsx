@@ -15,6 +15,7 @@ import {
 import { Term, TermInfo } from "../lib/dates";
 import { State } from "../lib/state";
 import { RawClass } from "../lib/rawClass";
+import { Class } from "../lib/class";
 import { DEFAULT_STATE, HydrantState } from "../lib/schema";
 
 import { ActivityDescription } from "./ActivityDescription";
@@ -92,9 +93,47 @@ function useHydrant(): {
   return { hydrant, state };
 }
 
+// TODO: document this integration API through callbacks
+// For now, the only application which can import from Hydrant is Matrix.
+// Once we add more, we could make a nice
+// "[Application name] would like to access your Hydrant class list" with an allow/deny
+const ALLOWED_INTEGRATION_CALLBACKS = [
+  "http://localhost:5173/classes/hydrantCallback",
+  "https://matrix.mit.edu/classes/hydrantCallback"
+];
+
 /** The application entry. */
 function HydrantApp() {
   const { hydrant, state } = useHydrant();
+
+  // this has must be in the URL to trigger an export and send you to an allowed callback
+  const EXPORT_URL_HASH = "#/export";
+  const hash = window.location.hash;
+  const hasIntegrationCallback = hash.startsWith(EXPORT_URL_HASH);
+
+  useEffect(() => {
+    // only trigger this code if the URL asked for it
+    if (!hasIntegrationCallback) return;
+    
+    // wait until Hydrant loads
+    if (!hydrant) return;
+
+    const params = new URLSearchParams(hash.substring(EXPORT_URL_HASH.length));
+    const callback = params.get("callback");
+    if (!callback || !ALLOWED_INTEGRATION_CALLBACKS.includes(callback)) {
+      console.warn("callback", callback, "not in allowed callbacks list!");
+      return;
+    }
+
+    // TODO: avoid code repetition with MatrixLink.tsx
+    const encodedClasses = (hydrant.selectedActivities.filter((activity) => activity instanceof Class) as Class[])
+      .map((cls) => `&class=${cls.number}`)
+      .join('');
+    
+    const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
+    window.location.replace(filledCallback);
+  }, [hydrant]);
+
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
@@ -103,9 +142,10 @@ function HydrantApp() {
     () => setIsExporting(false)
   );
 
+  // show loading indicator if we are using the integration
   return (
     <>
-      {!hydrant ? (
+      {(!hydrant || hasIntegrationCallback) ? (
         <Flex w="100%" h="100vh" align="center" justify="center">
           <Spinner />
         </Flex>
