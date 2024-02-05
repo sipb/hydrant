@@ -103,7 +103,8 @@ function useHydrant(): {
  */
 const ALLOWED_INTEGRATION_CALLBACKS = [
   "http://localhost:5173/classes/hydrantCallback",
-  "https://matrix.mit.edu/classes/hydrantCallback"
+  "https://matrix.mit.edu/classes/hydrantCallback",
+  "https://uplink.mit.edu/classes/hydrantCallback",
 ];
 
 /** The application entry. */
