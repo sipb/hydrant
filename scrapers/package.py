@@ -49,6 +49,10 @@ OVERRIDES = {
             ]
         ],
     },
+    "21M.846": {
+        "n": "Staging Frenchness",
+        "d": "Exploration of contemporary theater of France, French West Africa, French Caribbean, and Québec. Focus is on staging of gender, race, nation, culture. Coursework includes readings, discussion, brief presentations and short writings, with some in-class reading of scenes and a group final project. No final paper or final exam. All course materials in English (reading may be done in French if desired). No prerequisites and no experience in French or theater required. Counts toward the French and/or Theater Arts concentration, minor, and major.",
+    },
     # "2.00B": {
     #     "b": [],
     #     "tb": True,
