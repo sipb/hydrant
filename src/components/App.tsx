@@ -15,6 +15,7 @@ import {
 import { Term, TermInfo } from "../lib/dates";
 import { State } from "../lib/state";
 import { RawClass } from "../lib/rawClass";
+import { Class } from "../lib/class";
 import { DEFAULT_STATE, HydrantState } from "../lib/schema";
 
 import { ActivityDescription } from "./ActivityDescription";
@@ -92,9 +93,51 @@ function useHydrant(): {
   return { hydrant, state };
 }
 
+/**
+ * "Integration callbacks" allow other SIPB projects to integrate with Hydrant by redirecting to
+ * https://hydrant.mit.edu/#/export with a `callback` as a query parameter.
+ * 
+ * Currently, the only application that uses this is the Matrix class group chat picker,
+ * but in the future, a prompt "[Application name] would like to access your Hydrant class list"
+ * could be implemented.
+ */
+const ALLOWED_INTEGRATION_CALLBACKS = [
+  "https://matrix.mit.edu/classes/hydrantCallback",
+  "https://uplink.mit.edu/classes/hydrantCallback",
+];
+
 /** The application entry. */
 function HydrantApp() {
   const { hydrant, state } = useHydrant();
+
+  // Integration callback URL
+  const EXPORT_URL_HASH = "#/export";
+  const hash = window.location.hash;
+  // Detect whether to load the Hydrant app or an integration callback instead
+  const hasIntegrationCallback = hash.startsWith(EXPORT_URL_HASH);
+
+  // Integration callback hook
+  useEffect(() => {
+    // only trigger this code if the URL asked for it
+    if (!hasIntegrationCallback) return;
+    
+    // wait until Hydrant loads
+    if (!hydrant) return;
+
+    const params = new URLSearchParams(hash.substring(EXPORT_URL_HASH.length));
+    const callback = params.get("callback");
+    if (!callback || !ALLOWED_INTEGRATION_CALLBACKS.includes(callback)) {
+      console.warn("callback", callback, "not in allowed callbacks list!");
+      window.alert(`${callback} is not allowed to read your class list!`);
+      return;
+    }
+    const encodedClasses = (hydrant.selectedActivities.filter((activity) => activity instanceof Class) as Class[])
+      .map((cls) => `&class=${cls.number}`)
+      .join('');
+    const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
+    window.location.replace(filledCallback);
+  }, [hydrant, hasIntegrationCallback, hash]);
+
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
@@ -105,7 +148,7 @@ function HydrantApp() {
 
   return (
     <>
-      {!hydrant ? (
+      {(!hydrant || hasIntegrationCallback) ? (
         <Flex w="100%" h="100vh" align="center" justify="center">
           <Spinner />
         </Flex>
