@@ -246,7 +246,8 @@ export class State {
     return (
       !this.isSelectedActivity(cls) &&
       (cls.sections.length === 0 ||
-        this.selectedClasses.length === 0 ||
+        (this.selectedClasses.length === 0 &&
+          this.selectedNonClasses.length === 0) ||
         scheduleSlots(
           this.selectedClasses.concat([cls]),
           this.selectedNonClasses
