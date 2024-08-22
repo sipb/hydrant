@@ -113,6 +113,16 @@ OVERRIDES = {
     #     "l": [[[[33, 3], [93, 3]], "24-121"]],
     #     "r": [[[[124, 2]], "24-121"]],
     # },
+    
+    # Per instructor request. Fireroad seems to be getting it wrong... 
+    "12.387": {
+        "lectureRawSections": [
+            "54-209/F/0/9-12"
+        ],
+        "lectureSections": [
+            [[[122, 6]], '54-209']
+        ]
+    }
 }
 
 
