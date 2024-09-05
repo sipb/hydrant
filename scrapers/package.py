@@ -245,18 +245,18 @@ OVERRIDES = {
 
     "18.01": {
         "lectureRawSections": "10-250/TR/0/1/F/0/2",
-        "lectureSections": [
+        "lectureSections": [[
             [[40, 2], [100, 2], [132, 2]],
             "10-250",
-        ],
+        ]],
     },
 
     "18.701": {
         "lectureRawSections": "54-100/TR/0/1-2.30",
-        "lectureSections": [
+        "lectureSections": [[
             [[40, 3], [100, 3]],
             "54-100",
-        ],
+        ]],
     },
 }
 
