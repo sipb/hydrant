@@ -25,19 +25,39 @@ BASE_URL = "http://student.mit.edu/catalog"
 
 
 def is_not_offered_next_year(html):
-    # determines if it is not offered next year
+    """
+    Args:
+    * html (BeautifulSoup): the input webpage
+
+    Returns:
+    * bool: True if the class is not offered next year
+    """
     if html.find(attrs={"src": "/icns/nonext.gif"}):
         return True
     return False
 
 
 def is_repeat_allowed(html):
+    """
+    Args:
+    * html (BeautifulSoup): the input webpage
+
+    Returns:
+    * bool: Whether you're allowed to retake the class for credit
+    """
     if html.find(attrs={"src": "/icns/repeat.gif"}):
         return True
     return False
 
 
 def get_url(html):
+    """
+    Args:
+    * html (BeautifulSoup): the input webpage
+
+    Returns:
+    * str: Some URL on the webpage, or an empty string if there isn't one
+    """
     url = html.find(text=re.compile("https?://(?!whereis)"))
     if url:
         return url
@@ -45,13 +65,28 @@ def get_url(html):
 
 
 def has_final(html):
+    """
+    Args:
+    * html (BeautifulSoup): the input webpage
+
+    Returns:
+    * bool: Whether the class has a final
+    """
     if html.find(text="+final"):
         return True
     return False
 
 
 def get_half(html):
-    # Returns 1 for 1st half, 2 for 2nd half, False if not a half semester course
+    """
+    Returns 1 for 1st half, 2 for 2nd half, False if not a half semester course
+
+    Args:
+    * html (BeautifulSoup): the input webpage
+
+    Returns:
+    * Union[int, bool]
+    """
     if html.find(text=re.compile("first half of term")):
         return 1
     elif html.find(text=re.compile("second half of term")):
@@ -60,6 +95,13 @@ def get_half(html):
 
 
 def is_limited(html):
+    """
+    Args:
+    * html (BeautifulSoup): the input webpage
+
+    Returns:
+    * bool: True if enrollment in the class is limited
+    """
     # TODO: can we do better?
     if html.find(text=re.compile("[Ll]imited")):
         return True
@@ -67,6 +109,13 @@ def is_limited(html):
 
 
 def get_course_data(filtered_html):
+    """
+    Args:
+    * filtered_html (BeautifulSoup): the input webpage
+
+    Returns:
+    * dict[str, Union[bool, int, str]]: metadata about that particular class
+    """
     no_next = is_not_offered_next_year(filtered_html)
     repeat = is_repeat_allowed(filtered_html)
     url = get_url(filtered_html)
