@@ -13,3 +13,6 @@ __pycache__
 deploy.sh
 
 .idea
+
+# MacOS is stupid
+.DS_Store
