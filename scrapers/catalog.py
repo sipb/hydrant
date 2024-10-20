@@ -136,6 +136,12 @@ def get_course_data(filtered_html):
 
 
 def get_home_catalog_links():
+    """
+    Args: none
+
+    Returns:
+    * list[str]: relative links to major-specific subpages to scrape
+    """
     r = requests.get(BASE_URL + "/index.cgi")
     html = BeautifulSoup(r.content, "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
@@ -145,6 +151,12 @@ def get_home_catalog_links():
 def get_all_catalog_links(initial_hrefs):
     """
     Find all links from the headers before the subject listings
+
+    Args:
+    * initial_hrefs (list[str]): initial list of relative links to subpages
+
+    Returns:
+    * list[str]: A more complete list of relative links to subpages to scrape
     """
     hrefs = []
     for il in initial_hrefs:
@@ -162,6 +174,12 @@ def get_anchors_with_classname(element):
     """
     Returns the anchors with the class name if the element itself is one or
     anchors are inside of the element. Otherwise, returns None.
+
+    Args:
+    * element (Tag): the input HTML tag
+
+    Returns:
+    * Union[list[Tag], NoneType]: a list of links, or None
     """
     anchors = None
     # This is the usualy case, where it's one element
@@ -179,7 +197,16 @@ def get_anchors_with_classname(element):
 
 
 def scrape_courses_from_page(courses, href):
-    """Fills courses with course data from the href"""
+    """
+    Fills courses with course data from the href
+    (This function does NOT return a value. Instead, it modifies the `courses` variable.)
+
+    Args:
+    * courses
+    * href
+
+    Returns: none
+    """
     r = requests.get(f"{BASE_URL}/{href}")
     # The "html.parser" parses pretty badly
     html = BeautifulSoup(r.content, "lxml")
@@ -216,6 +243,13 @@ def scrape_courses_from_page(courses, href):
 
 
 def run():
+    """
+    The main function! This calls all the other functions in this file.
+
+    Args: none
+
+    Returns: none
+    """
     home_hrefs = get_home_catalog_links()
     all_hrefs = get_all_catalog_links(home_hrefs)
     courses = dict()
