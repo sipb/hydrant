@@ -1,9 +1,21 @@
+"""
+This is the entry point. Run `python3 update.py` to test this code.
+
+In production, there's a cron job that runs this script every hour.
+
+Functions:
+* run()
+"""
+
 import fireroad
 import catalog
 import package
 
 
 def run():
+    """
+    This function is the entry point. There are no arguments.
+    """
     print("=== Update fireroad data ===")
     fireroad.run()
     print("=== Update catalog data ===")
