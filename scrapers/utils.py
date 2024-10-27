@@ -1,3 +1,21 @@
+"""
+Utility data and functions for the scrapers folder.
+
+Data:
+* GIR_REWRITE: dict[str, str]
+* TIMESLOTS: int
+* DAYS: dict[str, int]
+* TIMES: dict[str, int]
+* EVE_TIMES: dict[str, int]
+
+Functions:
+* find_timeslot(day, slot, pm)
+* zip_strict(*iterables)
+* grouper(iterable, n)
+* get_term_info()
+"""
+
+
 import itertools
 import json
 
