@@ -33,9 +33,9 @@ assert parse_when("F10:30-12") == ("F", "10.30-12")
 assert parse_when("MW1") == ("MW", "1")
 assert parse_when("MWF11") == ("MWF", "11")
 
-def parse_many_timeslots(days, times):    
+def parse_many_timeslots(days, times):
     # parse timeslot wants only one letter
-    return [parse_timeslot(day, times) for day in days]        
+    return [parse_timeslot(day, times) for day in days]
 
 
 def make_raw_sections(days, times, room):
