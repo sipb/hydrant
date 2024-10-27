@@ -27,7 +27,15 @@ URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
 def parse_timeslot(day, slot):
-    """parse_timeslot("M", "10-11.30") -> [4, 3]"""
+    """Parses a timeslot. Example: parse_timeslot("M", "10-11.30") -> [4, 3]
+
+    Args:
+    * day (str): The day as a string
+    * slot (str): The slot as a string
+
+    Returns:
+    * list[int]: The parsed day and timeslot
+    """
     pm, slot = slot.endswith(" PM"), slot.rstrip(" PM")
 
     if "-" in slot:
@@ -43,7 +51,15 @@ def parse_timeslot(day, slot):
 
 
 def parse_section(section):
-    """Parses a section string like "32-123/TR/0/11/F/0/2"."""
+    """Parses a section string.
+    Example: "32-123/TR/0/11/F/0/2" -> [[[36, 2], [96, 2], [132, 2]], '32-123']
+    
+    Args:
+    * section (str): The section given as a string
+
+    Returns:
+    * list[Union[list[str], str]]: The parsed section.
+    """
     place, *infos = section.split("/")
     slots = []
 
@@ -60,6 +76,12 @@ def parse_schedule(course):
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
+
+    Args:
+    * course (dict[str, any]): The course object, which is expected to have a "schedule" key
+
+    Returns:
+    * dict[str, union[list, bool]: The parsed schedule
     """
     schedule = course["schedule"]
     section_tba = False
