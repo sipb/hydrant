@@ -78,7 +78,7 @@ def parse_schedule(course):
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
 
     Args:
-    * course (dict[str, any]): The course object, which is expected to have a "schedule" key
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
 
     Returns:
     * dict[str, union[list, bool]: The parsed schedule
@@ -125,6 +125,15 @@ def parse_schedule(course):
 
 
 def parse_attributes(course):
+    """
+    Parses attributes of the course.
+
+    Args:
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+
+    Returns:
+    * dict[str, bool]: The attributes of the course.
+    """
     hass_code = course.get("hass_attribute", "X")[-1]
     comms_code = course.get("communication_requirement", "")
     gir_attr = course.get("gir_attribute", "")
@@ -143,6 +152,15 @@ def parse_attributes(course):
 
 
 def parse_terms(course):
+    """
+    Parses the terms of the course.
+
+    Args:
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+
+    Returns:
+    * dict[str, list[str]]: The parsed terms, stored in the key "t".
+    """
     terms = [
         name
         for name, attr in [
@@ -157,6 +175,15 @@ def parse_terms(course):
 
 
 def parse_prereqs(course):
+    """
+    Parses prerequisites from the course.
+
+    Args:
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+
+    Returns:
+    * dict[str, str]: The parsed prereqs, in the key "pr".
+    """
     prereqs = course.get("prerequisites", "")
     for gir, gir_rw in utils.GIR_REWRITE.items():
         prereqs = prereqs.replace(gir, gir_rw)
@@ -169,7 +196,14 @@ def get_course_data(courses, course):
     """
     Parses a course from the Fireroad API, and puts it in courses. Skips the
     courses Fireroad doesn't have schedule info for. Returns False if skipped,
-    True otherwise.
+    True otherwise. The `courses` variable is modified in place.
+
+    Args:
+    * courses (list[dict[str, Union[bool, float, int, list[str], str]]]): The list of courses.
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course in particular.
+
+    Returns:
+    * bool: Whether Fireroad has schedule information for this course.
     """
     course_code = course["subject_id"]
     course_num, course_class = course_code.split(".")
@@ -240,6 +274,11 @@ def get_course_data(courses, course):
 
 
 def run():
+    """
+    The main entry point. All data is written to `fireroad.json`.
+
+    There are no arguments and there is no return value.
+    """
     text = requests.get(URL).text
     data = json.loads(text)
     courses = dict()
