@@ -7,6 +7,16 @@ catalog.py instead).
 
 The Fireroad API is updated every few minutes, so it should always have the
 schedule for the latest term.
+
+Functions:
+* parse_timeslot(day, slot)
+* parse_section(section)
+* parse_schedule(course)
+* parse_attributes(course)
+* parse_terms(course)
+* parse_prereqs(course)
+* get_course_data(courses, course)
+* run()
 """
 
 import json
