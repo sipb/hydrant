@@ -15,6 +15,8 @@ from fireroad import parse_timeslot, parse_section
 from pprint import pprint
 import requests
 
+# TODO: move this huge wall of code into its own function
+
 response = requests.get("https://math.mit.edu/academics/classes.html")
 soup = BeautifulSoup(response.text, features="lxml")
 course_list = soup.find("ul", {"class": "course-list"})
