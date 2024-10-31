@@ -23,17 +23,22 @@ The files intentionally left out of git are:
 
 Run `python3 update.py` to execute the code. In production, there is a cron job that runs this every hour.
 
-This program scrapes and munges data on MIT classes from two main sources:
+This program gets its data from MIT classes from two sources:
+
 * the official catalog: http://student.mit.edu/catalog/index.cgi
-* our very own Fireroad project: https://fireroad.mit.edu/courses/all?full=true
+* the Fireroad API: https://fireroad.mit.edu/courses/all?full=true
 
 It is mainly intended to serve as a data source for the frontend, which is the real deal. This is just the backend.
 
 ## How it works ##
 
-`update.py` calls three other programs, in this order: `fireroad.py`, `catalog.py`, `package.py`. Each of these four files has a `run()` function, which is the main entry point to its codebase. Broadly speaking, `fireroad.py` creates `fireroad.json`, `catalog.py` creates `catalog.json`, and `package.py` combines these to create `latest.json` (which is actually stored one folder up the tree, in the `public` directory).
+`update.py` calls three other programs, in this order: `fireroad.py`, `catalog.py`, `package.py`. Each of these four files has a `run()` function, which is its main entry point to the codebase. Broadly speaking:
 
-`math_dept.py` is an irregularly run file that helps create override data for courses in the MIT math department (since those are formatted slightly differently). `utils.py` contains a few utility functions and variables, which in turn are used by `fireroad.py` and `package.py`. The file `__init__.py` is empty but is included anyways.
+* `fireroad.py` creates `fireroad.json`
+* `catalog.py` creates `catalog.json`
+* `package.py` combines these to create `../public/latest.json`. (This is the final product that our frontend ingests.)
+
+`math_dept.py` is an irregularly run file that helps create override data for courses in the MIT math department (since those are formatted slightly differently). `utils.py` contains a few utility functions and variables, which in turn are used by `fireroad.py` and `package.py`. The file `__init__.py` is empty but we include it anyways for completeness.
 
 ## Contributing ##
 
