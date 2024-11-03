@@ -7,6 +7,16 @@ catalog.py instead).
 
 The Fireroad API is updated every few minutes, so it should always have the
 schedule for the latest term.
+
+Functions:
+* parse_timeslot(day, slot)
+* parse_section(section)
+* parse_schedule(course)
+* parse_attributes(course)
+* parse_terms(course)
+* parse_prereqs(course)
+* get_course_data(courses, course)
+* run()
 """
 
 import json
@@ -17,7 +27,15 @@ URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
 def parse_timeslot(day, slot):
-    """parse_timeslot("M", "10-11.30") -> [4, 3]"""
+    """Parses a timeslot. Example: parse_timeslot("M", "10-11.30") -> [4, 3]
+
+    Args:
+    * day (str): The day as a string
+    * slot (str): The slot as a string
+
+    Returns:
+    * list[int]: The parsed day and timeslot
+    """
     pm, slot = slot.endswith(" PM"), slot.rstrip(" PM")
 
     if "-" in slot:
@@ -33,7 +51,15 @@ def parse_timeslot(day, slot):
 
 
 def parse_section(section):
-    """Parses a section string like "32-123/TR/0/11/F/0/2"."""
+    """Parses a section string.
+    Example: "32-123/TR/0/11/F/0/2" -> [[[36, 2], [96, 2], [132, 2]], '32-123']
+    
+    Args:
+    * section (str): The section given as a string
+
+    Returns:
+    * list[Union[list[str], str]]: The parsed section.
+    """
     place, *infos = section.split("/")
     slots = []
 
@@ -50,6 +76,12 @@ def parse_schedule(course):
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
+
+    Args:
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+
+    Returns:
+    * dict[str, union[list, bool]: The parsed schedule
     """
     schedule = course["schedule"]
     section_tba = False
@@ -93,6 +125,15 @@ def parse_schedule(course):
 
 
 def parse_attributes(course):
+    """
+    Parses attributes of the course.
+
+    Args:
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+
+    Returns:
+    * dict[str, bool]: The attributes of the course.
+    """
     hass_code = course.get("hass_attribute", "X")[-1]
     comms_code = course.get("communication_requirement", "")
     gir_attr = course.get("gir_attribute", "")
@@ -111,6 +152,15 @@ def parse_attributes(course):
 
 
 def parse_terms(course):
+    """
+    Parses the terms of the course.
+
+    Args:
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+
+    Returns:
+    * dict[str, list[str]]: The parsed terms, stored in the key "t".
+    """
     terms = [
         name
         for name, attr in [
@@ -125,6 +175,15 @@ def parse_terms(course):
 
 
 def parse_prereqs(course):
+    """
+    Parses prerequisites from the course.
+
+    Args:
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+
+    Returns:
+    * dict[str, str]: The parsed prereqs, in the key "pr".
+    """
     prereqs = course.get("prerequisites", "")
     for gir, gir_rw in utils.GIR_REWRITE.items():
         prereqs = prereqs.replace(gir, gir_rw)
@@ -137,7 +196,14 @@ def get_course_data(courses, course):
     """
     Parses a course from the Fireroad API, and puts it in courses. Skips the
     courses Fireroad doesn't have schedule info for. Returns False if skipped,
-    True otherwise.
+    True otherwise. The `courses` variable is modified in place.
+
+    Args:
+    * courses (list[dict[str, Union[bool, float, int, list[str], str]]]): The list of courses.
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course in particular.
+
+    Returns:
+    * bool: Whether Fireroad has schedule information for this course.
     """
     course_code = course["subject_id"]
     course_num, course_class = course_code.split(".")
@@ -208,6 +274,11 @@ def get_course_data(courses, course):
 
 
 def run():
+    """
+    The main entry point. All data is written to `fireroad.json`.
+
+    There are no arguments and there is no return value.
+    """
     text = requests.get(URL).text
     data = json.loads(text)
     courses = dict()

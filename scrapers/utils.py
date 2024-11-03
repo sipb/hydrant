@@ -1,3 +1,21 @@
+"""
+Utility data and functions for the scrapers folder.
+
+Data:
+* GIR_REWRITE: dict[str, str]
+* TIMESLOTS: int
+* DAYS: dict[str, int]
+* TIMES: dict[str, int]
+* EVE_TIMES: dict[str, int]
+
+Functions:
+* find_timeslot(day, slot, pm)
+* zip_strict(*iterables)
+* grouper(iterable, n)
+* get_term_info()
+"""
+
+
 import itertools
 import json
 
@@ -74,14 +92,33 @@ EVE_TIMES = {
 
 
 def find_timeslot(day, slot, pm):
-    """find_timeslot("W", "11.30", False) -> 67"""
+    """
+    Finds the numeric code for a timeslot.
+    Example: find_timeslot("W", "11.30", False) -> 67
+
+    Args:
+    * day (str): The day of the timeslot
+    * slot (str): The time of the timeslot
+    * pm (bool): Whether the timeslot is in the evening
+
+    Returns:
+    * int: A numeric code for the timeslot
+    """
     if pm:
         return DAYS[day] + EVE_TIMES[slot]
     return DAYS[day] + TIMES[slot]
 
 
 def zip_strict(*iterables):
-    """zip(strict=True) polyfill."""
+    """
+    Helper function for grouper. Groups values of the iterator on the same iteration together.
+
+    Args:
+    * iterables (tuple[Iterable[any]]): a list of iterables.
+
+    Returns:
+    * generator: A generator, which you can iterate over.
+    """
     sentinel = object()
     for tuple in itertools.zip_longest(*iterables, fillvalue=sentinel):
         if any(sentinel is t for t in tuple):
@@ -91,16 +128,29 @@ def zip_strict(*iterables):
 
 def grouper(iterable, n):
     """
-    grouper("ABCDEFG", 3) -> ABC DEF
+    Groups items of the iterable in equally spaced blocks of n items.
+    If the iterable's length ISN'T a multiple of n, you'll get a ValueError on the last iteration.
+    Example: grouper("ABCDEFGHI", 3) -> ABC DEF GHI
 
     From https://docs.python.org/3/library/itertools.html#itertools-recipes.
+
+    Args:
+    * iterable (Iterable[Any]): an iterator
+    * n (int): The size of the groups
+
+    Returns:
+    * generator: The result of the grouping, which you can iterate over.
     """
     args = [iter(iterable)] * n
     return zip_strict(*args)
 
 
 def get_term_info():
-    """Get the latest term info."""
+    """
+    Gets the latest term info from "../public/latestTerm.json" as a dictionary.
+
+    There are no arguments.
+    """
     with open("../public/latestTerm.json") as f:
         term_info = json.load(f)
     return term_info

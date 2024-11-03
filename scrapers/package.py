@@ -1,6 +1,12 @@
 """
 We combine the data from the Fireroad API and the data we scrape from the
 catalog, into the format specified by src/lib/rawClass.ts.
+
+Data:
+* OVERRIDES: dict[str, dict[str, list]]: The list of overrides
+
+Functions:
+* run(): The main entry point.
 """
 
 import datetime
@@ -256,6 +262,11 @@ OVERRIDES = {
 
 
 def run():
+    """
+    The main entry point.
+    Takes data from fireroad.json and catalog.json; outputs latest.json.
+    There are no arguments and no return value.
+    """
     courses = dict()
     with open("fireroad.json") as f:
         fireroad = json.load(f)
@@ -287,4 +298,5 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    pass
+    #run()
