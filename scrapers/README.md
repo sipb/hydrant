@@ -11,6 +11,7 @@ This folder contains several files. The files tracked by git are:
 * utils.py
 * README.md - this very file!
 * .pylintrc
+* overrides.json - some manual override data for cases where web scraping fails
 
 The files intentionally left out of git are:
 
@@ -36,7 +37,7 @@ It is mainly intended to serve as a data source for the frontend, which is the r
 
 * `fireroad.py` creates `fireroad.json`
 * `catalog.py` creates `catalog.json`
-* `package.py` combines these to create `../public/latest.json`. (This is the final product that our frontend ingests.)
+* `package.py` combines these with `overrides.json` to create `../public/latest.json`. (This is the final product that our frontend ingests.)
 
 `math_dept.py` is an irregularly run file that helps create override data for courses in the MIT math department (since those are formatted slightly differently). `utils.py` contains a few utility functions and variables, which in turn are used by `fireroad.py` and `package.py`. The file `__init__.py` is empty but we include it anyways for completeness.
 
