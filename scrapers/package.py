@@ -260,6 +260,11 @@ OVERRIDES = {
     },
 }
 
+# grab data from overrides.json
+with open("./overrides.json", mode = "r", encoding = "utf-8") as f:
+    NEW_OVERRIDES = json.load(f)
+
+assert OVERRIDES == NEW_OVERRIDES
 
 def run():
     """
