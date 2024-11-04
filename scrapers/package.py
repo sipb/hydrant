@@ -14,8 +14,12 @@ import json
 import utils
 
 # grab data from overrides.json
-with open("./overrides.json", mode = "r", encoding = "utf-8") as f:
-    OVERRIDES = json.load(f)
+def get_overrides():
+    """
+    Gets data from overrides.json. Returns a string.
+    """
+    with open("./overrides.json", mode = "r", encoding = "utf-8") as f:
+        return json.load(f)
 
 def run():
     """
@@ -23,6 +27,10 @@ def run():
     Takes data from fireroad.json and catalog.json; outputs latest.json.
     There are no arguments and no return value.
     """
+    # call get_overrides
+    OVERRIDES = get_overrides()
+
+    # main logic
     courses = dict()
     with open("fireroad.json") as f:
         fireroad = json.load(f)
