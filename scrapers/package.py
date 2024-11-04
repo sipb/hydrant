@@ -14,11 +14,17 @@ import json
 import utils
 
 # grab data from overrides.json
-def get_overrides():
+def get_json_data(jsonfile):
     """
-    Gets data from overrides.json. Returns a string.
+    Gets data from a JSON file.
+
+    Args:
+    * jsonfile (str): The file to read from.
+
+    Returns:
+    * Any: The data inside the file.
     """
-    with open("./overrides.json", mode = "r", encoding = "utf-8") as f:
+    with open(jsonfile, mode = "r", encoding = "utf-8") as f:
         return json.load(f)
 
 def run():
@@ -28,7 +34,7 @@ def run():
     There are no arguments and no return value.
     """
     # call get_overrides
-    OVERRIDES = get_overrides()
+    OVERRIDES = get_json_data("./overrides.json")
 
     # main logic
     courses = dict()
