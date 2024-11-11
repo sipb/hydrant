@@ -12,6 +12,10 @@ Functions:
 import datetime
 import json
 import utils
+import os
+
+# set the current working directory to avoid bugs
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # grab data from overrides.json
 def get_json_data(jsonfile):
@@ -34,7 +38,7 @@ def run():
     There are no arguments and no return value.
     """
     # call get_overrides
-    OVERRIDES = get_json_data("./overrides.json")
+    OVERRIDES = get_json_data("overrides.json")
 
     # main logic
     courses = dict()
