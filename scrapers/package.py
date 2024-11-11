@@ -38,10 +38,8 @@ def run():
 
     # main logic
     courses = dict()
-    with open("fireroad.json") as f:
-        fireroad = json.load(f)
-    with open("catalog.json") as f:
-        catalog = json.load(f)
+    fireroad = get_json_data("fireroad.json")
+    catalog = get_json_data("catalog.json")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, we don't have its schedule.
