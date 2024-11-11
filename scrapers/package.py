@@ -64,7 +64,7 @@ def run():
         "classes": courses,
     }
 
-    with open("../public/latest.json", "w") as f:
+    with open("../public/latest.json", mode = "w", encoding = "utf-8") as f:
         json.dump(obj, f, separators=(",", ":"))
     print(f"Got {len(courses)} courses")
 
