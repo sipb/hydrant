@@ -7,6 +7,7 @@ Data:
 
 Functions:
 * run(): The main entry point.
+* get_json_data(jsonfile): Gets data from the specified JSON file.
 """
 
 import datetime
@@ -17,7 +18,6 @@ import utils
 # set the current working directory to avoid bugs
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# grab data from overrides.json
 def get_json_data(jsonfile):
     """
     Gets data from a JSON file.
