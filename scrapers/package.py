@@ -11,8 +11,8 @@ Functions:
 
 import datetime
 import json
-import utils
 import os
+import utils
 
 # set the current working directory to avoid bugs
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -39,11 +39,11 @@ def run():
     """
     # call get_overrides
     OVERRIDES = get_json_data("overrides.json")
-
-    # main logic
-    courses = dict()
     fireroad = get_json_data("fireroad.json")
     catalog = get_json_data("catalog.json")
+
+    # main logic
+    courses = {}
 
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, we don't have its schedule.
