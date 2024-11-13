@@ -57,9 +57,9 @@ def run():
     There are no arguments and no return value.
     """
     # get all the data
-    OVERRIDES = get_json_data("overrides.json")
     fireroad = get_json_data("fireroad.json")
     catalog = get_json_data("catalog.json")
+    overrides = get_json_data("overrides.json")         # decapitalized as it isn't special
 
     # merge all the data together!
     # The key needs to be in BOTH fireroad and catalog to make it:
@@ -67,7 +67,7 @@ def run():
     # If it's not in catalog, it's not offered this semester.
     courses = merge_data(
         keys_to_keep = set(fireroad) & set(catalog),
-        datasets = [fireroad, catalog, OVERRIDES]
+        datasets = [fireroad, catalog, overrides]
     )
 
     # package for distribution
