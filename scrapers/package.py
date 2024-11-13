@@ -56,25 +56,21 @@ def run():
     Takes data from fireroad.json and catalog.json; outputs latest.json.
     There are no arguments and no return value.
     """
-    # call get_overrides
+    # get all the data
     OVERRIDES = get_json_data("overrides.json")
     fireroad = get_json_data("fireroad.json")
     catalog = get_json_data("catalog.json")
 
-    # main logic
-    courses = {}
-
+    # merge all the data together!
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, we don't have its schedule.
     # If it's not in catalog, it's not offered this semester.
-    for course in set(fireroad) & set(catalog):
-        courses[course] = fireroad[course]
-        courses[course].update(catalog[course])
+    courses = merge_data(
+        keys_to_keep = set(fireroad) & set(catalog),
+        datasets = [fireroad, catalog, OVERRIDES]
+    )
 
-    for course, info in OVERRIDES.items():
-        if course in courses:
-            courses[course].update(info)
-
+    # package for distribution
     term_info = utils.get_term_info()
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     obj = {
@@ -85,6 +81,8 @@ def run():
 
     with open("../public/latest.json", mode = "w", encoding = "utf-8") as f:
         json.dump(obj, f, separators=(",", ":"))
+
+    # print for sanity checking
     print(f"Got {len(courses)} courses")
 
 
