@@ -2,12 +2,10 @@
 We combine the data from the Fireroad API and the data we scrape from the
 catalog, into the format specified by src/lib/rawClass.ts.
 
-Data:
-* OVERRIDES: dict[str, dict[str, list]]: The list of overrides
-
 Functions:
-* run(): The main entry point.
 * get_json_data(jsonfile): Gets data from the specified JSON file.
+* merge_data(keys_to_keep, datasets): A helper function to merge the various datasets together.
+* run(): The main entry point.
 """
 
 import datetime
@@ -30,6 +28,27 @@ def get_json_data(jsonfile):
     """
     with open(jsonfile, mode = "r", encoding = "utf-8") as f:
         return json.load(f)
+
+def merge_data(keys_to_keep, datasets):
+    """
+    Merges multiple datasets into one.
+    Later datasets in the `datasets` parameter override earlier ones.
+
+    Args:
+    * keys_to_keep (Iterable): The keys to keep when merging.
+    * datasets (list[dict[any, dict[any, any]]]): The datasets to merge together.
+
+    Returns:
+    * dict[any, dict[any, any]]: The merged dataset.
+    """
+    result = {}
+    for key in keys_to_keep:
+        result[key] = {}
+        for dataset in datasets:
+            if key in dataset:
+                result[key].update(dataset[key])
+    return result
+
 
 def run():
     """
