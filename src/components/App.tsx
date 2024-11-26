@@ -32,6 +32,7 @@ import "./App.scss";
 import { MatrixLink } from "./MatrixLink";
 import { useICSExport } from "../lib/gapi";
 import { CalendarIcon } from "@chakra-ui/icons";
+import { SIPBLogo } from "./SIPBLogo";
 
 type SemesterData = {
   classes: { [cls: string]: RawClass };
@@ -96,7 +97,7 @@ function useHydrant(): {
 /**
  * "Integration callbacks" allow other SIPB projects to integrate with Hydrant by redirecting to
  * https://hydrant.mit.edu/#/export with a `callback` as a query parameter.
- * 
+ *
  * Currently, the only application that uses this is the Matrix class group chat picker,
  * but in the future, a prompt "[Application name] would like to access your Hydrant class list"
  * could be implemented.
@@ -120,7 +121,7 @@ function HydrantApp() {
   useEffect(() => {
     // only trigger this code if the URL asked for it
     if (!hasIntegrationCallback) return;
-    
+
     // wait until Hydrant loads
     if (!hydrant) return;
 
@@ -205,6 +206,7 @@ function HydrantApp() {
                   </Button>
                 </Tooltip>
                 <MatrixLink selectedActivities={state.selectedActivities}/>
+                <SIPBLogo/>
               </HStack>
             </Center>
             <SelectedActivities
