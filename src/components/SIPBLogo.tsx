@@ -13,11 +13,10 @@ export function SIPBLogo() {
           <Image
             src="/fuzzball.png"
             alt="SIPB Logo"
-            height={8}
+            height={6}
           />
         }
         size="sm"
-        py={5}
       >
         Maintained by SIPB
       </Button>
