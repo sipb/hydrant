@@ -88,7 +88,7 @@ def parse_schedule(course):
     result = {}
 
     # Kinds of sections that exist.
-    result["s"] = []
+    result["sectionKinds"] = []
     section_kinds = ("Lecture", "Recitation", "Lab", "Design")
 
     for chunk in schedule.split(";"):
@@ -100,7 +100,7 @@ def parse_schedule(course):
 
         # The key is lowercase
         kind = name.lower()
-        result["s"].append(kind)
+        result["sectionKinds"].append(kind)
 
         # Raw section times, e.g. T9.301-11 or TR1,F2.
         result[kind + "RawSections"] = sections
@@ -115,7 +115,7 @@ def parse_schedule(course):
                 result[kindSectionsName].append(parse_section(info))
 
     # True if some schedule is not scheduled yet.
-    result["tb"] = section_tba
+    result["tba"] = section_tba
     return result
 
 
@@ -134,15 +134,15 @@ def parse_attributes(course):
     gir_attr = course.get("gir_attribute", "")
 
     return {
-        "hh": hass_code == "H",
-        "ha": hass_code == "A",
-        "hs": hass_code == "S",
-        "he": hass_code == "E",
-        "ci": comms_code == "CI-H",
-        "cw": comms_code == "CI-HW",
-        "re": gir_attr == "REST",
-        "la": gir_attr == "LAB",
-        "pl": gir_attr == "LAB2",
+        "hassH": hass_code == "H",
+        "hassA": hass_code == "A",
+        "hassS": hass_code == "S",
+        "hassE": hass_code == "E",
+        "cih": comms_code == "CI-H",
+        "cihw": comms_code == "CI-HW",
+        "rest": gir_attr == "REST",
+        "lab": gir_attr == "LAB",
+        "partLab": gir_attr == "LAB2",
     }
 
 
@@ -154,7 +154,7 @@ def parse_terms(course):
     * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
 
     Returns:
-    * dict[str, list[str]]: The parsed terms, stored in the key "t".
+    * dict[str, list[str]]: The parsed terms, stored in the key "terms".
     """
     terms = [
         name
@@ -166,7 +166,7 @@ def parse_terms(course):
         ]
         if course[attr]
     ]
-    return {"t": terms}
+    return {"terms": terms}
 
 
 def parse_prereqs(course):
@@ -177,14 +177,14 @@ def parse_prereqs(course):
     * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
 
     Returns:
-    * dict[str, str]: The parsed prereqs, in the key "pr".
+    * dict[str, str]: The parsed prereqs, in the key "prereqs".
     """
     prereqs = course.get("prerequisites", "")
     for gir, gir_rw in utils.GIR_REWRITE.items():
         prereqs = prereqs.replace(gir, gir_rw)
     if not prereqs:
         prereqs = "None"
-    return {"pr": prereqs}
+    return {"prereqs": prereqs}
 
 
 def get_course_data(courses, course):
@@ -203,9 +203,9 @@ def get_course_data(courses, course):
     course_code = course["subject_id"]
     course_num, course_class = course_code.split(".")
     raw_class = {
-        "no": course_code,
-        "co": course_num,
-        "cl": course_class,
+        "number": course_code,
+        "course": course_num,
+        "subject": course_class,
     }
 
     if "schedule" not in course:
@@ -224,18 +224,20 @@ def get_course_data(courses, course):
     raw_class.update(parse_attributes(course))
     raw_class.update(
         {
-            "u1": course["lecture_units"],
-            "u2": course["lab_units"],
-            "u3": course["preparation_units"],
-            "le": course["level"],
-            "vu": course["is_variable_units"],
-            "sa": ", ".join(course.get("joint_subjects", [])),
-            "mw": ", ".join(course.get("meets_with_subjects", [])),
+            "lectureUnits": course["lecture_units"],
+            "labUnits": course["lab_units"],
+            "preparationUnits": course["preparation_units"],
+            "level": course["level"],
+            "isVariableUnits": course["is_variable_units"],
+            "same": ", ".join(course.get("joint_subjects", [])),
+            "meets": ", ".join(course.get("meets_with_subjects", [])),
         }
     )
     # This should be the case with variable-units classes, but just to make sure.
-    if raw_class["vu"]:
-        raw_class["u1"] = raw_class["u2"] = raw_class["u3"] = 0
+    if raw_class["isVariableUnits"]:
+        assert raw_class["lectureUnits"] == 0
+        assert raw_class["labUnits"] == 0
+        assert raw_class["preparationUnits"] == 0
 
     # t, pr
     raw_class.update(parse_terms(course))
@@ -243,24 +245,25 @@ def get_course_data(courses, course):
 
     raw_class.update(
         {
-            "d": course.get("description", ""),
-            "n": course.get("title", ""),
+            "description": course.get("description", ""),
+            "name": course.get("title", ""),
             # TODO: improve instructor parsing
-            "i": ",".join(course.get("instructors", [])),
-            "v": course.get("virtual_status", "") == "Virtual",
+            "inCharge": ",".join(course.get("instructors", [])),
+            "virtualStatus": course.get("virtual_status", "") == "Virtual",
         }
     )
 
     # nx, rp, u, f, hf, lm are from catalog.json, not here
 
     if "old_id" in course:
-        raw_class["on"] = course["old_id"]
+        raw_class["oldNumber"] = course["old_id"]
 
     raw_class.update(
         {
-            "ra": course.get("rating", 0),
-            "h": course.get("in_class_hours", 0) + course.get("out_of_class_hours", 0),
-            "si": course.get("enrollment_number", 0),
+            "rating": course.get("rating", 0),
+            "hours": course.get("in_class_hours", 0)
+            + course.get("out_of_class_hours", 0),
+            "size": course.get("enrollment_number", 0),
         }
     )
 
