@@ -7,6 +7,7 @@ Data:
 
 Functions:
 * load_json_data(jsonfile): Loads data from the provided JSON file
+* merge_data(datasets, keys_to_keep): Combines the datasets.
 * run(): The main entry point.
 """
 
@@ -27,6 +28,24 @@ def load_json_data(jsonfile):
     with open(jsonfile, mode = "r", encoding = "utf-8") as f:
         return json.load(f)
 
+def merge_data(datasets, keys_to_keep):
+    """
+    Combines the provided datasets, retaining only keys from keys_to_keep.
+    NOTE: Later datasets will override earlier ones
+
+    Args:
+    * datasets (iterable[dict[any, dict]]): 
+    * keys (iterable): The keys to retain in the output
+
+    Returns:
+    * dict[any, dict]: The combined data
+    """
+    result = {k: {} for k in keys_to_keep}
+    for key in keys_to_keep:
+        for dataset in datasets:
+            if key in dataset:
+                result[key].update(dataset[key])
+    return result
 
 def run():
     """
