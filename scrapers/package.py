@@ -13,6 +13,19 @@ import datetime
 import json
 import utils
 
+def load_json_data(jsonfile):
+    """
+    Loads data from the provided file
+
+    Args:
+    * jsonfile (str): The file to load from
+
+    Returns:
+    * any: The data contained within the file
+    """
+    with open(jsonfile, mode = "r", encoding = "utf-8") as f:
+        return json.load(f)
+
 OVERRIDES = {}
 
 
