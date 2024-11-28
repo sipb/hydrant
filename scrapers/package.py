@@ -27,8 +27,6 @@ def load_json_data(jsonfile):
     with open(jsonfile, mode = "r", encoding = "utf-8") as f:
         return json.load(f)
 
-OVERRIDES = {}
-
 
 def run():
     """
@@ -36,11 +34,10 @@ def run():
     Takes data from fireroad.json and catalog.json; outputs latest.json.
     There are no arguments and no return value.
     """
-    courses = dict()
-    with open("fireroad.json") as f:
-        fireroad = json.load(f)
-    with open("catalog.json") as f:
-        catalog = json.load(f)
+    courses = {}
+    fireroad = load_json_data("fireroad.json")
+    catalog = load_json_data("catalog.json")
+    OVERRIDES = load_json_data("overrides.json")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, we don't have its schedule.
