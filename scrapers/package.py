@@ -3,9 +3,10 @@ We combine the data from the Fireroad API and the data we scrape from the
 catalog, into the format specified by src/lib/rawClass.ts.
 
 Data:
-* OVERRIDES: dict[str, dict[str, list]]: The list of overrides
+* OVERRIDES (dict): The list of overrides, currently empty.
 
 Functions:
+* load_json_data(jsonfile): Loads data from the provided JSON file
 * run(): The main entry point.
 """
 
