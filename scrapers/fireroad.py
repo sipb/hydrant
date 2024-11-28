@@ -26,26 +26,35 @@ import utils
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
-def parse_timeslot(day, slot):
-    """Parses a timeslot. Example: parse_timeslot("M", "10-11.30") -> [4, 3]
+def parse_timeslot(day, slot, pm):
+    """Parses a timeslot. Example: parse_timeslot("M", "10-11.30", False) -> [4, 3]
 
     Args:
     * day (str): The day as a string
     * slot (str): The slot as a string
+    * pm (bool): Whether the timeslot is in the evening
 
     Returns:
     * list[int]: The parsed day and timeslot
     """
-    pm, slot = slot.endswith(" PM"), slot.rstrip(" PM")
+    assert pm == slot.endswith(" PM")
+    slot = slot.rstrip(" PM")
 
     if "-" in slot:
         start, end = slot.split("-")
-        start_slot = utils.find_timeslot(day, start, pm)
-        end_slot = utils.find_timeslot(day, end, pm)
+        try:
+            start_slot = utils.find_timeslot(day, start, pm)
+            end_slot = utils.find_timeslot(day, end, pm)
+        except KeyError:
+            # Maybe the start time is AM but the end time is PM
+            start_slot = utils.find_timeslot(day, start, False)
+            end_slot = utils.find_timeslot(day, end, True)
     else:
         start_slot = utils.find_timeslot(day, slot, pm)
         # Slot is one hour long, so length is 2.
         end_slot = start_slot + 2
+
+    assert end_slot > start_slot
 
     return [start_slot, end_slot - start_slot]
 
@@ -53,7 +62,7 @@ def parse_timeslot(day, slot):
 def parse_section(section):
     """Parses a section string.
     Example: "32-123/TR/0/11/F/0/2" -> [[[36, 2], [96, 2], [132, 2]], '32-123']
-    
+
     Args:
     * section (str): The section given as a string
 
@@ -63,11 +72,11 @@ def parse_section(section):
     place, *infos = section.split("/")
     slots = []
 
-    for weekdays, _, slot in utils.grouper(infos, 3):
+    for weekdays, pm, slot in utils.grouper(infos, 3):
         for day in weekdays:
             if day == "S":
                 continue  # TODO: handle saturday
-            slots.append(parse_timeslot(day, slot))
+            slots.append(parse_timeslot(day, slot, bool(int(pm))))
 
     return [slots, place]
 
@@ -222,7 +231,7 @@ def get_course_data(courses, course):
         raw_class.update(parse_schedule(course))
     except Exception as e:
         # if we can't parse the schedule, warn
-        print(f"Can't parse schedule {course_code}: {e}")
+        print(f"Can't parse schedule {course_code}: {repr(e)}")
         return False
 
     # hh, ha, hs, he, ci, cw, re, la, pl
