@@ -37,7 +37,7 @@ def merge_data(datasets, keys_to_keep):
 
     Args:
     * datasets (iterable[dict[any, dict]]): 
-    * keys (iterable): The keys to retain in the output
+    * keys_to_keep (iterable): The keys to retain in the output
 
     Returns:
     * dict[any, dict]: The combined data
