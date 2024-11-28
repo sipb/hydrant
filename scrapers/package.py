@@ -2,13 +2,15 @@
 We combine the data from the Fireroad API and the data we scrape from the
 catalog, into the format specified by src/lib/rawClass.ts.
 
-Data:
-* OVERRIDES (dict): The list of overrides, currently empty.
-
 Functions:
 * load_json_data(jsonfile): Loads data from the provided JSON file
 * merge_data(datasets, keys_to_keep): Combines the datasets.
 * run(): The main entry point.
+
+Dependencies:
+* datetime
+* json
+* utils (within this folder)
 """
 
 import datetime
@@ -53,7 +55,6 @@ def run():
     Takes data from fireroad.json and catalog.json; outputs latest.json.
     There are no arguments and no return value.
     """
-    courses = {}
     fireroad = load_json_data("fireroad.json")
     catalog = load_json_data("catalog.json")
     OVERRIDES = load_json_data("overrides.json")
