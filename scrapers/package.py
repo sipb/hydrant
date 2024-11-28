@@ -61,13 +61,10 @@ def run():
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, we don't have its schedule.
     # If it's not in catalog, it's not offered this semester.
-    for course in set(fireroad) & set(catalog):
-        courses[course] = fireroad[course]
-        courses[course].update(catalog[course])
-
-    for course, info in OVERRIDES.items():
-        if course in courses:
-            courses[course].update(info)
+    courses = merge_data(
+        datasets = [fireroad, catalog, OVERRIDES],
+        keys_to_keep = set(fireroad) & set(catalog)
+    )
 
     term_info = utils.get_term_info()
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
