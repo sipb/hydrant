@@ -31,11 +31,15 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write **/*.{ts,tsx}",
+    "ci-prettier": "prettier --check **/*.{ts,tsx}",
+    "ci-eslint": "eslint **/*.{ts,tsx}"
   },
   "eslintConfig": {
     "extends": [
-      "react-app"
+      "react-app",
+      "prettier"
     ]
   },
   "eslintIgnore": [
@@ -45,7 +49,7 @@
     "defaults"
   ],
   "engines": {
-    "node": "^16.16.0"
+    "node": ">=16.16.0"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^3.2.1",
@@ -54,6 +58,8 @@
     "@types/node": "^16.16.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "typescript": "^4.8.0"
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "3.4.1",
+    "typescript": ">=3.3.1 <4.8.0"
   }
 }

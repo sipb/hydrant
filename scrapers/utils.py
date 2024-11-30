@@ -15,7 +15,6 @@ Functions:
 * get_term_info()
 """
 
-
 import itertools
 import json
 
@@ -122,7 +121,7 @@ def zip_strict(*iterables):
     sentinel = object()
     for tuple in itertools.zip_longest(*iterables, fillvalue=sentinel):
         if any(sentinel is t for t in tuple):
-            raise ValueError('Iterables have different lengths')
+            raise ValueError("Iterables have different lengths")
         yield tuple
 
 
