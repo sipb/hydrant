@@ -9,28 +9,18 @@
 }
 
 .fc .fc-timegrid-slot {
+  border-color: var(--chakra-colors-border-emphasized);
   border-left-color: transparent;
-
-  .dark & {
-    border-color: var(--chakra-colors-white-alpha-600);
-    border-left-color: transparent;
-  }
 }
 
 .fc-theme-standard td,
 .fc-theme-standard th {
-  .dark & {
-    border-color: var(--chakra-colors-white-alpha-600);
-  }
+  border-color: var(--chakra-colors-border-emphasized);
 }
 
 .fc .fc-scrollgrid-section > th:nth-child(1),
 .fc .fc-col-header-cell:last-child {
   border-right-color: transparent;
-
-  .dark & {
-    border-right-color: transparent;
-  }
 }
 
 .fc .fc-scrollgrid-section-sticky > * {
