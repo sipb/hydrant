@@ -1,16 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { StrictMode, useEffect, useRef, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import {
-  Button,
-  Center,
-  ChakraProvider,
-  Flex,
-  HStack,
-  Spinner,
-  Tooltip,
-  extendTheme,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Center, Flex, Group, Spinner } from "@chakra-ui/react";
+
+import { Button } from "./ui/button";
+import { Tooltip } from "./ui/tooltip";
+import { Provider } from "./ui/provider";
+import { useColorMode } from "./ui/color-mode";
 
 import { Term, TermInfo } from "../lib/dates";
 import { State } from "../lib/state";
@@ -27,11 +22,11 @@ import { ScheduleOption } from "./ScheduleOption";
 import { ScheduleSwitcher } from "./ScheduleSwitcher";
 import { SelectedActivities } from "./SelectedActivities";
 
-import "@fontsource/inter/variable.css";
+import "@fontsource-variable/inter";
 import "./App.scss";
 import { MatrixLink } from "./MatrixLink";
 import { useICSExport } from "../lib/gapi";
-import { CalendarIcon } from "@chakra-ui/icons";
+import { LuCalendar } from "react-icons/lu";
 import { SIPBLogo } from "./SIPBLogo";
 
 type SemesterData = {
@@ -69,7 +64,7 @@ function useHydrant(): {
         classesMap,
         new Term(termInfo),
         lastUpdated,
-        new Term(latestTerm)
+        new Term(latestTerm),
       );
       hydrantRef.current = hydrantObj;
       setLoading(false);
@@ -132,9 +127,13 @@ function HydrantApp() {
       window.alert(`${callback} is not allowed to read your class list!`);
       return;
     }
-    const encodedClasses = (hydrant.selectedActivities.filter((activity) => activity instanceof Class) as Class[])
+    const encodedClasses = (
+      hydrant.selectedActivities.filter(
+        (activity) => activity instanceof Class,
+      ) as Class[]
+    )
       .map((cls) => `&class=${cls.number}`)
-      .join('');
+      .join("");
     const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
     window.location.replace(filledCallback);
   }, [hydrant, hasIntegrationCallback, hash]);
@@ -144,21 +143,19 @@ function HydrantApp() {
   const onICSExport = useICSExport(
     hydrant!,
     () => setIsExporting(false),
-    () => setIsExporting(false)
+    () => setIsExporting(false),
   );
 
   return (
     <>
-      {(!hydrant || hasIntegrationCallback) ? (
+      {!hydrant || hasIntegrationCallback ? (
         <Flex w="100%" h="100vh" align="center" justify="center">
           <Spinner />
         </Flex>
       ) : (
         <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
           <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-            <Header
-              preferences={state.preferences}
-              state={hydrant} />
+            <Header preferences={state.preferences} state={hydrant} />
             <ScheduleOption
               selectedOption={state.selectedOption}
               totalOptions={state.totalOptions}
@@ -169,9 +166,7 @@ function HydrantApp() {
               viewedActivity={state.viewedActivity}
               state={hydrant}
             />
-            <LeftFooter
-              state={hydrant}
-            />
+            <LeftFooter state={hydrant} />
           </Flex>
           <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
             <ScheduleSwitcher
@@ -180,7 +175,7 @@ function HydrantApp() {
               state={hydrant}
             />
             <Center>
-              <HStack gap={2}>
+              <Group wrap="wrap" justifyContent="center" gap={2}>
                 {/* <Tooltip
                   label={
                     isExporting
@@ -195,19 +190,20 @@ function HydrantApp() {
                   )}
                 </Tooltip> */}
                 <Tooltip
-                  label={
+                  content={
                     isExporting
                       ? "Loading..."
-                      : "At the moment, only manually exporting to an .ics file is supported. " +
-                        "We are still working on fixing Google Calendar export!"
-                  }>
-                  <Button colorScheme="blue" size="sm" leftIcon={<CalendarIcon/>} onClick={onICSExport}>
+                      : "Currently, only manually exporting to an .ics file is supported. "
+                  }
+                >
+                  <Button colorPalette="blue" size="sm" onClick={onICSExport}>
+                    <LuCalendar />
                     {isExporting ? <Spinner m={3} /> : "Import to my calendar"}
                   </Button>
                 </Tooltip>
-                <MatrixLink selectedActivities={state.selectedActivities}/>
-                <SIPBLogo/>
-              </HStack>
+                <MatrixLink selectedActivities={state.selectedActivities} />
+                <SIPBLogo />
+              </Group>
             </Center>
             <SelectedActivities
               selectedActivities={state.selectedActivities}
@@ -235,28 +231,13 @@ function HydrantApp() {
 
 /** The main application. */
 export function App() {
-  const theme = extendTheme({
-    components: {
-      Link: {
-        baseStyle: ({ colorMode }: { colorMode: string }) => ({
-          color: colorMode === "light" ? "blue.500" : "blue.200",
-        }),
-      },
-    },
-    config: {
-      initialColorMode: "light",
-    },
-    fonts: {
-      body: `'InterVariable', sans-serif`,
-      heading: `'InterVariable', sans-serif`,
-    },
-  });
-
   return (
-    <ChakraProvider theme={theme}>
-      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
-        <HydrantApp />
-      </GoogleOAuthProvider>
-    </ChakraProvider>
+    <StrictMode>
+      <Provider>
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
+          <HydrantApp />
+        </GoogleOAuthProvider>
+      </Provider>
+    </StrictMode>
   );
 }

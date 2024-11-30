@@ -7,22 +7,11 @@
 .ag-cell-wrapper {
   cursor: pointer;
   padding: 8px 5px;
-}
-
-.ag-row-even {
-  background-color: var(--chakra-colors-gray-50);
-
-  .chakra-ui-dark & {
-    background-color: var(--chakra-colors-gray-700);
-  }
+  border-bottom-width: 1px;
 }
 
 .ag-row:hover {
-  background-color: var(--chakra-colors-blue-50);
-
-  .chakra-ui-dark & {
-    background-color: var(--chakra-colors-blue-700);
-  }
+  background-color: var(--chakra-colors-color-palette-subtle);
 
   .ag-cell:first-child {
     text-decoration: underline;
@@ -42,4 +31,7 @@
 
 .ag-header-cell-label {
   padding: 8px 5px;
+}
+.ag-header-viewport {
+  background-color: var(--chakra-colors-bg-subtle);
 }

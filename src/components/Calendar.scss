@@ -3,7 +3,7 @@
 .fc .fc-timegrid-axis {
   border-color: transparent;
 
-  .chakra-ui-dark & {
+  .dark & {
     border-color: transparent;
   }
 }
@@ -11,15 +11,16 @@
 .fc .fc-timegrid-slot {
   border-left-color: transparent;
 
-  .chakra-ui-dark & {
-    border-color: var(--chakra-colors-whiteAlpha-600);
+  .dark & {
+    border-color: var(--chakra-colors-white-alpha-600);
     border-left-color: transparent;
   }
 }
 
-.fc-theme-standard td, .fc-theme-standard th {
-  .chakra-ui-dark & {
-    border-color: var(--chakra-colors-whiteAlpha-600);
+.fc-theme-standard td,
+.fc-theme-standard th {
+  .dark & {
+    border-color: var(--chakra-colors-white-alpha-600);
   }
 }
 
@@ -27,7 +28,7 @@
 .fc .fc-col-header-cell:last-child {
   border-right-color: transparent;
 
-  .chakra-ui-dark & {
+  .dark & {
     border-right-color: transparent;
   }
 }
@@ -37,11 +38,11 @@
 }
 
 .fc .fc-col-header-cell .fc-scrollgrid-sync-inner {
-  background: var(--chakra-colors-chakra-body-bg);
+  background: var(--chakra-colors-bg);
 }
 
 .fc .fc-timegrid-event-harness-inset .fc-timegrid-event {
-  box-shadow: var(--chakra-colors-chakra-body-bg) 0px 0px 0px 1px;
+  box-shadow: var(--chakra-colors-bg) 0px 0px 0px 1px;
 }
 
 .fc .fc-scroller-harness {

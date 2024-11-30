@@ -1,24 +1,27 @@
-import { AddIcon } from "@chakra-ui/icons";
-import { Button, Flex, Text } from "@chakra-ui/react";
-import { ComponentProps } from "react";
+import { Flex, Group, Text } from "@chakra-ui/react";
+import { ComponentPropsWithoutRef } from "react";
+
+import { Button } from "./ui/button";
 
 import { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
 import { State } from "../lib/state";
 
+import { LuPlus } from "react-icons/lu";
+
 export function ColorButton(
-  props: ComponentProps<"button"> & { color: string }
+  props: ComponentPropsWithoutRef<"button"> & { color: string },
 ) {
   const { children, color, style, ...otherProps } = props;
   return (
     <Button
       {...otherProps}
+      backgroundColor={color}
+      borderColor={color}
+      color={textColor(color)}
       style={{
         ...style,
-        backgroundColor: color,
-        borderColor: color,
-        color: textColor(color),
       }}
     >
       {children}
@@ -57,7 +60,7 @@ export function SelectedActivities(props: {
         <Text>{units} units</Text>
         <Text>{hours.toFixed(1)} hours</Text>
       </Flex>
-      <Flex align="center" wrap="wrap">
+      <Group wrap="wrap">
         {selectedActivities.map((activity) => (
           <ActivityButton
             key={activity instanceof Class ? activity.number : activity.id}
@@ -65,14 +68,11 @@ export function SelectedActivities(props: {
             state={state}
           />
         ))}
-        <Button
-          leftIcon={<AddIcon />}
-          onClick={() => state.addActivity()}
-          size="sm"
-        >
+        <Button onClick={() => state.addActivity()} variant="subtle">
+          <LuPlus />
           Activity
         </Button>
-      </Flex>
+      </Group>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
           <Text fontSize="sm">{warning}</Text>

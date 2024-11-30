@@ -1,15 +1,9 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  Image,
-  Link,
-  Text,
-  Tooltip,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { decode } from "html-entities";
-import { ReactNode } from "react";
+
+import { useColorMode } from "./ui/color-mode";
+import { Tooltip } from "./ui/tooltip";
+import { Button } from "./ui/button";
 
 import { Activity, NonClass } from "../lib/activity";
 import { Class, Flags } from "../lib/class";
@@ -17,6 +11,7 @@ import { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";
 
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
+import { LuExternalLink } from "react-icons/lu";
 
 const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
 
@@ -28,7 +23,7 @@ function TypeSpan(props: { flag?: string; title: string }) {
     colorMode === "dark" && DARK_IMAGES.includes(flag ?? "") ? "invert()" : "";
 
   return flag ? (
-    <Tooltip label={title}>
+    <Tooltip content={title}>
       <Image
         alt={title}
         boxSize="1em"
@@ -43,7 +38,7 @@ function TypeSpan(props: { flag?: string; title: string }) {
 }
 
 /** Header for class description; contains flags and related classes. */
-function ClassTypes(props: { cls: Class, state: State }) {
+function ClassTypes(props: { cls: Class; state: State }) {
   const { cls, state } = props;
   const { flags, totalUnits, units } = cls;
 
@@ -58,9 +53,10 @@ function ClassTypes(props: { cls: Class, state: State }) {
       .map(([flag, title]) => (
         <TypeSpan key={flag} flag={flag} title={title} />
       ));
-  
+
   const currentYear = parseInt(state.term.fullRealYear);
-  const nextAcademicYearStart = state.term.semester === "f" ? currentYear + 1 : currentYear;
+  const nextAcademicYearStart =
+    state.term.semester === "f" ? currentYear + 1 : currentYear;
   const nextAcademicYearEnd = nextAcademicYearStart + 1;
 
   const types1 = makeFlags([
@@ -100,11 +96,10 @@ function ClassTypes(props: { cls: Class, state: State }) {
     ) : (
       ""
     );
-  
-  const unitsDescription =
-    cls.isVariableUnits
-      ? "Units arranged"
-      : `${totalUnits} units: ${units.join("-")}`;
+
+  const unitsDescription = cls.isVariableUnits
+    ? "Units arranged"
+    : `${totalUnits} units: ${units.join("-")}`;
 
   return (
     <Flex gap={4} align="center">
@@ -116,9 +111,7 @@ function ClassTypes(props: { cls: Class, state: State }) {
         <Flex gap={1}>{types2}</Flex>
         {halfType}
       </Flex>
-      <Text>
-        {unitsDescription}
-      </Text>
+      <Text>{unitsDescription}</Text>
       {flags.final ? <Text>Has final</Text> : null}
     </Flex>
   );
@@ -133,9 +126,7 @@ function ClassRelated(props: { cls: Class; state: State }) {
     <>
       <Text>Prereq: {linkClasses(state, prereq)}</Text>
       {same !== "" && <Text>Same class as: {linkClasses(state, same)}</Text>}
-      {meets !== "" && (
-        <Text> Meets with: {linkClasses(state, meets)} </Text>
-      )}
+      {meets !== "" && <Text> Meets with: {linkClasses(state, meets)} </Text>}
     </>
   );
 }
@@ -167,9 +158,10 @@ function ClassBody(props: { cls: Class; state: State }) {
       {inCharge !== "" && <Text>In-charge: {inCharge}.</Text>}
       {extraUrls.length > 0 && (
         <Flex gap={4}>
-          {extraUrls.map<ReactNode>(({ label, url }) => (
-            <Link key={label} href={url} target="_blank">
+          {extraUrls.map(({ label, url }) => (
+            <Link key={label} href={url} target="_blank" colorPalette="blue">
               {label}
+              <LuExternalLink />
             </Link>
           ))}
         </Flex>
@@ -199,10 +191,7 @@ function ClassDescription(props: { cls: Class; state: State }) {
 }
 
 /** Full non-class activity description, from title to timeslots. */
-function NonClassDescription(props: {
-  activity: NonClass;
-  state: State;
-}) {
+function NonClassDescription(props: { activity: NonClass; state: State }) {
   const { activity, state } = props;
 
   return (
@@ -214,6 +203,7 @@ function NonClassDescription(props: {
             <Button
               size="sm"
               onClick={() => state.removeTimeslot(activity, t)}
+              variant="subtle"
             >
               Remove
             </Button>

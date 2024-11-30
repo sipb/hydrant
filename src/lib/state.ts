@@ -60,7 +60,7 @@ export class State {
     /** String representing last update time. */
     public readonly lastUpdated: string,
     /** The latest term object. */
-    public readonly latestTerm: Term
+    public readonly latestTerm: Term,
   ) {
     this.classes = new Map();
     this.store = new Store(term.toString());
@@ -92,7 +92,7 @@ export class State {
   /** @returns True if activity is one of the currently selected activities. */
   isSelectedActivity(activity: Activity): boolean {
     return this.selectedActivities.some(
-      (activity_) => activity_.id === activity.id
+      (activity_) => activity_.id === activity.id,
     );
   }
 
@@ -119,11 +119,11 @@ export class State {
     if (!this.isSelectedActivity(activity)) return;
     if (activity instanceof Class) {
       this.selectedClasses = this.selectedClasses.filter(
-        (activity_) => activity_.id !== activity.id
+        (activity_) => activity_.id !== activity.id,
       );
     } else {
       this.selectedNonClasses = this.selectedNonClasses.filter(
-        (activity_) => activity_.id !== activity.id
+        (activity_) => activity_.id !== activity.id,
       );
       this.setViewedActivity(undefined);
     }
@@ -157,7 +157,7 @@ export class State {
   /** Rename a given non-activity. */
   renameNonClass(nonClass: NonClass, name: string): void {
     const nonClass_ = this.selectedNonClasses.find(
-      (nonClass_) => nonClass_.id === nonClass.id
+      (nonClass_) => nonClass_.id === nonClass.id,
     )!;
     nonClass_.name = name;
     this.updateState();
@@ -166,7 +166,7 @@ export class State {
   /** Changes the room for a given non-class. */
   relocateNonClass(nonClass: NonClass, room: string | undefined): void {
     const nonClass_ = this.selectedNonClasses.find(
-      (nonClass_) => nonClass_.id === nonClass.id
+      (nonClass_) => nonClass_.id === nonClass.id,
     )!;
     nonClass_.room = room;
     this.updateState();
@@ -200,7 +200,7 @@ export class State {
       units: sum(this.selectedClasses.map((cls) => cls.totalUnits)),
       hours: sum(this.selectedActivities.map((activity) => activity.hours)),
       warnings: Array.from(
-        new Set(this.selectedClasses.flatMap((cls) => cls.warnings.messages))
+        new Set(this.selectedClasses.flatMap((cls) => cls.warnings.messages)),
       ),
       saveId: this.saveId,
       saves: this.saves,
@@ -216,7 +216,7 @@ export class State {
    * If index does not exist, change it to this.options[0].
    */
   selectOption(index?: number): void {
-    this.selectedOption = this.options[index ?? 0] ? index ?? 0 : 0;
+    this.selectedOption = this.options[index ?? 0] ? (index ?? 0) : 0;
     for (const sec of this.options[this.selectedOption]) {
       sec.secs.selected = sec;
     }
@@ -250,7 +250,7 @@ export class State {
           this.selectedNonClasses.length === 0) ||
         scheduleSlots(
           this.selectedClasses.concat([cls]),
-          this.selectedNonClasses
+          this.selectedNonClasses,
         ).conflicts === this.conflicts)
     );
   }
@@ -339,7 +339,7 @@ export class State {
   /** Add a new save. If reset, then make the new save blank. */
   addSave(
     reset: boolean,
-    name: string = `Schedule ${this.saves.length + 1}`
+    name: string = `Schedule ${this.saves.length + 1}`,
   ): void {
     const id = nanoid(8);
     this.saveId = id;

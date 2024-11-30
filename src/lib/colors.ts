@@ -106,7 +106,7 @@ function murmur3(str: string): () => number {
  */
 export function chooseColors(
   activities: Array<Activity>,
-  colorScheme: ColorScheme
+  colorScheme: ColorScheme,
 ): void {
   // above this length, we give up trying to be nice:
   const colorLen = colorScheme.backgroundColors.length;

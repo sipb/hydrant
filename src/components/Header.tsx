@@ -1,16 +1,33 @@
-import { Button, Flex, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, useColorModeValue } from "@chakra-ui/react";
+import { Flex, Image } from "@chakra-ui/react";
+
+import {
+  DialogRoot,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { useColorModeValue, ColorModeIcon } from "./ui/color-mode";
+import { Button } from "./ui/button";
+import {
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "./ui/select";
+
+import { createListCollection } from "@chakra-ui/react";
 
 import { Term } from "../lib/dates";
 import { State } from "../lib/state";
 import { useState, useRef } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
-function PreferencesModal(props: {
-  state: State;
-  preferences: Preferences;
-}) {
+function PreferencesDialog(props: { state: State; preferences: Preferences }) {
   const { preferences: originalPreferences, state } = props;
   const [visible, setVisible] = useState(false);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
@@ -39,45 +56,60 @@ function PreferencesModal(props: {
     setVisible(false);
   };
 
+  const contentRef = useRef<HTMLDivElement>(null);
+
   return (
     <>
-      <Button
-        onClick={onOpen}
-        rightIcon={preferences.colorScheme.colorMode === 'light' ? <MoonIcon/> : <SunIcon/>}
-      >Change theme</Button>
-      <Modal isOpen={visible} onClose={onCancel}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Preferences</ModalHeader>
-          <ModalBody>
+      <Button onClick={onOpen} size="sm" variant="subtle">
+        Change theme <ColorModeIcon />
+      </Button>
+      <DialogRoot open={visible} onOpenChange={onCancel}>
+        <DialogContent ref={contentRef}>
+          <DialogHeader>
+            <DialogTitle>Preferences</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
             <Flex gap={4}>
-              Color scheme:
-              <Select
-                value={preferences.colorScheme.name}
-                onChange={(e) => {
+              <SelectRoot
+                collection={createListCollection({
+                  items: COLOR_SCHEME_PRESETS.map(({ name }) => ({
+                    label: name,
+                    value: name,
+                  })),
+                })}
+                value={[preferences.colorScheme.name]}
+                onValueChange={(e) => {
                   const colorScheme = COLOR_SCHEME_PRESETS.find(
-                    ({ name }) => name === e.target.value
+                    ({ name }) => name === e.value[0],
                   );
                   if (!colorScheme) return;
                   previewPreferences({ ...preferences, colorScheme });
                 }}
               >
-                {COLOR_SCHEME_PRESETS.map(({ name }) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </Select>
+                <SelectLabel>Color scheme:</SelectLabel>
+                <SelectTrigger>
+                  <SelectValueText />
+                </SelectTrigger>
+                <SelectContent portalRef={contentRef}>
+                  {COLOR_SCHEME_PRESETS.map(({ name }) => (
+                    <SelectItem item={name} key={name}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
             </Flex>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onCancel} mr={2}>
+          </DialogBody>
+          <DialogFooter>
+            <Button onClick={onCancel} mr={2} variant="subtle">
               Cancel
             </Button>
-            <Button onClick={onConfirm}>Save</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+            <Button onClick={onConfirm} variant="subtle">
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
     </>
   );
 }
@@ -87,7 +119,7 @@ function toFullUrl(urlName: string, latestUrlName: string): string {
   const url = new URL(window.location.href);
   Array.from(url.searchParams.keys()).forEach((key) => {
     url.searchParams.delete(key);
-  })
+  });
   if (urlName !== latestUrlName) {
     url.searchParams.set("t", urlName);
   }
@@ -127,7 +159,7 @@ function getUrlNames(latestTerm: string): Array<string> {
 }
 
 /** Header above the left column, with logo and semester selection. */
-export function Header(props: { state: State, preferences: Preferences }) {
+export function Header(props: { state: State; preferences: Preferences }) {
   const { state, preferences } = props;
   const logoSrc = useColorModeValue("img/logo.svg", "img/logo-dark.svg");
   const toUrl = (urlName: string) =>
@@ -135,28 +167,41 @@ export function Header(props: { state: State, preferences: Preferences }) {
   const defaultValue = toUrl(state.term.urlName);
 
   return (
-    <Flex align="end" gap={3}>
+    <Flex align="end" gap={3} wrap="wrap">
       <Image src={logoSrc} alt="Hydrant logo" h="40px" pos="relative" top={2} />
-      <Select
-        size="sm"
-        w="fit-content"
-        mr={3}
-        defaultValue={defaultValue}
-        onChange={(e) => {
-          const elt = e.target;
-          window.location.href = elt.options[elt.selectedIndex].value;
-        }}
-      >
-        {getUrlNames(state.latestTerm.urlName).map((urlName) => {
-          const { niceName } = new Term({ urlName });
-          return (
-            <option key={urlName} value={toUrl(urlName)}>
-              {niceName}
-            </option>
-          );
+      <SelectRoot
+        collection={createListCollection({
+          items: getUrlNames(state.latestTerm.urlName).map((urlName) => {
+            const { niceName } = new Term({ urlName });
+            return {
+              label: niceName,
+              value: toUrl(urlName),
+            };
+          }),
         })}
-      </Select>
-      <PreferencesModal preferences={preferences} state={state} />
+        value={[defaultValue]}
+        onValueChange={(e) => {
+          window.location.href = e.value[0];
+        }}
+        size="sm"
+        w="8rem"
+        mr={3}
+      >
+        <SelectTrigger>
+          <SelectValueText />
+        </SelectTrigger>
+        <SelectContent>
+          {getUrlNames(state.latestTerm.urlName).map((urlName) => {
+            const { niceName } = new Term({ urlName });
+            return (
+              <SelectItem item={toUrl(urlName)} key={toUrl(urlName)}>
+                {niceName}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </SelectRoot>
+      <PreferencesDialog preferences={preferences} state={state} />
     </Flex>
   );
 }

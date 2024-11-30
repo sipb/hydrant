@@ -33,7 +33,7 @@ function download(filename: string, text: string) {
   var element = document.createElement("a");
   element.setAttribute(
     "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
   );
   element.setAttribute("download", filename);
 
@@ -55,7 +55,7 @@ function toRRuleString(date: Date): string {
 /** Return a list of events for an activity that happen on a given term. */
 function toGoogleCalendarEvents(
   activity: Activity,
-  term: Term
+  term: Term,
 ): Array<gapi.client.calendar.Event> {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
@@ -76,7 +76,7 @@ function toGoogleCalendarEvents(
           rDate && `RDATE;TZID=${TIMEZONE}:${toRRuleString(rDate)}`,
         ].filter((t): t is string => t !== undefined),
       };
-    })
+    }),
   );
 }
 
@@ -102,7 +102,7 @@ function toICalEvents(activity: Activity, term: Term): Array<ICalEventData> {
           rDate && `RDATE;TZID=${TIMEZONE}:${toRRuleString(rDate)}`,
         ].filter((t): t is string => t !== undefined)[0],
       };
-    })
+    }),
   );
 }
 
@@ -110,14 +110,14 @@ function toICalEvents(activity: Activity, term: Term): Array<ICalEventData> {
 export function useGoogleCalendarExport(
   state: State,
   onSuccess?: () => void,
-  onError?: () => void
+  onError?: () => void,
 ): () => void {
   /** Insert a new calendar for this semester. */
   const insertCalendar = async (): Promise<string> => {
     const calendarName = `Hydrant: ${state.term.niceName}`;
     const resp = await gapi.client.calendar.calendars.insert(
       {},
-      { summary: calendarName }
+      { summary: calendarName },
     );
     return resp.result.id!;
   };
@@ -144,8 +144,8 @@ export function useGoogleCalendarExport(
           gapi.client.calendar.events.insert({
             calendarId,
             resource,
-          })
-        )
+          }),
+        ),
       );
     await batch.then();
   };
@@ -177,7 +177,7 @@ export function useGoogleCalendarExport(
 export function useICSExport(
   state: State,
   onSuccess?: () => void,
-  onError?: () => void
+  onError?: () => void,
 ): () => void {
   return async () => {
     const cal = new ICalCalendar({
@@ -187,7 +187,7 @@ export function useICSExport(
         generator: (zone) => tzlib_get_ical_block(zone)[0],
       },
       events: state.selectedActivities.flatMap((activity) =>
-        toICalEvents(activity, state.term)
+        toICalEvents(activity, state.term),
       ),
     });
     console.log(cal);
