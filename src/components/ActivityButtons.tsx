@@ -84,16 +84,16 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
         onChange={(e) => setRoom(e.target.value)}
         placeholder="26-100"
       />
-      <Button onClick={onConfirm} variant="subtle">
+      <Button onClick={onConfirm}>
         <CheckIcon />
       </Button>
-      <Button onClick={onCancel} variant="subtle">
+      <Button onClick={onCancel}>
         <CloseIcon />
       </Button>
     </Flex>
   ) : (
     <Flex mt={2}>
-      <Button onClick={onRelocate} variant="subtle">
+      <Button onClick={onRelocate}>
         {secs.roomOverride ? "Change" : "Add"} custom location
       </Button>
     </Flex>
@@ -220,15 +220,9 @@ function ActivityColor(props: {
           </ColorPickerContent>
         </ColorPickerRoot>
         <Group>
-          <Button onClick={onReset} variant="subtle">
-            Reset
-          </Button>
-          <Button onClick={onCancel} variant="subtle">
-            Cancel
-          </Button>
-          <Button onClick={onConfirm} variant="subtle">
-            Confirm
-          </Button>
+          <Button onClick={onReset}>Reset</Button>
+          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onConfirm}>Confirm</Button>
         </Group>
       </Flex>
     </Flex>
@@ -245,7 +239,7 @@ export function ClassButtons(props: { cls: Class; state: State }) {
   return (
     <Flex direction="column" gap={2}>
       <Group wrap="wrap">
-        <Button onClick={() => state.toggleActivity(cls)} variant="subtle">
+        <Button onClick={() => state.toggleActivity(cls)}>
           {isSelected ? "Remove class" : "Add class"}
         </Button>
         {isSelected && (
@@ -352,7 +346,7 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
   return (
     <form onSubmit={onSubmit}>
       <Flex align="center" gap={2} wrap="wrap">
-        <Button type="submit" size="sm" variant="subtle">
+        <Button type="submit" size="sm">
           Add time
         </Button>
         <Group wrap="wrap">
@@ -399,12 +393,8 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       };
       const renderButtons = () => (
         <>
-          <Button onClick={onConfirm} variant="subtle">
-            Confirm
-          </Button>
-          <Button onClick={onCancel} variant="subtle">
-            Cancel
-          </Button>
+          <Button onClick={onConfirm}>Confirm</Button>
+          <Button onClick={onCancel}>Cancel</Button>
         </>
       );
       return [RenderHeading, renderButtons];
@@ -425,12 +415,8 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       };
       const renderButtons = () => (
         <>
-          <Button onClick={onConfirm} variant="subtle">
-            Confirm
-          </Button>
-          <Button onClick={onCancel} variant="subtle">
-            Cancel
-          </Button>
+          <Button onClick={onConfirm}>Confirm</Button>
+          <Button onClick={onCancel}>Cancel</Button>
         </>
       );
       return [RenderHeading, renderButtons];
@@ -447,15 +433,11 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
     };
     const renderButtons = () => (
       <>
-        <Button onClick={() => state.toggleActivity(activity)} variant="subtle">
+        <Button onClick={() => state.toggleActivity(activity)}>
           {isSelected ? "Remove activity" : "Add activity"}
         </Button>
-        <Button onClick={onRename} variant="subtle">
-          Rename activity
-        </Button>
-        <Button onClick={onRelocate} variant="subtle">
-          Edit location
-        </Button>
+        <Button onClick={onRename}>Rename activity</Button>
+        <Button onClick={onRelocate}>Edit location</Button>
         {isSelected && (
           <ToggleButton
             active={showColors}

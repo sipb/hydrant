@@ -87,7 +87,7 @@ function SelectWithWarn(props: {
             current schedule?
           </DialogBody>
           <DialogFooter>
-            <Button onClick={() => setConfirmSave("")} mr={2} variant="subtle">
+            <Button onClick={() => setConfirmSave("")} mr={2}>
               Cancel
             </Button>
             <Button
@@ -95,7 +95,6 @@ function SelectWithWarn(props: {
                 state.loadSave(confirmSave);
                 setConfirmSave("");
               }}
-              variant="subtle"
             >
               Load schedule
             </Button>
@@ -120,7 +119,7 @@ function DeleteDialog(props: { state: State; saveId: string; name: string }) {
           </DialogHeader>
           <DialogBody>Are you sure you want to delete {name}?</DialogBody>
           <DialogFooter>
-            <Button onClick={() => setShow(false)} mr={2} variant="subtle">
+            <Button onClick={() => setShow(false)} mr={2}>
               Cancel
             </Button>
             <Button
@@ -128,7 +127,6 @@ function DeleteDialog(props: { state: State; saveId: string; name: string }) {
                 state.removeSave(saveId);
                 setShow(false);
               }}
-              variant="subtle"
             >
               Delete
             </Button>
@@ -161,10 +159,10 @@ function ExportDialog(props: { state: State }) {
             </Link>
           </DialogBody>
           <DialogFooter>
-            <Button onClick={() => setShow(false)} mr={2} variant="subtle">
+            <Button onClick={() => setShow(false)} mr={2}>
               Close
             </Button>
-            <Button onClick={() => copyToClipboard(link)} variant="subtle">
+            <Button onClick={() => copyToClipboard(link)}>
               {clipboardState.value === link ? "Copied!" : "Copy"}
             </Button>
           </DialogFooter>

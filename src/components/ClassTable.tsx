@@ -243,12 +243,7 @@ function ClassFlags(props: {
     <Flex direction="column" align="center" gap={2}>
       <Flex align="center">
         {renderGroup(CLASS_FLAGS_1)}
-        <Button
-          onClick={() => setAllFlags(!allFlags)}
-          size="sm"
-          ml={2}
-          variant="subtle"
-        >
+        <Button onClick={() => setAllFlags(!allFlags)} size="sm" ml={2}>
           {" "}
           {allFlags ? <LuMinus /> : <LuPlus />}
           {allFlags ? "Less filters" : "More filters"}

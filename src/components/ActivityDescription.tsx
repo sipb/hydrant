@@ -200,11 +200,7 @@ function NonClassDescription(props: { activity: NonClass; state: State }) {
       <Flex direction="column" gap={2}>
         {activity.timeslots?.map((t) => (
           <Flex key={t.toString()} align="center" gap={2}>
-            <Button
-              size="sm"
-              onClick={() => state.removeTimeslot(activity, t)}
-              variant="subtle"
-            >
+            <Button size="sm" onClick={() => state.removeTimeslot(activity, t)}>
               Remove
             </Button>
             <Text>{t.toString()}</Text>

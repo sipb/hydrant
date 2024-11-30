@@ -60,7 +60,7 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
 
   return (
     <>
-      <Button onClick={onOpen} size="sm" variant="subtle">
+      <Button onClick={onOpen} size="sm">
         Change theme <ColorModeIcon />
       </Button>
       <DialogRoot open={visible} onOpenChange={onCancel}>
@@ -101,12 +101,10 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
             </Flex>
           </DialogBody>
           <DialogFooter>
-            <Button onClick={onCancel} mr={2} variant="subtle">
+            <Button onClick={onCancel} mr={2}>
               Cancel
             </Button>
-            <Button onClick={onConfirm} variant="subtle">
-              Save
-            </Button>
+            <Button onClick={onConfirm}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </DialogRoot>

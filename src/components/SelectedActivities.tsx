@@ -68,7 +68,7 @@ export function SelectedActivities(props: {
             state={state}
           />
         ))}
-        <Button onClick={() => state.addActivity()} variant="subtle">
+        <Button onClick={() => state.addActivity()}>
           <LuPlus />
           Activity
         </Button>

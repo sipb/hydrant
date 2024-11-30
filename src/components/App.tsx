@@ -196,7 +196,12 @@ function HydrantApp() {
                       : "Currently, only manually exporting to an .ics file is supported. "
                   }
                 >
-                  <Button colorPalette="blue" size="sm" onClick={onICSExport}>
+                  <Button
+                    colorPalette="blue"
+                    variant="solid"
+                    size="sm"
+                    onClick={onICSExport}
+                  >
                     <LuCalendar />
                     {isExporting ? <Spinner m={3} /> : "Import to my calendar"}
                   </Button>

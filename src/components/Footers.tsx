@@ -60,9 +60,7 @@ function AboutDialog() {
             </Flex>
           </DialogBody>
           <DialogFooter>
-            <Button onClick={() => setVisible(false)} variant="subtle">
-              Close
-            </Button>
+            <Button onClick={() => setVisible(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </DialogRoot>
