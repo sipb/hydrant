@@ -176,7 +176,7 @@ function ClassDescription(props: { cls: Class; state: State }) {
 
   return (
     <Flex direction="column" gap={4}>
-      <Heading size="sm">
+      <Heading size="md">
         {cls.number}: {cls.name}
       </Heading>
       <Flex direction="column" gap={0.5}>

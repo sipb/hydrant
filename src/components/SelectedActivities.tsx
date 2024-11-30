@@ -39,7 +39,7 @@ function ActivityButton(props: { activity: Activity; state: State }) {
       onClick={() => state.setViewedActivity(activity)}
       onDoubleClick={() => state.removeActivity(activity)}
     >
-      {activity.buttonName}
+      <Text textStyle="md">{activity.buttonName}</Text>
     </ColorButton>
   );
 }
@@ -60,7 +60,7 @@ export function SelectedActivities(props: {
         <Text>{units} units</Text>
         <Text>{hours.toFixed(1)} hours</Text>
       </Flex>
-      <Group wrap="wrap">
+      <Group gap={0} wrap="wrap">
         {selectedActivities.map((activity) => (
           <ActivityButton
             key={activity instanceof Class ? activity.number : activity.id}

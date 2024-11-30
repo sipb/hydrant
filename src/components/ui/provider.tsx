@@ -11,6 +11,13 @@ const system = createSystem(defaultConfig, {
         body: { value: `'Inter Variable', sans-serif` },
       },
     },
+    semanticTokens: {
+      radii: {
+        l1: { value: "{radii.sm}" },
+        l2: { value: "{radii.md}" },
+        l3: { value: "{radii.lg}" },
+      },
+    },
   },
 });
 
