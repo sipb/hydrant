@@ -53,7 +53,7 @@ def parse_timeslot(day, slot):
 def parse_section(section):
     """Parses a section string.
     Example: "32-123/TR/0/11/F/0/2" -> [[[36, 2], [96, 2], [132, 2]], '32-123']
-    
+
     Args:
     * section (str): The section given as a string
 
@@ -89,12 +89,7 @@ def parse_schedule(course):
 
     # Kinds of sections that exist.
     result["s"] = []
-    section_kinds = (
-        "Lecture",
-        "Recitation",
-        "Lab",
-        "Design"
-    )
+    section_kinds = ("Lecture", "Recitation", "Lab", "Design")
 
     for chunk in schedule.split(";"):
         name, *sections = chunk.split(",")

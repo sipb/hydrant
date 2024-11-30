@@ -18,7 +18,7 @@ function selectHelper(
   filledSlots: Array<Timeslot>,
   foundOptions: Array<Section>,
   curConflicts: number,
-  foundMinConflicts: number
+  foundMinConflicts: number,
 ): {
   options: Array<Array<Section>>;
   minConflicts: number;
@@ -41,7 +41,7 @@ function selectHelper(
       filledSlots.concat(sec.timeslots),
       foundOptions.concat(sec),
       curConflicts + newConflicts,
-      minConflicts
+      minConflicts,
     );
 
     if (newMinConflicts < minConflicts) {
@@ -70,7 +70,7 @@ function selectHelper(
  */
 export function scheduleSlots(
   selectedClasses: Array<Class>,
-  selectedNonClasses: Array<NonClass>
+  selectedNonClasses: Array<NonClass>,
 ): {
   options: Array<Array<Section>>;
   conflicts: number;

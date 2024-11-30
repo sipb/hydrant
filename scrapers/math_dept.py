@@ -22,6 +22,7 @@ soup = BeautifulSoup(response.text, features="lxml")
 course_list = soup.find("ul", {"class": "course-list"})
 rows = course_list.findAll("li", recursive=False)
 
+
 def parse_when(when):
     """
     Parses when the class happens.
@@ -46,9 +47,11 @@ def parse_when(when):
     times = times.replace(":", ".")
     return days, times
 
+
 assert parse_when("F10:30-12") == ("F", "10.30-12")
 assert parse_when("MW1") == ("MW", "1")
 assert parse_when("MWF11") == ("MWF", "11")
+
 
 def parse_many_timeslots(days, times):
     """
@@ -79,6 +82,7 @@ def make_raw_sections(days, times, room):
     """
     return f"{room}/{days}/0/{times}"
 
+
 def make_section_override(timeslots, room):
     """
     Makes a section override
@@ -92,7 +96,8 @@ def make_section_override(timeslots, room):
     """
     return [[timeslots, room]]
     # lol this is wrong
-    #return [[section, room] for section in timeslots]
+    # return [[section, room] for section in timeslots]
+
 
 overrides = {}
 
@@ -124,7 +129,7 @@ for row in rows:
         lecture_sections = make_section_override(timeslots, where)
         overrides[subject] = {
             "lectureRawSections": lecture_raw_sections,
-            "lectureSections": lecture_sections
+            "lectureSections": lecture_sections,
         }
         # Make sure the raw thing that I do not comprehend is actually correct
         assert parse_section(lecture_raw_sections) == lecture_sections[0]

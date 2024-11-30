@@ -36,11 +36,15 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write **/*.{ts,tsx}",
+    "ci-prettier": "prettier --check **/*.{ts,tsx}",
+    "ci-eslint": "eslint **/*.{ts,tsx}"
   },
   "eslintConfig": {
     "extends": [
-      "react-app"
+      "react-app",
+      "prettier"
     ]
   },
   "eslintIgnore": [
@@ -50,6 +54,10 @@
     "defaults"
   ],
   "engines": {
-    "node": "^16.16.0"
+    "node": ">=16.16.0"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "3.4.1"
   }
 }

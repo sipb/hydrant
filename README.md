@@ -6,8 +6,9 @@ Install:
 
 - Python 3, at least Python 3.6.
 - Node.js 16, at least Node 16.16.
-  - Careful, the latest version is 18!
+  - Careful, the latest version is 21!
   - One way manage Node versions is using [nvm](https://github.com/nvm-sh/nvm).
+- [Black](https://black.readthedocs.io/en/stable/index.html), if you plan on contributing changes to the Python backend.
 
 In the root directory, run:
 
@@ -29,6 +30,8 @@ To spin up the site, we need two steps:
 If this is the **first time** you're spinning up the website, the two steps have to be taken in order: step (1), and then step (2). If not followed, you'll see a blank frontend.
 
 After the first time, the step order doesn't matter to bring up the site; in fact, backend step (1) can even be skipped -- since you'd already have locally cached data. Though backend commands are still necessary if you'd like to keep the data updated.
+
+Before making commits, run `black .` (for the backend) and `npm run format` (for the frontend) to ensure that your changes comply with the project's code style. (This will also get checked by CI when you open a pull request.) Both [Black](https://black.readthedocs.io/en/stable/integrations/editors.html) and [Prettier](https://prettier.io/docs/en/editors) have editor integrations as well.
 
 ### Changing semesters
 

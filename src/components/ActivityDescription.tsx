@@ -43,7 +43,7 @@ function TypeSpan(props: { flag?: string; title: string }) {
 }
 
 /** Header for class description; contains flags and related classes. */
-function ClassTypes(props: { cls: Class, state: State }) {
+function ClassTypes(props: { cls: Class; state: State }) {
   const { cls, state } = props;
   const { flags, totalUnits, units } = cls;
 
@@ -58,9 +58,10 @@ function ClassTypes(props: { cls: Class, state: State }) {
       .map(([flag, title]) => (
         <TypeSpan key={flag} flag={flag} title={title} />
       ));
-  
+
   const currentYear = parseInt(state.term.fullRealYear);
-  const nextAcademicYearStart = state.term.semester === "f" ? currentYear + 1 : currentYear;
+  const nextAcademicYearStart =
+    state.term.semester === "f" ? currentYear + 1 : currentYear;
   const nextAcademicYearEnd = nextAcademicYearStart + 1;
 
   const types1 = makeFlags([
@@ -100,11 +101,10 @@ function ClassTypes(props: { cls: Class, state: State }) {
     ) : (
       ""
     );
-  
-  const unitsDescription =
-    cls.isVariableUnits
-      ? "Units arranged"
-      : `${totalUnits} units: ${units.join("-")}`;
+
+  const unitsDescription = cls.isVariableUnits
+    ? "Units arranged"
+    : `${totalUnits} units: ${units.join("-")}`;
 
   return (
     <Flex gap={4} align="center">
@@ -116,9 +116,7 @@ function ClassTypes(props: { cls: Class, state: State }) {
         <Flex gap={1}>{types2}</Flex>
         {halfType}
       </Flex>
-      <Text>
-        {unitsDescription}
-      </Text>
+      <Text>{unitsDescription}</Text>
       {flags.final ? <Text>Has final</Text> : null}
     </Flex>
   );
@@ -133,9 +131,7 @@ function ClassRelated(props: { cls: Class; state: State }) {
     <>
       <Text>Prereq: {linkClasses(state, prereq)}</Text>
       {same !== "" && <Text>Same class as: {linkClasses(state, same)}</Text>}
-      {meets !== "" && (
-        <Text> Meets with: {linkClasses(state, meets)} </Text>
-      )}
+      {meets !== "" && <Text> Meets with: {linkClasses(state, meets)} </Text>}
     </>
   );
 }
@@ -199,10 +195,7 @@ function ClassDescription(props: { cls: Class; state: State }) {
 }
 
 /** Full non-class activity description, from title to timeslots. */
-function NonClassDescription(props: {
-  activity: NonClass;
-  state: State;
-}) {
+function NonClassDescription(props: { activity: NonClass; state: State }) {
   const { activity, state } = props;
 
   return (
@@ -211,10 +204,7 @@ function NonClassDescription(props: {
       <Flex direction="column" gap={2}>
         {activity.timeslots?.map((t) => (
           <Flex key={t.toString()} align="center" gap={2}>
-            <Button
-              size="sm"
-              onClick={() => state.removeTimeslot(activity, t)}
-            >
+            <Button size="sm" onClick={() => state.removeTimeslot(activity, t)}>
               Remove
             </Button>
             <Text>{t.toString()}</Text>

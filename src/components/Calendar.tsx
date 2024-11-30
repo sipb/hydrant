@@ -68,8 +68,8 @@ export function Calendar(props: {
         return hour === 12
           ? "noon"
           : hour < 12
-          ? `${hour} AM`
-          : `${hour - 12} PM`;
+            ? `${hour} AM`
+            : `${hour - 12} PM`;
       }}
       slotMinTime="08:00:00"
       slotMaxTime="22:00:00"
@@ -81,8 +81,8 @@ export function Calendar(props: {
             viewedActivity,
             Timeslot.fromStartEnd(
               Slot.fromStartDate(e.start),
-              Slot.fromStartDate(e.end)
-            )
+              Slot.fromStartDate(e.end),
+            ),
           );
       }}
     />

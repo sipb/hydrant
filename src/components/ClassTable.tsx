@@ -78,7 +78,7 @@ function ClassInput(props: {
           inCharge: simplifyString(data.inCharge),
         };
       }),
-    [rowData]
+    [rowData],
   );
 
   const onClassInputChange = (input: string) => {
@@ -88,7 +88,7 @@ function ClassInput(props: {
         (row) =>
           row.numbers.some((number) => classNumberMatch(input, number)) ||
           row.name.includes(simplifyInput) ||
-          row.inCharge.includes(simplifyInput)
+          row.inCharge.includes(simplifyInput),
       );
       const index = new Set(searchResults.current.map((cls) => cls.numbers[0]));
       setInputFilter(() => (cls: Class) => index.has(cls.number));
@@ -146,7 +146,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["fits", "Fits schedule"],
   ["nofinal", "No final"],
-  ["nopreq", "No prereq"]
+  ["nopreq", "No prereq"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
@@ -282,7 +282,7 @@ export function ClassTable(props: {
         valueA: string,
         valueB: string,
         nodeA: AgGrid.RowNode,
-        nodeB: AgGrid.RowNode
+        nodeB: AgGrid.RowNode,
       ) => {
         const numberA = valueA === "N/A" ? Infinity : Number(valueA);
         const numberB = valueB === "N/A" ? Infinity : Number(valueB);

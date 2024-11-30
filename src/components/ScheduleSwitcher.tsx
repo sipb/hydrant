@@ -84,11 +84,7 @@ function SelectWithWarn(props: {
   );
 }
 
-function DeleteModal(props: {
-  state: State;
-  saveId: string;
-  name: string;
-}) {
+function DeleteModal(props: { state: State; saveId: string; name: string }) {
   const { state, saveId, name } = props;
   const [show, setShow] = useState(false);
 
