@@ -58,10 +58,6 @@ TIMES = {
     "4.30": 17,
     "5": 18,
     "5.30": 19,
-    "6": 20,
-    "6.30": 21,
-    "7": 22,
-    "7.30": 23,
 }
 
 EVE_TIMES = {
@@ -102,6 +98,8 @@ def find_timeslot(day, slot, pm):
 
     Returns:
     * int: A numeric code for the timeslot
+
+    Raises KeyError if no matching timeslot could be found.
     """
     if pm:
         return DAYS[day] + EVE_TIMES[slot]

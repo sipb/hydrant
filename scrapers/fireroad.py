@@ -9,7 +9,7 @@ The Fireroad API is updated every few minutes, so it should always have the
 schedule for the latest term.
 
 Functions:
-* parse_timeslot(day, slot)
+* parse_timeslot(day, slot, pm)
 * parse_section(section)
 * parse_schedule(course)
 * parse_attributes(course)
@@ -26,26 +26,40 @@ import utils
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
-def parse_timeslot(day, slot):
-    """Parses a timeslot. Example: parse_timeslot("M", "10-11.30") -> [4, 3]
+def parse_timeslot(day, slot, pm):
+    """Parses a timeslot. Example: parse_timeslot("M", "10-11.30", False) -> [4, 3]
 
     Args:
     * day (str): The day as a string
     * slot (str): The slot as a string
+    * pm (bool): Whether the timeslot is in the evening
 
     Returns:
     * list[int]: The parsed day and timeslot
+
+    Raises AssertionError if pm and slot disagree on whether the slot is in the
+    evening, or if the start slot is later than the end slot.
+
+    Raises KeyError if no matching timeslot could be found.
     """
-    pm, slot = slot.endswith(" PM"), slot.rstrip(" PM")
+    assert pm == slot.endswith(" PM")
+    slot = slot.rstrip(" PM")
 
     if "-" in slot:
         start, end = slot.split("-")
-        start_slot = utils.find_timeslot(day, start, pm)
-        end_slot = utils.find_timeslot(day, end, pm)
+        try:
+            start_slot = utils.find_timeslot(day, start, pm)
+            end_slot = utils.find_timeslot(day, end, pm)
+        except KeyError:
+            # Maybe the start time is AM but the end time is PM
+            start_slot = utils.find_timeslot(day, start, False)
+            end_slot = utils.find_timeslot(day, end, True)
     else:
         start_slot = utils.find_timeslot(day, slot, pm)
         # Slot is one hour long, so length is 2.
         end_slot = start_slot + 2
+
+    assert end_slot > start_slot
 
     return [start_slot, end_slot - start_slot]
 
@@ -59,15 +73,17 @@ def parse_section(section):
 
     Returns:
     * list[Union[list[str], str]]: The parsed section.
+
+    Raises AssertionError or KeyError if parse_timeslot does.
     """
     place, *infos = section.split("/")
     slots = []
 
-    for weekdays, _, slot in utils.grouper(infos, 3):
+    for weekdays, pm, slot in utils.grouper(infos, 3):
         for day in weekdays:
             if day == "S":
                 continue  # TODO: handle saturday
-            slots.append(parse_timeslot(day, slot))
+            slots.append(parse_timeslot(day, slot, bool(int(pm))))
 
     return [slots, place]
 
@@ -82,6 +98,8 @@ def parse_schedule(course):
 
     Returns:
     * dict[str, union[list, bool]: The parsed schedule
+
+    Raises AssertionError or KeyError if parse_section does.
     """
     schedule = course["schedule"]
     section_tba = False
@@ -217,7 +235,7 @@ def get_course_data(courses, course):
         raw_class.update(parse_schedule(course))
     except Exception as e:
         # if we can't parse the schedule, warn
-        print(f"Can't parse schedule {course_code}: {e}")
+        print(f"Can't parse schedule {course_code}: {e!r}")
         return False
 
     # hh, ha, hs, he, ci, cw, re, la, pl
