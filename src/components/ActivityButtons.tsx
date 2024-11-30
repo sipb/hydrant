@@ -374,9 +374,9 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
   const [name, setName] = useState(activity.name);
   const [room, setRoom] = useState(activity.room);
 
-  const [RenderHeading, RenderButtons] = (() => {
+  const RenderHeading = () => {
     if (isRenaming) {
-      const RenderHeading = () => (
+      return (
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -384,82 +384,85 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
           placeholder="New Activity"
         />
       );
-      const onConfirm = () => {
-        state.renameNonClass(activity, name);
-        setIsRenaming(false);
-      };
-      const onCancel = () => {
-        setIsRenaming(false);
-      };
-      const renderButtons = () => (
-        <>
-          <Button onClick={onConfirm}>Confirm</Button>
-          <Button onClick={onCancel}>Cancel</Button>
-        </>
-      );
-      return [RenderHeading, renderButtons];
     } else if (isRelocating) {
-      const RenderHeading = () => (
+      return (
         <Input
           value={room}
           onChange={(e) => setRoom(e.target.value)}
           placeholder="W20-557"
         />
       );
-      const onConfirm = () => {
-        state.relocateNonClass(activity, room);
-        setIsRelocating(false);
-      };
-      const onCancel = () => {
-        setIsRelocating(false);
-      };
-      const renderButtons = () => (
+    } else {
+      return <Heading size="md">{activity.name}</Heading>;
+    }
+  };
+
+  const onConfirmRename = () => {
+    state.renameNonClass(activity, name);
+    setIsRenaming(false);
+  };
+  const onCancelRename = () => {
+    setIsRenaming(false);
+  };
+
+  const onConfirmRelocating = () => {
+    state.relocateNonClass(activity, room);
+    setIsRelocating(false);
+  };
+  const onCancelRelocating = () => {
+    setIsRelocating(false);
+  };
+  const onRenameElse = () => {
+    setName(activity.name);
+    setIsRenaming(true);
+  };
+  const onRelocateElse = () => {
+    setRoom(activity.room);
+    setIsRelocating(true);
+  };
+
+  const RenderButtons = () => {
+    if (isRenaming) {
+      return (
         <>
-          <Button onClick={onConfirm}>Confirm</Button>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onConfirmRename}>Confirm</Button>
+          <Button onClick={onCancelRename}>Cancel</Button>
         </>
       );
-      return [RenderHeading, renderButtons];
+    } else if (isRelocating) {
+      return (
+        <>
+          <Button onClick={onConfirmRelocating}>Confirm</Button>
+          <Button onClick={onCancelRelocating}>Cancel</Button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Button onClick={() => state.toggleActivity(activity)}>
+            {isSelected ? "Remove activity" : "Add activity"}
+          </Button>
+          <Button onClick={onRenameElse}>Rename activity</Button>
+          <Button onClick={onRelocateElse}>Edit location</Button>
+          {isSelected && (
+            <ToggleButton
+              active={showColors}
+              handleClick={() => {
+                setShowColors(!showColors);
+              }}
+            >
+              Edit color
+            </ToggleButton>
+          )}
+        </>
+      );
     }
-
-    const RenderHeading = () => <Heading size="sm">{activity.name}</Heading>;
-    const onRename = () => {
-      setName(activity.name);
-      setIsRenaming(true);
-    };
-    const onRelocate = () => {
-      setRoom(activity.room);
-      setIsRelocating(true);
-    };
-    const renderButtons = () => (
-      <>
-        <Button onClick={() => state.toggleActivity(activity)}>
-          {isSelected ? "Remove activity" : "Add activity"}
-        </Button>
-        <Button onClick={onRename}>Rename activity</Button>
-        <Button onClick={onRelocate}>Edit location</Button>
-        {isSelected && (
-          <ToggleButton
-            active={showColors}
-            handleClick={() => {
-              setShowColors(!showColors);
-            }}
-          >
-            Edit color
-          </ToggleButton>
-        )}
-      </>
-    );
-
-    return [RenderHeading, renderButtons];
-  })();
+  };
 
   return (
     <Flex direction="column" gap={4}>
-      <RenderHeading />
-      <Group wrap="wrap">
-        <RenderButtons />
-      </Group>
+      {RenderHeading()}
+      <Group wrap="wrap">{RenderButtons()}</Group>
       {isSelected && showColors && (
         <ActivityColor
           activity={activity}
