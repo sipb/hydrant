@@ -2,22 +2,23 @@
 
 This folder contains several files. The files tracked by git are:
 
-* __init__.py
-* catalog.py
-* fireroad.py
-* math_dept.py
-* package.py
-* update.py
-* utils.py
-* README.md - this very file!
-* .pylintrc
+* `__init__.py`
+* `catalog.py`
+* `fireroad.py`
+* `math_dept.py`
+* `package.py`
+* `update.py`
+* `utils.py`
+* `README.md` - this very file!
+* `.pylintrc`
+* `overrides.json` - to override scraped data; currently empty
 
 The files intentionally left out of git are:
 
-* catalog.json
-* fireroad.json
-* __pycache__
-* .DS_Store
+* `catalog.json`
+* `fireroad.json`
+* `__pycache__`
+* `.DS_Store`
 
 ## Usage ##
 
