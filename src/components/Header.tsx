@@ -1,4 +1,16 @@
-import { Button, Flex, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, useColorModeValue } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select,
+  useColorModeValue,
+} from "@chakra-ui/react";
 
 import { Term } from "../lib/dates";
 import { State } from "../lib/state";
@@ -7,10 +19,7 @@ import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
-function PreferencesModal(props: {
-  state: State;
-  preferences: Preferences;
-}) {
+function PreferencesModal(props: { state: State; preferences: Preferences }) {
   const { preferences: originalPreferences, state } = props;
   const [visible, setVisible] = useState(false);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
@@ -43,8 +52,16 @@ function PreferencesModal(props: {
     <>
       <Button
         onClick={onOpen}
-        rightIcon={preferences.colorScheme.colorMode === 'light' ? <MoonIcon/> : <SunIcon/>}
-      >Change theme</Button>
+        rightIcon={
+          preferences.colorScheme.colorMode === "light" ? (
+            <MoonIcon />
+          ) : (
+            <SunIcon />
+          )
+        }
+      >
+        Change theme
+      </Button>
       <Modal isOpen={visible} onClose={onCancel}>
         <ModalOverlay />
         <ModalContent>
@@ -56,7 +73,7 @@ function PreferencesModal(props: {
                 value={preferences.colorScheme.name}
                 onChange={(e) => {
                   const colorScheme = COLOR_SCHEME_PRESETS.find(
-                    ({ name }) => name === e.target.value
+                    ({ name }) => name === e.target.value,
                   );
                   if (!colorScheme) return;
                   previewPreferences({ ...preferences, colorScheme });
@@ -87,7 +104,7 @@ function toFullUrl(urlName: string, latestUrlName: string): string {
   const url = new URL(window.location.href);
   Array.from(url.searchParams.keys()).forEach((key) => {
     url.searchParams.delete(key);
-  })
+  });
   if (urlName !== latestUrlName) {
     url.searchParams.set("t", urlName);
   }
@@ -127,7 +144,7 @@ function getUrlNames(latestTerm: string): Array<string> {
 }
 
 /** Header above the left column, with logo and semester selection. */
-export function Header(props: { state: State, preferences: Preferences }) {
+export function Header(props: { state: State; preferences: Preferences }) {
   const { state, preferences } = props;
   const logoSrc = useColorModeValue("img/logo.svg", "img/logo-dark.svg");
   const toUrl = (urlName: string) =>

@@ -20,7 +20,7 @@ const CLASS_REGEX = new RegExp(
     "\\.",
     "(?<classNumber>[0-9A-Z]*)",
     "$",
-  ].join("")
+  ].join(""),
 );
 
 /** Three-way comparison for class numbers. */
@@ -51,7 +51,7 @@ export function simplifyString(s: string): string {
 export function classNumberMatch(
   searchString: string,
   classNumber: string,
-  exact: boolean = false
+  exact: boolean = false,
 ): boolean {
   const process = (s: string) =>
     searchString.includes(".") ? s.toLowerCase() : simplifyString(s);
@@ -93,7 +93,7 @@ export function urldecode(obj: string): any {
     new Uint8Array(
       atob(obj)
         .split("")
-        .map((c) => c.charCodeAt(0))
-    )
+        .map((c) => c.charCodeAt(0)),
+    ),
   );
 }

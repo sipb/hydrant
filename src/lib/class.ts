@@ -86,7 +86,7 @@ export const LockOption = {
 } as const;
 
 /** The type of {@link LockOption}. */
-type TLockOption = typeof LockOption[keyof typeof LockOption];
+type TLockOption = (typeof LockOption)[keyof typeof LockOption];
 
 /** All section options for a manual section time. */
 export type SectionLockOption = Section | TLockOption;
@@ -113,7 +113,7 @@ export class Sections {
     rawTimes: Array<string>,
     secs: Array<RawSection>,
     locked?: boolean,
-    selected?: Section | null
+    selected?: Section | null,
   ) {
     this.cls = cls;
     this.kind = kind;
@@ -158,7 +158,7 @@ export class Sections {
           `${this.cls.number} ${this.shortName}`,
           this.selected.timeslots,
           this.roomOverride || this.selected.room,
-          this.cls.half
+          this.cls.half,
         )
       : null;
   }
@@ -203,28 +203,28 @@ export class Class {
               this,
               SectionKind.LECTURE,
               rawClass.lectureRawSections,
-              rawClass.lectureSections
+              rawClass.lectureSections,
             );
           case "recitation":
             return new Sections(
               this,
               SectionKind.RECITATION,
               rawClass.recitationRawSections,
-              rawClass.recitationSections
+              rawClass.recitationSections,
             );
           case "design":
             return new Sections(
               this,
               SectionKind.DESIGN,
               rawClass.designRawSections,
-              rawClass.designSections
+              rawClass.designSections,
             );
           default:
             return new Sections(
               this,
               SectionKind.LAB,
               rawClass.labRawSections,
-              rawClass.labSections
+              rawClass.labSections,
             );
         }
       })
@@ -378,26 +378,26 @@ export class Class {
     if (this.rawClass.tb) {
       suffixes.push("+");
       messages.push(
-        "+ Class has at least one section yet to be scheduled—check course catalog."
+        "+ Class has at least one section yet to be scheduled—check course catalog.",
       );
     }
     if (this.rawClass.vu) {
       if (this.rawClass.h === 0) {
         suffixes.push("^");
         messages.push(
-          "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours."
-        )
+          "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours.",
+        );
       } else {
         suffixes.push("#");
         messages.push(
-          "# This class has an arranged number of units and its units were not counted in the total."
-        )
+          "# This class has an arranged number of units and its units were not counted in the total.",
+        );
       }
     } else {
       if (this.rawClass.h === 0) {
         suffixes.push("*");
         messages.push(
-          "* Class does not have evaluations, so its hours were set to units."
+          "* Class does not have evaluations, so its hours were set to units.",
         );
       }
     }
@@ -467,7 +467,7 @@ export class Class {
     const sections = this.sections.map((secs) =>
       !secs.locked
         ? null
-        : secs.sections.findIndex((sec) => sec === secs.selected)
+        : secs.sections.findIndex((sec) => sec === secs.selected),
     );
     const sectionLocs = this.sections.map((secs) => secs.roomOverride);
     while (sections.at(-1) === null) sections.pop();

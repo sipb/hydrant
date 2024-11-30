@@ -36,8 +36,8 @@ function AboutModal() {
               </Text>
               <Text>
                 We welcome contributions! View the source code or file issues on{" "}
-                <Link href="https://github.com/sipb/hydrant">Github</Link>,
-                or come to a SIPB meeting and ask how to help.
+                <Link href="https://github.com/sipb/hydrant">Github</Link>, or
+                come to a SIPB meeting and ask how to help.
               </Text>
               <Text>
                 We'd like to thank Edward Fan for creating{" "}
@@ -58,17 +58,11 @@ function AboutModal() {
 }
 
 /** The footer on the bottom of the calendar. */
-export function LeftFooter(props: {
-  state: State;
-}) {
+export function LeftFooter(props: { state: State }) {
   const { state } = props;
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      gap={2}
-    >
+    <Flex direction="column" align="center" gap={2}>
       <Text>Last updated: {state.lastUpdated}.</Text>
       <Flex gap={4}>
         <AboutModal />

@@ -8,7 +8,7 @@ import { Class } from "../lib/class";
 import { State } from "../lib/state";
 
 export function ColorButton(
-  props: ComponentProps<"button"> & { color: string }
+  props: ComponentProps<"button"> & { color: string },
 ) {
   const { children, color, style, ...otherProps } = props;
   return (

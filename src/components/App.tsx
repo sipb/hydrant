@@ -69,7 +69,7 @@ function useHydrant(): {
         classesMap,
         new Term(termInfo),
         lastUpdated,
-        new Term(latestTerm)
+        new Term(latestTerm),
       );
       hydrantRef.current = hydrantObj;
       setLoading(false);
@@ -132,9 +132,13 @@ function HydrantApp() {
       window.alert(`${callback} is not allowed to read your class list!`);
       return;
     }
-    const encodedClasses = (hydrant.selectedActivities.filter((activity) => activity instanceof Class) as Class[])
+    const encodedClasses = (
+      hydrant.selectedActivities.filter(
+        (activity) => activity instanceof Class,
+      ) as Class[]
+    )
       .map((cls) => `&class=${cls.number}`)
-      .join('');
+      .join("");
     const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
     window.location.replace(filledCallback);
   }, [hydrant, hasIntegrationCallback, hash]);
@@ -144,21 +148,19 @@ function HydrantApp() {
   const onICSExport = useICSExport(
     hydrant!,
     () => setIsExporting(false),
-    () => setIsExporting(false)
+    () => setIsExporting(false),
   );
 
   return (
     <>
-      {(!hydrant || hasIntegrationCallback) ? (
+      {!hydrant || hasIntegrationCallback ? (
         <Flex w="100%" h="100vh" align="center" justify="center">
           <Spinner />
         </Flex>
       ) : (
         <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
           <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-            <Header
-              preferences={state.preferences}
-              state={hydrant} />
+            <Header preferences={state.preferences} state={hydrant} />
             <ScheduleOption
               selectedOption={state.selectedOption}
               totalOptions={state.totalOptions}
@@ -169,9 +171,7 @@ function HydrantApp() {
               viewedActivity={state.viewedActivity}
               state={hydrant}
             />
-            <LeftFooter
-              state={hydrant}
-            />
+            <LeftFooter state={hydrant} />
           </Flex>
           <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
             <ScheduleSwitcher
@@ -200,13 +200,19 @@ function HydrantApp() {
                       ? "Loading..."
                       : "At the moment, only manually exporting to an .ics file is supported. " +
                         "We are still working on fixing Google Calendar export!"
-                  }>
-                  <Button colorScheme="blue" size="sm" leftIcon={<CalendarIcon/>} onClick={onICSExport}>
+                  }
+                >
+                  <Button
+                    colorScheme="blue"
+                    size="sm"
+                    leftIcon={<CalendarIcon />}
+                    onClick={onICSExport}
+                  >
                     {isExporting ? <Spinner m={3} /> : "Import to my calendar"}
                   </Button>
                 </Tooltip>
-                <MatrixLink selectedActivities={state.selectedActivities}/>
-                <SIPBLogo/>
+                <MatrixLink selectedActivities={state.selectedActivities} />
+                <SIPBLogo />
               </HStack>
             </Center>
             <SelectedActivities

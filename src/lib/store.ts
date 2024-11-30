@@ -39,7 +39,7 @@ export class Store {
   set<T extends keyof TermStore>(key: T, value: TermStore[T]): void {
     localStorage.setItem(
       this.toKey(key.toString(), false),
-      JSON.stringify(value)
+      JSON.stringify(value),
     );
   }
 
@@ -47,7 +47,7 @@ export class Store {
   globalSet<T extends keyof GlobalStore>(key: T, value: GlobalStore[T]): void {
     localStorage.setItem(
       this.toKey(key.toString(), true),
-      JSON.stringify(value)
+      JSON.stringify(value),
     );
   }
 }

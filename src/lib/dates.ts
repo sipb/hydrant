@@ -71,14 +71,14 @@ export class Slot {
     return new Slot(
       30 * (date.getDay() - 1) +
         2 * (date.getHours() - 8) +
-        Math.floor(date.getMinutes() / 30)
+        Math.floor(date.getMinutes() / 30),
     );
   }
 
   /** Convert from WEEKDAY_STRINGS and TIMESLOT_STRINGS to slot. */
   static fromDayString(day: string, time: string): Slot {
     return Slot.fromSlotNumber(
-      30 * WEEKDAY_STRINGS.indexOf(day) + TIMESLOT_STRINGS.indexOf(time)
+      30 * WEEKDAY_STRINGS.indexOf(day) + TIMESLOT_STRINGS.indexOf(time),
     );
   }
 
@@ -99,7 +99,7 @@ export class Slot {
       date.getMonth(),
       date.getDate(),
       hour,
-      minute
+      minute,
     );
   }
 
@@ -131,9 +131,10 @@ export class Slot {
 }
 
 /** Parse a urlName like "f22". */
-export function parseUrlName(
-  urlName: string
-): { year: string; semester: TSemester } {
+export function parseUrlName(urlName: string): {
+  year: string;
+  semester: TSemester;
+} {
   return {
     year: urlName.substring(1),
     semester: urlName[0] as TSemester,

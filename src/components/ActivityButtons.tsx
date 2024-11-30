@@ -29,7 +29,7 @@ function ToggleButton(
   props: ComponentProps<"button"> & {
     active: boolean;
     handleClick: () => void;
-  }
+  },
 ) {
   const { children, active, handleClick, ...otherProps } = props;
   return (
@@ -83,15 +83,27 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
   const onCancel = () => {
     setIsOverriding(false);
   };
-  return isOverriding
-    ? <Flex gap={1} mr = {1} mt = {2}><Input
+  return isOverriding ? (
+    <Flex gap={1} mr={1} mt={2}>
+      <Input
         value={room}
-        onChange={e => setRoom(e.target.value)}
-        placeholder="26-100" />
-        <Button onClick={onConfirm}><CheckIcon/></Button>
-        <Button onClick={onCancel} ><CloseIcon/></Button></Flex>
-    : (<Flex mt = {2}><Button onClick={onRelocate}>{secs.roomOverride ? "Change" : "Add"} custom location</Button></Flex>);
-
+        onChange={(e) => setRoom(e.target.value)}
+        placeholder="26-100"
+      />
+      <Button onClick={onConfirm}>
+        <CheckIcon />
+      </Button>
+      <Button onClick={onCancel}>
+        <CloseIcon />
+      </Button>
+    </Flex>
+  ) : (
+    <Flex mt={2}>
+      <Button onClick={onRelocate}>
+        {secs.roomOverride ? "Change" : "Add"} custom location
+      </Button>
+    </Flex>
+  );
 }
 
 /** Div containing section manual selection interface. */
@@ -157,16 +169,13 @@ function ActivityColor(props: {
       setColor(canon);
       setInput("");
     }
-  }
+  };
 
   return (
     <Flex gap={2}>
       <HexColorPicker color={color} onChange={setColor} />
       <Flex direction="column" gap={2}>
-        <form
-          onSubmit={handleSubmit}
-          onBlur={handleSubmit}
-        >
+        <form onSubmit={handleSubmit} onBlur={handleSubmit}>
           <Input
             // Wide enough to hold everything, but keeps buttons below small
             width={"12ch"}
@@ -247,7 +256,7 @@ export function ClassButtons(props: { cls: Class; state: State }) {
 function NonClassAddTime(props: { activity: NonClass; state: State }) {
   const { activity, state } = props;
   const [days, setDays] = useState(
-    Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false]))
+    Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false])),
   );
   const [times, setTimes] = useState({ start: "10:00 AM", end: "1:00 PM" });
 
@@ -259,8 +268,8 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
         activity,
         Timeslot.fromStartEnd(
           Slot.fromDayString(day, times.start),
-          Slot.fromDayString(day, times.end)
-        )
+          Slot.fromDayString(day, times.end),
+        ),
       );
     }
   };
@@ -344,7 +353,7 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
         </>
       );
       return [renderHeading, renderButtons];
-    } else if(isRelocating) {
+    } else if (isRelocating) {
       const renderHeading = () => (
         <Input
           value={room}
