@@ -99,6 +99,8 @@ def find_timeslot(day, slot, pm):
 
     Returns:
     * int: A numeric code for the timeslot
+
+    Raises KeyError if no matching timeslot could be found.
     """
     if pm:
         return DAYS[day] + EVE_TIMES[slot]

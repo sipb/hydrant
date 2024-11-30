@@ -36,6 +36,11 @@ def parse_timeslot(day, slot, pm):
 
     Returns:
     * list[int]: The parsed day and timeslot
+
+    Raises AssertionError if pm and slot disagree on whether the slot is in the
+    evening, or if the start slot is later than the end slot.
+
+    Raises KeyError if no matching timeslot could be found.
     """
     assert pm == slot.endswith(" PM")
     slot = slot.rstrip(" PM")
@@ -68,6 +73,8 @@ def parse_section(section):
 
     Returns:
     * list[Union[list[str], str]]: The parsed section.
+
+    Raises AssertionError or KeyError if parse_timeslot does.
     """
     place, *infos = section.split("/")
     slots = []
@@ -91,6 +98,8 @@ def parse_schedule(course):
 
     Returns:
     * dict[str, union[list, bool]: The parsed schedule
+
+    Raises AssertionError or KeyError if parse_section does.
     """
     schedule = course["schedule"]
     section_tba = False
