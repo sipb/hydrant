@@ -17,6 +17,7 @@ import datetime
 import json
 import utils
 
+
 def load_json_data(jsonfile):
     """
     Loads data from the provided file
@@ -27,8 +28,9 @@ def load_json_data(jsonfile):
     Returns:
     * any: The data contained within the file
     """
-    with open(jsonfile, mode = "r", encoding = "utf-8") as f:
+    with open(jsonfile, mode="r", encoding="utf-8") as f:
         return json.load(f)
+
 
 def merge_data(datasets, keys_to_keep):
     """
@@ -36,7 +38,7 @@ def merge_data(datasets, keys_to_keep):
     NOTE: Later datasets will override earlier ones
 
     Args:
-    * datasets (iterable[dict[any, dict]]): 
+    * datasets (iterable[dict[any, dict]]):
     * keys_to_keep (iterable): The keys to retain in the output
 
     Returns:
@@ -48,6 +50,7 @@ def merge_data(datasets, keys_to_keep):
             if key in dataset:
                 result[key].update(dataset[key])
     return result
+
 
 def run():
     """
@@ -63,8 +66,8 @@ def run():
     # If it's not in Fireroad, we don't have its schedule.
     # If it's not in catalog, it's not offered this semester.
     courses = merge_data(
-        datasets = [fireroad, catalog, overrides],
-        keys_to_keep = set(fireroad) & set(catalog)
+        datasets=[fireroad, catalog, overrides],
+        keys_to_keep=set(fireroad) & set(catalog),
     )
 
     term_info = utils.get_term_info()
@@ -75,7 +78,7 @@ def run():
         "classes": courses,
     }
 
-    with open("../public/latest.json", mode = "w", encoding = "utf-8") as f:
+    with open("../public/latest.json", mode="w", encoding="utf-8") as f:
         json.dump(obj, f, separators=(",", ":"))
     print(f"Got {len(courses)} courses")
 
