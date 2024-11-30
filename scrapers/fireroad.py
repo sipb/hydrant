@@ -231,7 +231,7 @@ def get_course_data(courses, course):
         raw_class.update(parse_schedule(course))
     except Exception as e:
         # if we can't parse the schedule, warn
-        print(f"Can't parse schedule {course_code}: {repr(e)}")
+        print(f"Can't parse schedule {course_code}: {e!r}")
         return False
 
     # hh, ha, hs, he, ci, cw, re, la, pl
