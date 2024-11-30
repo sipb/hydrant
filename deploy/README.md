@@ -31,7 +31,7 @@ The server's frontend updates based on the `deploy` branch on GitHub, so any cha
 
 4. The script unpacks the files to the production directory `~/web_scripts/hydrant`.
 
-Note that the GitHub token in `ci_secrets` must be regenerated yearly.
+Note that the GitHub token in `ci_secrets` must be [regenerated](https://github.com/settings/personal-access-tokens/) if it's ever invalidated.
 
 ## Backend
 

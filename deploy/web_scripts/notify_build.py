@@ -25,7 +25,7 @@ def main():
     # Secret, used for HMAC input validation (so we know GitHub is being real)
     with open(HASH_SECRET) as fh:
         secret = fh.read().strip().encode("utf-8")
-    # API token for GitHub API requests (to get a path to the file)-- needs yearly updating!
+    # API token for GitHub API requests (to get a path to the file).
     with open(GITHUB_TOKEN) as fh:
         token = fh.read().strip()
 
