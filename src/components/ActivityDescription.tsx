@@ -159,9 +159,15 @@ function ClassBody(props: { cls: Class; state: State }) {
       {extraUrls.length > 0 && (
         <Flex gap={4}>
           {extraUrls.map(({ label, url }) => (
-            <Link key={label} href={url} target="_blank" colorPalette="blue">
-              {label}
-              <LuExternalLink />
+            <Link
+              key={label}
+              href={url}
+              target="_blank"
+              colorPalette="blue"
+              display="inline-block"
+              flexGrow={1}
+            >
+              {label} <LuExternalLink style={{ display: "inline" }} />
             </Link>
           ))}
         </Flex>
