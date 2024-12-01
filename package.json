@@ -10,18 +10,18 @@
     "@chakra-ui/react": "^3.2.1",
     "@emotion/react": "^11.13.5",
     "@fontsource-variable/inter": "^5.1.0",
-    "@fullcalendar/core": "6.1.15",
-    "@fullcalendar/interaction": "6.1.15",
-    "@fullcalendar/react": "6.1.15",
-    "@fullcalendar/timegrid": "6.1.15",
+    "@fullcalendar/core": "^5.11.2",
+    "@fullcalendar/interaction": "^5.11.2",
+    "@fullcalendar/react": "^5.11.2",
+    "@fullcalendar/timegrid": "^5.11.2",
     "@react-oauth/google": "^0.2.6",
     "html-entities": "^2.3.3",
     "ical-generator": "^6.0.0",
     "msgpack-lite": "^0.1.26",
     "nanoid": "^3.3.4",
     "next-themes": "^0.4.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
     "react-scripts": "^5.0.1",
     "react-use": "^17.5.1",
@@ -45,9 +45,18 @@
   "eslintIgnore": [
     "index.js"
   ],
-  "browserslist": [
-    "defaults"
-  ],
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "engines": {
     "node": ">=16.16.0"
   },
@@ -55,11 +64,11 @@
     "@chakra-ui/cli": "^3.2.1",
     "@types/gapi.client.calendar": "^3.0.10",
     "@types/msgpack-lite": "^0.1.11",
-    "@types/node": "^16.16.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/node": "^16.18.121",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "3.4.1",
-    "typescript": ">=3.3.1 <4.8.0"
+    "typescript": "^4.7.4"
   }
 }
