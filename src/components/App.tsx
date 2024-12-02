@@ -1,5 +1,5 @@
-import { StrictMode, useEffect, useRef, useState } from "react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import { useEffect, useRef, useState } from "react";
+// import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Center, Flex, Group, Spinner } from "@chakra-ui/react";
 
 import { Button } from "./ui/button";
@@ -238,14 +238,12 @@ function HydrantApp() {
 }
 
 /** The main application. */
-export function App() {
+export default function App() {
   return (
-    <StrictMode>
-      <Provider>
-        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
-          <HydrantApp />
-        </GoogleOAuthProvider>
-      </Provider>
-    </StrictMode>
+    <Provider>
+      {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}> */}
+      <HydrantApp />
+      {/* </GoogleOAuthProvider> */}
+    </Provider>
   );
 }
