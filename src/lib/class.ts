@@ -60,7 +60,7 @@ export type Flags = {
 
 export const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
 
-const flagImages = {
+const flagImages: { [k in keyof Flags]?: string } = {
   nonext: nonextImg,
   under: underImg,
   grad: gradImg,
@@ -81,7 +81,7 @@ const flagImages = {
 };
 
 export const getFlagImg = (flag: keyof Flags): string => {
-  return flagImages[flag as keyof typeof flagImages] ?? "";
+  return flagImages[flag] ?? "";
 };
 
 /**
