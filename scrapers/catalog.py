@@ -5,13 +5,12 @@ run() scrapes this data and writes it to catalog.json, in the format:
 
 {
     "6.3900": {
-        "on": "6.036",
-        "nx": true | false,
-        "rp": true | false,
-        "hf": false | 1 | 2,
-        "u": "https://introml.mit.edu",
-        "f": true | false,
-        "lm": true | false,
+        "nonext": true | false,
+        "repeat": true | false,
+        "url": "https://introml.mit.edu",
+        "final": true | false,
+        "half": false | 1 | 2,
+        "limited": true | false,
     }
 }
 """
@@ -116,23 +115,14 @@ def get_course_data(filtered_html):
     Returns:
     * dict[str, Union[bool, int, str]]: metadata about that particular class
     """
-    no_next = is_not_offered_next_year(filtered_html)
-    repeat = is_repeat_allowed(filtered_html)
-    url = get_url(filtered_html)
-    final = has_final(filtered_html)
-    half = get_half(filtered_html)
-    limited = is_limited(filtered_html)
-
-    course_data = {
-        "nx": no_next,
-        "rp": repeat,
-        "u": url,
-        "f": final,
-        "hf": half,
-        "lm": limited,
+    return {
+        "nonext": is_not_offered_next_year(filtered_html),
+        "repeat": is_repeat_allowed(filtered_html),
+        "url": get_url(filtered_html),
+        "final": has_final(filtered_html),
+        "half": get_half(filtered_html),
+        "limited": is_limited(filtered_html),
     }
-
-    return course_data
 
 
 def get_home_catalog_links():
