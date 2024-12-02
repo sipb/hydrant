@@ -73,6 +73,7 @@ function useHydrant(): {
   }, []);
 
   const { colorMode, toggleColorMode } = useColorMode();
+
   useEffect(() => {
     if (loading || !hydrant) return;
     // if colorScheme changes, change colorMode to match
@@ -83,7 +84,8 @@ function useHydrant(): {
       }
     };
     hydrant?.updateState();
-  }, [colorMode, hydrant, loading, toggleColorMode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [colorMode, hydrant, loading]);
 
   return { hydrant, state };
 }

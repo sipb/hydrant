@@ -28,7 +28,7 @@ export function Calendar(props: {
         p={0.5}
         lineHeight={1.3}
         cursor="pointer"
-        // height="100%"
+        height="100%"
       >
         <Text
           fontSize="sm"
