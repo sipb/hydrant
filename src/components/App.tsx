@@ -28,6 +28,8 @@ import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
 import { SIPBLogo } from "./SIPBLogo";
 
+// import calendarButtonImg from "../assets/calendar-button.svg";
+
 type SemesterData = {
   classes: { [cls: string]: RawClass };
   lastUpdated: string;
@@ -187,7 +189,7 @@ function HydrantApp() {
                   {isExporting ? (
                     <Spinner m={3} />
                   ) : (
-                    <Image src="img/calendar-button.png" alt="Sign in with Google" />
+                    <Image src={calendarButtonImg} alt="Sign in with Google" />
                   )}
                 </Tooltip> */}
                 <Tooltip

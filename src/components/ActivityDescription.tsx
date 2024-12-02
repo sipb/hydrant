@@ -6,17 +6,15 @@ import { Tooltip } from "./ui/tooltip";
 import { Button } from "./ui/button";
 
 import { Activity, NonClass } from "../lib/activity";
-import { Class, Flags } from "../lib/class";
+import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
 import { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";
 
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
 import { LuExternalLink } from "react-icons/lu";
 
-const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
-
 /** A small image indicating a flag, like Spring or CI-H. */
-function TypeSpan(props: { flag?: string; title: string }) {
+function TypeSpan(props: { flag?: keyof Flags; title: string }) {
   const { flag, title } = props;
   const { colorMode } = useColorMode();
   const filter =
@@ -27,7 +25,7 @@ function TypeSpan(props: { flag?: string; title: string }) {
       <Image
         alt={title}
         boxSize="1em"
-        src={`img/${flag}.gif`}
+        src={getFlagImg(flag)}
         display="inline-block"
         filter={filter}
       />

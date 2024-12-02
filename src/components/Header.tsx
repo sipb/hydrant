@@ -27,6 +27,9 @@ import { useState, useRef } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
 
+import logo from "../assets/logo.svg";
+import logoDark from "../assets/logo-dark.svg";
+
 function PreferencesDialog(props: { state: State; preferences: Preferences }) {
   const { preferences: originalPreferences, state } = props;
   const [visible, setVisible] = useState(false);
@@ -159,7 +162,7 @@ function getUrlNames(latestTerm: string): Array<string> {
 /** Header above the left column, with logo and semester selection. */
 export function Header(props: { state: State; preferences: Preferences }) {
   const { state, preferences } = props;
-  const logoSrc = useColorModeValue("img/logo.svg", "img/logo-dark.svg");
+  const logoSrc = useColorModeValue(logo, logoDark);
   const toUrl = (urlName: string) =>
     toFullUrl(urlName, state.latestTerm.urlName);
   const defaultValue = toUrl(state.term.urlName);
