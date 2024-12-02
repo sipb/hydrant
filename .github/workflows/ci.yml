@@ -16,20 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: psf/black@stable
-  eslint:
-    name: ESLint
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ env.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.node-version }}
-        cache: 'npm'
-    - name: Install node dependencies
-      run: npm install
-    - name: Run ESLint
-      run: npm run ci-eslint
   prettier:
     name: Prettier
     runs-on: ubuntu-latest
@@ -44,3 +30,21 @@ jobs:
       run: npm install
     - name: Run Prettier
       run: npm run ci-prettier
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ env.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.node-version }}
+        cache: 'npm'
+    - name: Install node dependencies
+      run: npm install
+    - name: Run ESLint
+      run: npm run ci-eslint
+    - name: Run tsc
+      run: npm run ci-tsc
+    - name: Run build
+      run: npm run build
