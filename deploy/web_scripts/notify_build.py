@@ -3,7 +3,7 @@
 # Accept a web-hook from GitHub telling us about
 # a new built version of Hydrant.
 
-import json, requests
+import json, requests, traceback
 
 from sys import stdin, stdout
 from os import environ, path
@@ -65,14 +65,13 @@ def main():
             continue
         # then fetch it.
         response = requests.get(url, headers={"Authorization": ("Bearer " + token)})
-        with TemporaryDirectory() as td:
-            fname = path.join(td, "build_artifact.zip")
-            with open(fname, "wb") as fh:
-                for chunk in response.iter_content(chunk_size=4096):
-                    fh.write(chunk)
-            # Extract into the output directory.
-            with ZipFile(fname, "r") as zfh:
-                zfh.extractall(OUTPUT_DIR)
+        fname = path.join(LOCKER_DIR, "build_artifact.zip")
+        with open(fname, "wb") as fh:
+            for chunk in response.iter_content(chunk_size=4096):
+                fh.write(chunk)
+        # Extract into the output directory.
+        with ZipFile(fname, "r") as zfh:
+            zfh.extractall(OUTPUT_DIR)
         success = True
         break
     return (
@@ -90,5 +89,6 @@ if __name__ == "__main__":
     try:
         print(main())
     except Exception as e:
-        print(e, file=stdout)
-        print(e, file=open(ERROR_LOG, "w"))
+        print(traceback.format_exc(), file=stdout)
+        with open(ERROR_LOG, "w") as fh:
+            print(traceback.format_exc(), file=fh)
