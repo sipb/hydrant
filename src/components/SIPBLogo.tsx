@@ -1,5 +1,6 @@
 import { Image } from "@chakra-ui/react";
 import { LinkButton } from "./ui/link-button";
+import sipbLogo from "../assets/fuzzball.png";
 
 export function SIPBLogo() {
   return (
@@ -13,7 +14,7 @@ export function SIPBLogo() {
       fontWeight={"semibold"}
     >
       Maintained by SIPB
-      <Image src="/fuzzball.png" alt="SIPB Logo" height="1.25lh" />
+      <Image src={sipbLogo} alt="SIPB Logo" height="1.25lh" />
     </LinkButton>
   );
 }

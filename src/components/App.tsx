@@ -1,5 +1,5 @@
-import { StrictMode, useEffect, useRef, useState } from "react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import { useEffect, useRef, useState } from "react";
+// import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Center, Flex, Group, Spinner } from "@chakra-ui/react";
 
 import { Button } from "./ui/button";
@@ -27,6 +27,8 @@ import { MatrixLink } from "./MatrixLink";
 import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
 import { SIPBLogo } from "./SIPBLogo";
+
+// import calendarButtonImg from "../assets/calendar-button.svg";
 
 type SemesterData = {
   classes: { [cls: string]: RawClass };
@@ -187,7 +189,7 @@ function HydrantApp() {
                   {isExporting ? (
                     <Spinner m={3} />
                   ) : (
-                    <Image src="img/calendar-button.png" alt="Sign in with Google" />
+                    <Image src={calendarButtonImg} alt="Sign in with Google" />
                   )}
                 </Tooltip> */}
                 <Tooltip
@@ -236,14 +238,12 @@ function HydrantApp() {
 }
 
 /** The main application. */
-export function App() {
+export default function App() {
   return (
-    <StrictMode>
-      <Provider>
-        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
-          <HydrantApp />
-        </GoogleOAuthProvider>
-      </Provider>
-    </StrictMode>
+    <Provider>
+      {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}> */}
+      <HydrantApp />
+      {/* </GoogleOAuthProvider> */}
+    </Provider>
   );
 }

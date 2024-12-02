@@ -2,6 +2,24 @@ import { Timeslot, Event } from "./activity";
 import { ColorScheme, fallbackColor } from "./colors";
 import { RawClass, RawSection } from "./rawClass";
 
+import nonextImg from "../assets/nonext.gif";
+import underImg from "../assets/under.gif";
+import gradImg from "../assets/grad.gif";
+import fallImg from "../assets/fall.gif";
+import iapImg from "../assets/iap.gif";
+import springImg from "../assets/spring.gif";
+import summerImg from "../assets/summer.gif";
+import repeatImg from "../assets/repeat.gif";
+import restImg from "../assets/rest.gif";
+import labImg from "../assets/Lab.gif";
+import partlabImg from "../assets/PartLab.gif";
+import cihImg from "../assets/cih.gif";
+import cihwImg from "../assets/cihw.gif";
+import hassHImg from "../assets/hassH.gif";
+import hassAImg from "../assets/hassA.gif";
+import hassSImg from "../assets/hassS.gif";
+import hassEImg from "../assets/hassE.gif";
+
 // This isn't exported intentionally. Instead of using this, can you use
 // Sections directly?
 enum SectionKind {
@@ -38,6 +56,32 @@ export type Flags = {
   le9units: boolean;
   half: number | false;
   limited: boolean;
+};
+
+export const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
+
+const flagImages: { [k in keyof Flags]?: string } = {
+  nonext: nonextImg,
+  under: underImg,
+  grad: gradImg,
+  fall: fallImg,
+  iap: iapImg,
+  spring: springImg,
+  summer: summerImg,
+  repeat: repeatImg,
+  rest: restImg,
+  Lab: labImg,
+  PartLab: partlabImg,
+  hassH: hassHImg,
+  hassA: hassAImg,
+  hassS: hassSImg,
+  hassE: hassEImg,
+  cih: cihImg,
+  cihw: cihwImg,
+};
+
+export const getFlagImg = (flag: keyof Flags): string => {
+  return flagImages[flag] ?? "";
 };
 
 /**

@@ -9,8 +9,9 @@ import { LuPlus, LuMinus, LuSearch } from "react-icons/lu";
 import { InputGroup } from "./ui/input-group";
 import { Tooltip } from "./ui/tooltip";
 import { Button } from "./ui/button";
+import { useColorMode } from "./ui/color-mode";
 
-import { Class, Flags } from "../lib/class";
+import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { State } from "../lib/state";
 
@@ -121,8 +122,9 @@ function ClassInput(props: {
         <InputGroup startElement={<LuSearch />} width="fill-available">
           <Input
             type="text"
+            aria-label="Search for a class"
+            id="class-search"
             placeholder="Class number, name, or instructor"
-            _placeholder={{ opacity: 1 }}
             value={classInput}
             onChange={(e) => onClassInputChange(e.target.value)}
           />
@@ -145,8 +147,8 @@ const CLASS_FLAGS_1: FilterGroup = [
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
 const CLASS_FLAGS_2: FilterGroup = [
-  ["under", "Undergrad", "img/under.gif"],
-  ["grad", "Graduate", "img/grad.gif"],
+  ["under", "Undergrad", getFlagImg("under")],
+  ["grad", "Graduate", getFlagImg("grad")],
   ["le9units", "≤ 9 units"],
   ["half", "Half-term"],
   ["limited", "Limited enrollment"],
@@ -154,11 +156,11 @@ const CLASS_FLAGS_2: FilterGroup = [
 
 /** Second row of hidden filter IDs. */
 const CLASS_FLAGS_3: FilterGroup = [
-  ["rest", "REST", "img/rest.gif"],
-  ["Lab", "Institute Lab", "img/Lab.gif"],
-  ["hassA", "HASS-A", "img/hassA.gif"],
-  ["hassH", "HASS-H", "img/hassH.gif"],
-  ["hassS", "HASS-S", "img/hassS.gif"],
+  ["rest", "REST", getFlagImg("rest")],
+  ["Lab", "Institute Lab", getFlagImg("Lab")],
+  ["hassA", "HASS-A", getFlagImg("hassA")],
+  ["hassH", "HASS-H", getFlagImg("hassH")],
+  ["hassS", "HASS-S", getFlagImg("hassS")],
   ["cihw", "CI-HW"],
   ["notcih", "Not CI-H"],
 ];
@@ -213,6 +215,8 @@ function ClassFlags(props: {
     });
   };
 
+  const { colorMode } = useColorMode();
+
   const renderGroup = (group: FilterGroup) => {
     return (
       <Group attached colorPalette="orange" wrap="wrap">
@@ -224,7 +228,19 @@ function ClassFlags(props: {
               onClick={() => onChange(flag, !checked)}
               variant={checked ? "solid" : "outline"}
             >
-              {image ? <Image src={image} alt={label} /> : label}
+              {image ? (
+                <Image
+                  src={image}
+                  alt={label}
+                  filter={
+                    colorMode === "dark" && DARK_IMAGES.includes(flag ?? "")
+                      ? "invert()"
+                      : ""
+                  }
+                />
+              ) : (
+                label
+              )}
             </Button>
           );
           return image ? (

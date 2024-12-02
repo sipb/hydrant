@@ -7,6 +7,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
+  DialogActionTrigger,
 } from "./ui/dialog";
 import { useColorModeValue, ColorModeIcon } from "./ui/color-mode";
 import { Button } from "./ui/button";
@@ -26,6 +28,9 @@ import { State } from "../lib/state";
 import { useState, useRef } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
+
+import logo from "../assets/logo.svg";
+import logoDark from "../assets/logo-dark.svg";
 
 function PreferencesDialog(props: { state: State; preferences: Preferences }) {
   const { preferences: originalPreferences, state } = props;
@@ -60,10 +65,16 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
 
   return (
     <>
-      <Button onClick={onOpen} size="sm">
-        Change theme <ColorModeIcon />
-      </Button>
-      <DialogRoot open={visible} onOpenChange={onCancel}>
+      <DialogRoot
+        lazyMount
+        open={visible}
+        onOpenChange={(e) => (e.open ? onOpen() : onCancel())}
+      >
+        <DialogTrigger asChild>
+          <Button size="sm">
+            Change theme <ColorModeIcon />
+          </Button>
+        </DialogTrigger>
         <DialogContent ref={contentRef}>
           <DialogHeader>
             <DialogTitle>Preferences</DialogTitle>
@@ -101,9 +112,9 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
             </Flex>
           </DialogBody>
           <DialogFooter>
-            <Button onClick={onCancel} mr={2}>
-              Cancel
-            </Button>
+            <DialogActionTrigger asChild>
+              <Button>Cancel</Button>
+            </DialogActionTrigger>
             <Button onClick={onConfirm}>Save</Button>
           </DialogFooter>
         </DialogContent>
@@ -159,7 +170,7 @@ function getUrlNames(latestTerm: string): Array<string> {
 /** Header above the left column, with logo and semester selection. */
 export function Header(props: { state: State; preferences: Preferences }) {
   const { state, preferences } = props;
-  const logoSrc = useColorModeValue("img/logo.svg", "img/logo-dark.svg");
+  const logoSrc = useColorModeValue(logo, logoDark);
   const toUrl = (urlName: string) =>
     toFullUrl(urlName, state.latestTerm.urlName);
   const defaultValue = toUrl(state.term.urlName);
@@ -185,6 +196,7 @@ export function Header(props: { state: State; preferences: Preferences }) {
         w="8rem"
         mr={3}
       >
+        <SelectLabel hidden>Select semester</SelectLabel>
         <SelectTrigger>
           <SelectValueText />
         </SelectTrigger>
