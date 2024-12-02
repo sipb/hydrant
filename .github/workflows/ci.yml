@@ -44,9 +44,7 @@ jobs:
       run: npm install
     - name: Run ESLint
       run: npm run ci-eslint
-    - name: Install latest typescript
-      run: npm install -g typescript@latest
     - name: Run tsc
-      run: tsc
+      run: npx -p typescript@latest tsc
     - name: Run build
       run: npm run build
