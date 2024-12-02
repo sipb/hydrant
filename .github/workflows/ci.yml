@@ -45,6 +45,6 @@ jobs:
     - name: Run ESLint
       run: npm run ci-eslint
     - name: Run tsc
-      run: npx -p typescript@~5.0.0 tsc
+      run: npx -p typescript@latest tsc
     - name: Run build
       run: npm run build
