@@ -196,6 +196,7 @@ export function Header(props: { state: State; preferences: Preferences }) {
         w="8rem"
         mr={3}
       >
+        <SelectLabel hidden>Select semester</SelectLabel>
         <SelectTrigger>
           <SelectValueText />
         </SelectTrigger>

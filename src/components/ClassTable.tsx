@@ -122,8 +122,9 @@ function ClassInput(props: {
         <InputGroup startElement={<LuSearch />} width="fill-available">
           <Input
             type="text"
+            aria-label="Search for a class"
+            id="class-search"
             placeholder="Class number, name, or instructor"
-            _placeholder={{ opacity: 1 }}
             value={classInput}
             onChange={(e) => onClassInputChange(e.target.value)}
           />

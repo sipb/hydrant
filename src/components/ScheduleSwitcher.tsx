@@ -21,6 +21,7 @@ import {
   SelectRoot,
   SelectTrigger,
   SelectValueText,
+  SelectLabel,
 } from "./ui/select";
 
 import { useCopyToClipboard } from "react-use";
@@ -64,6 +65,7 @@ function SelectWithWarn(props: {
           }
         }}
       >
+        <SelectLabel hidden>Select schedule</SelectLabel>
         <SelectTrigger>
           <SelectValueText />
         </SelectTrigger>
