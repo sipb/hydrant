@@ -113,7 +113,7 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
           </DialogBody>
           <DialogFooter>
             <DialogActionTrigger asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button>Cancel</Button>
             </DialogActionTrigger>
             <Button onClick={onConfirm}>Save</Button>
           </DialogFooter>
