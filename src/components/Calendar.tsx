@@ -30,7 +30,13 @@ export function Calendar(props: {
         cursor="pointer"
         height="100%"
       >
-        <Text fontSize="sm" fontWeight="medium">
+        <Text
+          fontSize="sm"
+          fontWeight="medium"
+          overflow="hidden"
+          textOverflow="clip"
+          whiteSpace="nowrap"
+        >
           {event.title}
         </Text>
         <Text fontSize="xs">{event.extendedProps.room}</Text>
