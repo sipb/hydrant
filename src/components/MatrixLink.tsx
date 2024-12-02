@@ -26,7 +26,7 @@ export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
         href={matrixLink}
         target="_blank"
         rel="noreferrer"
-        fontWeight={"bold"}
+        fontWeight={"semibold"}
       >
         <LuMessageSquare />
         Join group chats on Matrix

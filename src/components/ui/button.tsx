@@ -23,7 +23,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={loading || disabled}
         ref={ref}
         variant={variant ?? "subtle"}
-        fontWeight={"bold"}
+        fontWeight={"semibold"}
         {...rest}
       >
         {loading && !loadingText ? (

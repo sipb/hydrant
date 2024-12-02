@@ -10,7 +10,7 @@ export function SIPBLogo() {
       href="https://sipb.mit.edu/"
       target="_blank"
       rel="noreferrer"
-      fontWeight={"bold"}
+      fontWeight={"semibold"}
     >
       Maintained by SIPB
       <Image src="/fuzzball.png" alt="SIPB Logo" height="1.25lh" />
