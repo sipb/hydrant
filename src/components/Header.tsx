@@ -7,6 +7,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
+  DialogActionTrigger,
 } from "./ui/dialog";
 import { useColorModeValue, ColorModeIcon } from "./ui/color-mode";
 import { Button } from "./ui/button";
@@ -63,10 +65,16 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
 
   return (
     <>
-      <Button onClick={onOpen} size="sm">
-        Change theme <ColorModeIcon />
-      </Button>
-      <DialogRoot open={visible} onOpenChange={onCancel}>
+      <DialogRoot
+        lazyMount
+        open={visible}
+        onOpenChange={(e) => (e.open ? onOpen() : onCancel())}
+      >
+        <DialogTrigger asChild>
+          <Button size="sm">
+            Change theme <ColorModeIcon />
+          </Button>
+        </DialogTrigger>
         <DialogContent ref={contentRef}>
           <DialogHeader>
             <DialogTitle>Preferences</DialogTitle>
@@ -104,9 +112,9 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
             </Flex>
           </DialogBody>
           <DialogFooter>
-            <Button onClick={onCancel} mr={2}>
-              Cancel
-            </Button>
+            <DialogActionTrigger asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogActionTrigger>
             <Button onClick={onConfirm}>Save</Button>
           </DialogFooter>
         </DialogContent>

@@ -8,6 +8,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
+  DialogActionTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 
@@ -74,8 +76,9 @@ function SelectWithWarn(props: {
         </SelectContent>
       </SelectRoot>
       <DialogRoot
+        lazyMount
         open={Boolean(confirmSave)}
-        onOpenChange={() => setConfirmSave("")}
+        onOpenChange={(e) => (!e.open ? setConfirmSave("") : null)}
       >
         <DialogContent>
           <DialogHeader>
@@ -87,9 +90,9 @@ function SelectWithWarn(props: {
             current schedule?
           </DialogBody>
           <DialogFooter>
-            <Button onClick={() => setConfirmSave("")} mr={2}>
-              Cancel
-            </Button>
+            <DialogActionTrigger asChild>
+              <Button>Cancel</Button>
+            </DialogActionTrigger>
             <Button
               onClick={() => {
                 state.loadSave(confirmSave);
@@ -111,17 +114,19 @@ function DeleteDialog(props: { state: State; saveId: string; name: string }) {
 
   return (
     <>
-      <SmallButton onClick={() => setShow(true)}>Delete</SmallButton>
-      <DialogRoot open={show} onOpenChange={() => setShow(false)}>
+      <DialogRoot lazyMount open={show} onOpenChange={(e) => setShow(e.open)}>
+        <DialogTrigger asChild>
+          <SmallButton>Delete</SmallButton>
+        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Are you sure?</DialogTitle>
           </DialogHeader>
           <DialogBody>Are you sure you want to delete {name}?</DialogBody>
           <DialogFooter>
-            <Button onClick={() => setShow(false)} mr={2}>
-              Cancel
-            </Button>
+            <DialogActionTrigger asChild>
+              <Button>Cancel</Button>
+            </DialogActionTrigger>
             <Button
               onClick={() => {
                 state.removeSave(saveId);
@@ -145,8 +150,10 @@ function ExportDialog(props: { state: State }) {
 
   return (
     <>
-      <SmallButton onClick={() => setShow(true)}>Share</SmallButton>
-      <DialogRoot open={show} onOpenChange={() => setShow(false)}>
+      <DialogRoot lazyMount open={show} onOpenChange={(e) => setShow(e.open)}>
+        <DialogTrigger asChild>
+          <SmallButton>Share</SmallButton>
+        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Share schedule</DialogTitle>
@@ -159,9 +166,9 @@ function ExportDialog(props: { state: State }) {
             </Link>
           </DialogBody>
           <DialogFooter>
-            <Button onClick={() => setShow(false)} mr={2}>
-              Close
-            </Button>
+            <DialogActionTrigger asChild>
+              <Button>Close</Button>
+            </DialogActionTrigger>
             <Button onClick={() => copyToClipboard(link)}>
               {clipboardState.value === link ? "Copied!" : "Copy"}
             </Button>
