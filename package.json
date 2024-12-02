@@ -34,8 +34,7 @@
     "eject": "react-scripts eject",
     "format": "prettier --write **/*.{ts,tsx}",
     "ci-prettier": "prettier --check **/*.{ts,tsx}",
-    "ci-eslint": "eslint **/*.{ts,tsx}",
-    "ci-tsc": "tsc"
+    "ci-eslint": "eslint **/*.{ts,tsx}"
   },
   "eslintConfig": {
     "extends": [

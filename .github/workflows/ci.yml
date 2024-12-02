@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ env.node-version }}
+    - name: Install node
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.node-version }}
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ env.node-version }}
+    - name: Install node
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.node-version }}
@@ -45,6 +45,6 @@ jobs:
     - name: Run ESLint
       run: npm run ci-eslint
     - name: Run tsc
-      run: npm run ci-tsc
+      run: npx tsc@latest
     - name: Run build
       run: npm run build
