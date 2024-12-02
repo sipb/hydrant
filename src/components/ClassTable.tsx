@@ -228,7 +228,7 @@ function ClassFlags(props: {
             </Button>
           );
           return image ? (
-            <Tooltip content={label} key={flag}>
+            <Tooltip content={label} key={flag} portalled>
               {content}
             </Tooltip>
           ) : (
