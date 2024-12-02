@@ -137,7 +137,7 @@ function getLastUrlName(urlName: string): string {
 }
 
 /** urlNames that don't have a State */
-const EXCLUDED_URLS = ["i23", "i24"];
+const EXCLUDED_URLS = ["i23", "i24", "i25"];
 
 /** Earliest urlName we have a State for. */
 const EARLIEST_URL = "f22";
