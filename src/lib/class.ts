@@ -195,7 +195,7 @@ export class Class {
 
   constructor(rawClass: RawClass, colorScheme: ColorScheme) {
     this.rawClass = rawClass;
-    this.sections = rawClass.s
+    this.sections = rawClass.sectionKinds
       .map((kind) => {
         switch (kind) {
           case "lecture":
@@ -239,10 +239,10 @@ export class Class {
 
   /** Name, e.g. "Introduction to Machine Learning". */
   get name(): string {
-    if (this.rawClass.on) {
-      return `[${this.rawClass.on}] ${this.rawClass.n}`;
+    if (this.rawClass.oldNumber) {
+      return `[${this.rawClass.oldNumber}] ${this.rawClass.name}`;
     }
-    return this.rawClass.n;
+    return this.rawClass.name;
   }
 
   /** Name that appears when it's on a button. */
@@ -252,42 +252,50 @@ export class Class {
 
   /** Number, e.g. "6.036". */
   get number(): string {
-    return this.rawClass.no;
+    return this.rawClass.number;
   }
 
   /** Old number, e.g. "6.036" for 6.3900. May or may not exist. */
   get oldNumber(): string | undefined {
-    return this.rawClass.on;
+    return this.rawClass.oldNumber;
   }
 
   /** Course, e.g. "6". */
   get course(): string {
-    return this.rawClass.co;
+    return this.rawClass.course;
   }
 
   /** Units [in class, lab, out of class]. */
   get units(): Array<number> {
-    return [this.rawClass.u1, this.rawClass.u2, this.rawClass.u3];
+    return [
+      this.rawClass.lectureUnits,
+      this.rawClass.labUnits,
+      this.rawClass.preparationUnits,
+    ];
   }
 
   /** Returns whether this class has a variable/arranged number of units. */
   get isVariableUnits(): boolean {
-    return this.rawClass.vu;
+    return this.rawClass.isVariableUnits;
   }
 
   /** Total class units, usually 12. */
   get totalUnits(): number {
-    return this.rawClass.u1 + this.rawClass.u2 + this.rawClass.u3;
+    return (
+      this.rawClass.lectureUnits +
+      this.rawClass.labUnits +
+      this.rawClass.preparationUnits
+    );
   }
 
   /** Hours per week, taking from evals if exists, or units if not. */
   get hours(): number {
-    return this.rawClass.h || this.totalUnits;
+    return this.rawClass.hours || this.totalUnits;
   }
 
   /** The half the class lies in; 1 if first, 2 if second, else undefined. */
   get half(): number | undefined {
-    return this.rawClass.hf ? this.rawClass.hf : undefined;
+    return this.rawClass.half || undefined;
   }
 
   /** Get all calendar events corresponding to this class. */
@@ -300,35 +308,35 @@ export class Class {
   /** Object of boolean properties of class, used for filtering. */
   get flags(): Flags {
     return {
-      nonext: this.rawClass.nx,
-      under: this.rawClass.le === "U",
-      grad: this.rawClass.le === "G",
-      fall: this.rawClass.t.includes("FA"),
-      iap: this.rawClass.t.includes("JA"),
-      spring: this.rawClass.t.includes("SP"),
-      summer: this.rawClass.t.includes("SU"),
-      repeat: this.rawClass.rp,
-      rest: this.rawClass.re,
-      Lab: this.rawClass.la,
-      PartLab: this.rawClass.pl,
+      nonext: this.rawClass.nonext,
+      under: this.rawClass.level === "U",
+      grad: this.rawClass.level === "G",
+      fall: this.rawClass.terms.includes("FA"),
+      iap: this.rawClass.terms.includes("JA"),
+      spring: this.rawClass.terms.includes("SP"),
+      summer: this.rawClass.terms.includes("SU"),
+      repeat: this.rawClass.repeat,
+      rest: this.rawClass.rest,
+      Lab: this.rawClass.lab,
+      PartLab: this.rawClass.partLab,
       hass:
-        this.rawClass.hh ||
-        this.rawClass.ha ||
-        this.rawClass.hs ||
-        this.rawClass.he,
-      hassH: this.rawClass.hh,
-      hassA: this.rawClass.ha,
-      hassS: this.rawClass.hs,
-      hassE: this.rawClass.he,
-      cih: this.rawClass.ci,
-      cihw: this.rawClass.cw,
-      notcih: !this.rawClass.ci && !this.rawClass.cw,
-      final: this.rawClass.f,
-      nofinal: !this.rawClass.f,
-      nopreq: this.rawClass.pr === "None",
+        this.rawClass.hassH ||
+        this.rawClass.hassA ||
+        this.rawClass.hassS ||
+        this.rawClass.hassE,
+      hassH: this.rawClass.hassH,
+      hassA: this.rawClass.hassA,
+      hassS: this.rawClass.hassS,
+      hassE: this.rawClass.hassE,
+      cih: this.rawClass.cih,
+      cihw: this.rawClass.cihw,
+      notcih: !this.rawClass.cih && !this.rawClass.cihw,
+      final: this.rawClass.final,
+      nofinal: !this.rawClass.final,
+      nopreq: this.rawClass.prereqs === "None",
       le9units: this.totalUnits <= 9 && !this.isVariableUnits,
-      half: this.rawClass.hf,
-      limited: this.rawClass.lm,
+      half: this.rawClass.half,
+      limited: this.rawClass.limited,
     };
   }
 
@@ -338,7 +346,7 @@ export class Class {
     hours: string;
     people: string;
   } {
-    if (this.rawClass.ra === 0) {
+    if (this.rawClass.rating === 0) {
       return {
         rating: "N/A",
         hours: "N/A",
@@ -346,9 +354,9 @@ export class Class {
       };
     } else {
       return {
-        rating: `${this.rawClass.ra.toFixed(1)}/7.0`,
-        hours: `${this.rawClass.h.toFixed(1)}`,
-        people: `${this.rawClass.si.toFixed(1)}`,
+        rating: `${this.rawClass.rating.toFixed(1)}/7.0`,
+        hours: `${this.rawClass.hours.toFixed(1)}`,
+        people: `${this.rawClass.size.toFixed(1)}`,
       };
     }
   }
@@ -363,9 +371,9 @@ export class Class {
     meets: string;
   } {
     return {
-      prereq: this.rawClass.pr,
-      same: this.rawClass.sa,
-      meets: this.rawClass.mw,
+      prereq: this.rawClass.prereqs,
+      same: this.rawClass.same,
+      meets: this.rawClass.meets,
     };
   }
 
@@ -375,14 +383,14 @@ export class Class {
   } {
     const suffixes: Array<string> = [];
     const messages: Array<string> = [];
-    if (this.rawClass.tb) {
+    if (this.rawClass.tba) {
       suffixes.push("+");
       messages.push(
         "+ Class has at least one section yet to be scheduled—check course catalog.",
       );
     }
-    if (this.rawClass.vu) {
-      if (this.rawClass.h === 0) {
+    if (this.rawClass.isVariableUnits) {
+      if (this.rawClass.hours === 0) {
         suffixes.push("^");
         messages.push(
           "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours.",
@@ -394,7 +402,7 @@ export class Class {
         );
       }
     } else {
-      if (this.rawClass.h === 0) {
+      if (this.rawClass.hours === 0) {
         suffixes.push("*");
         messages.push(
           "* Class does not have evaluations, so its hours were set to units.",
@@ -433,8 +441,8 @@ export class Class {
       });
     }
 
-    if (this.rawClass.u) {
-      extraUrls.unshift({ label: "More Info", url: this.rawClass.u });
+    if (this.rawClass.url) {
+      extraUrls.unshift({ label: "More Info", url: this.rawClass.url });
     }
     if (this.course === "6") {
       extraUrls.push({
@@ -450,8 +458,8 @@ export class Class {
     }
 
     return {
-      description: this.rawClass.d,
-      inCharge: this.rawClass.i,
+      description: this.rawClass.description,
+      inCharge: this.rawClass.inCharge,
       extraUrls: extraUrls,
     };
   }

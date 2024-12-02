@@ -7,18 +7,18 @@ export type RawSection = [Array<RawTimeslot>, string];
 /** The raw class format produced by combiner_ws.py. */
 export type RawClass = {
   /** Class number, e.g. "6.3900" */
-  no: string;
+  number: string;
   /** Old class number, e.g. "6.036" */
-  on: string;
+  oldNumber: string;
   /** Course number, e.g. "6" */
-  co: string;
-  /** Class number without course, e.g. "3900" */
-  cl: string;
+  course: string;
+  /** Subject number without course, e.g. "3900" */
+  subject: string;
   /** True if some section is not scheduled yet */
-  tb: boolean;
+  tba: boolean;
 
   /** Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist */
-  s: Array<"lecture" | "recitation" | "lab" | "design">;
+  sectionKinds: Array<"lecture" | "recitation" | "lab" | "design">;
   /** Lecture timeslots and rooms */
   lectureSections: Array<RawSection>;
   /** Recitation timeslots and rooms */
@@ -37,78 +37,78 @@ export type RawClass = {
   designRawSections: Array<string>;
 
   /** True if HASS-H */
-  hh: boolean;
+  hassH: boolean;
   /** True if HASS-A */
-  ha: boolean;
+  hassA: boolean;
   /** True if HASS-S */
-  hs: boolean;
+  hassS: boolean;
   /** True if HASS-E */
-  he: boolean;
+  hassE: boolean;
   /** True if CI-H */
-  ci: boolean;
+  cih: boolean;
   /** True if CI-HW */
-  cw: boolean;
+  cihw: boolean;
   /** True if REST */
-  re: boolean;
+  rest: boolean;
   /** True if institute lab */
-  la: boolean;
+  lab: boolean;
   /** True if partial institute lab */
-  pl: boolean;
+  partLab: boolean;
 
   /** Lecture or recitation units */
-  u1: number;
+  lectureUnits: number;
   /** Lab or field work units */
-  u2: number;
+  labUnits: number;
   /** Outside class units */
-  u3: number;
+  preparationUnits: number;
   /**
    * Does this class have an arranged number of units?
-   * If true, u1, u2, u3 are set to zero.
+   * If true, lectureUnits, labUnits, preparationUnits are set to zero.
    */
-  vu: boolean;
+  isVariableUnits: boolean;
 
   /** Level: "U" undergrad, "G" grad */
-  le: "U" | "G";
+  level: "U" | "G";
   /**
    * Comma-separated list of classes with same number, e.g.
    * "21A.103, WGS.225"
    */
-  sa: string;
+  same: string;
   /** Comma-separated list of classes it meets with */
-  mw: string;
+  meets: string;
 
   /** Terms class is offered */
-  t: Array<"FA" | "JA" | "SP" | "SU">;
+  terms: Array<"FA" | "JA" | "SP" | "SU">;
   /** Prereqs, no specific format (but usually contains class numbers) */
-  pr: string;
+  prereqs: string;
 
   /** Description (~paragraph that appears in catalog) */
-  d: string;
+  description: string;
   /** Name of class e.g. "Algebra I" */
-  n: string;
+  name: string;
   /** (Person) in-charge, e.g. "Alyssa Hacker" */
-  i: string;
+  inCharge: string;
 
   /** True if meeting virtually */
-  v: boolean;
+  virtualStatus: boolean;
 
   /** True if NOT offered next year */
-  nx: boolean;
+  nonext: boolean;
   /** True if can be repeated for credit */
-  rp: boolean;
+  repeat: boolean;
   /** Class website */
-  u: string;
+  url: string;
   /** True if has final */
-  f: boolean;
+  final: boolean;
   /** 1 or 2 if first / second half */
-  hf: number | false;
+  half: number | false;
   /** True if limited enrollment */
-  lm: boolean;
+  limited: boolean;
 
   /** Rating (out of 7.0) from evals */
-  ra: number;
+  rating: number;
   /** Hours per week from evals */
-  h: number;
+  hours: number;
   /** Class size from evals */
-  si: number;
+  size: number;
 };
