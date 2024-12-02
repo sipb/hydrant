@@ -1,19 +1,14 @@
 import { AgGridReact } from "@ag-grid-community/react";
 import AgGrid, { ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import { AddIcon, MinusIcon, SearchIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Flex,
-  Image,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+
+import { LuPlus, LuMinus, LuSearch } from "react-icons/lu";
+
+import { InputGroup } from "./ui/input-group";
+import { Tooltip } from "./ui/tooltip";
+import { Button } from "./ui/button";
 
 import { Class, Flags } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
@@ -121,16 +116,15 @@ function ClassInput(props: {
           e.preventDefault();
           onEnter();
         }}
+        style={{ width: "100%", maxWidth: "30em" }}
       >
-        <InputGroup>
-          <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
+        <InputGroup startElement={<LuSearch />} width="fill-available">
           <Input
             type="text"
             placeholder="Class number, name, or instructor"
             _placeholder={{ opacity: 1 }}
             value={classInput}
             onChange={(e) => onClassInputChange(e.target.value)}
-            width="30em"
           />
         </InputGroup>
       </form>
@@ -221,7 +215,7 @@ function ClassFlags(props: {
 
   const renderGroup = (group: FilterGroup) => {
     return (
-      <ButtonGroup isAttached={true} colorScheme="orange">
+      <Group attached colorPalette="orange" wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
           const content = (
@@ -233,9 +227,15 @@ function ClassFlags(props: {
               {image ? <Image src={image} alt={label} /> : label}
             </Button>
           );
-          return image ? <Tooltip label={label}>{content}</Tooltip> : content;
+          return image ? (
+            <Tooltip content={label} key={flag} portalled>
+              {content}
+            </Tooltip>
+          ) : (
+            content
+          );
         })}
-      </ButtonGroup>
+      </Group>
     );
   };
 
@@ -243,12 +243,9 @@ function ClassFlags(props: {
     <Flex direction="column" align="center" gap={2}>
       <Flex align="center">
         {renderGroup(CLASS_FLAGS_1)}
-        <Button
-          leftIcon={allFlags ? <MinusIcon /> : <AddIcon />}
-          onClick={() => setAllFlags(!allFlags)}
-          size="sm"
-          ml={2}
-        >
+        <Button onClick={() => setAllFlags(!allFlags)} size="sm" ml={2}>
+          {" "}
+          {allFlags ? <LuMinus /> : <LuPlus />}
           {allFlags ? "Less filters" : "More filters"}
         </Button>
       </Flex>

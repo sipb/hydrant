@@ -1,16 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { StrictMode, useEffect, useRef, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import {
-  Button,
-  Center,
-  ChakraProvider,
-  Flex,
-  HStack,
-  Spinner,
-  Tooltip,
-  extendTheme,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Center, Flex, Group, Spinner } from "@chakra-ui/react";
+
+import { Button } from "./ui/button";
+import { Tooltip } from "./ui/tooltip";
+import { Provider } from "./ui/provider";
+import { useColorMode } from "./ui/color-mode";
 
 import { Term, TermInfo } from "../lib/dates";
 import { State } from "../lib/state";
@@ -27,11 +22,10 @@ import { ScheduleOption } from "./ScheduleOption";
 import { ScheduleSwitcher } from "./ScheduleSwitcher";
 import { SelectedActivities } from "./SelectedActivities";
 
-import "@fontsource/inter/variable.css";
-import "./App.scss";
+import "@fontsource-variable/inter";
 import { MatrixLink } from "./MatrixLink";
 import { useICSExport } from "../lib/gapi";
-import { CalendarIcon } from "@chakra-ui/icons";
+import { LuCalendar } from "react-icons/lu";
 import { SIPBLogo } from "./SIPBLogo";
 
 type SemesterData = {
@@ -79,6 +73,7 @@ function useHydrant(): {
   }, []);
 
   const { colorMode, toggleColorMode } = useColorMode();
+
   useEffect(() => {
     if (loading || !hydrant) return;
     // if colorScheme changes, change colorMode to match
@@ -89,7 +84,8 @@ function useHydrant(): {
       }
     };
     hydrant?.updateState();
-  }, [colorMode, hydrant, loading, toggleColorMode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [colorMode, hydrant, loading]);
 
   return { hydrant, state };
 }
@@ -180,7 +176,7 @@ function HydrantApp() {
               state={hydrant}
             />
             <Center>
-              <HStack gap={2}>
+              <Group wrap="wrap" justifyContent="center" gap={2}>
                 {/* <Tooltip
                   label={
                     isExporting
@@ -195,25 +191,25 @@ function HydrantApp() {
                   )}
                 </Tooltip> */}
                 <Tooltip
-                  label={
+                  content={
                     isExporting
                       ? "Loading..."
-                      : "At the moment, only manually exporting to an .ics file is supported. " +
-                        "We are still working on fixing Google Calendar export!"
+                      : "Currently, only manually exporting to an .ics file is supported. "
                   }
                 >
                   <Button
-                    colorScheme="blue"
+                    colorPalette="blue"
+                    variant="solid"
                     size="sm"
-                    leftIcon={<CalendarIcon />}
                     onClick={onICSExport}
                   >
+                    <LuCalendar />
                     {isExporting ? <Spinner m={3} /> : "Import to my calendar"}
                   </Button>
                 </Tooltip>
                 <MatrixLink selectedActivities={state.selectedActivities} />
                 <SIPBLogo />
-              </HStack>
+              </Group>
             </Center>
             <SelectedActivities
               selectedActivities={state.selectedActivities}
@@ -241,28 +237,13 @@ function HydrantApp() {
 
 /** The main application. */
 export function App() {
-  const theme = extendTheme({
-    components: {
-      Link: {
-        baseStyle: ({ colorMode }: { colorMode: string }) => ({
-          color: colorMode === "light" ? "blue.500" : "blue.200",
-        }),
-      },
-    },
-    config: {
-      initialColorMode: "light",
-    },
-    fonts: {
-      body: `'InterVariable', sans-serif`,
-      heading: `'InterVariable', sans-serif`,
-    },
-  });
-
   return (
-    <ChakraProvider theme={theme}>
-      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
-        <HydrantApp />
-      </GoogleOAuthProvider>
-    </ChakraProvider>
+    <StrictMode>
+      <Provider>
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
+          <HydrantApp />
+        </GoogleOAuthProvider>
+      </Provider>
+    </StrictMode>
   );
 }

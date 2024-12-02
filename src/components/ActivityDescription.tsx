@@ -1,15 +1,9 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  Image,
-  Link,
-  Text,
-  Tooltip,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { decode } from "html-entities";
-import { ReactNode } from "react";
+
+import { useColorMode } from "./ui/color-mode";
+import { Tooltip } from "./ui/tooltip";
+import { Button } from "./ui/button";
 
 import { Activity, NonClass } from "../lib/activity";
 import { Class, Flags } from "../lib/class";
@@ -17,6 +11,7 @@ import { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";
 
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
+import { LuExternalLink } from "react-icons/lu";
 
 const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
 
@@ -28,7 +23,7 @@ function TypeSpan(props: { flag?: string; title: string }) {
     colorMode === "dark" && DARK_IMAGES.includes(flag ?? "") ? "invert()" : "";
 
   return flag ? (
-    <Tooltip label={title}>
+    <Tooltip content={title}>
       <Image
         alt={title}
         boxSize="1em"
@@ -163,9 +158,16 @@ function ClassBody(props: { cls: Class; state: State }) {
       {inCharge !== "" && <Text>In-charge: {inCharge}.</Text>}
       {extraUrls.length > 0 && (
         <Flex gap={4}>
-          {extraUrls.map<ReactNode>(({ label, url }) => (
-            <Link key={label} href={url} target="_blank">
-              {label}
+          {extraUrls.map(({ label, url }) => (
+            <Link
+              key={label}
+              href={url}
+              target="_blank"
+              colorPalette="blue"
+              display="inline-block"
+              flexGrow={1}
+            >
+              {label} <LuExternalLink style={{ display: "inline" }} />
             </Link>
           ))}
         </Flex>
@@ -180,7 +182,7 @@ function ClassDescription(props: { cls: Class; state: State }) {
 
   return (
     <Flex direction="column" gap={4}>
-      <Heading size="sm">
+      <Heading size="md">
         {cls.number}: {cls.name}
       </Heading>
       <Flex direction="column" gap={0.5}>

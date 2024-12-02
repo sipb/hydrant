@@ -1,5 +1,4 @@
 import { Link } from "@chakra-ui/react";
-// @ts-ignore
 import Msgpack from "msgpack-lite";
 
 import { State } from "./state";
@@ -67,7 +66,11 @@ export function linkClasses(state: State, str: string): JSX.Element {
         const cls = state.classes.get(text);
         if (!cls) return text;
         return (
-          <Link key={i} onClick={() => state.setViewedActivity(cls)}>
+          <Link
+            key={i}
+            onClick={() => state.setViewedActivity(cls)}
+            colorPalette="blue"
+          >
             {text}
           </Link>
         );
@@ -85,7 +88,10 @@ export function sum(arr: Array<number>): number {
 }
 
 export function urlencode(obj: any): string {
-  return btoa(String.fromCharCode.apply(null, Msgpack.encode(obj)));
+  return btoa(
+    // @ts-ignore
+    String.fromCharCode.apply(null, Msgpack.encode(obj) as Uint8Array),
+  );
 }
 
 export function urldecode(obj: string): any {

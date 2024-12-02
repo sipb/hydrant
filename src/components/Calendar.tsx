@@ -1,10 +1,10 @@
 import { Box, Text } from "@chakra-ui/react";
-import FullCalendar, { EventApi } from "@fullcalendar/react";
+import FullCalendar from "@fullcalendar/react";
+import type { EventContentArg } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import { Activity, NonClass, Timeslot } from "../lib/activity";
-import { textColor } from "../lib/colors";
 import { Slot } from "../lib/dates";
 import { State } from "../lib/state";
 
@@ -21,21 +21,16 @@ export function Calendar(props: {
 }) {
   const { selectedActivities, viewedActivity, state } = props;
 
-  const renderEvent = ({ event }: { event: EventApi; timeText: string }) => {
+  const renderEvent = ({ event }: EventContentArg) => {
     return (
       <Box
-        color={textColor(event.backgroundColor)}
+        color={event.textColor}
         p={0.5}
         lineHeight={1.3}
         cursor="pointer"
+        height="100%"
       >
-        <Text
-          fontSize="sm"
-          fontWeight={500}
-          overflow="hidden"
-          textOverflow="clip"
-          whiteSpace="nowrap"
-        >
+        <Text fontSize="sm" fontWeight="medium">
           {event.title}
         </Text>
         <Text fontSize="xs">{event.extendedProps.room}</Text>
@@ -56,7 +51,7 @@ export function Calendar(props: {
       eventContent={renderEvent}
       eventClick={(e) => {
         // extendedProps: non-standard props of {@link Event.eventInputs}
-        state.setViewedActivity(e.event.extendedProps.activity);
+        state.setViewedActivity(e.event.extendedProps.activity as Activity);
       }}
       headerToolbar={false}
       height="auto"

@@ -1,7 +1,9 @@
-import { Button, Tooltip } from "@chakra-ui/react";
 import { Activity } from "../lib/activity";
 import { Class } from "../lib/class";
-import { ChatIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { LuMessageSquare, LuExternalLink } from "react-icons/lu";
+
+import { Tooltip } from "./ui/tooltip";
+import { LinkButton } from "./ui/link-button";
 
 /** A link to SIPB Matrix's class group chat importer UI */
 export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
@@ -17,19 +19,19 @@ export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
     .join("")}`;
 
   return (
-    <>
-      <a href={matrixLink} target="_blank" rel="noreferrer">
-        <Tooltip label="You will be able to choose which chats to join, if any.">
-          <Button
-            colorScheme="teal"
-            leftIcon={<ChatIcon />}
-            rightIcon={<ExternalLinkIcon />}
-            size="sm"
-          >
-            Join group chats on Matrix
-          </Button>
-        </Tooltip>
-      </a>
-    </>
+    <Tooltip content="You will be able to choose which chats to join, if any.">
+      <LinkButton
+        colorPalette="teal"
+        size="sm"
+        href={matrixLink}
+        target="_blank"
+        rel="noreferrer"
+        fontWeight={"semibold"}
+      >
+        <LuMessageSquare />
+        Join group chats on Matrix
+        <LuExternalLink />
+      </LinkButton>
+    </Tooltip>
   );
 }

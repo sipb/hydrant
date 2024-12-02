@@ -2,7 +2,7 @@ import { EventInput } from "@fullcalendar/core";
 import { nanoid } from "nanoid";
 
 import { Class } from "./class";
-import { ColorScheme, fallbackColor } from "./colors";
+import { ColorScheme, fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
 import { RawTimeslot } from "./rawClass";
 import { sum } from "./utils";
@@ -98,6 +98,7 @@ export class Event {
   get eventInputs(): Array<EventInput> {
     const color = this.activity.backgroundColor;
     return this.slots.map((slot) => ({
+      textColor: textColor(color),
       title: this.name,
       start: slot.startTime,
       end: slot.endTime,

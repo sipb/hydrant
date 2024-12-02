@@ -1,22 +1,29 @@
+import { Flex, Input, Link, createListCollection } from "@chakra-ui/react";
+import { ComponentPropsWithoutRef, useState } from "react";
+
 import {
-  Button,
-  Flex,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Select,
-  useClipboard,
-} from "@chakra-ui/react";
-import { ComponentProps, useState } from "react";
+  DialogRoot,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { Button } from "./ui/button";
 
 import { State } from "../lib/state";
 import { Save } from "../lib/schema";
+import {
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "./ui/select";
 
-function SmallButton(props: ComponentProps<"button">) {
+import { useCopyToClipboard } from "react-use";
+
+function SmallButton(props: ComponentPropsWithoutRef<"button">) {
   const { children, ...otherProps } = props;
   return (
     <Button {...otherProps} variant="outline" size="sm">
@@ -35,37 +42,51 @@ function SelectWithWarn(props: {
   const confirmName = saves.find((save) => save.id === confirmSave)?.name;
   return (
     <>
-      <Select
-        value={saveId}
+      <SelectRoot
+        collection={createListCollection({
+          items: [
+            { label: "Not saved", value: "" },
+            ...saves.map(({ id, name }) => ({ label: name, value: id })),
+          ],
+        })}
         size="sm"
-        onChange={(e) => {
-          if (!saveId) {
-            setConfirmSave(e.target.value);
-          } else {
-            state.loadSave(e.target.value);
-          }
-        }}
         width="fit-content"
         minWidth="10em"
         display="inline-block"
+        value={[saveId]}
+        onValueChange={(e) => {
+          if (!saveId) {
+            setConfirmSave(e.value[0]);
+          } else {
+            state.loadSave(e.value[0]);
+          }
+        }}
       >
-        {!saveId && <option value="">Not saved</option>}
-        {saves.map(({ id, name }) => (
-          <option key={id} value={id}>
-            {name}
-          </option>
-        ))}
-      </Select>
-      <Modal isOpen={Boolean(confirmSave)} onClose={() => setConfirmSave("")}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Are you sure?</ModalHeader>
-          <ModalBody>
+        <SelectTrigger>
+          <SelectValueText />
+        </SelectTrigger>
+        <SelectContent>
+          {saves.map(({ id, name }) => (
+            <SelectItem item={id} key={id}>
+              {name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </SelectRoot>
+      <DialogRoot
+        open={Boolean(confirmSave)}
+        onOpenChange={() => setConfirmSave("")}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
             The current schedule is loaded from a URL and is not saved. Are you
             sure you want to load schedule {confirmName} without saving your
             current schedule?
-          </ModalBody>
-          <ModalFooter>
+          </DialogBody>
+          <DialogFooter>
             <Button onClick={() => setConfirmSave("")} mr={2}>
               Cancel
             </Button>
@@ -77,26 +98,27 @@ function SelectWithWarn(props: {
             >
               Load schedule
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
     </>
   );
 }
 
-function DeleteModal(props: { state: State; saveId: string; name: string }) {
+function DeleteDialog(props: { state: State; saveId: string; name: string }) {
   const { state, saveId, name } = props;
   const [show, setShow] = useState(false);
 
   return (
     <>
       <SmallButton onClick={() => setShow(true)}>Delete</SmallButton>
-      <Modal isOpen={show} onClose={() => setShow(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Are you sure?</ModalHeader>
-          <ModalBody>Are you sure you want to delete {name}?</ModalBody>
-          <ModalFooter>
+      <DialogRoot open={show} onOpenChange={() => setShow(false)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+          </DialogHeader>
+          <DialogBody>Are you sure you want to delete {name}?</DialogBody>
+          <DialogFooter>
             <Button onClick={() => setShow(false)} mr={2}>
               Cancel
             </Button>
@@ -108,41 +130,44 @@ function DeleteModal(props: { state: State; saveId: string; name: string }) {
             >
               Delete
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
     </>
   );
 }
 
-function ExportModal(props: { state: State }) {
+function ExportDialog(props: { state: State }) {
   const { state } = props;
   const [show, setShow] = useState(false);
   const link = state.urlify();
-  const { hasCopied, onCopy } = useClipboard(link);
+  const [clipboardState, copyToClipboard] = useCopyToClipboard();
 
   return (
     <>
       <SmallButton onClick={() => setShow(true)}>Share</SmallButton>
-      <Modal isOpen={show} onClose={() => setShow(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Share schedule</ModalHeader>
-          <ModalBody>
+      <DialogRoot open={show} onOpenChange={() => setShow(false)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Share schedule</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
             Share the following link:
             <br />
-            <a href={link}>{link}</a>
-          </ModalBody>
-          <ModalFooter>
+            <Link href={link} colorPalette="blue" wordBreak="break-all">
+              {link}
+            </Link>
+          </DialogBody>
+          <DialogFooter>
             <Button onClick={() => setShow(false)} mr={2}>
               Close
             </Button>
-            <Button onClick={() => onCopy()}>
-              {hasCopied ? "Copied!" : "Copy"}
+            <Button onClick={() => copyToClipboard(link)}>
+              {clipboardState.value === link ? "Copied!" : "Copy"}
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
     </>
   );
 }
@@ -197,21 +222,21 @@ export function ScheduleSwitcher(props: {
         {saveId && <SmallButton onClick={onRename}>Rename</SmallButton>}
         <SmallButton onClick={onCopy}>Copy</SmallButton>
         {saveId && (
-          <DeleteModal
+          <DeleteDialog
             state={state}
             saveId={saveId}
             name={saves.find((save) => save.id === saveId)!.name}
           />
         )}
         <SmallButton onClick={onSave}>{saveId ? "New" : "Save"}</SmallButton>
-        <ExportModal state={state} />
+        <ExportDialog state={state} />
       </>
     );
     return [renderHeading, renderButtons];
   })();
 
   return (
-    <Flex align="center" justify="center" gap={2}>
+    <Flex align="center" justify="center" wrap="wrap" gap={2}>
       {renderHeading()}
       {renderButtons()}
     </Flex>
