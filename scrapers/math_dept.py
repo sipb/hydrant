@@ -1,7 +1,6 @@
 """
 This isn't run automatically, but it is a temporary workaround to the math classes being wrong.
-Used to generate the math overrides in package.py.
-There is a large amount of main code.
+Was used to generate the math overrides in package.py; currently unnecessary.
 
 Functions:
 * parse_when(when)
@@ -64,7 +63,7 @@ def parse_many_timeslots(days, times):
 
     Args:
     * day (str): A list of days
-    * times (str): The timesloot
+    * times (str): The timeslot
 
     Returns:
     * list[list[int]]: All of the parsed timeslots, as a list
@@ -93,7 +92,7 @@ def make_section_override(timeslots, room):
     Makes a section override
 
     Args:
-    * timeslots
+    * timeslots (list[list[int]]): The timeslots of the section
     * room (str): The room
 
     Returns:
@@ -150,7 +149,7 @@ def parse_row(row):
     * row (bs4.element.Tag): The row that needs to be parsed.
 
     Returns:
-    * dict[str, dict[str, list]]: The parsed row 
+    * dict[str, dict[str, list[Union[list[list[int]], str]]]]: The parsed row 
     """
     result = {}
 
@@ -183,7 +182,8 @@ def run():
 
     Args: none
 
-    Returns: dict[str, dict[str, list]]: Schedules for classes offered by the math dept
+    Returns:
+    * dict[str, dict[str, list[Union[list[list[int]], str]]]]: All the schedules
     """
     rows = get_rows()
 
