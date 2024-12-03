@@ -5,22 +5,17 @@ There is a large amount of main code.
 
 Functions:
 * parse_when(when)
+* test_parse_when()
 * parse_many_timeslots(days, times)
 * make_raw_sections(days, times, room):
 * make_section_override(timeslots, room)
+* run()
 """
 
 from pprint import pprint
 from bs4 import BeautifulSoup
 import requests
 from fireroad import parse_timeslot, parse_section
-
-# TODO: move this huge wall of code into its own function
-
-response = requests.get("https://math.mit.edu/academics/classes.html")
-soup = BeautifulSoup(response.text, features="lxml")
-course_list = soup.find("ul", {"class": "course-list"})
-rows = course_list.findAll("li", recursive=False)
 
 
 def parse_when(when):
@@ -47,10 +42,13 @@ def parse_when(when):
     times = times.replace(":", ".")
     return days, times
 
-
-assert parse_when("F10:30-12") == ("F", "10.30-12")
-assert parse_when("MW1") == ("MW", "1")
-assert parse_when("MWF11") == ("MWF", "11")
+def test_parse_when():
+    """
+    Test cases for parse_when
+    """
+    assert parse_when("F10:30-12") == ("F", "10.30-12")
+    assert parse_when("MW1") == ("MW", "1")
+    assert parse_when("MWF11") == ("MWF", "11")
 
 
 def parse_many_timeslots(days, times):
@@ -98,40 +96,52 @@ def make_section_override(timeslots, room):
     # lol this is wrong
     # return [[section, room] for section in timeslots]
 
+def run():
+    """
+    The main entry point
+    """
+    response = requests.get("https://math.mit.edu/academics/classes.html")
+    soup = BeautifulSoup(response.text, features="lxml")
+    course_list = soup.find("ul", {"class": "course-list"})
+    rows = course_list.findAll("li", recursive=False)
 
-overrides = {}
+    overrides = {}
 
-for row in rows:
-    subject = row.find("div", {"class": "subject"}).text
-    # remove "J" from joint subjects
-    subject = subject.replace("J", "")
+    for row in rows:
+        subject = row.find("div", {"class": "subject"}).text
+        # remove "J" from joint subjects
+        subject = subject.replace("J", "")
 
-    # special case specific to math, if a slash it means that there
-    # is an additional graduate subject ending in 1
-    if " / " in subject:
-        subject = subject.split(" / ")[0]
-        subjects = [subject, f"{subject}1"]
-    else:
-        subjects = [subject]
-    assert ["/" not in subject for subject in subjects]
+        # special case specific to math, if a slash it means that there
+        # is an additional graduate subject ending in 1
+        if " / " in subject:
+            subject = subject.split(" / ")[0]
+            subjects = [subject, f"{subject}1"]
+        else:
+            subjects = [subject]
+        assert ["/" not in subject for subject in subjects]
 
-    where_when = row.find("div", {"class": "where-when"})
-    when, where = where_when.findAll("div", recursive=False)
-    where = where.text
-    when = when.text
-    if ";" in when:
-        # Don't want to handle special case - calculus, already right
-        continue
-    days, times = parse_when(when)
-    timeslots = parse_many_timeslots(days, times)
-    for subject in subjects:
-        lecture_raw_sections = make_raw_sections(days, times, where)
-        lecture_sections = make_section_override(timeslots, where)
-        overrides[subject] = {
-            "lectureRawSections": lecture_raw_sections,
-            "lectureSections": lecture_sections,
-        }
-        # Make sure the raw thing that I do not comprehend is actually correct
-        assert parse_section(lecture_raw_sections) == lecture_sections[0]
+        where_when = row.find("div", {"class": "where-when"})
+        when, where = where_when.findAll("div", recursive=False)
+        where = where.text
+        when = when.text
+        if ";" in when:
+            # Don't want to handle special case - calculus, already right
+            continue
+        days, times = parse_when(when)
+        timeslots = parse_many_timeslots(days, times)
+        for subject in subjects:
+            lecture_raw_sections = make_raw_sections(days, times, where)
+            lecture_sections = make_section_override(timeslots, where)
+            overrides[subject] = {
+                "lectureRawSections": lecture_raw_sections,
+                "lectureSections": lecture_sections,
+            }
+            # Make sure the raw thing that I do not comprehend is actually correct
+            assert parse_section(lecture_raw_sections) == lecture_sections[0]
 
-pprint(overrides)
+    return overrides
+
+if __name__ == "__main__":
+    test_parse_when()
+    pprint(run())
