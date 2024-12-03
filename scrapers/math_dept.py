@@ -65,7 +65,7 @@ def parse_many_timeslots(days, times):
     * list[list[int]]: All of the parsed timeslots, as a list
     """
     # parse timeslot wants only one letter
-    return [parse_timeslot(day, times) for day in days]
+    return [parse_timeslot(day, times, False) for day in days]
 
 
 def make_raw_sections(days, times, room):
