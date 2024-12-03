@@ -103,7 +103,7 @@ def get_rows():
     """
     Scrapes rows from https://math.mit.edu/academics/classes.html
     """
-    response = requests.get("https://math.mit.edu/academics/classes.html")
+    response = requests.get("https://math.mit.edu/academics/classes.html", timeout = 1)
     soup = BeautifulSoup(response.text, features="lxml")
     course_list = soup.find("ul", {"class": "course-list"})
     rows = course_list.findAll("li", recursive=False)
