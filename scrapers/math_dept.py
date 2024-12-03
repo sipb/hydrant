@@ -10,6 +10,7 @@ Functions:
 * make_raw_sections(days, times, room):
 * make_section_override(timeslots, room)
 * get_rows()
+* parse_row(row)
 * run()
 """
 
@@ -107,6 +108,44 @@ def get_rows():
     rows = course_list.findAll("li", recursive=False)
     return rows
 
+def parse_row(row):
+    """
+    Parses the provided row
+    """
+    result = {}
+    subject = row.find("div", {"class": "subject"}).text
+    # remove "J" from joint subjects
+    subject = subject.replace("J", "")
+
+    # special case specific to math, if a slash it means that there
+    # is an additional graduate subject ending in 1
+    if " / " in subject:
+        subject = subject.split(" / ")[0]
+        subjects = [subject, f"{subject}1"]
+    else:
+        subjects = [subject]
+    assert ["/" not in subject for subject in subjects]
+
+    where_when = row.find("div", {"class": "where-when"})
+    when, where = where_when.findAll("div", recursive=False)
+    where = where.text
+    when = when.text
+    if ";" in when:
+        # Don't want to handle special case - calculus, already right
+        return {}
+    days, times = parse_when(when)
+    timeslots = parse_many_timeslots(days, times)
+    for subject in subjects:
+        lecture_raw_sections = make_raw_sections(days, times, where)
+        lecture_sections = make_section_override(timeslots, where)
+        result[subject] = {
+            "lectureRawSections": lecture_raw_sections,
+            "lectureSections": lecture_sections,
+        }
+        # Make sure the raw thing that I do not comprehend is actually correct
+        assert parse_section(lecture_raw_sections) == lecture_sections[0]
+    return result
+
 def run():
     """
     The main entry point
@@ -116,37 +155,8 @@ def run():
     overrides = {}
 
     for row in rows:
-        subject = row.find("div", {"class": "subject"}).text
-        # remove "J" from joint subjects
-        subject = subject.replace("J", "")
-
-        # special case specific to math, if a slash it means that there
-        # is an additional graduate subject ending in 1
-        if " / " in subject:
-            subject = subject.split(" / ")[0]
-            subjects = [subject, f"{subject}1"]
-        else:
-            subjects = [subject]
-        assert ["/" not in subject for subject in subjects]
-
-        where_when = row.find("div", {"class": "where-when"})
-        when, where = where_when.findAll("div", recursive=False)
-        where = where.text
-        when = when.text
-        if ";" in when:
-            # Don't want to handle special case - calculus, already right
-            continue
-        days, times = parse_when(when)
-        timeslots = parse_many_timeslots(days, times)
-        for subject in subjects:
-            lecture_raw_sections = make_raw_sections(days, times, where)
-            lecture_sections = make_section_override(timeslots, where)
-            overrides[subject] = {
-                "lectureRawSections": lecture_raw_sections,
-                "lectureSections": lecture_sections,
-            }
-            # Make sure the raw thing that I do not comprehend is actually correct
-            assert parse_section(lecture_raw_sections) == lecture_sections[0]
+        parsed_row = parse_row(row)
+        overrides.update(parsed_row)
 
     return overrides
 
