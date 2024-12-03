@@ -7,7 +7,7 @@ export function SIPBLogo() {
     <LinkButton
       colorPalette="gray"
       size="sm"
-      variant="subtle"
+      variant="solid"
       href="https://sipb.mit.edu/"
       target="_blank"
       rel="noreferrer"
