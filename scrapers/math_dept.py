@@ -9,6 +9,7 @@ Functions:
 * parse_many_timeslots(days, times)
 * make_raw_sections(days, times, room):
 * make_section_override(timeslots, room)
+* get_rows()
 * run()
 """
 
@@ -96,14 +97,21 @@ def make_section_override(timeslots, room):
     # lol this is wrong
     # return [[section, room] for section in timeslots]
 
-def run():
+def get_rows():
     """
-    The main entry point
+    Scrapes rows from https://math.mit.edu/academics/classes.html
     """
     response = requests.get("https://math.mit.edu/academics/classes.html")
     soup = BeautifulSoup(response.text, features="lxml")
     course_list = soup.find("ul", {"class": "course-list"})
     rows = course_list.findAll("li", recursive=False)
+    return rows
+
+def run():
+    """
+    The main entry point
+    """
+    rows = get_rows()
 
     overrides = {}
 
