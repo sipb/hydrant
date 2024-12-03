@@ -10,10 +10,10 @@ Functions:
 * make_section_override(timeslots, room)
 """
 
-from bs4 import BeautifulSoup
-from fireroad import parse_timeslot, parse_section
 from pprint import pprint
+from bs4 import BeautifulSoup
 import requests
+from fireroad import parse_timeslot, parse_section
 
 # TODO: move this huge wall of code into its own function
 
