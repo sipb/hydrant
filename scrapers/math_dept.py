@@ -186,7 +186,6 @@ def run():
     * dict[str, dict[str, list[Union[list[list[int]], str]]]]: All the schedules
     """
     rows = get_rows()
-
     overrides = {}
 
     for row in rows:
