@@ -10,6 +10,7 @@ Functions:
 * make_raw_sections(days, times, room):
 * make_section_override(timeslots, room)
 * get_rows()
+* parse_subject(subject)
 * parse_row(row)
 * run()
 """
@@ -108,12 +109,10 @@ def get_rows():
     rows = course_list.findAll("li", recursive=False)
     return rows
 
-def parse_row(row):
+def parse_subject(subject):
     """
-    Parses the provided row
+    Parses the subject
     """
-    result = {}
-    subject = row.find("div", {"class": "subject"}).text
     # remove "J" from joint subjects
     subject = subject.replace("J", "")
 
@@ -125,6 +124,17 @@ def parse_row(row):
     else:
         subjects = [subject]
     assert ["/" not in subject for subject in subjects]
+
+    return subjects
+
+def parse_row(row):
+    """
+    Parses the provided row
+    """
+    result = {}
+
+    subject = row.find("div", {"class": "subject"}).text
+    subjects = parse_subject(subject)
 
     where_when = row.find("div", {"class": "where-when"})
     when, where = where_when.findAll("div", recursive=False)
