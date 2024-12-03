@@ -48,6 +48,10 @@ def parse_when(when):
 def test_parse_when():
     """
     Test cases for parse_when
+
+    Args: none
+
+    Returns: none
     """
     assert parse_when("F10:30-12") == ("F", "10.30-12")
     assert parse_when("MW1") == ("MW", "1")
@@ -102,6 +106,11 @@ def make_section_override(timeslots, room):
 def get_rows():
     """
     Scrapes rows from https://math.mit.edu/academics/classes.html
+
+    Args: none
+
+    Returns:
+    * bs4.element.ResultSet: The rows of the table listing classes
     """
     response = requests.get("https://math.mit.edu/academics/classes.html", timeout = 1)
     soup = BeautifulSoup(response.text, features="lxml")
@@ -112,6 +121,12 @@ def get_rows():
 def parse_subject(subject):
     """
     Parses the subject
+
+    Args:
+    * subject (str): The subject name to parse
+
+    Returns:
+    * subjects (list[str]): A clean list of subjects corresponding to that subject.
     """
     # remove "J" from joint subjects
     subject = subject.replace("J", "")
@@ -130,6 +145,12 @@ def parse_subject(subject):
 def parse_row(row):
     """
     Parses the provided row
+
+    Args:
+    * row (bs4.element.Tag): The row that needs to be parsed.
+
+    Returns:
+    * dict[str, dict[str, list]]: The parsed row 
     """
     result = {}
 
@@ -159,6 +180,10 @@ def parse_row(row):
 def run():
     """
     The main entry point
+
+    Args: none
+
+    Returns: dict[str, dict[str, list]]: Schedules for classes offered by the math dept
     """
     rows = get_rows()
 
