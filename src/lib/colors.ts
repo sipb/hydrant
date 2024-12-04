@@ -45,14 +45,14 @@ const highContrast: ColorScheme = {
   name: "High Contrast",
   colorMode: "light",
   backgroundColors: [
-    "#D32F2F",
-    "#2E7D32",
-    "#1565C0",
-    "#BF360C",
-    "#00838f",
-    "#AD1457",
-    "#827717",
-    "#795548",
+    "#FF6B6B",
+    "#FFD93D", 
+    "#4FC3F7", 
+    "#81C784", 
+    "#BA68C8", 
+    "#FF80A4", 
+    "#64B5F6", 
+    "#FF8A65", 
   ],
 };
 
