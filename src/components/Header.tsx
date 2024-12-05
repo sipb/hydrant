@@ -25,7 +25,7 @@ import { createListCollection } from "@chakra-ui/react";
 
 import { Term } from "../lib/dates";
 import { State } from "../lib/state";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
 
@@ -170,12 +170,26 @@ function getUrlNames(latestTerm: string): Array<string> {
 /** Header above the left column, with logo and semester selection. */
 export function Header(props: { state: State; preferences: Preferences }) {
   const { state, preferences } = props;
+  const [showDialog, setShowDialog] = useState(false);
   const logoSrc = useColorModeValue(logo, logoDark);
   const toUrl = (urlName: string) =>
     toFullUrl(urlName, state.latestTerm.urlName);
   const defaultValue = toUrl(state.term.urlName);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const term = urlParams.get("t");
+    if (term && term !== state.latestTerm.urlName) {
+      setShowDialog(true);
+    }
+  }, [state.latestTerm.urlName]);
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+  };
+
   return (
+    <>
     <Flex align="end" gap={3} wrap="wrap">
       <Image src={logoSrc} alt="Hydrant logo" h="40px" pos="relative" top={2} />
       <SelectRoot
@@ -213,5 +227,27 @@ export function Header(props: { state: State; preferences: Preferences }) {
       </SelectRoot>
       <PreferencesDialog preferences={preferences} state={state} />
     </Flex>
+    <DialogRoot
+  lazyMount
+  open={showDialog}
+  onOpenChange={(details) => {
+    setShowDialog(details.open);
+  }}
+>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Past Semester Warning</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            You are viewing a past semester.
+          </DialogBody>
+          <DialogFooter>
+            <DialogActionTrigger asChild>
+              <Button onClick={handleCloseDialog}>Dismiss</Button>
+            </DialogActionTrigger>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
+    </>
   );
 }
