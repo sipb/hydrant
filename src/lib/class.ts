@@ -509,13 +509,13 @@ export class Class {
   }
 
   /** Doesn't actually do anything (yet?), just makes compiler happy. */
-  addTimeslot(startDate: Date, endDate: Date): void {}
+  addTimeslot(): void {}
 
   /** Doesn't actually do anything (yet?), just makes compiler happy. */
-  removeTimeslot(slot: Timeslot): void {}
+  removeTimeslot(): void {}
 
   /** Deflate a class to something JSONable. */
-  deflate(): any {
+  deflate() {
     const sections = this.sections.map((secs) =>
       !secs.locked
         ? null
@@ -532,6 +532,7 @@ export class Class {
   }
 
   /** Inflate a class with info from the output of deflate. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   inflate(parsed: any): void {
     if (typeof parsed === "string") {
       // just the class number, ignore
@@ -544,6 +545,7 @@ export class Class {
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sectionLocs: Array<any> | null = null;
     if (Array.isArray(parsed[offset])) {
       sectionLocs = parsed[offset];

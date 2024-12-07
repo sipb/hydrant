@@ -69,7 +69,6 @@ function useHydrant(): {
       );
       hydrantRef.current = hydrantObj;
       setLoading(false);
-      // @ts-ignore
       window.hydrant = hydrantObj;
     });
   }, []);
@@ -241,7 +240,7 @@ function HydrantApp() {
 export default function App() {
   return (
     <Provider>
-      {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}> */}
+      {/* <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID!}> */}
       <HydrantApp />
       {/* </GoogleOAuthProvider> */}
     </Provider>

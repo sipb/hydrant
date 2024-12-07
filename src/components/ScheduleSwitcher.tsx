@@ -188,7 +188,7 @@ export function ScheduleSwitcher(props: {
 }) {
   const { saveId, saves, state } = props;
 
-  const currentName = saves.find((save) => save.id === saveId)?.name!;
+  const currentName = saves.find((save) => save.id === saveId)?.name ?? "";
   const [isRenaming, setIsRenaming] = useState(false);
   const [name, setName] = useState(currentName);
 
