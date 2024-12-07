@@ -7,8 +7,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { LuPlus, LuMinus, LuSearch } from "react-icons/lu";
 
 import { InputGroup } from "./ui/input-group";
-import { Tooltip } from "./ui/tooltip";
-import { Button } from "./ui/button";
+import { Button, LabelledButton } from "./ui/button";
 import { useColorMode } from "./ui/color-mode";
 
 import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
@@ -222,33 +221,32 @@ function ClassFlags(props: {
       <Group attached colorPalette="orange" wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
-          const content = (
+          return image ? (
+            <LabelledButton
+              key={flag}
+              onClick={() => onChange(flag, !checked)}
+              title={label}
+              variant={checked ? "solid" : "outline"}
+              portalled
+            >
+              <Image
+                src={image}
+                alt={label}
+                filter={
+                  colorMode === "dark" && DARK_IMAGES.includes(flag ?? "")
+                    ? "invert()"
+                    : ""
+                }
+              />
+            </LabelledButton>
+          ) : (
             <Button
               key={flag}
               onClick={() => onChange(flag, !checked)}
               variant={checked ? "solid" : "outline"}
             >
-              {image ? (
-                <Image
-                  src={image}
-                  alt={label}
-                  filter={
-                    colorMode === "dark" && DARK_IMAGES.includes(flag ?? "")
-                      ? "invert()"
-                      : ""
-                  }
-                />
-              ) : (
-                label
-              )}
+              {label}
             </Button>
-          );
-          return image ? (
-            <Tooltip content={label} key={flag} portalled>
-              {content}
-            </Tooltip>
-          ) : (
-            content
           );
         })}
       </Group>
