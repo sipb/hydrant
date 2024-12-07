@@ -44,6 +44,7 @@ def parse_when(when):
     times = times.replace(":", ".")
     return days, times
 
+
 def test_parse_when():
     """
     Test cases for parse_when
@@ -102,6 +103,7 @@ def make_section_override(timeslots, room):
     # lol this is wrong
     # return [[section, room] for section in timeslots]
 
+
 def get_rows():
     """
     Scrapes rows from https://math.mit.edu/academics/classes.html
@@ -111,11 +113,12 @@ def get_rows():
     Returns:
     * bs4.element.ResultSet: The rows of the table listing classes
     """
-    response = requests.get("https://math.mit.edu/academics/classes.html", timeout = 1)
+    response = requests.get("https://math.mit.edu/academics/classes.html", timeout=1)
     soup = BeautifulSoup(response.text, features="lxml")
     course_list = soup.find("ul", {"class": "course-list"})
     rows = course_list.findAll("li", recursive=False)
     return rows
+
 
 def parse_subject(subject):
     """
@@ -141,6 +144,7 @@ def parse_subject(subject):
 
     return subjects
 
+
 def parse_row(row):
     """
     Parses the provided row
@@ -149,7 +153,7 @@ def parse_row(row):
     * row (bs4.element.Tag): The row that needs to be parsed.
 
     Returns:
-    * dict[str, dict[str, list[Union[list[list[int]], str]]]]: The parsed row 
+    * dict[str, dict[str, list[Union[list[list[int]], str]]]]: The parsed row
     """
     result = {}
 
@@ -176,6 +180,7 @@ def parse_row(row):
         assert parse_section(lecture_raw_sections) == lecture_sections[0]
     return result
 
+
 def run():
     """
     The main entry point
@@ -193,6 +198,7 @@ def run():
         overrides.update(parsed_row)
 
     return overrides
+
 
 if __name__ == "__main__":
     test_parse_when()
