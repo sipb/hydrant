@@ -22,7 +22,7 @@ import { ScheduleOption } from "./ScheduleOption";
 import { ScheduleSwitcher } from "./ScheduleSwitcher";
 import { SelectedActivities } from "./SelectedActivities";
 
-import "@fontsource-variable/inter";
+import "@fontsource-variable/inter/index.css";
 import { MatrixLink } from "./MatrixLink";
 import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
