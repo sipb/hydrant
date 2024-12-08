@@ -283,7 +283,7 @@ export function ClassTable(props: {
 
   // Setup table columns
   const columnDefs = useMemo(() => {
-    const initialSort: "asc" = "asc";
+    const initialSort = "asc" as const;
     const sortingOrder: Array<"asc" | "desc"> = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     const numberSortProps = {

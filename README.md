@@ -24,7 +24,7 @@ To spin up the site, we need two steps:
 
 (1) We need to update the backend to get the data. `cd scrapers` then run `python update.py`.
 
-(2) We then can update the frontend, via running `npm start`. This will open a browser tab that updates live as you edit code.
+(2) We then can update the frontend, via running `npm run dev`. This will start a developer server. Open a browser tab to [`http://localhost:5173/`](http://localhost:5173/), which will update live as you edit code.
 
 If this is the **first time** you're spinning up the website, the two steps have to be taken in order: step (1), and then step (2). If not followed, you'll see a blank frontend.
 
@@ -54,16 +54,16 @@ See `deploy/README.md` for more info.
 
 ### Architecture
 
-*I want to change...*
+_I want to change..._
 
-- *...the data available to Hydrant.*
+- _...the data available to Hydrant._
   - The entry point is `scrapers/update.py`.
   - This goes through `src/components/App.tsx`, which looks for the data.
   - The exit point is through the constructor of `State` in `src/lib/state.ts`.
-- *...the way Hydrant behaves.*
+- _...the way Hydrant behaves._
   - The entry point is `src/lib/state.ts`.
   - The exit point is through `src/components/App.tsx`, which constructs `hydrant` and passes it down.
-- *...the way Hydrant looks.*
+- _...the way Hydrant looks._
   - The entry point is `src/components/App.tsx`.
   - We use [Chakra UI](https://chakra-ui.com/) as our component library. Avoid writing CSS.
 

@@ -87,14 +87,14 @@ export function sum(arr: Array<number>): number {
   return arr.reduce((acc, cur) => acc + cur, 0);
 }
 
-export function urlencode(obj: any): string {
+export function urlencode(obj: unknown): string {
   return btoa(
-    // @ts-ignore
+    // @ts-expect-error msgpack-lite types are weird :/
     String.fromCharCode.apply(null, Msgpack.encode(obj) as Uint8Array),
   );
 }
 
-export function urldecode(obj: string): any {
+export function urldecode(obj: string) {
   return Msgpack.decode(
     new Uint8Array(
       atob(obj)

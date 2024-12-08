@@ -133,9 +133,11 @@ export class State {
   /** Add activity if it exists, remove if it doesn't. */
   toggleActivity(activity?: Activity): void {
     if (!activity) return;
-    this.isSelectedActivity(activity)
-      ? this.removeActivity(activity)
-      : this.addActivity(activity);
+    if (this.isSelectedActivity(activity)) {
+      this.removeActivity(activity);
+    } else {
+      this.addActivity(activity);
+    }
   }
 
   /** Set the background color of an activity, then update. */
@@ -273,7 +275,7 @@ export class State {
   }
 
   /** Deflate program state to something JSONable. */
-  deflate(): any {
+  deflate() {
     return [
       this.selectedClasses.map((cls) => cls.deflate()),
       this.selectedNonClasses.length > 0
@@ -284,6 +286,7 @@ export class State {
   }
 
   /** Parse all program state. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   inflate(obj: any[] | null): void {
     if (!obj) return;
     this.reset();

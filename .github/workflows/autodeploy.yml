@@ -3,27 +3,26 @@ name: Autodeploy branch
 on:
   push:
     branches:
-     - deploy
+      - deploy
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Install node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    - name: Install node dependencies
-      run: npm install
-    - name: Run build
-      run: npm run build
-    - name: Archive build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: built-site
-        path: |
-          build
-          !build/latest.json
+      - uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install node dependencies
+        run: npm install
+      - name: Run build
+        run: npm run build
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-site
+          path: |
+            build
+            !build/latest.json
