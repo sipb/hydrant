@@ -5,5 +5,12 @@ import checker from "vite-plugin-checker";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), checker({ typescript: true })],
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    checker({
+      typescript: true,
+      eslint: { lintCommand: "eslint .", useFlatConfig: true },
+    }),
+  ],
 });
