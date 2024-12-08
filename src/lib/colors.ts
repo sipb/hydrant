@@ -49,9 +49,9 @@ const highContrast: ColorScheme = {
     "#FFD93D", 
     "#4FC3F7", 
     "#81C784", 
-    "#BA68C8", 
-    "#FF80A4", 
-    "#64B5F6", 
+    "#C580D1", 
+    "#FFADC5", 
+    "#309BF3", 
     "#FF8A65", 
   ],
 };
