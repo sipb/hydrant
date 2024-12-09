@@ -1,4 +1,4 @@
-import { Flex, Input, Link, createListCollection } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Input, Link, createListCollection } from "@chakra-ui/react";
 import { ComponentPropsWithoutRef, useState } from "react";
 
 import {
@@ -12,6 +12,12 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuRoot,
+  MenuTrigger,
+} from "./ui/menu";
 
 import { State } from "../lib/state";
 import { Save } from "../lib/schema";
@@ -23,6 +29,15 @@ import {
   SelectValueText,
   SelectLabel,
 } from "./ui/select";
+
+import {
+  LuCopy,
+  LuEllipsis,
+  LuFilePlus2,
+  LuPencilLine,
+  LuShare2,
+  LuTrash2,
+} from "react-icons/lu";
 
 import { useCopyToClipboard } from "react-use";
 
@@ -228,6 +243,7 @@ export function ScheduleSwitcher(props: {
     const onCopy = () => state.addSave(false, `${currentName} copy`);
     const renderButtons = () => (
       <>
+        {/*
         {saveId && <SmallButton onClick={onRename}>Rename</SmallButton>}
         <SmallButton onClick={onCopy}>Copy</SmallButton>
         {saveId && (
@@ -239,6 +255,42 @@ export function ScheduleSwitcher(props: {
         )}
         <SmallButton onClick={onSave}>{saveId ? "New" : "Save"}</SmallButton>
         <ExportDialog state={state} />
+        */}
+        <MenuRoot>
+          <MenuTrigger asChild>
+            <IconButton variant="outline" size="sm"><LuEllipsis /></IconButton>
+          </MenuTrigger>
+          <MenuContent>
+            {saveId && (
+              <MenuItem value="rename">
+                <LuPencilLine />
+                <Box flex="1">Rename&hellip;</Box>
+              </MenuItem>
+            )}
+            <MenuItem value="copy">
+                <LuCopy />
+              <Box flex="1">Copy</Box>
+            </MenuItem>
+            {saveId && (
+              <MenuItem
+                value="delete"
+                color="fg.error"
+                _hover={{ bg: "bg.error", color: "fg.error" }}
+              >
+                <LuTrash2 />
+                <Box flex="1">Delete&hellip;</Box>
+              </MenuItem>
+            )}
+            <MenuItem value="new">
+              <LuFilePlus2 />
+              <Box flex="1">New</Box>
+            </MenuItem>
+            <MenuItem value="share">
+              <LuShare2 />
+              <Box flex="1">Share</Box>
+            </MenuItem>
+          </MenuContent>
+        </MenuRoot>
       </>
     );
     return [renderHeading, renderButtons];
