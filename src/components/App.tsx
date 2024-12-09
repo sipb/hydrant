@@ -85,8 +85,7 @@ function useHydrant(): {
       }
     };
     hydrant?.updateState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorMode, hydrant, loading]);
+  }, [colorMode, hydrant, loading, toggleColorMode]);
 
   return { hydrant, state };
 }
