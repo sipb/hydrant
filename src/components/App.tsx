@@ -21,12 +21,13 @@ import { Header } from "./Header";
 import { ScheduleOption } from "./ScheduleOption";
 import { ScheduleSwitcher } from "./ScheduleSwitcher";
 import { SelectedActivities } from "./SelectedActivities";
+import { TermSwitcher } from "./TermSwitcher";
 
 import "@fontsource-variable/inter/index.css";
 import { MatrixLink } from "./MatrixLink";
+import { PreregLink } from "./PreregLink";
 import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
-import { SIPBLogo } from "./SIPBLogo";
 
 // import calendarButtonImg from "../assets/calendar-button.svg";
 
@@ -170,11 +171,16 @@ function HydrantApp() {
             <LeftFooter state={hydrant} />
           </Flex>
           <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-            <ScheduleSwitcher
-              saveId={state.saveId}
-              saves={state.saves}
-              state={hydrant}
-            />
+            <Center>
+              <Group wrap="wrap" justifyContent="center" gap={2}>
+                <TermSwitcher state={hydrant} />
+                <ScheduleSwitcher
+                  saveId={state.saveId}
+                  saves={state.saves}
+                  state={hydrant}
+                />
+              </Group>
+            </Center>
             <Center>
               <Group wrap="wrap" justifyContent="center" gap={2}>
                 {/* <Tooltip
@@ -190,25 +196,24 @@ function HydrantApp() {
                     <Image src={calendarButtonImg} alt="Sign in with Google" />
                   )}
                 </Tooltip> */}
-                <Tooltip
-                  content={
-                    isExporting
-                      ? "Loading..."
-                      : "Currently, only manually exporting to an .ics file is supported. "
-                  }
-                >
+                <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
                   <Button
                     colorPalette="blue"
                     variant="solid"
                     size="sm"
-                    onClick={onICSExport}
+                    loading={isExporting}
+                    loadingText="Loading..."
+                    onClick={() => {
+                      setIsExporting(true);
+                      onICSExport();
+                    }}
                   >
                     <LuCalendar />
-                    {isExporting ? <Spinner m={3} /> : "Import to my calendar"}
+                    Export calendar
                   </Button>
                 </Tooltip>
                 <MatrixLink selectedActivities={state.selectedActivities} />
-                <SIPBLogo />
+                <PreregLink selectedActivities={state.selectedActivities} />
               </Group>
             </Center>
             <SelectedActivities
