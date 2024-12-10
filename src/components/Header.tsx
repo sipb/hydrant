@@ -131,7 +131,13 @@ export function Header(props: { state: State; preferences: Preferences }) {
   return (
     <Flex align="center" gap={3} wrap="wrap">
       <Flex direction="column" gap={1}>
-        <Image src={logoSrc} alt="Hydrant logo" h="40px" pos="relative" top={2} />
+        <Image
+          src={logoSrc}
+          alt="Hydrant logo"
+          h="40px"
+          pos="relative"
+          top={2}
+        />
         <Flex justify="flex-end">
           <SIPBLogo />
         </Flex>

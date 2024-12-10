@@ -1,4 +1,11 @@
-import { Box, Flex, IconButton, Input, Link, createListCollection } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Input,
+  Link,
+  createListCollection,
+} from "@chakra-ui/react";
 import { ComponentPropsWithoutRef, useState } from "react";
 
 import {
@@ -12,12 +19,7 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import {
-  MenuContent,
-  MenuItem,
-  MenuRoot,
-  MenuTrigger,
-} from "./ui/menu";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
 
 import { State } from "../lib/state";
 import { Save } from "../lib/schema";
@@ -258,7 +260,9 @@ export function ScheduleSwitcher(props: {
         */}
         <MenuRoot>
           <MenuTrigger asChild>
-            <IconButton variant="outline" size="sm"><LuEllipsis /></IconButton>
+            <IconButton variant="outline" size="sm">
+              <LuEllipsis />
+            </IconButton>
           </MenuTrigger>
           <MenuContent>
             {saveId && (
@@ -268,7 +272,7 @@ export function ScheduleSwitcher(props: {
               </MenuItem>
             )}
             <MenuItem value="copy">
-                <LuCopy />
+              <LuCopy />
               <Box flex="1">Copy</Box>
             </MenuItem>
             {saveId && (
