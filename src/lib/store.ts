@@ -2,7 +2,7 @@ import { Preferences, Save } from "./schema";
 
 export type TermStore = {
   saves: Save[];
-  [saveId: string]: any[];
+  [saveId: string]: unknown[];
 };
 
 export type GlobalStore = {

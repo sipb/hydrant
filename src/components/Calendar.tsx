@@ -76,16 +76,16 @@ export function Calendar(props: {
       slotMaxTime="22:00:00"
       weekends={false}
       selectable={viewedActivity instanceof NonClass}
-      select={(e) => {
+      select={(e) =>
         viewedActivity instanceof NonClass &&
-          state.addTimeslot(
-            viewedActivity,
-            Timeslot.fromStartEnd(
-              Slot.fromStartDate(e.start),
-              Slot.fromStartDate(e.end),
-            ),
-          );
-      }}
+        state.addTimeslot(
+          viewedActivity,
+          Timeslot.fromStartEnd(
+            Slot.fromStartDate(e.start),
+            Slot.fromStartDate(e.end),
+          ),
+        )
+      }
     />
   );
 }

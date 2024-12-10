@@ -230,7 +230,7 @@ export class Term {
 
   /** The date a slot starts on. */
   startDateFor(slot: Slot, secondHalf: boolean = false): Date {
-    let date = new Date((secondHalf ? this.h2Start : this.start).getTime());
+    const date = new Date((secondHalf ? this.h2Start : this.start).getTime());
     while (date.getDay() !== slot.weekday) {
       date.setDate(date.getDate() + 1);
     }
@@ -239,7 +239,7 @@ export class Term {
 
   /** The date a slot ends on, plus an extra day. */
   endDateFor(slot: Slot, firstHalf: boolean = false): Date {
-    let date = new Date((firstHalf ? this.h1End : this.end).getTime());
+    const date = new Date((firstHalf ? this.h1End : this.end).getTime());
     while (date.getDay() !== slot.weekday) {
       date.setDate(date.getDate() - 1);
     }

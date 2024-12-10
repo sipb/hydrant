@@ -22,7 +22,7 @@ import { ScheduleOption } from "./ScheduleOption";
 import { ScheduleSwitcher } from "./ScheduleSwitcher";
 import { SelectedActivities } from "./SelectedActivities";
 
-import "@fontsource-variable/inter";
+import "@fontsource-variable/inter/index.css";
 import { MatrixLink } from "./MatrixLink";
 import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
@@ -69,7 +69,6 @@ function useHydrant(): {
       );
       hydrantRef.current = hydrantObj;
       setLoading(false);
-      // @ts-ignore
       window.hydrant = hydrantObj;
     });
   }, []);
@@ -86,8 +85,7 @@ function useHydrant(): {
       }
     };
     hydrant?.updateState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorMode, hydrant, loading]);
+  }, [colorMode, hydrant, loading, toggleColorMode]);
 
   return { hydrant, state };
 }
@@ -241,7 +239,7 @@ function HydrantApp() {
 export default function App() {
   return (
     <Provider>
-      {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}> */}
+      {/* <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID!}> */}
       <HydrantApp />
       {/* </GoogleOAuthProvider> */}
     </Provider>

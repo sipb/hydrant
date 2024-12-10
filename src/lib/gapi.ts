@@ -30,7 +30,7 @@ function toISOString(date: Date): string {
 
 /** Downloads a file with the given text data */
 function download(filename: string, text: string) {
-  var element = document.createElement("a");
+  const element = document.createElement("a");
   element.setAttribute(
     "href",
     "data:text/plain;charset=utf-8," + encodeURIComponent(text),
@@ -164,7 +164,7 @@ export function useGoogleCalendarExport(
     scope: "https://www.googleapis.com/auth/calendar",
     onSuccess: (tokenResponse) => {
       if (tokenResponse?.access_token) {
-        gapi.client.setApiKey(process.env.REACT_APP_API_KEY!);
+        gapi.client.setApiKey(import.meta.env.VITE_GOOGLE_CLIENT_ID);
         gapi.client.load("calendar", "v3", exportCalendar);
       }
     },
@@ -194,7 +194,7 @@ export function useICSExport(
 
     try {
       download(`${state.term.urlName}.ics`, cal.toString());
-    } catch (err) {
+    } catch (_err) {
       onError?.();
     }
     onSuccess?.();
