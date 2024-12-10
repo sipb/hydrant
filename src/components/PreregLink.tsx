@@ -1,8 +1,9 @@
 import { Activity } from "../lib/activity";
 import { Class } from "../lib/class";
-import { LuClipboardList, LuExternalLink } from "react-icons/lu";
+import { LuClipboardList } from "react-icons/lu";
 
 import { LinkButton } from "./ui/link-button";
+import { Tooltip } from "./ui/tooltip";
 
 /** A link to SIPB Matrix's class group chat importer UI */
 export function PreregLink(props: { selectedActivities: Array<Activity> }) {
@@ -18,17 +19,18 @@ export function PreregLink(props: { selectedActivities: Array<Activity> }) {
     .join(",")}`;
 
   return (
-    <LinkButton
-      colorPalette="red"
-      size="sm"
-      href={matrixLink}
-      target="_blank"
-      rel="noreferrer"
-      fontWeight={"semibold"}
-    >
-      <LuClipboardList />
-      Pre-register for these classes
-      <LuExternalLink />
-    </LinkButton>
+    <Tooltip content="This will import your current schedule into WebSIS.">
+      <LinkButton
+        colorPalette="red"
+        size="sm"
+        href={matrixLink}
+        target="_blank"
+        rel="noreferrer"
+        fontWeight={"semibold"}
+      >
+        <LuClipboardList />
+        Pre-register classes
+      </LinkButton>
+    </Tooltip>
   );
 }

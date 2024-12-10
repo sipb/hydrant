@@ -170,7 +170,7 @@ function HydrantApp() {
             />
             <LeftFooter state={hydrant} />
           </Flex>
-          <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={8}>
+          <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
             <Center>
               <Group wrap="wrap" justifyContent="center" gap={2}>
                 <TermSwitcher state={hydrant} />
@@ -196,21 +196,20 @@ function HydrantApp() {
                     <Image src={calendarButtonImg} alt="Sign in with Google" />
                   )}
                 </Tooltip> */}
-                <Tooltip
-                  content={
-                    isExporting
-                      ? "Loading..."
-                      : "Currently, only manually exporting to an .ics file is supported. "
-                  }
-                >
+                <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
                   <Button
                     colorPalette="blue"
                     variant="solid"
                     size="sm"
-                    onClick={onICSExport}
+                    loading={isExporting}
+                    loadingText="Loading..."
+                    onClick={() => {
+                      setIsExporting(true);
+                      onICSExport();
+                    }}
                   >
                     <LuCalendar />
-                    {isExporting ? <Spinner m={3} /> : "Import to my calendar"}
+                    Export calendar
                   </Button>
                 </Tooltip>
                 <MatrixLink selectedActivities={state.selectedActivities} />

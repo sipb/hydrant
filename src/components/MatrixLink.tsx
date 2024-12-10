@@ -1,6 +1,6 @@
 import { Activity } from "../lib/activity";
 import { Class } from "../lib/class";
-import { LuMessageSquare, LuExternalLink } from "react-icons/lu";
+import { LuMessageSquare } from "react-icons/lu";
 
 import { Tooltip } from "./ui/tooltip";
 import { LinkButton } from "./ui/link-button";
@@ -29,8 +29,7 @@ export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
         fontWeight={"semibold"}
       >
         <LuMessageSquare />
-        Join group chats on Matrix
-        <LuExternalLink />
+        Join Matrix group chats
       </LinkButton>
     </Tooltip>
   );
