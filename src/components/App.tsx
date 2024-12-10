@@ -25,6 +25,7 @@ import { TermSwitcher } from "./TermSwitcher";
 
 import "@fontsource-variable/inter/index.css";
 import { MatrixLink } from "./MatrixLink";
+import { PreregLink } from "./PreregLink";
 import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
 
@@ -169,7 +170,7 @@ function HydrantApp() {
             />
             <LeftFooter state={hydrant} />
           </Flex>
-          <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
+          <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={8}>
             <Center>
               <Group wrap="wrap" justifyContent="center" gap={2}>
                 <TermSwitcher state={hydrant} />
@@ -213,6 +214,7 @@ function HydrantApp() {
                   </Button>
                 </Tooltip>
                 <MatrixLink selectedActivities={state.selectedActivities} />
+                <PreregLink selectedActivities={state.selectedActivities} />
               </Group>
             </Center>
             <SelectedActivities
