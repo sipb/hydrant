@@ -7,6 +7,9 @@
 .ag-cell-wrapper {
   cursor: pointer;
   padding: 8px 5px;
+}
+
+.ag-row {
   border-bottom-width: 1px;
 }
 
@@ -34,4 +37,5 @@
 }
 .ag-header-viewport {
   background-color: var(--chakra-colors-bg-subtle);
+  border-bottom-width: 1px;
 }
