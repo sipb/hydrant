@@ -37,6 +37,7 @@ import {
   LuEllipsis,
   LuFilePlus2,
   LuPencilLine,
+  LuSave,
   LuShare2,
   LuTrash2,
 } from "react-icons/lu";
@@ -282,8 +283,17 @@ export function ScheduleSwitcher(props: {
             </DeleteDialog>
           )}
           <MenuItem value="new" onClick={onSave}>
-            <LuFilePlus2 />
-            <Box flex="1">{saveId ? "New" : "Save"}</Box>
+            {saveId ? (
+              <>
+                <LuFilePlus2 />
+                <Box flex="1">New</Box>
+              </>
+            ) : (
+              <>
+                <LuSave />
+                <Box flex="1">Save</Box>
+              </>
+            )}
           </MenuItem>
           <ExportDialog state={state}>
             <MenuItem value="share">
