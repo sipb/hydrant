@@ -230,7 +230,9 @@ def get_course_data(courses, course):
         # TODO: Do something else with this?
         return False
 
-    # tb, s, l, r, b, lr, rr, br
+    # tba, sectionKinds, lectureSections, recitationSections, labSections,
+    # designSections, lectureRawSections, recitationRawSections, labRawSections,
+    # designRawSections
     try:
         raw_class.update(parse_schedule(course))
     except Exception as e:
@@ -238,7 +240,7 @@ def get_course_data(courses, course):
         print(f"Can't parse schedule {course_code}: {e!r}")
         return False
 
-    # hh, ha, hs, he, ci, cw, re, la, pl
+    # hassH, hassA, hassS, hassE, cih, cihw, rest, lab, partLab
     raw_class.update(parse_attributes(course))
     raw_class.update(
         {
@@ -251,13 +253,14 @@ def get_course_data(courses, course):
             "meets": ", ".join(course.get("meets_with_subjects", [])),
         }
     )
-    # This should be the case with variable-units classes, but just to make sure.
+    # This should be the case with variable-units classes, but just to make
+    # sure.
     if raw_class["isVariableUnits"]:
         assert raw_class["lectureUnits"] == 0
         assert raw_class["labUnits"] == 0
         assert raw_class["preparationUnits"] == 0
 
-    # t, pr
+    # terms, prereqs
     raw_class.update(parse_terms(course))
     raw_class.update(parse_prereqs(course))
 
@@ -271,7 +274,7 @@ def get_course_data(courses, course):
         }
     )
 
-    # nx, rp, u, f, hf, lm are from catalog.json, not here
+    # nonext, repeat, url, final, half, limited are from catalog.json, not here
 
     if "old_id" in course:
         raw_class["oldNumber"] = course["old_id"]
