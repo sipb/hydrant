@@ -226,33 +226,49 @@ def get_course_data(courses, course):
         "subject": course_class,
     }
 
-    if "schedule" not in course:
-        # TODO: Do something else with this?
-        return False
+    has_schedule = "schedule" in course
 
     # tba, sectionKinds, lectureSections, recitationSections, labSections,
     # designSections, lectureRawSections, recitationRawSections, labRawSections,
     # designRawSections
-    try:
-        raw_class.update(parse_schedule(course))
-    except Exception as e:
-        # if we can't parse the schedule, warn
-        print(f"Can't parse schedule {course_code}: {e!r}")
-        return False
+    if has_schedule:
+        try:
+            raw_class.update(parse_schedule(course))
+        except Exception as e:
+            # if we can't parse the schedule, warn
+            print(f"Can't parse schedule {course_code}: {e!r}")
+            has_schedule = False
+    if not has_schedule:
+        raw_class.update({
+            "tba": False,
+            "sectionKinds": [],
+            "lectureSections": [],
+            "recitationSections": [],
+            "labSections": [],
+            "designSections": [],
+            "lectureRawSections": [],
+            "recitationRawSections": [],
+            "labRawSections": [],
+            "designRawSections": [],
+        })
 
     # hassH, hassA, hassS, hassE, cih, cihw, rest, lab, partLab
     raw_class.update(parse_attributes(course))
-    raw_class.update(
-        {
-            "lectureUnits": course["lecture_units"],
-            "labUnits": course["lab_units"],
-            "preparationUnits": course["preparation_units"],
-            "level": course["level"],
-            "isVariableUnits": course["is_variable_units"],
-            "same": ", ".join(course.get("joint_subjects", [])),
-            "meets": ", ".join(course.get("meets_with_subjects", [])),
-        }
-    )
+    try:
+        raw_class.update(
+            {
+                "lectureUnits": course["lecture_units"],
+                "labUnits": course["lab_units"],
+                "preparationUnits": course["preparation_units"],
+                "level": course["level"],
+                "isVariableUnits": course["is_variable_units"],
+                "same": ", ".join(course.get("joint_subjects", [])),
+                "meets": ", ".join(course.get("meets_with_subjects", [])),
+            }
+        )
+    except KeyError as e:
+        print(f"Can't parse {course_code}: {e!r}")
+        return False
     # This should be the case with variable-units classes, but just to make
     # sure.
     if raw_class["isVariableUnits"]:
@@ -289,7 +305,7 @@ def get_course_data(courses, course):
     )
 
     courses[course_code] = raw_class
-    return True
+    return has_schedule
 
 
 def run():
