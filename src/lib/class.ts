@@ -432,6 +432,11 @@ export class Class {
       messages.push(
         "+ Class has at least one section yet to be scheduled—check course catalog.",
       );
+    } else if (this.sections.length === 0) {
+      suffixes.push("&");
+      messages.push(
+        "& Class schedule is unknown—check course catalog or department website.",
+      );
     }
     if (this.rawClass.isVariableUnits) {
       if (this.rawClass.hours === 0) {

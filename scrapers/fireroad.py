@@ -205,18 +205,19 @@ def parse_prereqs(course):
     return {"prereqs": prereqs}
 
 
-def get_course_data(courses, course):
+def get_course_data(courses, course, term):
     """
     Parses a course from the Fireroad API, and puts it in courses. Skips the
-    courses Fireroad doesn't have schedule info for. Returns False if skipped,
+    courses that are not offered in the current term. Returns False if skipped,
     True otherwise. The `courses` variable is modified in place.
 
     Args:
     * courses (list[dict[str, Union[bool, float, int, list[str], str]]]): The list of courses.
     * course (dict[str, Union[bool, float, int, list[str], str]]): The course in particular.
+    * term (utils.Term): The current term (fall, IAP, or spring).
 
     Returns:
-    * bool: Whether Fireroad has schedule information for this course.
+    * bool: Whether the course was entered into courses.
     """
     course_code = course["subject_id"]
     course_num, course_class = course_code.split(".")
@@ -226,40 +227,64 @@ def get_course_data(courses, course):
         "subject": course_class,
     }
 
-    if "schedule" not in course:
-        # TODO: Do something else with this?
+    # terms, prereqs
+    raw_class.update(parse_terms(course))
+    raw_class.update(parse_prereqs(course))
+
+    if term.name not in raw_class["terms"]:
         return False
 
-    # tb, s, l, r, b, lr, rr, br
-    try:
-        raw_class.update(parse_schedule(course))
-    except Exception as e:
-        # if we can't parse the schedule, warn
-        print(f"Can't parse schedule {course_code}: {e!r}")
-        return False
+    has_schedule = "schedule" in course
 
-    # hh, ha, hs, he, ci, cw, re, la, pl
+    # tba, sectionKinds, lectureSections, recitationSections, labSections,
+    # designSections, lectureRawSections, recitationRawSections, labRawSections,
+    # designRawSections
+    if has_schedule:
+        try:
+            raw_class.update(parse_schedule(course))
+        except Exception as e:
+            # if we can't parse the schedule, warn
+            print(f"Can't parse schedule {course_code}: {e!r}")
+            has_schedule = False
+    if not has_schedule:
+        raw_class.update(
+            {
+                "tba": False,
+                "sectionKinds": [],
+                "lectureSections": [],
+                "recitationSections": [],
+                "labSections": [],
+                "designSections": [],
+                "lectureRawSections": [],
+                "recitationRawSections": [],
+                "labRawSections": [],
+                "designRawSections": [],
+            }
+        )
+
+    # hassH, hassA, hassS, hassE, cih, cihw, rest, lab, partLab
     raw_class.update(parse_attributes(course))
-    raw_class.update(
-        {
-            "lectureUnits": course["lecture_units"],
-            "labUnits": course["lab_units"],
-            "preparationUnits": course["preparation_units"],
-            "level": course["level"],
-            "isVariableUnits": course["is_variable_units"],
-            "same": ", ".join(course.get("joint_subjects", [])),
-            "meets": ", ".join(course.get("meets_with_subjects", [])),
-        }
-    )
-    # This should be the case with variable-units classes, but just to make sure.
+    try:
+        raw_class.update(
+            {
+                "lectureUnits": course["lecture_units"],
+                "labUnits": course["lab_units"],
+                "preparationUnits": course["preparation_units"],
+                "level": course["level"],
+                "isVariableUnits": course["is_variable_units"],
+                "same": ", ".join(course.get("joint_subjects", [])),
+                "meets": ", ".join(course.get("meets_with_subjects", [])),
+            }
+        )
+    except KeyError as e:
+        print(f"Can't parse {course_code}: {e!r}")
+        return False
+    # This should be the case with variable-units classes, but just to make
+    # sure.
     if raw_class["isVariableUnits"]:
         assert raw_class["lectureUnits"] == 0
         assert raw_class["labUnits"] == 0
         assert raw_class["preparationUnits"] == 0
-
-    # t, pr
-    raw_class.update(parse_terms(course))
-    raw_class.update(parse_prereqs(course))
 
     raw_class.update(
         {
@@ -271,7 +296,7 @@ def get_course_data(courses, course):
         }
     )
 
-    # nx, rp, u, f, hf, lm are from catalog.json, not here
+    # nonext, repeat, url, final, half, limited are from catalog.json, not here
 
     if "old_id" in course:
         raw_class["oldNumber"] = course["old_id"]
@@ -298,17 +323,18 @@ def run():
     text = requests.get(URL).text
     data = json.loads(text)
     courses = dict()
+    term = utils.get_term()
     missing = 0
 
     for course in data:
-        has_schedule = get_course_data(courses, course)
-        if not has_schedule:
+        included = get_course_data(courses, course, term)
+        if not included:
             missing += 1
 
     with open("fireroad.json", "w") as f:
         json.dump(courses, f)
     print(f"Got {len (courses)} courses")
-    print(f"Skipped {missing} courses due to missing schedules")
+    print(f"Skipped {missing} courses that are not offered in the {term.value} term")
 
 
 if __name__ == "__main__":
