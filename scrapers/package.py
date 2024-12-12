@@ -58,26 +58,40 @@ def run():
     Takes data from fireroad.json and catalog.json; outputs latest.json.
     There are no arguments and no return value.
     """
+    fireroad_presem = load_json_data("fireroad-presem.json")
     fireroad = load_json_data("fireroad.json")
     catalog = load_json_data("catalog.json")
     overrides = load_json_data("overrides.json")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
-    # If it's not in Fireroad, it's not offered in this semester.
+    # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
     # If it's not in catalog, it's not offered this year.
+    courses_presem = merge_data(
+        datasets=[fireroad_presem, catalog, overrides],
+        keys_to_keep=set(fireroad_presem) & set(catalog),
+    )
     courses = merge_data(
         datasets=[fireroad, catalog, overrides],
         keys_to_keep=set(fireroad) & set(catalog),
     )
 
-    term_info = utils.get_term_info()
+    term_info_presem = utils.get_term_info(False)
+    term_info = utils.get_term_info(True)
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    obj_presem = {
+        "termInfo": term_info_presem,
+        "lastUpdated": now,
+        "classes": courses_presem,
+    }
     obj = {
         "termInfo": term_info,
         "lastUpdated": now,
         "classes": courses,
     }
 
+    with open("../public/latestPreSemester.json", mode="w", encoding="utf-8") as f:
+        json.dump(obj_presem, f, separators=(",", ":"))
     with open("../public/latest.json", mode="w", encoding="utf-8") as f:
         json.dump(obj, f, separators=(",", ":"))
     print(f"Got {len(courses)} courses")

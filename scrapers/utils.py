@@ -151,25 +151,35 @@ def grouper(iterable, n):
     return zip_strict(*args)
 
 
-def get_term_info():
+def get_term_info(is_semester_term):
     """
     Gets the latest term info from "../public/latestTerm.json" as a dictionary.
 
-    There are no arguments.
+    Args:
+    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+
+    Returns:
+    * dict: the term info for the selected term from latestTerm.json.
     """
     with open("../public/latestTerm.json") as f:
         term_info = json.load(f)
-    return term_info["semester"]
+    if is_semester_term:
+        return term_info["semester"]
+    else:
+        return term_info["preSemester"]
 
 
-def get_term():
+def get_term(is_semester_term):
     """
-    Gets the current term (fall, IAP, or spring) as a value of type Term, from
-    "../public/latestTerm.json".
+    Gets the current term (fall/spring/etc.) as a value of type Term, from "../public/latestTerm.json".
 
-    There are no arguments.
+    Args:
+    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+
+    Returns:
+    * Term: the name of the current term.
     """
-    url_name = get_term_info()["urlName"]
+    url_name = get_term_info(is_semester_term)["urlName"]
     if url_name[0] == "f":
         return Term.FA
     elif url_name[0] == "i":

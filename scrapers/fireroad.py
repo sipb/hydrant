@@ -314,16 +314,20 @@ def get_course_data(courses, course, term):
     return True
 
 
-def run():
+def run(is_semester_term):
     """
     The main entry point. All data is written to `fireroad.json`.
 
-    There are no arguments and there is no return value.
+    Args:
+    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+
+    Returns: none
     """
     text = requests.get(URL).text
     data = json.loads(text)
     courses = dict()
-    term = utils.get_term()
+    term = utils.get_term(is_semester_term)
+    fname = "fireroad.json" if is_semester_term else "fireroad-presem.json"
     missing = 0
 
     for course in data:
@@ -331,11 +335,12 @@ def run():
         if not included:
             missing += 1
 
-    with open("fireroad.json", "w") as f:
+    with open(fname, "w") as f:
         json.dump(courses, f)
     print(f"Got {len (courses)} courses")
     print(f"Skipped {missing} courses that are not offered in the {term.value} term")
 
 
 if __name__ == "__main__":
-    run()
+    run(False)
+    run(True)

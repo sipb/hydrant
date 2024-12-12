@@ -16,8 +16,10 @@ def run():
     """
     This function is the entry point. There are no arguments.
     """
-    print("=== Update fireroad data ===")
-    fireroad.run()
+    print("=== Update fireroad data (pre-semester) ===")
+    fireroad.run(False)
+    print("=== Update fireroad data (semester) ===")
+    fireroad.run(True)
     print("=== Update catalog data ===")
     catalog.run()
     print("=== Packaging ===")
