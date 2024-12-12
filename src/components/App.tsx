@@ -66,7 +66,7 @@ function useHydrant(): {
         classesMap,
         new Term(termInfo),
         lastUpdated,
-        new Term(latestTerm.semester),
+        latestTerm.semester.urlName,
       );
       hydrantRef.current = hydrantObj;
       setLoading(false);
