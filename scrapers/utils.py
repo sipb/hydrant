@@ -159,7 +159,7 @@ def get_term_info():
     """
     with open("../public/latestTerm.json") as f:
         term_info = json.load(f)
-    return term_info
+    return term_info["semester"]
 
 
 def get_term():
