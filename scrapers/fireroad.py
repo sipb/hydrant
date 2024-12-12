@@ -205,18 +205,19 @@ def parse_prereqs(course):
     return {"prereqs": prereqs}
 
 
-def get_course_data(courses, course):
+def get_course_data(courses, course, term):
     """
     Parses a course from the Fireroad API, and puts it in courses. Skips the
-    courses Fireroad doesn't have schedule info for. Returns False if skipped,
+    courses that are not offered in the current term. Returns False if skipped,
     True otherwise. The `courses` variable is modified in place.
 
     Args:
     * courses (list[dict[str, Union[bool, float, int, list[str], str]]]): The list of courses.
     * course (dict[str, Union[bool, float, int, list[str], str]]): The course in particular.
+    * term (utils.Term): The current term (fall, IAP, or spring).
 
     Returns:
-    * bool: Whether Fireroad has schedule information for this course.
+    * bool: Whether the course was entered into courses.
     """
     course_code = course["subject_id"]
     course_num, course_class = course_code.split(".")
@@ -225,6 +226,13 @@ def get_course_data(courses, course):
         "course": course_num,
         "subject": course_class,
     }
+
+    # terms, prereqs
+    raw_class.update(parse_terms(course))
+    raw_class.update(parse_prereqs(course))
+
+    if term.name not in raw_class["terms"]:
+        return False
 
     has_schedule = "schedule" in course
 
@@ -239,18 +247,20 @@ def get_course_data(courses, course):
             print(f"Can't parse schedule {course_code}: {e!r}")
             has_schedule = False
     if not has_schedule:
-        raw_class.update({
-            "tba": False,
-            "sectionKinds": [],
-            "lectureSections": [],
-            "recitationSections": [],
-            "labSections": [],
-            "designSections": [],
-            "lectureRawSections": [],
-            "recitationRawSections": [],
-            "labRawSections": [],
-            "designRawSections": [],
-        })
+        raw_class.update(
+            {
+                "tba": False,
+                "sectionKinds": [],
+                "lectureSections": [],
+                "recitationSections": [],
+                "labSections": [],
+                "designSections": [],
+                "lectureRawSections": [],
+                "recitationRawSections": [],
+                "labRawSections": [],
+                "designRawSections": [],
+            }
+        )
 
     # hassH, hassA, hassS, hassE, cih, cihw, rest, lab, partLab
     raw_class.update(parse_attributes(course))
@@ -275,10 +285,6 @@ def get_course_data(courses, course):
         assert raw_class["lectureUnits"] == 0
         assert raw_class["labUnits"] == 0
         assert raw_class["preparationUnits"] == 0
-
-    # terms, prereqs
-    raw_class.update(parse_terms(course))
-    raw_class.update(parse_prereqs(course))
 
     raw_class.update(
         {
@@ -305,7 +311,7 @@ def get_course_data(courses, course):
     )
 
     courses[course_code] = raw_class
-    return has_schedule
+    return True
 
 
 def run():
@@ -317,17 +323,18 @@ def run():
     text = requests.get(URL).text
     data = json.loads(text)
     courses = dict()
+    term = utils.get_term()
     missing = 0
 
     for course in data:
-        has_schedule = get_course_data(courses, course)
-        if not has_schedule:
+        included = get_course_data(courses, course, term)
+        if not included:
             missing += 1
 
     with open("fireroad.json", "w") as f:
         json.dump(courses, f)
     print(f"Got {len (courses)} courses")
-    print(f"Skipped {missing} courses due to missing schedules")
+    print(f"Skipped {missing} courses that are not offered in the {term.value} term")
 
 
 if __name__ == "__main__":

@@ -63,8 +63,8 @@ def run():
     overrides = load_json_data("overrides.json")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
-    # If it's not in Fireroad, we don't have its schedule.
-    # If it's not in catalog, it's not offered this semester.
+    # If it's not in Fireroad, it's not offered in this semester.
+    # If it's not in catalog, it's not offered this year.
     courses = merge_data(
         datasets=[fireroad, catalog, overrides],
         keys_to_keep=set(fireroad) & set(catalog),
