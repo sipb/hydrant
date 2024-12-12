@@ -6,7 +6,7 @@ import {
   Link,
   createListCollection,
 } from "@chakra-ui/react";
-import { ComponentPropsWithoutRef, useState } from "react";
+import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 
 import {
   DialogRoot,
@@ -213,6 +213,10 @@ export function ScheduleSwitcher(props: {
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";
   const [isRenaming, setIsRenaming] = useState(false);
   const [name, setName] = useState(currentName);
+
+  useEffect(() => {
+    setName(saves.find((save) => save.id === saveId)?.name ?? "");
+  }, [saves, saveId]);
 
   const [renderHeading, renderButtons] = (() => {
     if (isRenaming) {
