@@ -7,6 +7,7 @@ Data:
 * DAYS: dict[str, int]
 * TIMES: dict[str, int]
 * EVE_TIMES: dict[str, int]
+* Term: enum.EnumType
 
 Functions:
 * find_timeslot(day, slot, pm)
@@ -17,6 +18,7 @@ Functions:
 
 import itertools
 import json
+from enum import Enum
 
 GIR_REWRITE = {
     "GIR:CAL1": "Calculus I (GIR)",
@@ -86,6 +88,13 @@ EVE_TIMES = {
 }
 
 
+class Term(Enum):
+    FA = "fall"
+    JA = "IAP"
+    SP = "spring"
+    SU = "summer"
+
+
 def find_timeslot(day, slot, pm):
     """
     Finds the numeric code for a timeslot.
@@ -151,3 +160,21 @@ def get_term_info():
     with open("../public/latestTerm.json") as f:
         term_info = json.load(f)
     return term_info
+
+
+def get_term():
+    """
+    Gets the current term (fall, IAP, or spring) as a value of type Term, from
+    "../public/latestTerm.json".
+
+    There are no arguments.
+    """
+    url_name = get_term_info()["urlName"]
+    if url_name[0] == "f":
+        return Term.FA
+    elif url_name[0] == "i":
+        return Term.JA
+    elif url_name[0] == "s":
+        return Term.SP
+    else:
+        raise ValueError(f"Invalid term {url_name[0]}")
