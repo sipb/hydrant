@@ -24,5 +24,5 @@ jobs:
         with:
           name: built-site
           path: |
-            build
-            !build/latest.json
+            dist
+            !dist/latest.json
