@@ -1,5 +1,5 @@
 import { Image, Link } from "@chakra-ui/react";
-import sipbLogo from "../assets/fuzzball.png";
+import sipbLogo from "../assets/simple-fuzzball.png";
 
 export function SIPBLogo() {
   return (
