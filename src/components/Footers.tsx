@@ -8,6 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogActionTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 
@@ -21,7 +22,11 @@ function AboutDialog() {
       <Link onClick={() => setVisible(true)} colorPalette="blue">
         About
       </Link>
-      <DialogRoot open={visible} onOpenChange={() => setVisible(false)}>
+      <DialogRoot
+        lazyMount
+        open={visible}
+        onOpenChange={() => setVisible(false)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Hydrant</DialogTitle>
@@ -42,16 +47,17 @@ function AboutDialog() {
                   href="https://github.com/sipb/hydrant"
                   colorPalette="blue"
                 >
-                  Github
+                  GitHub
                 </Link>
                 , or come to a SIPB meeting and ask how to help.
               </Text>
               <Text>
-                We'd like to thank Edward Fan for creating{" "}
+                We'd like to thank CJ Quines '23 for creating Hydrant and Edward
+                Fan '19 for creating{" "}
                 <Link href="https://firehose.guide/" colorPalette="blue">
                   Firehose
                 </Link>
-                , the basis for Hydrant, and the{" "}
+                , the basis for Hydrant. We'd also like to thank the{" "}
                 <Link href="https://fireroad.mit.edu/" colorPalette="blue">
                   FireRoad
                 </Link>{" "}
@@ -60,7 +66,52 @@ function AboutDialog() {
             </Flex>
           </DialogBody>
           <DialogFooter>
-            <Button onClick={() => setVisible(false)}>Close</Button>
+            <DialogActionTrigger asChild>
+              <Button>Close</Button>
+            </DialogActionTrigger>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
+    </>
+  );
+}
+
+function PrivacyPolicyDialog() {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <Link onClick={() => setVisible(true)} colorPalette="blue">
+        Privacy Policy
+      </Link>
+      <DialogRoot
+        lazyMount
+        open={visible}
+        onOpenChange={() => setVisible(false)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Privacy Policy</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <Flex direction="column" gap={4}>
+              <Text>
+                Hydrant does not store any of your data outside of your browser.
+                Data is only transmitted upstream when you export to Google
+                Calendar. When you export to Google Calendar, Hydrant sends
+                calendar information to Google to place into your calendar.
+              </Text>
+              <Text>
+                No data is transmitted otherwise. That means that our servers do
+                not store your class or calendar information. If you never
+                export to Google Calendar we never send your data anywhere else.
+              </Text>
+            </Flex>
+          </DialogBody>
+          <DialogFooter>
+            <DialogActionTrigger asChild>
+              <Button>Close</Button>
+            </DialogActionTrigger>
           </DialogFooter>
         </DialogContent>
       </DialogRoot>
@@ -80,9 +131,7 @@ export function LeftFooter(props: { state: State }) {
         <Link href="mailto:sipb-hydrant@mit.edu" colorPalette="blue">
           Contact
         </Link>
-        <Link href="privacy.html" colorPalette="blue">
-          Privacy Policy
-        </Link>
+        <PrivacyPolicyDialog />
       </Flex>
     </Flex>
   );

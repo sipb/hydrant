@@ -208,7 +208,7 @@ function ActivityColor(props: {
       <Flex direction="row" gap={2}>
         <ColorPickerRoot value={color} onValueChange={(e) => setColor(e.value)}>
           <ColorPickerControl>
-            <ColorPickerInput />
+            <ColorPickerInput autoFocus />
             <ColorPickerTrigger />
           </ColorPickerControl>
           <ColorPickerContent>
@@ -382,6 +382,14 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
           onChange={(e) => setName(e.target.value)}
           fontWeight="bold"
           placeholder="New Activity"
+          autoFocus
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              onConfirmRename();
+            } else if (e.key === "Escape") {
+              onCancelRename();
+            }
+          }}
         />
       );
     } else if (isRelocating) {
@@ -390,6 +398,14 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
           value={room}
           onChange={(e) => setRoom(e.target.value)}
           placeholder="W20-557"
+          autoFocus
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              onConfirmRelocating();
+            } else if (e.key === "Escape") {
+              onCancelRelocating();
+            }
+          }}
         />
       );
     } else {

@@ -1,5 +1,12 @@
-import { Flex, Input, Link, createListCollection } from "@chakra-ui/react";
-import { ComponentPropsWithoutRef, useState } from "react";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Input,
+  Link,
+  createListCollection,
+} from "@chakra-ui/react";
+import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 
 import {
   DialogRoot,
@@ -12,6 +19,7 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
 
 import { State } from "../lib/state";
 import { Save } from "../lib/schema";
@@ -23,6 +31,16 @@ import {
   SelectValueText,
   SelectLabel,
 } from "./ui/select";
+
+import {
+  LuCopy,
+  LuEllipsis,
+  LuFilePlus2,
+  LuPencilLine,
+  LuSave,
+  LuShare2,
+  LuTrash2,
+} from "react-icons/lu";
 
 import { useCopyToClipboard } from "react-use";
 
@@ -110,74 +128,78 @@ function SelectWithWarn(props: {
   );
 }
 
-function DeleteDialog(props: { state: State; saveId: string; name: string }) {
-  const { state, saveId, name } = props;
+function DeleteDialog(props: {
+  state: State;
+  saveId: string;
+  name: string;
+  children: React.ReactNode;
+}) {
+  const { state, saveId, name, children } = props;
   const [show, setShow] = useState(false);
 
   return (
-    <>
-      <DialogRoot lazyMount open={show} onOpenChange={(e) => setShow(e.open)}>
-        <DialogTrigger asChild>
-          <SmallButton>Delete</SmallButton>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you sure?</DialogTitle>
-          </DialogHeader>
-          <DialogBody>Are you sure you want to delete {name}?</DialogBody>
-          <DialogFooter>
-            <DialogActionTrigger asChild>
-              <Button>Cancel</Button>
-            </DialogActionTrigger>
-            <Button
-              onClick={() => {
-                state.removeSave(saveId);
-                setShow(false);
-              }}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
-    </>
+    <DialogRoot
+      lazyMount
+      open={show}
+      onOpenChange={(e) => setShow(e.open)}
+      role="alertdialog"
+    >
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you sure?</DialogTitle>
+        </DialogHeader>
+        <DialogBody>Are you sure you want to delete {name}?</DialogBody>
+        <DialogFooter>
+          <DialogActionTrigger asChild>
+            <Button>Cancel</Button>
+          </DialogActionTrigger>
+          <Button
+            colorPalette="red"
+            variant="solid"
+            onClick={() => {
+              state.removeSave(saveId);
+              setShow(false);
+            }}
+          >
+            Delete
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 }
 
-function ExportDialog(props: { state: State }) {
-  const { state } = props;
+function ExportDialog(props: { state: State; children: React.ReactNode }) {
+  const { state, children } = props;
   const [show, setShow] = useState(false);
   const link = state.urlify();
   const [clipboardState, copyToClipboard] = useCopyToClipboard();
 
   return (
-    <>
-      <DialogRoot lazyMount open={show} onOpenChange={(e) => setShow(e.open)}>
-        <DialogTrigger asChild>
-          <SmallButton>Share</SmallButton>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Share schedule</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            Share the following link:
-            <br />
-            <Link href={link} colorPalette="blue" wordBreak="break-all">
-              {link}
-            </Link>
-          </DialogBody>
-          <DialogFooter>
-            <DialogActionTrigger asChild>
-              <Button>Close</Button>
-            </DialogActionTrigger>
-            <Button onClick={() => copyToClipboard(link)}>
-              {clipboardState.value === link ? "Copied!" : "Copy"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
-    </>
+    <DialogRoot lazyMount open={show} onOpenChange={(e) => setShow(e.open)}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Share schedule</DialogTitle>
+        </DialogHeader>
+        <DialogBody>
+          Share the following link:
+          <br />
+          <Link href={link} colorPalette="blue" wordBreak="break-all">
+            {link}
+          </Link>
+        </DialogBody>
+        <DialogFooter>
+          <DialogActionTrigger asChild>
+            <Button>Close</Button>
+          </DialogActionTrigger>
+          <Button onClick={() => copyToClipboard(link)}>
+            {clipboardState.value === link ? "Copied!" : "Copy"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 }
 
@@ -192,12 +214,24 @@ export function ScheduleSwitcher(props: {
   const [isRenaming, setIsRenaming] = useState(false);
   const [name, setName] = useState(currentName);
 
+  useEffect(() => {
+    setName(saves.find((save) => save.id === saveId)?.name ?? "");
+  }, [saves, saveId]);
+
   const [renderHeading, renderButtons] = (() => {
     if (isRenaming) {
       const renderHeading = () => (
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
+          autoFocus
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              onConfirm();
+            } else if (e.key === "Escape") {
+              onCancel();
+            }
+          }}
           placeholder="New Schedule"
           size="sm"
           width="fit-content"
@@ -227,19 +261,60 @@ export function ScheduleSwitcher(props: {
     const onSave = () => state.addSave(Boolean(saveId));
     const onCopy = () => state.addSave(false, `${currentName} copy`);
     const renderButtons = () => (
-      <>
-        {saveId && <SmallButton onClick={onRename}>Rename</SmallButton>}
-        <SmallButton onClick={onCopy}>Copy</SmallButton>
-        {saveId && (
-          <DeleteDialog
-            state={state}
-            saveId={saveId}
-            name={saves.find((save) => save.id === saveId)!.name}
-          />
-        )}
-        <SmallButton onClick={onSave}>{saveId ? "New" : "Save"}</SmallButton>
-        <ExportDialog state={state} />
-      </>
+      <MenuRoot>
+        <MenuTrigger asChild>
+          <IconButton variant="outline" size="sm" aria-label="Schedule options">
+            <LuEllipsis />
+          </IconButton>
+        </MenuTrigger>
+        <MenuContent>
+          {saveId && (
+            <MenuItem value="rename" onClick={onRename}>
+              <LuPencilLine />
+              <Box flex="1">Rename&hellip;</Box>
+            </MenuItem>
+          )}
+          <MenuItem value="copy" onClick={onCopy}>
+            <LuCopy />
+            <Box flex="1">Copy</Box>
+          </MenuItem>
+          {saveId && (
+            <DeleteDialog
+              state={state}
+              saveId={saveId}
+              name={saves.find((save) => save.id === saveId)!.name}
+            >
+              <MenuItem
+                value="delete"
+                color="fg.error"
+                _hover={{ bg: "bg.error", color: "fg.error" }}
+              >
+                <LuTrash2 />
+                <Box flex="1">Delete&hellip;</Box>
+              </MenuItem>
+            </DeleteDialog>
+          )}
+          <MenuItem value="new" onClick={onSave}>
+            {saveId ? (
+              <>
+                <LuFilePlus2 />
+                <Box flex="1">New</Box>
+              </>
+            ) : (
+              <>
+                <LuSave />
+                <Box flex="1">Save</Box>
+              </>
+            )}
+          </MenuItem>
+          <ExportDialog state={state}>
+            <MenuItem value="share">
+              <LuShare2 />
+              <Box flex="1">Share</Box>
+            </MenuItem>
+          </ExportDialog>
+        </MenuContent>
+      </MenuRoot>
     );
     return [renderHeading, renderButtons];
   })();
