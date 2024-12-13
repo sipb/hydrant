@@ -53,7 +53,7 @@ function AboutDialog() {
               </Text>
               <Text>
                 We'd like to thank CJ Quines '23 for creating Hydrant and Edward
-                Fan '20 for creating{" "}
+                Fan '19 for creating{" "}
                 <Link href="https://firehose.guide/" colorPalette="blue">
                   Firehose
                 </Link>

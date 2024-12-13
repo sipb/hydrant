@@ -10,7 +10,7 @@ export function PreregLink(props: { selectedActivities: Array<Activity> }) {
   const { selectedActivities } = props;
 
   // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
-  const matrixLink = `https://student.mit.edu/cgi-bin/sfprwtrm.sh?${(
+  const preregLink = `https://student.mit.edu/cgi-bin/sfprwtrm.sh?${(
     selectedActivities.filter(
       (activity) => activity instanceof Class,
     ) as Class[]
@@ -23,7 +23,7 @@ export function PreregLink(props: { selectedActivities: Array<Activity> }) {
       <LinkButton
         colorPalette="cyan"
         size="sm"
-        href={matrixLink}
+        href={preregLink}
         target="_blank"
         rel="noreferrer"
         fontWeight={"semibold"}
