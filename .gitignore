@@ -27,7 +27,9 @@ dist-ssr
 # artifacts
 scrapers/catalog.json
 scrapers/fireroad.json
+scrapers/fireroad-presem.json
 public/latest.json
+public/latestPreSemester.json
 
 # python
 __pycache__
