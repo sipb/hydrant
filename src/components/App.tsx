@@ -213,8 +213,8 @@ function HydrantApp() {
                     Export calendar
                   </Button>
                 </Tooltip>
-                <MatrixLink selectedActivities={state.selectedActivities} />
                 <PreregLink selectedActivities={state.selectedActivities} />
+                <MatrixLink selectedActivities={state.selectedActivities} />
               </Group>
             </Center>
             <SelectedActivities

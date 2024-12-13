@@ -21,7 +21,7 @@ export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
   return (
     <Tooltip content="You will be able to choose which chats to join, if any.">
       <LinkButton
-        colorPalette="green"
+        colorPalette="teal"
         size="sm"
         href={matrixLink}
         target="_blank"

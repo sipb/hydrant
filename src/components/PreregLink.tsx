@@ -21,7 +21,7 @@ export function PreregLink(props: { selectedActivities: Array<Activity> }) {
   return (
     <Tooltip content="This will import your current schedule into WebSIS.">
       <LinkButton
-        colorPalette="red"
+        colorPalette="cyan"
         size="sm"
         href={matrixLink}
         target="_blank"
