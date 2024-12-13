@@ -1,4 +1,5 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { IconButton, Flex, Text } from "@chakra-ui/react";
+
 import { CloseButton } from "./ui/close-button";
 import { useState } from "react";
 
@@ -16,7 +17,7 @@ export function ScheduleOption(props: {
   return (
     <Flex direction="column" align="end" gap={2} mt={-5}>
       <Flex gap={2} alignItems="center">
-        <Button
+        <IconButton
           onClick={() =>
             state.selectOption(
               (selectedOption - 1 + totalOptions) % totalOptions,
@@ -24,17 +25,19 @@ export function ScheduleOption(props: {
           }
           size="xs"
           variant="ghost"
+          aria-label="Previous schedule"
         >
           <LuArrowLeft />
-        </Button>
+        </IconButton>
         {selectedOption + 1} of {totalOptions}
-        <Button
+        <IconButton
           onClick={() => state.selectOption(selectedOption + 1)}
           size="xs"
           variant="ghost"
+          aria-label="Next schedule"
         >
           <LuArrowRight />
-        </Button>
+        </IconButton>
       </Flex>
       {tooManyOptions && totalOptions > 15 && (
         <Flex align="center" bg="whiteAlpha.50" gap={1} px={2} py={1}>

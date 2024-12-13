@@ -263,7 +263,7 @@ export function ScheduleSwitcher(props: {
     const renderButtons = () => (
       <MenuRoot>
         <MenuTrigger asChild>
-          <IconButton variant="outline" size="sm">
+          <IconButton variant="outline" size="sm" aria-label="Schedule options">
             <LuEllipsis />
           </IconButton>
         </MenuTrigger>
