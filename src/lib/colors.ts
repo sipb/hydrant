@@ -60,14 +60,14 @@ const highContrastDark: ColorScheme = {
   name: "High Contrast (Dark)",
   colorMode: "dark",
   backgroundColors: [
-    "#FF6F61", 
+    "#EB7070", 
     "#FFE066", 
     "#67D5E3", 
     "#7BE27B", 
-    "#A366E0", 
+    "#B584E6", 
     "#FF85C0", 
     "#66B2FF", 
-    "#FF9671",
+    "#FFA570",
   ],
 };
 
