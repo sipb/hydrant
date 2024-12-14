@@ -22,6 +22,7 @@ Functions:
 import json
 import requests
 import utils
+from utils import Term
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
@@ -88,20 +89,19 @@ def parse_section(section):
     return [slots, place]
 
 
-def parse_schedule(course):
+def parse_schedule(schedule):
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
 
     Args:
-    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+    * schedule (str): The schedule string.
 
     Returns:
     * dict[str, union[list, bool]: The parsed schedule
 
     Raises AssertionError or KeyError if parse_section does.
     """
-    schedule = course["schedule"]
     section_tba = False
     result = {}
 
@@ -214,7 +214,7 @@ def get_course_data(courses, course, term):
     Args:
     * courses (list[dict[str, Union[bool, float, int, list[str], str]]]): The list of courses.
     * course (dict[str, Union[bool, float, int, list[str], str]]): The course in particular.
-    * term (utils.Term): The current term (fall, IAP, or spring).
+    * term (Term): The current term (fall, IAP, or spring).
 
     Returns:
     * bool: Whether the course was entered into courses.
@@ -241,7 +241,14 @@ def get_course_data(courses, course, term):
     # designRawSections
     if has_schedule:
         try:
-            raw_class.update(parse_schedule(course))
+            if term == Term.FA and "scheduleFall" in course:
+                raw_class.update(parse_schedule(course["scheduleFall"]))
+            elif term == Term.JA and "scheduleIAP" in course:
+                raw_class.update(parse_schedule(course["scheduleIAP"]))
+            elif term == Term.SP and "scheduleSpring" in course:
+                raw_class.update(parse_schedule(course["scheduleSpring"]))
+            else:
+                raw_class.update(parse_schedule(course["schedule"]))
         except Exception as e:
             # if we can't parse the schedule, warn
             print(f"Can't parse schedule {course_code}: {e!r}")

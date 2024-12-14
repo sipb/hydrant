@@ -94,7 +94,8 @@ def run():
         json.dump(obj_presem, f, separators=(",", ":"))
     with open("../public/latest.json", mode="w", encoding="utf-8") as f:
         json.dump(obj, f, separators=(",", ":"))
-    print(f"Got {len(courses)} courses")
+    print(f"Pre-semester: got {len(courses_presem)} courses")
+    print(f"Semester: got {len(courses)} courses")
 
 
 if __name__ == "__main__":
