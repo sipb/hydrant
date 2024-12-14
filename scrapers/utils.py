@@ -169,17 +169,19 @@ def get_term_info(is_semester_term):
         return term_info["preSemester"]
 
 
-def get_term(is_semester_term):
+def url_name_to_term(url_name):
     """
-    Gets the current term (fall/spring/etc.) as a value of type Term, from "../public/latestTerm.json".
+    Extract the term (without academic year) from a urlName.
 
     Args:
-    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+    * url_name (string): a urlName representing a term, as found in latestTerm.json.
 
     Returns:
-    * Term: the name of the current term.
+    * Term: the enum value corresponding to the current term (without academic year).
+
+    >>> url_name_to_term("f24")
+    Term.FA
     """
-    url_name = get_term_info(is_semester_term)["urlName"]
     if url_name[0] == "f":
         return Term.FA
     elif url_name[0] == "i":

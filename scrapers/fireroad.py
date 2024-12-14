@@ -333,8 +333,8 @@ def run(is_semester_term):
     text = requests.get(URL).text
     data = json.loads(text)
     courses = dict()
-    term = utils.get_term(is_semester_term)
-    fname = "fireroad.json" if is_semester_term else "fireroad-presem.json"
+    term = utils.url_name_to_term(utils.get_term_info(is_semester_term)["urlName"])
+    fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
     missing = 0
 
     for course in data:

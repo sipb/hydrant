@@ -26,10 +26,10 @@ dist-ssr
 
 # artifacts
 scrapers/catalog.json
-scrapers/fireroad.json
+scrapers/fireroad-sem.json
 scrapers/fireroad-presem.json
 public/latest.json
-public/latestPreSemester.json
+public/i25.json
 
 # python
 __pycache__
