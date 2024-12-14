@@ -188,5 +188,7 @@ def url_name_to_term(url_name):
         return Term.JA
     elif url_name[0] == "s":
         return Term.SP
+    elif url_name[0] == "m":
+        return Term.SU
     else:
         raise ValueError(f"Invalid term {url_name[0]}")

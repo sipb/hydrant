@@ -15,6 +15,11 @@ const SEMESTER_NAMES = {
     full: "iap",
     fullCaps: "IAP",
   },
+  m: {
+    catalog: "SU",
+    full: "summer",
+    fullCaps: "Summer",
+  },
 } as const;
 
 /** Type of semester abbreviations. */

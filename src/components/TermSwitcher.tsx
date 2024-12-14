@@ -27,17 +27,20 @@ function toFullUrl(urlName: string, latestUrlName: string): string {
 /** Given a urlName like "i22", return the previous one, "f21". */
 function getLastUrlName(urlName: string): string {
   const { semester, year } = new Term({ urlName });
-  if (semester === "f") {
-    return `s${year}`;
-  } else if (semester === "s") {
-    return `i${year}`;
-  } else {
-    return `f${parseInt(year, 10) - 1}`;
+  switch (semester) {
+    case "f":
+      return `m${year}`;
+    case "m":
+      return `s${year}`;
+    case "s":
+      return `i${year}`;
+    case "i":
+      return `f${parseInt(year, 10) - 1}`;
   }
 }
 
 /** urlNames that don't have a State */
-const EXCLUDED_URLS = ["i23", "i24"];
+const EXCLUDED_URLS = ["i23", "s23", "i24", "s24"];
 
 /** Earliest urlName we have a State for. */
 const EARLIEST_URL = "f22";
