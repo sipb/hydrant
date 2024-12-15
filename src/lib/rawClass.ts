@@ -111,4 +111,7 @@ export type RawClass = {
   hours: number;
   /** Class size from evals */
   size: number;
+
+  /** Record with start and end time information */
+  quarter_information: Record<"start" | "end", string> | undefined;
 };
