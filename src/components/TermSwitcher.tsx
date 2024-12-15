@@ -40,7 +40,7 @@ function getLastUrlName(urlName: string): string {
 }
 
 /** urlNames that don't have a State */
-const EXCLUDED_URLS = ["i23", "s23", "i24", "s24"];
+const EXCLUDED_URLS = ["i23", "m23", "i24", "m24"];
 
 /** Earliest urlName we have a State for. */
 const EARLIEST_URL = "f22";
