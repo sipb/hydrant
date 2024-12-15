@@ -1,1 +1,138 @@
+# Course 6 special subjects
 
+["6.S041"]
+name = "Algorithmic and Human Decision-Making"
+level = "U"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "(6.3700 or 6.3800 or 18.05 or 18.600 or 14.300 or 14.32) and (6.3900 or 6.C01)"
+description = """
+Introduces students to problems at the intersection of algorithmic and human decision-making, focusing on problem domains such as criminal justice, the health care system, labor market, and others. Introduces the foundations in computer science, economics and psychology needed to integrate our behavioral understanding of people into machine learning. Topics include supervised learning, decision-making under uncertainty, behavioral economics, recommendation systems, and fairness/discrimination. Guest lectures by experts designing live algorithms in these domains, and culminates in student projects."""
+
+["6.S057"]
+name = "Verified Software Engineering"
+level = "U"
+lectureUnits = 4
+labUnits = 0
+preparationUnits = 8
+isVariableUnits = false
+prereqs = "6.1010 and 6.1200"
+description = """
+Practical application of formal-verification tools to specify and verify the correctness of software.  Foundational concepts include pre- and postconditions, loop invariants, ghost state, data abstraction, and specification techniques.  Lab assignments give hands-on experience in specifying and verifying a variety of software components."""
+
+["6.S077"]
+name = "Life Science & Semiconductor"
+level = "U"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+prereqs = "6.2000"
+description = """
+In this course we review the important role of semiconductor devices in patient monitoring and point of care. This includes technologies such as electrochemical, ultrasonic, magnetic, optical, and RF sensing modalities. We cover some of the basics of each device as well as physics and biology of device/human interaction.
+
+More information and QR code can be found here: http://bit.ly/lifesciencesemiconductormitcourse"""
+
+["6.S897"]
+name = "Life Science & Semiconductor"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+prereqs = "6.2000"
+description = """
+In this course we review the important role of semiconductor devices in patient monitoring and point of care. This includes technologies such as electrochemical, ultrasonic, magnetic, optical, and RF sensing modalities. We cover some of the basics of each device as well as physics and biology of device/human interaction.
+
+More information and QR code can be found here: http://bit.ly/lifesciencesemiconductormitcourse"""
+
+["6.S899"]
+name = "Learning of Time Series with Interventions"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "(6.3700 or 6.3800) and (6.3720 or permission of instructor)"
+description = """
+This course is different from most existing courses as it focuses on time series analysis (with and without interventions). The closest related courses are either in control (linear systems) or machine learning (graduate machine learning). But neither of these courses do proper coverage of time series analysis."""
+
+["6.S950"]
+name = "Global Business of Quantum Computing"
+level = "G"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 1
+isVariableUnits = false
+prereqs = ""
+description = """
+Quantum Computing (QC) offers the potential to solve certain types of problems for human kind; problems that are today, prohibitive for traditional computing. It could lead to exciting breakthroughs in areas such as improved efficiency in logistics chains, increased battery performance for cars or helping to find new pharmaceutical treatments. But what is hype and what is realistic given the development of the field in recent years and its current trajectory? What role do scientists, engineers, managers, entrepreneurs, policy makers and other stakeholders play? This course provides multiple viewpoints including academic, industry and governmental. You will hear from leading MIT faculty and pioneering practitioners in the field. We will demystify topics such as trapped ion and superconducting qubits."""
+
+["6.S954"]
+name = "Computer Vision and Planetary Health"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "6.8300 or 6.7960 or permission of instructor"
+description = """
+CV and Deep Learning are the closest, but there are several other AI courses that are relevant. This is the first course offering to focus on application-driven innovation in computer vision motivated by open, impactful challenges in planetary health, including biodiversity loss, ecosystem instability, carbon sequestration, wildlife conservation, prioritization of land to protect, and more generally the intersection of CV and the nature-based SDGs."""
+
+["6.S963"]
+name = "Beyond Models – Applying Data Science/AI Effectively"
+level = "G"
+lectureUnits = 2
+labUnits = 1
+preparationUnits = 3
+isVariableUnits = false
+prereqs = "6.3900 or similar study of machine learning and 15.085 or 15.077 or 18.05 similar study of statistics."
+description = """
+Comprehensively presents the breadth of considerations needed to apply data science and data-driven AI techniques successfully. Students will learn the landscape of challenges, a unique rubric for systematically evaluating them, and then see the rubric’s application to a variety of case studies. Through a combination of readings including the 2022 book, (Data Science in Context, Foundations, Challenges, and Opportunities), lectures, and in-class discussions, students will delve deeply into seven sets of implementation- and requirements-oriented challenges: from data gathering to meeting ethical, legal, and societal needs. Students will present in class and write a short (5-10 pages but carefully crafted) paper individually or in groups of two undertaking a careful analysis of a complex application of data science/ML, aiming at post-class publication on a web-site.  The instructor will advise the students on their projects during small, custom-scheduled recitation sections.  This class will provide students with additional skills needed to perform/lead successful data science/ML efforts (as data scientists, engineers, or product managers), and it will provide a better understanding of future opportunities in research, business, and public policy.  Enrollment is limited and class participation is required."""
+
+["6.S966"]
+name = "Symmetry and its Application to Machine Learning and Scientific Computing"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "18.06 or 18.061, 6.100A, 6.1210"
+description = """
+Introduces the use of group representation theory to construct symmetry-preserving algorithms for machine learning. Emphases the connection between topics in math and physics and machine learning. Students will implement core mathematical concepts in code to build algorithms that can operate on graphs, geometry, scientific data, and other structured data to preserve the symmetries of these domains. Topics covered include: Euclidean and permutation groups, group representations: regular, reducible, and irreducible, tensor products, statistics and sampling of group representation vector spaces, and symmetry-breaking mechanisms."""
+
+["6.S982"]
+name = "Diffusion Models: From Theory to Practice"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "machine learning (6.7900 or similar), probability (6.3700, 18.600 or similar), linear algebra (18.06, 6.C06 or similar), and calculus (18.02 or similar)"
+description = """
+Deep generative models have found a plethora of applications in Machine Learning, and various other scientific and applied fields, used for sampling complex, high-dimensional distributions and leveraged in downstream analyses involving such distributions. This course focuses on the foundations, applications and frontier challenges of diffusion-based generative models, which over the recent years have become the prominent approach to generative modeling across a wide range of data modalities and form the backbone of industry-scale systems like AlphaFold 3, DALL-E, and Stable Diffusion. Topics include mathematical aspects of diffusion-based models (including forward and inverse diffusion processes, Fokker-Planck equations, computational and statistical complexity aspects of score estimation), the use of diffusion models in downstream analyses tasks (such as inverse problems), extensions of diffusion models (including rectified flows, stochastic interpolants, and Schrödinger bridges), and frontier challenges motivated by practical considerations (including consistency models, guidance, training with noisy data)."""
+
+["6.S987"]
+name = "Physics and Engineering of Superconducting Qubits"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "6.728 or 8.06 or equivalent"
+description = """
+This course introduces the physics and engineering of superconducting qubits for quantum information processing for graduate and upper-level undergraduate students. Topics will include (1) an introduction to superconductivity and Hamiltonian engineering; (2) superconducting qubits, cavities, and microwave cavity quantum electrodynamics; (3) the theory and microwave engineering of qubit control and measurement; (4) noise, decoherence, dynamical error"""
+
+["6.S988"]
+name = "Mathematical Statistics: A Non-Asymptotic Approach"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "6.7700 and 18.06 and 18.6501, or permission on instructor"
+description = """
+Introduces students to modern non-asymptotic statistical analysis. Topics include high-dimensional models, nonparametric regression, covariance estimation, principal component analysis, oracle inequalities, prediction and margin analysis for classification. Develops a rigorous probabilistic toolkit, including tail bounds and a basic theory of empirical processes."""
+meets = "18.656, IDS.160, 9.521"
