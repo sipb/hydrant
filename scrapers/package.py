@@ -16,6 +16,7 @@ Dependencies:
 import datetime
 import json
 import utils
+import toml
 
 
 def load_json_data(jsonfile):
@@ -30,6 +31,20 @@ def load_json_data(jsonfile):
     """
     with open(jsonfile, mode="r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def load_toml_data(tomlfile):
+    """
+    Loads data from the provided file
+
+    Args:
+    * tomlfile (str): The file to load from
+
+    Returns:
+    * dict: The data contained within the file
+    """
+    with open(tomlfile, mode="r", encoding="utf-8") as f:
+        return toml.load(f)
 
 
 def merge_data(datasets, keys_to_keep):
@@ -61,7 +76,7 @@ def run():
     fireroad_presem = load_json_data("fireroad-presem.json")
     fireroad_sem = load_json_data("fireroad-sem.json")
     catalog = load_json_data("catalog.json")
-    overrides = load_json_data("overrides.json")
+    overrides = load_toml_data("overrides.toml")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
