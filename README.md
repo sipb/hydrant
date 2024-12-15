@@ -38,7 +38,9 @@ Let's say you're updating from e.g. Spring 2023 to Fall 2023.
 
 First, archive the old semester. Make sure you have updated schedule files. Then run `mv public/latest.json public/s23.json`.
 
-Then, update the new semester. Open `public/latestTerm.json`, change `urlName` to `f23`, and update the dates per [Registrar](https://registrar.mit.edu/calendar).
+Then, update the new semester. Open `public/latestTerm.json`, change `urlName` to `m23` (for the "pre-semester" summer 2023) and `f23` (for the semester fall 2023), and update the dates per [Registrar](https://registrar.mit.edu/calendar).
+
+Next, update the `.gitignore` to ignore `public/m23.json` rather than `public/i23.json`.
 
 Finally, run the normal update process and commit the results to the repo.
 

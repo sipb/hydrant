@@ -58,29 +58,46 @@ def run():
     Takes data from fireroad.json and catalog.json; outputs latest.json.
     There are no arguments and no return value.
     """
-    fireroad = load_json_data("fireroad.json")
+    fireroad_presem = load_json_data("fireroad-presem.json")
+    fireroad_sem = load_json_data("fireroad-sem.json")
     catalog = load_json_data("catalog.json")
     overrides = load_json_data("overrides.json")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
-    # If it's not in Fireroad, we don't have its schedule.
-    # If it's not in catalog, it's not offered this semester.
-    courses = merge_data(
-        datasets=[fireroad, catalog, overrides],
-        keys_to_keep=set(fireroad) & set(catalog),
+    # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
+    # If it's not in catalog, it's not offered this year.
+    courses_presem = merge_data(
+        datasets=[fireroad_presem, catalog, overrides],
+        keys_to_keep=set(fireroad_presem) & set(catalog),
+    )
+    courses_sem = merge_data(
+        datasets=[fireroad_sem, catalog, overrides],
+        keys_to_keep=set(fireroad_sem) & set(catalog),
     )
 
-    term_info = utils.get_term_info()
+    term_info_presem = utils.get_term_info(False)
+    url_name_presem = term_info_presem["urlName"]
+    term_info_sem = utils.get_term_info(True)
+    url_name_sem = term_info_sem["urlName"]
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    obj = {
-        "termInfo": term_info,
+
+    obj_presem = {
+        "termInfo": term_info_presem,
         "lastUpdated": now,
-        "classes": courses,
+        "classes": courses_presem,
+    }
+    obj_sem = {
+        "termInfo": term_info_sem,
+        "lastUpdated": now,
+        "classes": courses_sem,
     }
 
+    with open(f"../public/{url_name_presem}.json", mode="w", encoding="utf-8") as f:
+        json.dump(obj_presem, f, separators=(",", ":"))
     with open("../public/latest.json", mode="w", encoding="utf-8") as f:
-        json.dump(obj, f, separators=(",", ":"))
-    print(f"Got {len(courses)} courses")
+        json.dump(obj_sem, f, separators=(",", ":"))
+    print(f"{url_name_presem}: got {len(courses_presem)} courses")
+    print(f"{url_name_sem}: got {len(courses_sem)} courses")
 
 
 if __name__ == "__main__":

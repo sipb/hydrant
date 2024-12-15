@@ -15,6 +15,11 @@ const SEMESTER_NAMES = {
     full: "iap",
     fullCaps: "IAP",
   },
+  m: {
+    catalog: "SU",
+    full: "summer",
+    fullCaps: "Summer",
+  },
 } as const;
 
 /** Type of semester abbreviations. */
@@ -144,12 +149,22 @@ export function parseUrlName(urlName: string): {
 /** Type of object passed to Term constructor. */
 export type TermInfo = {
   urlName: string;
-  startDate?: string;
+  startDate: string;
   h1EndDate?: string;
   h2StartDate?: string;
-  endDate?: string;
+  endDate: string;
   mondayScheduleDate?: string;
   holidayDates?: Array<string>;
+};
+
+/**
+ * Type of object parsed from latestTerm.json, including information about the
+ * current semester term (fall or spring) and the associated pre-semester term
+ * (summer or IAP).
+ */
+export type LatestTermInfo = {
+  preSemester: TermInfo;
+  semester: Required<TermInfo>;
 };
 
 /**
@@ -182,7 +197,7 @@ export class Term {
     endDate = "",
     mondayScheduleDate,
     holidayDates = [],
-  }: TermInfo) {
+  }: Partial<TermInfo> & { urlName: string }) {
     const midnight = (date: string) => new Date(`${date}T00:00:00`);
     const { year, semester } = parseUrlName(urlName);
     this.year = year;

@@ -27,24 +27,27 @@ function toFullUrl(urlName: string, latestUrlName: string): string {
 /** Given a urlName like "i22", return the previous one, "f21". */
 function getLastUrlName(urlName: string): string {
   const { semester, year } = new Term({ urlName });
-  if (semester === "f") {
-    return `s${year}`;
-  } else if (semester === "s") {
-    return `i${year}`;
-  } else {
-    return `f${parseInt(year, 10) - 1}`;
+  switch (semester) {
+    case "f":
+      return `m${year}`;
+    case "m":
+      return `s${year}`;
+    case "s":
+      return `i${year}`;
+    case "i":
+      return `f${parseInt(year, 10) - 1}`;
   }
 }
 
 /** urlNames that don't have a State */
-const EXCLUDED_URLS = ["i23", "i24", "i25"];
+const EXCLUDED_URLS = ["i23", "m23", "i24", "m24"];
 
 /** Earliest urlName we have a State for. */
 const EARLIEST_URL = "f22";
 
 /** Return all urlNames before the given one. */
-function getUrlNames(latestTerm: string): Array<string> {
-  let urlName = latestTerm;
+function getUrlNames(latestUrlName: string): Array<string> {
+  let urlName = latestUrlName;
   const res = [];
   while (urlName !== EARLIEST_URL) {
     res.push(urlName);
@@ -58,14 +61,13 @@ function getUrlNames(latestTerm: string): Array<string> {
 
 export function TermSwitcher(props: { state: State }) {
   const { state } = props;
-  const toUrl = (urlName: string) =>
-    toFullUrl(urlName, state.latestTerm.urlName);
+  const toUrl = (urlName: string) => toFullUrl(urlName, state.latestUrlName);
   const defaultValue = toUrl(state.term.urlName);
 
   return (
     <SelectRoot
       collection={createListCollection({
-        items: getUrlNames(state.latestTerm.urlName).map((urlName) => {
+        items: getUrlNames(state.latestUrlName).map((urlName) => {
           const { niceName } = new Term({ urlName });
           return {
             label: niceName,
@@ -86,7 +88,7 @@ export function TermSwitcher(props: { state: State }) {
         <SelectValueText />
       </SelectTrigger>
       <SelectContent>
-        {getUrlNames(state.latestTerm.urlName).map((urlName) => {
+        {getUrlNames(state.latestUrlName).map((urlName) => {
           const { niceName } = new Term({ urlName });
           return (
             <SelectItem item={toUrl(urlName)} key={toUrl(urlName)}>

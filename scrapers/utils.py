@@ -7,6 +7,7 @@ Data:
 * DAYS: dict[str, int]
 * TIMES: dict[str, int]
 * EVE_TIMES: dict[str, int]
+* Term: enum.EnumType
 
 Functions:
 * find_timeslot(day, slot, pm)
@@ -17,6 +18,7 @@ Functions:
 
 import itertools
 import json
+from enum import Enum
 
 GIR_REWRITE = {
     "GIR:CAL1": "Calculus I (GIR)",
@@ -86,6 +88,13 @@ EVE_TIMES = {
 }
 
 
+class Term(Enum):
+    FA = "fall"
+    JA = "IAP"
+    SP = "spring"
+    SU = "summer"
+
+
 def find_timeslot(day, slot, pm):
     """
     Finds the numeric code for a timeslot.
@@ -142,12 +151,44 @@ def grouper(iterable, n):
     return zip_strict(*args)
 
 
-def get_term_info():
+def get_term_info(is_semester_term):
     """
     Gets the latest term info from "../public/latestTerm.json" as a dictionary.
 
-    There are no arguments.
+    Args:
+    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+
+    Returns:
+    * dict: the term info for the selected term from latestTerm.json.
     """
     with open("../public/latestTerm.json") as f:
         term_info = json.load(f)
-    return term_info
+    if is_semester_term:
+        return term_info["semester"]
+    else:
+        return term_info["preSemester"]
+
+
+def url_name_to_term(url_name):
+    """
+    Extract the term (without academic year) from a urlName.
+
+    Args:
+    * url_name (string): a urlName representing a term, as found in latestTerm.json.
+
+    Returns:
+    * Term: the enum value corresponding to the current term (without academic year).
+
+    >>> url_name_to_term("f24")
+    Term.FA
+    """
+    if url_name[0] == "f":
+        return Term.FA
+    elif url_name[0] == "i":
+        return Term.JA
+    elif url_name[0] == "s":
+        return Term.SP
+    elif url_name[0] == "m":
+        return Term.SU
+    else:
+        raise ValueError(f"Invalid term {url_name[0]}")

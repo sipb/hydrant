@@ -59,8 +59,8 @@ export class State {
     public readonly term: Term,
     /** String representing last update time. */
     public readonly lastUpdated: string,
-    /** The latest term object. */
-    public readonly latestTerm: Term,
+    /** The latest term's urlName. */
+    public readonly latestUrlName: string,
   ) {
     this.classes = new Map();
     this.store = new Store(term.toString());

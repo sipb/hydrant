@@ -23,6 +23,19 @@ from bs4 import BeautifulSoup, Tag
 BASE_URL = "http://student.mit.edu/catalog"
 
 
+def is_not_offered_this_year(html):
+    """
+    Args:
+    * html (BeautifulSoup): the input webpage
+
+    Returns:
+    * bool: True if the class is not offered this year
+    """
+    if html.find(attrs={"src": "/icns/nooffer.gif"}):
+        return True
+    return False
+
+
 def is_not_offered_next_year(html):
     """
     Args:
@@ -228,8 +241,9 @@ def scrape_courses_from_page(courses, href):
         filtered_html = BeautifulSoup()
         filtered_html.extend(content)
         course_data = get_course_data(filtered_html)
-        for course_num in course_nums:
-            courses[course_num] = course_data
+        if not is_not_offered_this_year(filtered_html):
+            for course_num in course_nums:
+                courses[course_num] = course_data
 
 
 def run():
