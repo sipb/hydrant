@@ -20,9 +20,9 @@ cd "$REPO_DIR/scrapers"
 git checkout -f deploy -q
 git pull -q
 
-# The scripts machine we use has Python 3.8, so use that.
+# The scripts machine we use has Python 3.6, so use that.
 # This updates $OUT_FILE.
-python3.8 update.py
+python3.6 update.py
 OUT_FILE="$REPO_DIR/public/latest.json"
 
 # Copy $OUT_FILE to the output directory, so it can be served to the internet.
