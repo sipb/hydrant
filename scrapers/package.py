@@ -18,7 +18,12 @@ import json
 import utils
 import os
 import os.path
-import toml
+import sys
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 
 def load_json_data(jsonfile):
@@ -45,7 +50,11 @@ def load_toml_data(tomldir):
     Returns:
     * dict: The data contained within the directory
     """
-    return toml.load([os.path.join(tomldir, f) for f in os.listdir(tomldir)])
+    out = {}
+    for fname in os.listdir(tomldir):
+        with open(os.path.join(tomldir, fname), "rb") as f:
+            out.update(tomllib.load(f))
+    return out
 
 
 def merge_data(datasets, keys_to_keep):
