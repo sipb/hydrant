@@ -12,6 +12,7 @@ Functions:
 * parse_timeslot(day, slot, pm)
 * parse_section(section)
 * parse_schedule(course)
+* parse_quarter_info(course)
 * parse_attributes(course)
 * parse_terms(course)
 * parse_prereqs(course)
@@ -135,6 +136,39 @@ def parse_schedule(schedule):
     # True if some schedule is not scheduled yet.
     result["tba"] = section_tba
     return result
+
+
+def parse_quarter_info(course):
+    """
+    Parses quarter info from the course.
+    If quarter information key is present, returns either start date, end date, or both.
+
+    Can start with either 0, 1, or 2.
+    e.g. "0,apr 14" meaning subject ends on Apr 14,
+    or "1,4/4" meaning subject begins on 4/4,
+    or "2,4/9 to 5/9" meaning subject meets from 4/9 to 5/9.
+
+    NOTE: dates can appear as either "4/4" or "apr 4".
+
+    Args:
+    * course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+
+    Returns:
+    * dict[str, dict[str, str]]: The parsed quarter info.
+    """
+
+    quarter_info = course.get("quarter_information", "")
+    if quarter_info:
+        print(course.get("subject_id"), quarter_info)
+        quarter_info = quarter_info.split(",")
+        if quarter_info[0] == "0":
+            return {"quarterInfo": {"end": quarter_info[1]}}
+        elif quarter_info[0] == "1":
+            return {"quarterInfo": {"start": quarter_info[1]}}
+        elif quarter_info[0] == "2" and "to" in quarter_info[1]:
+            dates = quarter_info[1].split(" to ")
+            return {"quarterInfo": {"start": dates[0], "end": dates[1]}}
+    return {}
 
 
 def parse_attributes(course):
@@ -292,6 +326,9 @@ def get_course_data(courses, course, term):
         assert raw_class["lectureUnits"] == 0
         assert raw_class["labUnits"] == 0
         assert raw_class["preparationUnits"] == 0
+
+    # Get quarter info if available
+    raw_class.update(parse_quarter_info(course))
 
     raw_class.update(
         {
