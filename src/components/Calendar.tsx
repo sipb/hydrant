@@ -24,6 +24,18 @@ export function Calendar(props: {
   const { selectedActivities, viewedActivity, state } = props;
 
   const renderEvent = ({ event }: EventContentArg) => {
+    const TitleText = () => (
+      <Text
+        fontSize="sm"
+        fontWeight="medium"
+        overflow="hidden"
+        textOverflow="clip"
+        whiteSpace="nowrap"
+      >
+        {event.title}
+      </Text>
+    );
+
     return (
       <Box
         color={event.textColor}
@@ -37,27 +49,10 @@ export function Calendar(props: {
             content={event.extendedProps.activity.name}
             portalled
             positioning={{ placement: "top" }}
-          >
-            <Text
-              fontSize="sm"
-              fontWeight="medium"
-              overflow="hidden"
-              textOverflow="clip"
-              whiteSpace="nowrap"
-            >
-              {event.title}
-            </Text>
-          </Tooltip>
+            children={TitleText()}
+          />
         ) : (
-          <Text
-            fontSize="sm"
-            fontWeight="medium"
-            overflow="hidden"
-            textOverflow="clip"
-            whiteSpace="nowrap"
-          >
-            {event.title}
-          </Text>
+          <TitleText />
         )}
         <Text fontSize="xs">{event.extendedProps.room}</Text>
       </Box>
