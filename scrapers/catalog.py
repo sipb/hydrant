@@ -33,6 +33,10 @@ def is_not_offered_this_year(html):
     """
     if html.find(attrs={"src": "/icns/nooffer.gif"}):
         return True
+    if html.find(
+        text=re.compile("not offered regularly; consult department", re.IGNORECASE)
+    ):
+        return True
     return False
 
 
