@@ -159,7 +159,6 @@ def parse_quarter_info(course):
 
     quarter_info = course.get("quarter_information", "")
     if quarter_info:
-        print(course.get("subject_id"), quarter_info)
         quarter_info = quarter_info.split(",")
         if quarter_info[0] == "0":
             return {"quarterInfo": {"end": quarter_info[1]}}
