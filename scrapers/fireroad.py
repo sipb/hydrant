@@ -329,8 +329,6 @@ def get_course_data(courses, course, term):
     # Get quarter info if available
     raw_class.update(parse_quarter_info(course))
 
-    raw_class.update(parse_quarter_info(course))
-
     raw_class.update(
         {
             "description": course.get("description", ""),

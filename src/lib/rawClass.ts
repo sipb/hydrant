@@ -113,5 +113,5 @@ export type RawClass = {
   size: number;
 
   /** Record with start and end time information */
-  quarter_information: Record<"start" | "end", string> | undefined;
+  quarterInfo: Partial<Record<"start" | "end", string>> | undefined;
 };
