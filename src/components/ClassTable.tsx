@@ -1,6 +1,9 @@
-import { AgGridReact } from "@ag-grid-community/react";
-import AgGrid, { ModuleRegistry } from "@ag-grid-community/core";
-import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import { AgGridReact } from "ag-grid-react";
+import AgGrid, {
+  ModuleRegistry,
+  AllCommunityModule,
+  themeQuartz,
+} from "ag-grid-community";
 import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
@@ -14,11 +17,19 @@ import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { State } from "../lib/state";
 
-import "@ag-grid-community/core/dist/styles/ag-grid.css";
-import "@ag-grid-community/core/dist/styles/agGridAlpineFont.css";
-import "./ClassTable.scss";
+const hydrantTheme = themeQuartz.withParams({
+  accentColor: "var(--chakra-colors-fg)",
+  backgroundColor: "var(--chakra-colors-bg)",
+  borderColor: "var(--chakra-colors-border)",
+  browserColorScheme: "inherit",
+  fontFamily: "inherit",
+  foregroundColor: "var(--chakra-colors-fg)",
+  headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
+  rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
+  wrapperBorderRadius: "var(--chakra-radii-l2)",
+});
 
-ModuleRegistry.registerModules([ClientSideRowModelModule]);
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 /** A single row in the class table. */
 type ClassTableRow = {
@@ -287,7 +298,7 @@ export function ClassTable(props: {
     const sortingOrder: Array<"asc" | "desc"> = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     const numberSortProps = {
-      maxWidth: 90,
+      maxWidth: 100,
       // sort by number, N/A is infinity, tiebreak with class number
       comparator: (
         valueA: string,
@@ -306,15 +317,16 @@ export function ClassTable(props: {
     return [
       {
         field: "number",
+        resizable: false,
         headerName: "Class",
         comparator: classSort,
         initialSort,
         maxWidth: 100,
         ...sortProps,
       },
-      { field: "rating", ...numberSortProps },
-      { field: "hours", ...numberSortProps },
-      { field: "name", flex: 1 },
+      { field: "rating", resizable: false, ...numberSortProps },
+      { field: "hours", resizable: false, ...numberSortProps },
+      { field: "name", resizable: false, sortable: false, flex: 1 },
     ];
   }, []);
 
@@ -363,8 +375,9 @@ export function ClassTable(props: {
         state={state}
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
-      <Box className="ag-theme-hydrant">
+      <Box style={{ height: "320px", width: "100%" }}>
         <AgGridReact
+          theme={hydrantTheme}
           ref={gridRef}
           columnDefs={columnDefs}
           rowData={rowData}
@@ -374,7 +387,7 @@ export function ClassTable(props: {
           doesExternalFilterPass={doesExternalFilterPass}
           onRowClicked={(e) => state.setViewedActivity(e.data.class)}
           onRowDoubleClicked={(e) => state.toggleActivity(e.data.class)}
-          onGridReady={() => gridRef.current?.columnApi?.autoSizeAllColumns()}
+          onGridReady={() => gridRef.current?.api?.autoSizeAllColumns()}
           // these have to be set here, not in css:
           headerHeight={40}
           rowHeight={40}
