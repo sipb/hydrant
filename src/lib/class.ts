@@ -502,7 +502,7 @@ export class Class {
     if (this.course === "18") {
       extraUrls.push({
         label: "Course 18 Underground Guide",
-        url: `http://course18.guide/${this.number}-spring-2021.html`,
+        url: `https://mathguide.mit.edu/${this.number}`,
       });
     }
 
