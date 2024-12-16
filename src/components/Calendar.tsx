@@ -7,8 +7,10 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { Activity, NonClass, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { State } from "../lib/state";
+import { Class } from "../lib/class";
 
 import "./Calendar.scss";
+import { Tooltip } from "./ui/tooltip";
 
 /**
  * Calendar showing all the activities, including the buttons on top that
@@ -30,15 +32,33 @@ export function Calendar(props: {
         cursor="pointer"
         height="100%"
       >
-        <Text
-          fontSize="sm"
-          fontWeight="medium"
-          overflow="hidden"
-          textOverflow="clip"
-          whiteSpace="nowrap"
-        >
-          {event.title}
-        </Text>
+        {event.extendedProps.activity instanceof Class ? (
+          <Tooltip
+            content={event.extendedProps.activity.name}
+            portalled
+            positioning={{ placement: "top" }}
+          >
+            <Text
+              fontSize="sm"
+              fontWeight="medium"
+              overflow="hidden"
+              textOverflow="clip"
+              whiteSpace="nowrap"
+            >
+              {event.title}
+            </Text>
+          </Tooltip>
+        ) : (
+          <Text
+            fontSize="sm"
+            fontWeight="medium"
+            overflow="hidden"
+            textOverflow="clip"
+            whiteSpace="nowrap"
+          >
+            {event.title}
+          </Text>
+        )}
         <Text fontSize="xs">{event.extendedProps.room}</Text>
       </Box>
     );
