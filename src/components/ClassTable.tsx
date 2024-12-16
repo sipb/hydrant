@@ -5,6 +5,7 @@ import {
   themeQuartz,
   type IRowNode,
   type ColDef,
+  CellClassParams,
 } from "ag-grid-community";
 import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -32,6 +33,14 @@ const hydrantTheme = themeQuartz.withParams({
 });
 
 ModuleRegistry.registerModules([AllCommunityModule]);
+
+const getRatingColor = (rating?: number | string) => {
+  if (rating === undefined || rating === "N/A") return undefined;
+  const ratingNumber = Number(rating);
+  if (ratingNumber >= 6) return "success";
+  if (ratingNumber >= 5) return "warning";
+  return "error";
+};
 
 /** A single row in the class table. */
 type ClassTableRow = {
@@ -328,7 +337,18 @@ export function ClassTable(props: {
         maxWidth: 100,
         ...sortProps,
       },
-      { field: "rating", resizable: false, ...numberSortProps },
+      {
+        field: "rating",
+        resizable: false,
+        cellStyle: (params: CellClassParams<ClassTableRow>) => {
+          const rating = getRatingColor(params.value);
+          if (!rating) return { backgroundColor: "" };
+          return {
+            backgroundColor: `var(--chakra-colors-bg-${rating})`,
+          };
+        },
+        ...numberSortProps,
+      },
       { field: "hours", resizable: false, ...numberSortProps },
       { field: "name", resizable: false, sortable: false, flex: 1 },
     ];
