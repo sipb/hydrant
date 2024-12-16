@@ -52,8 +52,9 @@ def load_toml_data(tomldir):
     """
     out = {}
     for fname in os.listdir(tomldir):
-        with open(os.path.join(tomldir, fname), "rb") as f:
-            out.update(tomllib.load(f))
+        if fname.endswith(".toml"):
+            with open(os.path.join(tomldir, fname), "rb") as f:
+                out.update(tomllib.load(f))
     return out
 
 

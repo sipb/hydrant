@@ -1,3 +1,4 @@
+#:schema ./override-schema.json
 # Course 6 special subjects (IAP)
 # https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/
 

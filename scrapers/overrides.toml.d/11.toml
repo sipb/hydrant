@@ -1,3 +1,4 @@
+#:schema ./override-schema.json
 # Course 11 special subjects (spring + iap 2025)
 # https://dusp.mit.edu/subjects
 
@@ -13,11 +14,11 @@ description = '''
 Every landscape represents an incomplete or interrupted plan that tells time and intention. Physical landscapes provide evidence of successful, failed and emergent development plans, but only the learned eye sees beyond the material culture of the street. “Death” offers a way to conceptualize the unseen, underground, the underneath, the liminal space between what we know, what is actual and what is yet to be. Linking social theory, geography, public policy and planning history, this course asks: How can planners and critical observers of the built environment begin to access the collection of meanings that script the movement, stasis and location of everyday users? In other words, how do we move beyond official maps, plans and histories to consider contested meanings of place as they are lived, exchanged and created. Through weekly examinations of first person documentary accounts including ethnography, historical fiction, autobiography, film and novels, students will analyze the social, political and geographic impact of various land development strategies in the U.S. and beyond. Displacement defines a major theme of this course -- students will examine: 1) How does this happen? 2) What have been subsequent local responses? And, 3) What are the lasting consequences of population dispersals?
 
 Informed by ethnographic method and archival immersion, this course will provide students with an interdisciplinary framework for identifying and describing the social impact of place-based change and capital movement. Students will develop a critical understanding of urban planning informed by resident-authored analysis across time and space.'''
-terms = ['SP']
+terms = ["SP"]
 sectionKinds = ['lecture']
 lectureRawSections = ['9-451/TR/0/9.30-11']
-lectureSections = [[[[63,3],[93,3]],'9-451']]
-repeat = false  
+lectureSections = [[[[63, 3], [93, 3]], '9-451']]
+repeat = false
 url = 'https://dusp.mit.edu/subjects'
 
 ['11.S938']
@@ -39,7 +40,7 @@ labUnits = 0
 preparationUnits = 4
 isVariableUnits = false
 description = '''
-Making Good on Baltimore as a Just City: Building Solutions For A Vacant Housing Crisis, as a practicum will have students immersed in two related projects: Develop a complex revitalization plan for a neglected city neighborhood using the case scenario, The Urban Plan (UP) and complete deliverables for a real client, Flight Blight Baltimore. The UP case scenario activities examine the nexus between development and urban planning. Students will go through an eight-stage development process model, and the material will cover idea conception, feasibility, planning, financing, market analysis, contract negotiation, construction, and asset management. Other topics discussed include but are not limited to market analysis, site acquisition, due diligence, zoning, entitlements, approvals, site planning, building design, construction, financing, leasing, and ongoing management and disposition. 
+Making Good on Baltimore as a Just City: Building Solutions For A Vacant Housing Crisis, as a practicum will have students immersed in two related projects: Develop a complex revitalization plan for a neglected city neighborhood using the case scenario, The Urban Plan (UP) and complete deliverables for a real client, Flight Blight Baltimore. The UP case scenario activities examine the nexus between development and urban planning. Students will go through an eight-stage development process model, and the material will cover idea conception, feasibility, planning, financing, market analysis, contract negotiation, construction, and asset management. Other topics discussed include but are not limited to market analysis, site acquisition, due diligence, zoning, entitlements, approvals, site planning, building design, construction, financing, leasing, and ongoing management and disposition.
 
 Working on a project for a client will allow students to solve a community challenge in real-time, pushing students to rethink the concept of stakeholder engagement in vacant housing underutilized infrastructure in Baltimore. Students will engage the idea of using citizen engineers to explore how the current demolish vacant building initiative by the City of Baltimore can integrate resident perspective in the city’s neighborhood stabilization initiatives. Part of this course will also explore how emerging vacant building assessment digital technology certification in the job market is linked to just banking and economies. The primary deliverables will center on data collection and analysis, and mapping. During the practicum experience, students will create their personal theory of practice, develop reflective practice strategies, and learn and deploy community engagement strategies.'''
 terms = ['SP']
@@ -81,7 +82,7 @@ description = '''Addressing climate change and the transition to a net zero econ
 terms = ['SP']
 sectionKinds = ['lecture']
 lectureRawSections = ['9-451/TR/0/9.30-11']
-lectureSections = [[[[63,3],[93,3]],'9-451']]
+lectureSections = [[[[63, 3], [93, 3]], '9-451']]
 repeat = false
 url = 'https://dusp.mit.edu/subjects'
 
@@ -100,7 +101,7 @@ Informed by ethnographic method and archival immersion, this course will provide
 terms = ['SP']
 sectionKinds = ['lecture']
 lectureRawSections = ['9-451/TR/0/9.30-11']
-lectureSections = [[[[63,3],[93,3]],'9-451']]
+lectureSections = [[[[63, 3], [93, 3]], '9-451']]
 repeat = false
 url = 'https://dusp.mit.edu/subjects'
 
