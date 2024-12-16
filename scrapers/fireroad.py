@@ -138,6 +138,26 @@ def parse_schedule(schedule):
     return result
 
 
+def decode_quarter_date(date: str):
+    """
+    Decodes a quarter date into a month and day.
+
+    Args:
+    * date (str): The date in the format "4/4" or "apr 4".
+
+    Returns:
+    * tuple[int, int]: The month and day.
+    """
+    if "/" in date:
+        month, day = date.split("/")
+        return int(month), int(day)
+    elif " " in date:
+        month, day = utils.MONTHS[(date.split())[0]], (date.split())[1]
+        return int(month), int(day)
+
+    return None
+
+
 def parse_quarter_info(course):
     """
     Parses quarter info from the course.
@@ -160,13 +180,24 @@ def parse_quarter_info(course):
     quarter_info = course.get("quarter_information", "")
     if quarter_info:
         quarter_info = quarter_info.split(",")
+
         if quarter_info[0] == "0":
-            return {"quarterInfo": {"end": quarter_info[1]}}
+            end_date = decode_quarter_date(quarter_info[1])
+            if end_date:
+                return {"quarterInfo": {"end": end_date}}
+
         elif quarter_info[0] == "1":
-            return {"quarterInfo": {"start": quarter_info[1]}}
+            start_date = decode_quarter_date(quarter_info[1])
+            if start_date:
+                return {"quarterInfo": {"start": start_date}}
+
         elif quarter_info[0] == "2" and "to" in quarter_info[1]:
             dates = quarter_info[1].split(" to ")
-            return {"quarterInfo": {"start": dates[0], "end": dates[1]}}
+            start_date = decode_quarter_date(dates[0])
+            end_date = decode_quarter_date(dates[1])
+            if start_date and end_date:
+                return {"quarterInfo": {"start": start_date, "end": end_date}}
+
     return {}
 
 

@@ -88,7 +88,7 @@ function toICalEvents(activity: Activity, term: Term): Array<ICalEventData> {
       const endDate = term.endDateFor(slot.startSlot);
       const exDates = term.exDatesFor(slot.startSlot);
       const rDate = term.rDateFor(slot.startSlot);
-      console.log(event.name, startDate);
+
       return {
         summary: event.name,
         location: event.room,
