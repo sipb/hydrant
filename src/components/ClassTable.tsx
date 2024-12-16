@@ -1,8 +1,10 @@
 import { AgGridReact } from "ag-grid-react";
-import AgGrid, {
+import {
   ModuleRegistry,
   AllCommunityModule,
   themeQuartz,
+  type IRowNode,
+  type ColDef,
 } from "ag-grid-community";
 import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -41,7 +43,7 @@ type ClassTableRow = {
   inCharge: string;
 };
 
-type ClassFilter = (cls: Class) => boolean;
+type ClassFilter = (cls?: Class) => boolean;
 /** Type of filter on class list; null if no filter. */
 type SetClassFilter = React.Dispatch<React.SetStateAction<ClassFilter | null>>;
 
@@ -97,7 +99,7 @@ function ClassInput(props: {
           row.inCharge.includes(simplifyInput),
       );
       const index = new Set(searchResults.current.map((cls) => cls.numbers[0]));
-      setInputFilter(() => (cls: Class) => index.has(cls.number));
+      setInputFilter(() => (cls?: Class) => index.has(cls?.number ?? ""));
     } else {
       setInputFilter(null);
     }
@@ -212,7 +214,8 @@ function ClassFlags(props: {
 
     // careful! we have to wrap it with a () => because otherwise React will
     // think it's an updater function instead of the actual function.
-    setFlagsFilter(() => (cls: Class) => {
+    setFlagsFilter(() => (cls?: Class) => {
+      if (!cls) return false;
       let result = true;
       newFlags.forEach((value, flag) => {
         if (value && flag === "fits" && !state.fitsSchedule(cls)) {
@@ -293,7 +296,7 @@ export function ClassTable(props: {
   const gridRef = useRef<AgGridReact>(null);
 
   // Setup table columns
-  const columnDefs = useMemo(() => {
+  const columnDefs: ColDef<ClassTableRow>[] = useMemo(() => {
     const initialSort = "asc" as const;
     const sortingOrder: Array<"asc" | "desc"> = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
@@ -303,9 +306,10 @@ export function ClassTable(props: {
       comparator: (
         valueA: string,
         valueB: string,
-        nodeA: AgGrid.RowNode,
-        nodeB: AgGrid.RowNode,
+        nodeA: IRowNode<ClassTableRow>,
+        nodeB: IRowNode<ClassTableRow>,
       ) => {
+        if (!nodeA.data || !nodeB.data) return 0;
         const numberA = valueA === "N/A" ? Infinity : Number(valueA);
         const numberB = valueB === "N/A" ? Infinity : Number(valueB);
         return numberA !== numberB
@@ -351,9 +355,9 @@ export function ClassTable(props: {
   const [flagsFilter, setFlagsFilter] = useState<ClassFilter | null>(null);
 
   const doesExternalFilterPass = useMemo(() => {
-    return (node: AgGrid.RowNode) => {
-      if (inputFilter && !inputFilter(node.data.class)) return false;
-      if (flagsFilter && !flagsFilter(node.data.class)) return false;
+    return (node: IRowNode<ClassTableRow>) => {
+      if (inputFilter && !inputFilter(node.data?.class)) return false;
+      if (flagsFilter && !flagsFilter(node.data?.class)) return false;
       return true;
     };
   }, [inputFilter, flagsFilter]);
@@ -376,7 +380,7 @@ export function ClassTable(props: {
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
       <Box style={{ height: "320px", width: "100%" }}>
-        <AgGridReact
+        <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
           columnDefs={columnDefs}
@@ -385,8 +389,8 @@ export function ClassTable(props: {
           enableCellTextSelection={true}
           isExternalFilterPresent={() => true}
           doesExternalFilterPass={doesExternalFilterPass}
-          onRowClicked={(e) => state.setViewedActivity(e.data.class)}
-          onRowDoubleClicked={(e) => state.toggleActivity(e.data.class)}
+          onRowClicked={(e) => state.setViewedActivity(e.data?.class)}
+          onRowDoubleClicked={(e) => state.toggleActivity(e.data?.class)}
           onGridReady={() => gridRef.current?.api?.autoSizeAllColumns()}
           // these have to be set here, not in css:
           headerHeight={40}
