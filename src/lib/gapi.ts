@@ -59,11 +59,45 @@ function toGoogleCalendarEvents(
 ): Array<gapi.client.calendar.Event> {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
-      const startDate = term.startDateFor(slot.startSlot);
-      const startDateEnd = term.startDateFor(slot.endSlot);
-      const endDate = term.endDateFor(slot.startSlot);
+      let startDate: Date;
+      let startDateEnd: Date;
+      let endDate: Date;
+
+      if (
+        "rawClass" in event.activity &&
+        event.activity.rawClass.quarterInfo?.start
+      ) {
+        startDate = term.startDateFor(
+          slot.startSlot,
+          undefined,
+          event.activity.rawClass.quarterInfo?.start,
+        );
+        startDateEnd = term.startDateFor(
+          slot.endSlot,
+          undefined,
+          event.activity.rawClass.quarterInfo?.start,
+        );
+      } else {
+        startDate = term.startDateFor(slot.startSlot);
+        startDateEnd = term.startDateFor(slot.endSlot);
+      }
+
+      if (
+        "rawClass" in event.activity &&
+        event.activity.rawClass.quarterInfo?.end
+      ) {
+        endDate = term.endDateFor(
+          slot.startSlot,
+          undefined,
+          event.activity.rawClass.quarterInfo?.end,
+        );
+      } else {
+        endDate = term.endDateFor(slot.startSlot);
+      }
+
       const exDates = term.exDatesFor(slot.startSlot);
       const rDate = term.rDateFor(slot.startSlot);
+
       return {
         summary: event.name,
         location: event.room,
@@ -83,12 +117,45 @@ function toGoogleCalendarEvents(
 function toICalEvents(activity: Activity, term: Term): Array<ICalEventData> {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
-      const startDate = term.startDateFor(slot.startSlot);
-      const startDateEnd = term.startDateFor(slot.endSlot);
-      const endDate = term.endDateFor(slot.startSlot);
+      let startDate: Date;
+      let startDateEnd: Date;
+      let endDate: Date;
+
+      if (
+        "rawClass" in event.activity &&
+        event.activity.rawClass.quarterInfo?.start
+      ) {
+        startDate = term.startDateFor(
+          slot.startSlot,
+          undefined,
+          event.activity.rawClass.quarterInfo?.start,
+        );
+        startDateEnd = term.startDateFor(
+          slot.endSlot,
+          undefined,
+          event.activity.rawClass.quarterInfo?.start,
+        );
+      } else {
+        startDate = term.startDateFor(slot.startSlot);
+        startDateEnd = term.startDateFor(slot.endSlot);
+      }
+
+      if (
+        "rawClass" in event.activity &&
+        event.activity.rawClass.quarterInfo?.end
+      ) {
+        endDate = term.endDateFor(
+          slot.startSlot,
+          undefined,
+          event.activity.rawClass.quarterInfo?.end,
+        );
+      } else {
+        endDate = term.endDateFor(slot.startSlot);
+      }
+
       const exDates = term.exDatesFor(slot.startSlot);
       const rDate = term.rDateFor(slot.startSlot);
-      console.log(event.name, startDate);
+
       return {
         summary: event.name,
         location: event.room,
