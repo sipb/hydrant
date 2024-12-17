@@ -330,7 +330,8 @@ def run(is_semester_term):
 
     Returns: none
     """
-    text = requests.get(URL).text
+    r = requests.get(URL, timeout = 10)     # more generous here; empirically usually ~1-1.5 seconds
+    text = r.text
     data = json.loads(text)
     courses = dict()
     term = utils.url_name_to_term(utils.get_term_info(is_semester_term)["urlName"])
