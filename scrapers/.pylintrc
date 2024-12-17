@@ -4,4 +4,7 @@ disable=
     invalid-name, 
 
     # false alarms: these files all import each other
-    import-error
+    import-error,
+
+    # this is good coding style, no need to flag
+    no-else-return
