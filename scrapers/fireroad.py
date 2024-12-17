@@ -330,7 +330,9 @@ def run(is_semester_term):
 
     Returns: none
     """
-    r = requests.get(URL, timeout = 10)     # more generous here; empirically usually ~1-1.5 seconds
+    r = requests.get(
+        URL, timeout=10
+    )  # more generous here; empirically usually ~1-1.5 seconds
     text = r.text
     data = json.loads(text)
     courses = dict()
@@ -343,7 +345,7 @@ def run(is_semester_term):
         if not included:
             missing += 1
 
-    with open(fname, "w") as f:
+    with open(fname, "w", encoding="utf-8") as f:
         json.dump(courses, f)
     print(f"Got {len (courses)} courses")
     print(f"Skipped {missing} courses that are not offered in the {term.value} term")

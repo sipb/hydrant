@@ -161,7 +161,7 @@ def get_term_info(is_semester_term):
     Returns:
     * dict: the term info for the selected term from latestTerm.json.
     """
-    with open("../public/latestTerm.json") as f:
+    with open("../public/latestTerm.json", encoding="utf-8") as f:
         term_info = json.load(f)
     if is_semester_term:
         return term_info["semester"]
