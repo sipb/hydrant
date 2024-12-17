@@ -260,7 +260,7 @@ def run():
     """
     home_hrefs = get_home_catalog_links()
     all_hrefs = get_all_catalog_links(home_hrefs)
-    courses = dict()
+    courses = {}
     for href in all_hrefs:
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)
