@@ -16,6 +16,14 @@ Dependencies:
 import datetime
 import json
 import utils
+import os
+import os.path
+import sys
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 
 def load_json_data(jsonfile):
@@ -30,6 +38,24 @@ def load_json_data(jsonfile):
     """
     with open(jsonfile, mode="r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def load_toml_data(tomldir):
+    """
+    Loads data from the provided directory that consists exclusively of TOML files
+
+    Args:
+    * tomldir (str): The directory to load from
+
+    Returns:
+    * dict: The data contained within the directory
+    """
+    out = {}
+    for fname in os.listdir(tomldir):
+        if fname.endswith(".toml"):
+            with open(os.path.join(tomldir, fname), "rb") as f:
+                out.update(tomllib.load(f))
+    return out
 
 
 def merge_data(datasets, keys_to_keep):
@@ -61,7 +87,7 @@ def run():
     fireroad_presem = load_json_data("fireroad-presem.json")
     fireroad_sem = load_json_data("fireroad-sem.json")
     catalog = load_json_data("catalog.json")
-    overrides = load_json_data("overrides.json")
+    overrides = load_toml_data("overrides.toml.d")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, it's not offered in this semester (fall, etc.).

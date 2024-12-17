@@ -1,0 +1,361 @@
+#:schema ./override-schema.json
+# Course 6 special subjects (IAP)
+# https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/
+
+['6.S088']
+name = 'Algorithmic Problem Solving'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+Each week, we will cover algorithmic techniques and practice coding challenges, with an emphasis on problem-solving. Class format will be a lecture followed by problem-solving sessions. Days will alternate between beginner and advanced lectures on the same topic. Beginner lectures are designed for students without any prior algorithmic knowledge, while advanced lectures are designed for students who are confident in the beginner lecture material. Problem-solving sessions will contain both beginner and advanced problems, designed for students of all levels. Lectures and problem sessions will cover ideas and skills not practiced in Course 6 classes such as 6.1010 and 6.1210.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S092']
+name = 'The Art and Science of PCB Design'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+The Art and Science of PCB Design is an introductory course into the fundamental aspects of developing electronic systems on printed circuit boards (PCBs). This course will heavily focus on providing hands-on labs with electronic design tools actively used in industry towards designing a primary course project resulting with the physical assembly of a PCB-based device. Students will gain experience in designing systems, conducting SPICE simulations, drawing schematics, and creating a PCB layout. Complexed topics in electrical and PCB design will be explored, including from guest speakers and through advanced simulations. This class is intended for students of all skill-levels but at a minimum requires a basic understanding of circuit analysis, which will be applied towards learning how to implement real devices.
+
+Prerequisites: Understanding of basic circuit analysis provided in 6.200, 2.678, or equivalent. Prospective students who have not taken 6.200, 2.678, or an equivalent class will be required to pass a staff-created open-book pretest, prior to the start of IAP, that covers required circuit knowledge for the course. More information can be found at the course website: pcb.mit.edu'''
+url = 'https://pcb.mit.edu/'
+
+['6.S093']
+name = 'How to ship almost anything with AI'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+The rise of large language models has transformed software development and prototyping. Now, a single engineer can build and launch a full-scale app in hours or days. Mastering rapid prototyping is crucial, empowering students to become 10x developers. This course teaches AI-driven rapid prototyping, equipping students to design and ship apps quickly. You’ll gain hands-on experience building and launching AI-first web apps using the latest AI-driven dev tools. We cover full-stack essentials, from creating a simple next.js page to deploying a genAI model to the cloud. The course includes 6 lectures, 3 mini-projects, and a final project.
+
+Due to the limited availability, students need to apply through a form at iap.sundai.club.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S094']
+name = 'The Architecture of The Mind: Computational Psychology'
+level = 'U'
+description = '''
+This course provides a rigorous introduction to psychological theories in engineering terms, and provides hands-on machine learning practices. Designed for students interested in learning how psychological processes and social cognition can be modeled computationally, and how these models can be used as tools to better understand ourselves and others, and in the future, transform our understanding of human experience. This course is one of the first psychology courses, designed for engineers interested in understanding the human condition, while using machine learning as a tool to “navigate” the human mind. The covered topics include: applying machine learning to model complex cognitive processes of social cognition; using probabilistic programming and Bayesian machine learning to simulate and predict human behavior; using mechanistic computational models to predict and modulate brain signals in response to stimuli.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S095']
+name = 'Probability Problem Solving'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+6.S095 is a survey of problem solving techniques in probability, random variables, and stochastic processes. It picks up from a standard introduction to the subject and goes towards more advanced techniques. The first half of 6.S095 reviews standard concepts in probability while introducing much more involved applications of these topics, while the second half will introduce adjacent areas of exploration. The aim of this class is to develop problem solving ability and mathematical maturity that will enable students to succeed in advanced and graduate-level EECS classes that involve probability such as 6.1220 (6.046), 6.7710 (6.262), 6.7720 (6.265), 6.7800 (6.437), 6.7810 (6.438), and 6.5220 (6.856).
+
+The class runs in two tracks: a standard track that has greater focus on problem solving in fundamental probability concepts, and an advanced track that solidifies problem solving skills in more advanced probability techniques. Each track will have 7 lectures, each with a corresponding recitation and problem set.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S097']
+name = 'Ultrafast Photonics'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+Knowledge of the fundamentals of ultrafast photonics is becoming increasingly valuable as ultrafast optical sources become more ubiquitous with an ever-growing number of applications. Relatively compact ultrafast optical sources with pulse durations ranging from nanoseconds down to femtoseconds are now commercially available across a broad range of wavelengths. Current applications are wide-ranging and include biological imaging, quantum optical technologies, chemical sensing, and precision measurements of time and distance among many others. During this IAP course, we will cover the essentials of ultrafast photonics. Topics will include: (1) the science of ultrafast laser pulses and their interaction with matter; (2) the technology to generate and manipulate ultrafast pulses of light; and (3) an overview of select applications of ultrafast photonics systems. This course will serve as a foundation for those interested in experimental and/or theoretical work involving ultrafast optical systems. Some basic knowledge of Fourier analysis, differential equations, and electromagnetic waves is assumed.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S099']
+name = 'Machine Learning Challenge for Biomedical Discoveries'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+Scientists are increasingly turning to machine learning challenges, or competitions that require participants to build and evaluate machine learning models over a given period of time to solve a problem. The Eric and Wendy Schmidt Center at the Broad Institute of MIT and Harvard organizes global machine learning challenges to leverage machine learning for solving key biomedical problems and to help prioritize what experiments biologists could run next – creating the next steps in disease diagnostics and treatment.
+
+In this class, students will participate in the Schmidt Center’s machine learning challenge and apply their machine learning skills to help solve a key biomedical problem.
+
+Students will learn the basics of genomics and data analysis needed to succeed in the challenge. Top-scoring submissions will be validated in a lab at the Broad Institute, and winners will be eligible for monetary prizes and paper authorship.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+
+['6.S183']
+name = 'A Practical Introduction to Diffusion Models -- From Algorithms to Implementation'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+Diffusion models are a class of generative models that iteratively refine noise into structured data. Although initially developed for image generation, they have been successful in many other domains such as robotics and molecular design. In this course we will introduce the basics of diffusion models and demonstrate how to build them from the ground up, culminating in a simple but powerful library to train diffusion models on custom data, as well as using state-of-the-art pretrained models for a variety of downstream tasks.
+
+This is an introductory course targeted at students and researchers who wish to learn about diffusion models and explore their applications to new domains, or those currently working with diffusion models and want to understand how to effectively modify and adapt them for their specific applications. '''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S184']
+name = 'Generative AI with Stochastic Differential Equations: Theory and Practice of Flow and Diffusion Models'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+Diffusion and flow models are the cutting edge generative AI methods for images, videos, and many other data types. This course offers a comprehensive introduction for students and researchers seeking a deeper mathematical understanding of these models. Lectures will teach the core mathematical concepts necessary to understand diffusion models, including stochastic differential equations and the Fokker-Planck equation, and will provide a step-by-step explanation of the components of each model. Labs will accompany each lecture allowing students to gain practical, hands-on experience with the concepts learned in a guided manner. At the end of the class, students will have built a latent diffusion model from scratch – and along the way, will have gained hands-on experience with the mathematical toolbox of stochastic analysis that is useful in many other fields. This course is ideal for those who want to explore the frontiers of generative AI through a mix of theory and practice. We recommend some prior experience with probability theory and deep learning.'''
+url = 'https://diffusion.csail.mit.edu/'
+
+['6.S975']
+name = 'Generative AI with Stochastic Differential Equations: Theory and Practice of Flow and Diffusion Models'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+Diffusion and flow models are the cutting edge generative AI methods for images, videos, and many other data types. This course offers a comprehensive introduction for students and researchers seeking a deeper mathematical understanding of these models. Lectures will teach the core mathematical concepts necessary to understand diffusion models, including stochastic differential equations and the Fokker-Planck equation, and will provide a step-by-step explanation of the components of each model. Labs will accompany each lecture allowing students to gain practical, hands-on experience with the concepts learned in a guided manner. At the end of the class, students will have built a latent diffusion model from scratch – and along the way, will have gained hands-on experience with the mathematical toolbox of stochastic analysis that is useful in many other fields. This course is ideal for those who want to explore the frontiers of generative AI through a mix of theory and practice. We recommend some prior experience with probability theory and deep learning.'''
+url = 'https://diffusion.csail.mit.edu/'
+
+['6.S186']
+name = 'Modern Robot Learning: Hands-on Tutorial'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+This course provides a comprehensive, hands-on introduction to training robots using state-of-the-art machine learning techniques. Key topics include data collection, machine learning methods such as Action Chunking Transformer (ACT) and/or Diffusion Policy, environment modeling in the MuJoCo simulator, and Real2Sim/Sim2Real techniques. Students will teleoperate a simulated robot in augmented reality via the Apple Vision Pro, and train a machine learning model to autonomously complete a task of their own design. The course culminates in a competition, judged on both robot performance and creativity of the chosen task. A solid working knowledge of Python and a basic understanding of machine learning are prerequisites. The course focuses entirely on the project, with no additional assignments.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S191']
+name = 'Introduction to Deep Learning'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+Introductory course on deep learning methods with applications to computer vision, natural language processing, biology, and more! Students will gain foundational knowledge of deep learning algorithm and get practical experience in building neural networks in TensorFlow and PyTorch. Course concludes with a project proposal competition with feedback from staff and a panel of industry sponsors.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S192']
+name = 'Adventures in Embedded Machine Learning'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+Enrollment: Limited: Advance sign-up wit Prof. Leeb required
+Sign-up: by IAP Pre-Registration Deadline
+
+Attendance: Participants must attend all sessions every day, January 21,22, 23 9 AM to 5 PM
+Prereq: Short readings before each seminar day.
+
+A 3-day in-depth course focused on exploring the use of software tools, microcontrollers and communication concepts such as Bluetooth® Low Energy to create and implement Machine Learning projects. We will be using Infineon PSoC™ 6 development kits (provided by Infineon).
+
+The first two days will focus on lectures and instructor-led labs. The last day will consist of student teams creating a Machine Learning project.
+
+Infineon Imagimob Studio and ModusToolbox™ IDE and its features will be explored and explained. Students will receive in-depth instruction and will complete exercises related to:
+
+• Imagimob Studio and ModusToolbox™IDEs
+• Using the Bluetooth® LE and WiFi radios
+• The Infineon CY8CKIT-062S2-AIPSoC™Architecture and development environment
+• The kit contains multiple sensors on board such as RADAR, IMU, barometric air pressure, other sensors can be interfaced via the QWICC interface.
+
+Some programming experience is required. Experience with C programming is helpful but not required.
+
+PERMISSION OF INSTRUCTOR IS REQUIRED TO REGISTER. Email sbleeb@mit.edu for permission before registering. Registering for this course is a FIRM commitment to attend; others will be turned away to make room for you.
+
+Sponsor(s): Electrical Engineering and Computer Science
+Contact: Steven Leeb, sbleeb@mit.edu'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S917']
+name = 'Tube and Early Transistor Circuits'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+This class will study vacuum tubes, early transistors, and other historically adjacent developments, as well as build some circuits using them. Labs will involve building a FM crystal receiver, a audio tube amplifier (that you can keep provided it passes safety inspection), and several germanium transistor circuits. There will be short psets on theory and practice. Prerequisite are be 6.2000 (6.002). Enrollment may be limited.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+['6.S918']
+name = 'Optical Computing in the Era of AI'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+description = '''
+We live in an age of big machine learning models, where modern deep neural networks comprise hundreds of billions of parameters. As these models continue to scale, the ever-growing requirements on energy efficiency and computation speed have sparked a new industry in designing specialized computing hardware optimized for neural networks.
+
+In this constantly evolving landscape of technology, light-based computing, commonly referred to as "optical" or "photonic" computing, is a revolutionary paradigm shift promising higher computing frequency and less energy consumption than traditional digital computing. This course aims to introduce students to this exciting and rapidly growing field, focusing particularly on:
+
+1. How can light be used for computing, and why should we build optical computing hardware?
+
+2. What are the fundamental devices used for photonic computing?
+
+3. What are the current and emerging research topics at the intersection of optics and AI hardware?
+
+This course will integrate lectures, lab tours, demos, and a final team presentation on new research areas in photonic computing.'''
+url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
+
+# Course 6 special subjects (spring)
+# https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/
+
+['6.S041']
+name = 'Algorithmic and Human Decision-Making'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = '(6.3700 or 6.3800 or 18.05 or 18.600 or 14.300 or 14.32) and (6.3900 or 6.C01)'
+description = '''
+Introduces students to problems at the intersection of algorithmic and human decision-making, focusing on problem domains such as criminal justice, the health care system, labor market, and others. Introduces the foundations in computer science, economics and psychology needed to integrate our behavioral understanding of people into machine learning. Topics include supervised learning, decision-making under uncertainty, behavioral economics, recommendation systems, and fairness/discrimination. Guest lectures by experts designing live algorithms in these domains, and culminates in student projects.'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S057']
+name = 'Verified Software Engineering'
+level = 'U'
+lectureUnits = 4
+labUnits = 0
+preparationUnits = 8
+isVariableUnits = false
+prereqs = '6.1010 and 6.1200'
+description = '''
+Practical application of formal-verification tools to specify and verify the correctness of software.  Foundational concepts include pre- and postconditions, loop invariants, ghost state, data abstraction, and specification techniques.  Lab assignments give hands-on experience in specifying and verifying a variety of software components.'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S077']
+name = 'Life Science & Semiconductor'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+prereqs = '6.2000'
+description = '''
+In this course we review the important role of semiconductor devices in patient monitoring and point of care. This includes technologies such as electrochemical, ultrasonic, magnetic, optical, and RF sensing modalities. We cover some of the basics of each device as well as physics and biology of device/human interaction.
+
+More information and QR code can be found here: http://bit.ly/lifesciencesemiconductormitcourse'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S897']
+name = 'Life Science & Semiconductor'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+prereqs = '6.2000'
+description = '''
+In this course we review the important role of semiconductor devices in patient monitoring and point of care. This includes technologies such as electrochemical, ultrasonic, magnetic, optical, and RF sensing modalities. We cover some of the basics of each device as well as physics and biology of device/human interaction.
+
+More information and QR code can be found here: http://bit.ly/lifesciencesemiconductormitcourse'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S899']
+name = 'Learning of Time Series with Interventions'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = '(6.3700 or 6.3800) and (6.3720 or permission of instructor)'
+description = '''
+This course is different from most existing courses as it focuses on time series analysis (with and without interventions). The closest related courses are either in control (linear systems) or machine learning (graduate machine learning). But neither of these courses do proper coverage of time series analysis.'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S950']
+name = 'Global Business of Quantum Computing'
+level = 'G'
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 1
+isVariableUnits = false
+prereqs = ''
+description = '''
+Quantum Computing (QC) offers the potential to solve certain types of problems for human kind; problems that are today, prohibitive for traditional computing. It could lead to exciting breakthroughs in areas such as improved efficiency in logistics chains, increased battery performance for cars or helping to find new pharmaceutical treatments. But what is hype and what is realistic given the development of the field in recent years and its current trajectory? What role do scientists, engineers, managers, entrepreneurs, policy makers and other stakeholders play? This course provides multiple viewpoints including academic, industry and governmental. You will hear from leading MIT faculty and pioneering practitioners in the field. We will demystify topics such as trapped ion and superconducting qubits.'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S954']
+name = 'Computer Vision and Planetary Health'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = '6.8300 or 6.7960 or permission of instructor'
+description = '''
+CV and Deep Learning are the closest, but there are several other AI courses that are relevant. This is the first course offering to focus on application-driven innovation in computer vision motivated by open, impactful challenges in planetary health, including biodiversity loss, ecosystem instability, carbon sequestration, wildlife conservation, prioritization of land to protect, and more generally the intersection of CV and the nature-based SDGs.'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S963']
+name = 'Beyond Models – Applying Data Science/AI Effectively'
+level = 'G'
+lectureUnits = 2
+labUnits = 1
+preparationUnits = 3
+isVariableUnits = false
+prereqs = '6.3900 or similar study of machine learning and 15.085 or 15.077 or 18.05 similar study of statistics.'
+description = '''
+Comprehensively presents the breadth of considerations needed to apply data science and data-driven AI techniques successfully. Students will learn the landscape of challenges, a unique rubric for systematically evaluating them, and then see the rubric’s application to a variety of case studies. Through a combination of readings including the 2022 book, (Data Science in Context, Foundations, Challenges, and Opportunities), lectures, and in-class discussions, students will delve deeply into seven sets of implementation- and requirements-oriented challenges: from data gathering to meeting ethical, legal, and societal needs. Students will present in class and write a short (5-10 pages but carefully crafted) paper individually or in groups of two undertaking a careful analysis of a complex application of data science/ML, aiming at post-class publication on a web-site.  The instructor will advise the students on their projects during small, custom-scheduled recitation sections.  This class will provide students with additional skills needed to perform/lead successful data science/ML efforts (as data scientists, engineers, or product managers), and it will provide a better understanding of future opportunities in research, business, and public policy.  Enrollment is limited and class participation is required.'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S966']
+name = 'Symmetry and its Application to Machine Learning and Scientific Computing'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = '18.06 or 18.061, 6.100A, 6.1210'
+description = '''
+Introduces the use of group representation theory to construct symmetry-preserving algorithms for machine learning. Emphases the connection between topics in math and physics and machine learning. Students will implement core mathematical concepts in code to build algorithms that can operate on graphs, geometry, scientific data, and other structured data to preserve the symmetries of these domains. Topics covered include: Euclidean and permutation groups, group representations: regular, reducible, and irreducible, tensor products, statistics and sampling of group representation vector spaces, and symmetry-breaking mechanisms.'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S982']
+name = 'Diffusion Models: From Theory to Practice'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = 'machine learning (6.7900 or similar), probability (6.3700, 18.600 or similar), linear algebra (18.06, 6.C06 or similar), and calculus (18.02 or similar)'
+description = '''
+Deep generative models have found a plethora of applications in Machine Learning, and various other scientific and applied fields, used for sampling complex, high-dimensional distributions and leveraged in downstream analyses involving such distributions. This course focuses on the foundations, applications and frontier challenges of diffusion-based generative models, which over the recent years have become the prominent approach to generative modeling across a wide range of data modalities and form the backbone of industry-scale systems like AlphaFold 3, DALL-E, and Stable Diffusion. Topics include mathematical aspects of diffusion-based models (including forward and inverse diffusion processes, Fokker-Planck equations, computational and statistical complexity aspects of score estimation), the use of diffusion models in downstream analyses tasks (such as inverse problems), extensions of diffusion models (including rectified flows, stochastic interpolants, and Schrödinger bridges), and frontier challenges motivated by practical considerations (including consistency models, guidance, training with noisy data).'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S987']
+name = 'Physics and Engineering of Superconducting Qubits'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = '6.728 or 8.06 or equivalent'
+description = '''
+This course introduces the physics and engineering of superconducting qubits for quantum information processing for graduate and upper-level undergraduate students. Topics will include (1) an introduction to superconductivity and Hamiltonian engineering; (2) superconducting qubits, cavities, and microwave cavity quantum electrodynamics; (3) the theory and microwave engineering of qubit control and measurement; (4) noise, decoherence, dynamical error'''
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'
+
+['6.S988']
+name = 'Mathematical Statistics: A Non-Asymptotic Approach'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = '6.7700 and 18.06 and 18.6501, or permission on instructor'
+description = '''
+Introduces students to modern non-asymptotic statistical analysis. Topics include high-dimensional models, nonparametric regression, covariance estimation, principal component analysis, oracle inequalities, prediction and margin analysis for classification. Develops a rigorous probabilistic toolkit, including tail bounds and a basic theory of empirical processes.'''
+meets = '18.656, IDS.160, 9.521'
+url = 'https://www.eecs.mit.edu/academics/subject-updates/special-subjects-spring-2025/'

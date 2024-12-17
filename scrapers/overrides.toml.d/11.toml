@@ -1,0 +1,123 @@
+#:schema ./override-schema.json
+# Course 11 special subjects (spring + iap 2025)
+# https://dusp.mit.edu/subjects
+
+['11.S187']
+name = '(Un)Dead Geographies: The Afterlife of Urban Plans'
+level = 'U'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+meets = '11.S945'
+description = '''
+Every landscape represents an incomplete or interrupted plan that tells time and intention. Physical landscapes provide evidence of successful, failed and emergent development plans, but only the learned eye sees beyond the material culture of the street. “Death” offers a way to conceptualize the unseen, underground, the underneath, the liminal space between what we know, what is actual and what is yet to be. Linking social theory, geography, public policy and planning history, this course asks: How can planners and critical observers of the built environment begin to access the collection of meanings that script the movement, stasis and location of everyday users? In other words, how do we move beyond official maps, plans and histories to consider contested meanings of place as they are lived, exchanged and created. Through weekly examinations of first person documentary accounts including ethnography, historical fiction, autobiography, film and novels, students will analyze the social, political and geographic impact of various land development strategies in the U.S. and beyond. Displacement defines a major theme of this course -- students will examine: 1) How does this happen? 2) What have been subsequent local responses? And, 3) What are the lasting consequences of population dispersals?
+
+Informed by ethnographic method and archival immersion, this course will provide students with an interdisciplinary framework for identifying and describing the social impact of place-based change and capital movement. Students will develop a critical understanding of urban planning informed by resident-authored analysis across time and space.'''
+terms = ["SP"]
+sectionKinds = ['lecture']
+lectureRawSections = ['9-451/TR/0/9.30-11']
+lectureSections = [[[[63, 3], [93, 3]], '9-451']]
+repeat = false
+url = 'https://dusp.mit.edu/subjects'
+
+['11.S938']
+name = 'Landscape + Infrastructure for the Anthropocene'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+description = '''This seminar investigates the need for new ways to think about landscape + infrastructure as the impacts of climate change alters the way we design and live in urbanized areas. We will focus on the planning, design, and implementation of real physical infrastructures (versus policies and other soft infrastructure levers). This class begins by acknowledging that humanity has entered into a new geologic epoch termed the Anthropocene, defined by anthropogenic impacts on the planet. Important questions about landscape + infrastructure for the Anthropocene will be explored: Where do planners/designers have agency to mitigate with newly imagined infrastructures for our changing cities and planetary health? At what scale is infrastructure an appropriate response to an environmental problem? How does one evaluate effectiveness and other trade-offs / costs / benefits of resiliency? Can one build consensus among key players / constituents around what is happening and how the designed response addresses needs? How do designers or planners gain political, financial, and social support to guarantee that build out and maintenance are implemented as envisioned?'''
+terms = ['SP']
+repeat = false
+url = 'https://dusp.mit.edu/subjects'
+
+['11.S939']
+name = 'Making Good on Baltimore as a Just City: Building Solutions For A Vacant Housing Crisis'
+lectureUnits = 8
+labUnits = 0
+preparationUnits = 4
+isVariableUnits = false
+description = '''
+Making Good on Baltimore as a Just City: Building Solutions For A Vacant Housing Crisis, as a practicum will have students immersed in two related projects: Develop a complex revitalization plan for a neglected city neighborhood using the case scenario, The Urban Plan (UP) and complete deliverables for a real client, Flight Blight Baltimore. The UP case scenario activities examine the nexus between development and urban planning. Students will go through an eight-stage development process model, and the material will cover idea conception, feasibility, planning, financing, market analysis, contract negotiation, construction, and asset management. Other topics discussed include but are not limited to market analysis, site acquisition, due diligence, zoning, entitlements, approvals, site planning, building design, construction, financing, leasing, and ongoing management and disposition.
+
+Working on a project for a client will allow students to solve a community challenge in real-time, pushing students to rethink the concept of stakeholder engagement in vacant housing underutilized infrastructure in Baltimore. Students will engage the idea of using citizen engineers to explore how the current demolish vacant building initiative by the City of Baltimore can integrate resident perspective in the city’s neighborhood stabilization initiatives. Part of this course will also explore how emerging vacant building assessment digital technology certification in the job market is linked to just banking and economies. The primary deliverables will center on data collection and analysis, and mapping. During the practicum experience, students will create their personal theory of practice, develop reflective practice strategies, and learn and deploy community engagement strategies.'''
+terms = ['SP']
+repeat = false
+url = 'https://dusp.mit.edu/subjects'
+
+['11.S940']
+name = 'Urban Economics Research Design'
+level = 'G'
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 7
+isVariableUnits = false
+description = '''This seminar provides an in-depth exploration of urban economics, examining six pivotal studies to reveal the nuances of research design in this domain. It delves into the genesis, development, analysis, substantiation, composition, presentation, expansion, publication, and application of research ideas in urban settings. Specifically designed for graduate students, particularly PhD candidates, in the Department of Urban Studies and Planning (DUSP) at MIT, the course maintains a limited enrollment of 20 students to foster a concentrated and interactive learning environment.'''
+terms = ['SP']
+repeat = false
+url = 'https://dusp.mit.edu/subjects'
+
+['11.S943']
+name = 'Bills and Billions: Policymaking and Planning in an New Era of Transformation in US Cities and States'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+description = '''This course will engage with the theory and practice of planning and public policy making, examining how these two fields intersect and are evolving in the context of current national and global priorities including challenges to the dominant paradigms of neoliberalism and globalization as well as the passage of historic legislation in the U.S. in the past year. Classic literature in these fields will be augmented with readings and discussions around themes relevant to the current context such as race, ethnicity and equity, sustainability, labor, industrial strategy and inclusive growth, innovation and equity and geographic diversity.  The course will bring in speakers across these topics in the form of policymakers and planners from cities and states across the US as well as in the federal government to learn how they are planning and implementing new policies, how this has changed if at all compared to the past, and how they are positioned to potentially access and invest the unprecedented new federal funding that will be coming to cities and states in the next 5-10 years. Students will write multiple policy memos on relevant topics throughout the course as well as be paired with partner cities/states to develop in-depth briefs for policymakers and community leaders on ‘ideas and issues to consider’ when applying for and implementing new federal programs and policies.'''
+terms = ['SP']
+repeat = false
+url = 'https://dusp.mit.edu/subjects'
+
+['11.S944']
+name = 'Green Finance: Mobilizing Capital to Transition to a Net-zero Economy'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+description = '''Addressing climate change and the transition to a net zero economy will require large scale financing across multiple sectors and for a diverse set of projects. This course will provide graduate students with knowledge and skills specific to financing projects and creating financial institutions, polices and tools to accelerate the transition to a net zero economy while also advancing racial and economic equity. Topics covered will include:  1) the varied financing tools, products and services used in green finance; 2) how mission-driven financial intermediaries work and different intermediary models applicable to green finance;  3) the financing needs and issues of different economic/energy use sectors and the role of green finance in addressing them;  and 4) explore how to address systemic racism in the finance system and advance racial and economic justice through green finance.  Students will work on a client project to gain experience in designing proposals/solutions to address a green financing need or problem.'''
+terms = ['SP']
+sectionKinds = ['lecture']
+lectureRawSections = ['9-451/TR/0/9.30-11']
+lectureSections = [[[[63, 3], [93, 3]], '9-451']]
+repeat = false
+url = 'https://dusp.mit.edu/subjects'
+
+['11.S945']
+name = '(Un)Dead Geographies: The Afterlife of Urban Plans'
+level = 'G'
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+meets = '11.S187'
+description = '''
+Every landscape represents an incomplete or interrupted plan that tells time and intention. Physical landscapes provide evidence of successful, failed and emergent development plans, but only the learned eye sees beyond the material culture of the street. “Death” offers a way to conceptualize the unseen, underground, the underneath, the liminal space between what we know, what is actual and what is yet to be. Linking social theory, geography, public policy and planning history, this course asks: How can planners and critical observers of the built environment begin to access the collection of meanings that script the movement, stasis and location of everyday users? In other words, how do we move beyond official maps, plans and histories to consider contested meanings of place as they are lived, exchanged and created. Through weekly examinations of first person documentary accounts including ethnography, historical fiction, autobiography, film and novels, students will analyze the social, political and geographic impact of various land development strategies in the U.S. and beyond. Displacement defines a major theme of this course -- students will examine: 1) How does this happen? 2) What have been subsequent local responses? And, 3) What are the lasting consequences of population dispersals?
+
+Informed by ethnographic method and archival immersion, this course will provide students with an interdisciplinary framework for identifying and describing the social impact of place-based change and capital movement. Students will develop a critical understanding of urban planning informed by resident-authored analysis across time and space.'''
+terms = ['SP']
+sectionKinds = ['lecture']
+lectureRawSections = ['9-451/TR/0/9.30-11']
+lectureSections = [[[[63, 3], [93, 3]], '9-451']]
+repeat = false
+url = 'https://dusp.mit.edu/subjects'
+
+['11.S950']
+name = 'Transportation Data & Applications'
+level = 'G'
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 1
+isVariableUnits = false
+description = '''
+The objective of this IAP course is to address the question: how in overall terms can we improve transportation systems – not just the technology, but the underlying human systems – using data? Subsidiary questions include: what can data do, and what can’t it do? What do practitioners need to know about the data now available: where does it come from? How is it generated? Who owns it? How can it be used for decision-making? What skills are needed? What do different segments of society – the public sector, the private sector, individual travelers – need to do? What are the challenges? What can be learned from history, and from other disciplines?
+
+This course is designed to slot in between existing course offerings that cover technical topics (like data analysis, modeling, visualization, and optimization) and equity/social-justice issues, providing students an opportunity to develop their own understanding of transportation data and its applications, so that they can give full consideration to the technical and social approaches covered in other classes.
+
+A single focus question will be presented as the basis for the course’s primary case study: how many transportation fatalities occurred in the U.S. in 2022? This will require not simple data crunching, but thoughtful “human” analysis using questions such as those above, since the point of the course is to demonstrate that there is no single, authoritative answer, and that students’ critical application of understanding the entire data lifecycle is key to approaching professional challenges.'''
+terms = ['JA']
+repeat = false
+url = 'https://dusp.mit.edu/subjects'
