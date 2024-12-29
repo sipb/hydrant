@@ -6,6 +6,7 @@ import {
   type IRowNode,
   type ColDef,
   CellClassParams,
+  CellStyle,
 } from "ag-grid-community";
 import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -19,6 +20,7 @@ import { useColorMode } from "./ui/color-mode";
 import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { State } from "../lib/state";
+import { TSemester } from "../lib/dates";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -34,11 +36,50 @@ const hydrantTheme = themeQuartz.withParams({
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const getRatingColor = (rating?: number | string) => {
-  if (rating === undefined || rating === "N/A") return undefined;
+const getRatingColor = (rating?: string | null) => {
+  if (!rating || rating === "N/A") return undefined;
   const ratingNumber = Number(rating);
   if (ratingNumber >= 6) return "success";
   if (ratingNumber >= 5) return "warning";
+  return "error";
+};
+
+const getHoursColor = (
+  hours?: string | null,
+  totalUnits?: number,
+  term?: TSemester,
+  half?: number | undefined,
+) => {
+  if (!hours || hours === "N/A") return undefined;
+  if (totalUnits == undefined) return undefined;
+  if (term === undefined) return undefined;
+
+  if (totalUnits === 0) return "";
+
+  const hoursNumber = Number(hours);
+  let weeksInTerm = 0;
+
+  switch (term) {
+    case "s":
+      weeksInTerm = 14;
+      break;
+    case "f":
+      weeksInTerm = 14;
+      break;
+    case "m":
+      weeksInTerm = 10;
+      break;
+    case "i":
+      weeksInTerm = 4;
+      break;
+  }
+
+  // https://registrar.mit.edu/registration-academics/academic-requirements/subject-levels-credit
+  const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
+  const proportion = hoursNumber / expectedHours;
+
+  if (proportion < 0.8) return "success";
+  if (proportion >= 0.8 && proportion <= 1.2) return "warning";
   return "error";
 };
 
@@ -340,19 +381,43 @@ export function ClassTable(props: {
       {
         field: "rating",
         resizable: false,
-        cellStyle: (params: CellClassParams<ClassTableRow>) => {
-          const rating = getRatingColor(params.value);
-          if (!rating) return { backgroundColor: "" };
-          return {
-            backgroundColor: `var(--chakra-colors-bg-${rating})`,
-          };
+        cellStyle: (params: CellClassParams<ClassTableRow, string>) => {
+          const ratingColor = getRatingColor(params.value);
+          return (
+            !ratingColor
+              ? { color: "var(--chakra-colors-fg-muted)" }
+              : {
+                  color: `var(--chakra-colors-fg-${ratingColor})`,
+                }
+          ) as CellStyle;
         },
         ...numberSortProps,
       },
-      { field: "hours", resizable: false, ...numberSortProps },
+      {
+        field: "hours",
+        resizable: false,
+        cellStyle: (params: CellClassParams<ClassTableRow, string>) => {
+          const hoursColor = getHoursColor(
+            params.value,
+            params.data?.class.totalUnits,
+            state.term.semester,
+            params.data?.class.half,
+          );
+          return (
+            hoursColor === undefined
+              ? { color: "var(--chakra-colors-fg-muted)" }
+              : hoursColor === ""
+                ? { color: "var(--chakra-colors-fg)" }
+                : {
+                    color: `var(--chakra-colors-fg-${hoursColor})`,
+                  }
+          ) as CellStyle;
+        },
+        ...numberSortProps,
+      },
       { field: "name", resizable: false, sortable: false, flex: 1 },
     ];
-  }, []);
+  }, [state.term.semester]);
 
   // Setup rows
   const rowData = useMemo(() => {
