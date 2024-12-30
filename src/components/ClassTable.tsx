@@ -30,7 +30,7 @@ const hydrantTheme = themeQuartz.withParams({
   foregroundColor: "var(--chakra-colors-fg)",
   headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
   rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-l2)",
+  wrapperBorderRadius: "var(--chakra-radii-md)",
 });
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -356,7 +356,6 @@ export function ClassTable(props: {
     const sortingOrder: Array<"asc" | "desc"> = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     const numberSortProps = {
-      maxWidth: 100,
       // sort by number, N/A is infinity, tiebreak with class number
       comparator: (
         valueA: string | undefined | null,
@@ -376,22 +375,21 @@ export function ClassTable(props: {
     return [
       {
         field: "number",
-        resizable: false,
         headerName: "Class",
         comparator: classSort,
         initialSort,
-        maxWidth: 100,
+        maxWidth: 93,
         ...sortProps,
       },
       {
         field: "rating",
-        resizable: false,
+        maxWidth: 99,
         cellClass: (params) => getRatingColor(params.value),
         ...numberSortProps,
       },
       {
         field: "hours",
-        resizable: false,
+        maxWidth: 97,
         cellClass: (params) =>
           getHoursColor(
             params.value,
@@ -401,9 +399,15 @@ export function ClassTable(props: {
           ),
         ...numberSortProps,
       },
-      { field: "name", resizable: false, sortable: false, flex: 1 },
+      { field: "name", sortable: false, flex: 1 },
     ];
   }, [state.term.semester]);
+
+  const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
+    return {
+      resizable: false,
+    };
+  }, []);
 
   // Setup rows
   const rowData = useMemo(() => {
@@ -454,6 +458,7 @@ export function ClassTable(props: {
         <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
+          defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={rowData}
           suppressMovableColumns={true}
@@ -462,7 +467,6 @@ export function ClassTable(props: {
           doesExternalFilterPass={doesExternalFilterPass}
           onRowClicked={(e) => state.setViewedActivity(e.data?.class)}
           onRowDoubleClicked={(e) => state.toggleActivity(e.data?.class)}
-          onGridReady={() => gridRef.current?.api?.autoSizeAllColumns()}
           // these have to be set here, not in css:
           headerHeight={40}
           rowHeight={40}
