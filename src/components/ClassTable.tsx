@@ -35,12 +35,20 @@ const hydrantTheme = themeQuartz.withParams({
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
+enum ColorEnum {
+  Muted = "ag-cell-muted-text",
+  Success = "ag-cell-success-text",
+  Warning = "ag-cell-warning-text",
+  Error = "ag-cell-error-text",
+  Normal = "ag-cell-normal-text",
+}
+
 const getRatingColor = (rating?: string | null) => {
-  if (!rating || rating === "N/A") return "muted";
+  if (!rating || rating === "N/A") return ColorEnum.Muted;
   const ratingNumber = Number(rating);
-  if (ratingNumber >= 6) return "success";
-  if (ratingNumber >= 5) return "warning";
-  return "error";
+  if (ratingNumber >= 6) return ColorEnum.Success;
+  if (ratingNumber >= 5) return ColorEnum.Warning;
+  return ColorEnum.Error;
 };
 
 const getHoursColor = (
@@ -49,9 +57,9 @@ const getHoursColor = (
   term: TSemester,
   half: number | undefined,
 ) => {
-  if (!hours || hours === "N/A") return "-muted";
-  if (totalUnits === undefined) return "-muted";
-  if (totalUnits === 0) return "";
+  if (!hours || hours === "N/A") return ColorEnum.Muted;
+  if (totalUnits === undefined) return ColorEnum.Muted;
+  if (totalUnits === 0) return ColorEnum.Normal;
 
   const hoursNumber = Number(hours);
   let weeksInTerm = 0;
@@ -75,9 +83,9 @@ const getHoursColor = (
   const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
   const proportion = hoursNumber / expectedHours;
 
-  if (proportion < 0.8) return "-success";
-  if (proportion >= 0.8 && proportion <= 1.2) return "-warning";
-  return "-error";
+  if (proportion < 0.8) return ColorEnum.Success;
+  if (proportion >= 0.8 && proportion <= 1.2) return ColorEnum.Warning;
+  return ColorEnum.Error;
 };
 
 /** A single row in the class table. */
@@ -378,28 +386,19 @@ export function ClassTable(props: {
       {
         field: "rating",
         resizable: false,
-        cellStyle: (params) => {
-          const ratingColor = getRatingColor(params.value);
-          return {
-            color: `var(--chakra-colors-fg-${ratingColor})`,
-          };
-        },
+        cellClass: (params) => getRatingColor(params.value),
         ...numberSortProps,
       },
       {
         field: "hours",
         resizable: false,
-        cellStyle: (params) => {
-          const hoursColor = getHoursColor(
+        cellClass: (params) =>
+          getHoursColor(
             params.value,
             params.data?.class.totalUnits,
             state.term.semester,
             params.data?.class.half,
-          );
-          return {
-            color: `var(--chakra-colors-fg${hoursColor})`,
-          };
-        },
+          ),
         ...numberSortProps,
       },
       { field: "name", resizable: false, sortable: false, flex: 1 },
