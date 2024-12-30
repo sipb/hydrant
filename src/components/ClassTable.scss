@@ -1,0 +1,7 @@
+.ag-row {
+  cursor: pointer;
+}
+
+.ag-row:hover .ag-cell:first-child {
+  text-decoration: underline;
+}

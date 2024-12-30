@@ -5,8 +5,6 @@ import {
   themeQuartz,
   type IRowNode,
   type ColDef,
-  CellClassParams,
-  CellStyle,
 } from "ag-grid-community";
 import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -21,6 +19,7 @@ import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { State } from "../lib/state";
 import { TSemester } from "../lib/dates";
+import "./ClassTable.scss";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -37,7 +36,7 @@ const hydrantTheme = themeQuartz.withParams({
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const getRatingColor = (rating?: string | null) => {
-  if (!rating || rating === "N/A") return undefined;
+  if (!rating || rating === "N/A") return "muted";
   const ratingNumber = Number(rating);
   if (ratingNumber >= 6) return "success";
   if (ratingNumber >= 5) return "warning";
@@ -45,15 +44,13 @@ const getRatingColor = (rating?: string | null) => {
 };
 
 const getHoursColor = (
-  hours?: string | null,
-  totalUnits?: number,
-  term?: TSemester,
-  half?: number | undefined,
+  hours: string | null | undefined,
+  totalUnits: number | undefined,
+  term: TSemester,
+  half: number | undefined,
 ) => {
-  if (!hours || hours === "N/A") return undefined;
-  if (totalUnits == undefined) return undefined;
-  if (term === undefined) return undefined;
-
+  if (!hours || hours === "N/A") return "-muted";
+  if (totalUnits === undefined) return "-muted";
   if (totalUnits === 0) return "";
 
   const hoursNumber = Number(hours);
@@ -78,9 +75,9 @@ const getHoursColor = (
   const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
   const proportion = hoursNumber / expectedHours;
 
-  if (proportion < 0.8) return "success";
-  if (proportion >= 0.8 && proportion <= 1.2) return "warning";
-  return "error";
+  if (proportion < 0.8) return "-success";
+  if (proportion >= 0.8 && proportion <= 1.2) return "-warning";
+  return "-error";
 };
 
 /** A single row in the class table. */
@@ -346,7 +343,7 @@ export function ClassTable(props: {
   const gridRef = useRef<AgGridReact>(null);
 
   // Setup table columns
-  const columnDefs: ColDef<ClassTableRow>[] = useMemo(() => {
+  const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
     const initialSort = "asc" as const;
     const sortingOrder: Array<"asc" | "desc"> = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
@@ -354,14 +351,14 @@ export function ClassTable(props: {
       maxWidth: 100,
       // sort by number, N/A is infinity, tiebreak with class number
       comparator: (
-        valueA: string,
-        valueB: string,
+        valueA: string | undefined | null,
+        valueB: string | undefined | null,
         nodeA: IRowNode<ClassTableRow>,
         nodeB: IRowNode<ClassTableRow>,
       ) => {
         if (!nodeA.data || !nodeB.data) return 0;
-        const numberA = valueA === "N/A" ? Infinity : Number(valueA);
-        const numberB = valueB === "N/A" ? Infinity : Number(valueB);
+        const numberA = valueA === "N/A" || !valueA ? Infinity : Number(valueA);
+        const numberB = valueB === "N/A" || !valueB ? Infinity : Number(valueB);
         return numberA !== numberB
           ? numberA - numberB
           : classSort(nodeA.data.number, nodeB.data.number);
@@ -381,37 +378,27 @@ export function ClassTable(props: {
       {
         field: "rating",
         resizable: false,
-        cellStyle: (params: CellClassParams<ClassTableRow, string>) => {
+        cellStyle: (params) => {
           const ratingColor = getRatingColor(params.value);
-          return (
-            !ratingColor
-              ? { color: "var(--chakra-colors-fg-muted)" }
-              : {
-                  color: `var(--chakra-colors-fg-${ratingColor})`,
-                }
-          ) as CellStyle;
+          return {
+            color: `var(--chakra-colors-fg-${ratingColor})`,
+          };
         },
         ...numberSortProps,
       },
       {
         field: "hours",
         resizable: false,
-        cellStyle: (params: CellClassParams<ClassTableRow, string>) => {
+        cellStyle: (params) => {
           const hoursColor = getHoursColor(
             params.value,
             params.data?.class.totalUnits,
             state.term.semester,
             params.data?.class.half,
           );
-          return (
-            hoursColor === undefined
-              ? { color: "var(--chakra-colors-fg-muted)" }
-              : hoursColor === ""
-                ? { color: "var(--chakra-colors-fg)" }
-                : {
-                    color: `var(--chakra-colors-fg-${hoursColor})`,
-                  }
-          ) as CellStyle;
+          return {
+            color: `var(--chakra-colors-fg${hoursColor})`,
+          };
         },
         ...numberSortProps,
       },
