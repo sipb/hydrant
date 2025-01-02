@@ -57,7 +57,7 @@ function useHydrant(): {
   useEffect(() => {
     fetchNoCache<LatestTermInfo>("latestTerm.json").then((latestTerm) => {
       const params = new URLSearchParams(document.location.search);
-      const term = params.get("t") ?? latestTerm.semester.urlName;
+      const term = params.get("t") ?? "latest";
       fetchNoCache<SemesterData>(`${term}.json`)
         .then(({ classes, lastUpdated, termInfo }) => {
           const classesMap = new Map(Object.entries(classes));
