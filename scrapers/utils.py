@@ -87,6 +87,7 @@ EVE_TIMES = {
     "10.30": 29,
 }
 
+
 # missing-class-docstring is disabled in .pylintrc for now
 # this class is WAY too trivial to need a docstring
 class Term(Enum):
