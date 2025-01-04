@@ -15,8 +15,9 @@ Functions:
 * parse_attributes(course)
 * parse_terms(course)
 * parse_prereqs(course)
-* get_course_data(courses, course)
-* run()
+* get_course_data(courses, course, term)
+* get_raw_data()
+* run(is_semester_term)
 """
 
 import json
