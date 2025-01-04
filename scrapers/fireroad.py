@@ -337,7 +337,7 @@ def run(is_semester_term):
     )  # more generous here; empirically usually ~1-1.5 seconds
     text = r.text
     data = json.loads(text)
-    courses = dict()
+    courses = {}
     term = utils.url_name_to_term(utils.get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
     missing = 0
