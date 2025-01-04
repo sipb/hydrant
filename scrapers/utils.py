@@ -128,10 +128,10 @@ def zip_strict(*iterables):
     * generator: A generator, which you can iterate over.
     """
     sentinel = object()
-    for tuple in itertools.zip_longest(*iterables, fillvalue=sentinel):
-        if any(sentinel is t for t in tuple):
+    for group in itertools.zip_longest(*iterables, fillvalue=sentinel):
+        if any(sentinel is t for t in group):
             raise ValueError("Iterables have different lengths")
-        yield tuple
+        yield group
 
 
 def grouper(iterable, n):
