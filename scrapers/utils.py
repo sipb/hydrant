@@ -117,7 +117,8 @@ def find_timeslot(day, slot, pm):
 
 def zip_strict(*iterables):
     """
-    Helper function for grouper. Groups values of the iterator on the same iteration together.
+    Helper function for grouper.
+    Groups values of the iterator on the same iteration together.
 
     Args:
     * iterables (tuple[Iterable[any]]): a list of iterables.
@@ -154,9 +155,11 @@ def grouper(iterable, n):
 def get_term_info(is_semester_term):
     """
     Gets the latest term info from "../public/latestTerm.json" as a dictionary.
+    If is_semester_term = True, looks at semester term (fall/spring).
+    If is_semester_term = False, looks at pre-semester term (summer/IAP)
 
     Args:
-    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+    * is_semester_term (bool): whether to look at the semester or the pre-semester term.
 
     Returns:
     * dict: the term info for the selected term from latestTerm.json.
