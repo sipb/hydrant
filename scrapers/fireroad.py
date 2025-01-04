@@ -323,10 +323,12 @@ def get_course_data(courses, course, term):
 
 def run(is_semester_term):
     """
-    The main entry point. All data is written to `fireroad.json`.
+    Gets the latest term info from "../public/latestTerm.json" as a dictionary.
+    If is_semester_term = True, looks at semester term (fall/spring).
+    If is_semester_term = False, looks at pre-semester term (summer/IAP)
 
     Args:
-    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+    * is_semester_term (bool): whether to look at the semester or the pre-semester term.
 
     Returns: none
     """
