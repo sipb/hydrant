@@ -320,6 +320,20 @@ def get_course_data(courses, course, term):
     courses[course_code] = raw_class
     return True
 
+def get_raw_data():
+    """
+    Obtains raw data directly from the Fireroad API.
+    Helper function for run().
+
+    Args:
+    * is_semester_term (bool): whether to look at the semester or the pre-semester term.    
+    """
+    r = requests.get(
+        URL, timeout=10
+    )  # more generous here; empirically usually ~1-1.5 seconds
+    text = r.text
+    data = json.loads(text)
+    return data
 
 def run(is_semester_term):
     """
@@ -332,11 +346,7 @@ def run(is_semester_term):
 
     Returns: none
     """
-    r = requests.get(
-        URL, timeout=10
-    )  # more generous here; empirically usually ~1-1.5 seconds
-    text = r.text
-    data = json.loads(text)
+    data = get_raw_data()
     courses = {}
     term = utils.url_name_to_term(utils.get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
