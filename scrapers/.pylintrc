@@ -7,4 +7,7 @@ disable=
     import-error,
 
     # this is good coding style, no need to flag
-    no-else-return
+    no-else-return,
+
+    # the Term class in utils.py is too trivial to need a doctoring
+    missing-class-docstring
