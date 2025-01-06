@@ -10,54 +10,7 @@ import {
 import { createListCollection } from "@chakra-ui/react";
 
 import { State } from "../lib/state";
-import { Term } from "../lib/dates";
-
-/** Given a urlName like i22, return its corresponding URL. */
-function toFullUrl(urlName: string, latestUrlName: string): string {
-  const url = new URL(window.location.href);
-  Array.from(url.searchParams.keys()).forEach((key) => {
-    url.searchParams.delete(key);
-  });
-  if (urlName !== latestUrlName) {
-    url.searchParams.set("t", urlName);
-  }
-  return url.href;
-}
-
-/** Given a urlName like "i22", return the previous one, "f21". */
-function getLastUrlName(urlName: string): string {
-  const { semester, year } = new Term({ urlName });
-  switch (semester) {
-    case "f":
-      return `m${year}`;
-    case "m":
-      return `s${year}`;
-    case "s":
-      return `i${year}`;
-    case "i":
-      return `f${parseInt(year, 10) - 1}`;
-  }
-}
-
-/** urlNames that don't have a State */
-const EXCLUDED_URLS = ["i23", "m23", "i24", "m24"];
-
-/** Earliest urlName we have a State for. */
-const EARLIEST_URL = "f22";
-
-/** Return all urlNames before the given one. */
-function getUrlNames(latestUrlName: string): Array<string> {
-  let urlName = latestUrlName;
-  const res = [];
-  while (urlName !== EARLIEST_URL) {
-    res.push(urlName);
-    do {
-      urlName = getLastUrlName(urlName);
-    } while (EXCLUDED_URLS.includes(urlName));
-  }
-  res.push(EARLIEST_URL);
-  return res;
-}
+import { Term, toFullUrl, getUrlNames } from "../lib/dates";
 
 export function TermSwitcher(props: { state: State }) {
   const { state } = props;

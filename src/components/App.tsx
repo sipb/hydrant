@@ -7,7 +7,7 @@ import { Tooltip } from "./ui/tooltip";
 import { Provider } from "./ui/provider";
 import { useColorMode } from "./ui/color-mode";
 
-import { LatestTermInfo, Term, TermInfo } from "../lib/dates";
+import { LatestTermInfo, Term, TermInfo, getUrlNames } from "../lib/dates";
 import { State } from "../lib/state";
 import { RawClass } from "../lib/rawClass";
 import { Class } from "../lib/class";
@@ -58,9 +58,10 @@ function useHydrant(): {
     const fetchData = async () => {
       const latestTerm = await fetchNoCache<LatestTermInfo>("latestTerm.json");
       const params = new URLSearchParams(document.location.search);
+      const urlNames = getUrlNames(latestTerm.semester.urlName);
       const term = params.get("t") ?? "latest";
 
-      try {
+      if (urlNames.includes(term) || term === "latest") {
         const { classes, lastUpdated, termInfo } =
           await fetchNoCache<SemesterData>(`${term}.json`);
         const classesMap = new Map(Object.entries(classes));
@@ -73,17 +74,15 @@ function useHydrant(): {
         hydrantRef.current = hydrantObj;
         setLoading(false);
         window.hydrant = hydrantObj;
-      } catch (error) {
-        // TODO: - make this nicer, without the try/catch
-        //       - redirect 's'->latestSpring, 'f'->latestFall, etc.
+      } else {
+        // TODO: - redirect 's'->latestSpring, 'f'->latestFall, etc.
         //       - have a visual cue if the term in the url is invalid
-        if (error instanceof SyntaxError) {
-          // Redirect to the latest term, while storing the initially requested
-          // term in the "ti" parameter so that the user can be notified
-          params.delete("t");
-          params.set("ti", term);
-          window.location.search = params.toString();
-        }
+
+        // Redirect to the latest term, while storing the initially requested
+        // term in the "ti" parameter so that the user can be notified
+        params.delete("t");
+        params.set("ti", term);
+        window.location.search = params.toString();
       }
     };
 
