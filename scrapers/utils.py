@@ -113,7 +113,7 @@ def find_timeslot(day, slot, pm):
     Raises KeyError if no matching timeslot could be found.
     """
     time_dict = EVE_TIMES if pm else TIMES
-    if day not in DAYS or slot not in time_dict:        # error handling!
+    if day not in DAYS or slot not in time_dict:  # error handling!
         raise ValueError(f"Invalid timeslot {day}, {slot}, {pm}")
     return DAYS[day] + time_dict[slot]
 
