@@ -75,23 +75,14 @@ function useHydrant(): {
         window.hydrant = hydrantObj;
       } catch (error) {
         // TODO: - make this nicer, without the try/catch
-        //       - actually redirect to a valid URL
         //       - redirect 's'->latestSpring, 'f'->latestFall, etc.
         //       - have a visual cue if the term in the url is invalid
         if (error instanceof SyntaxError) {
-          console.log(`Invalid term ${term}, showing latest term`);
-          const { classes, lastUpdated, termInfo } =
-            await fetchNoCache<SemesterData>("latest.json");
-          const classesMap = new Map(Object.entries(classes));
-          const hydrantObj = new State(
-            classesMap,
-            new Term(termInfo),
-            lastUpdated,
-            latestTerm.semester.urlName,
-          );
-          hydrantRef.current = hydrantObj;
-          setLoading(false);
-          window.hydrant = hydrantObj;
+          // Redirect to the latest term, while storing the initially requested
+          // term in the "ti" parameter so that the user can be notified
+          params.delete("t");
+          params.set("ti", term);
+          window.location.search = params.toString();
         }
       }
     };
