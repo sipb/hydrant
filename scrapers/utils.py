@@ -112,9 +112,10 @@ def find_timeslot(day, slot, pm):
 
     Raises KeyError if no matching timeslot could be found.
     """
-    if pm:
-        return DAYS[day] + EVE_TIMES[slot]
-    return DAYS[day] + TIMES[slot]
+    time_dict = EVE_TIMES if pm else TIMES
+    if day not in DAYS or slot not in time_dict:        # error handling!
+        raise ValueError(f"Invalid timeslot {day}, {slot}, {pm}")
+    return DAYS[day] + time_dict[slot]
 
 
 def zip_strict(*iterables):
