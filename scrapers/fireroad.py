@@ -250,8 +250,9 @@ def get_course_data(courses, course, term):
                 raw_class.update(parse_schedule(course["scheduleSpring"]))
             else:
                 raw_class.update(parse_schedule(course["schedule"]))
-        except Exception as e:
+        except ValueError as e:
             # if we can't parse the schedule, warn
+            #NOTE: parse_schedule will raise a ValueError
             print(f"Can't parse schedule {course_code}: {e!r}")
             has_schedule = False
     if not has_schedule:
