@@ -55,11 +55,33 @@ function useHydrant(): {
   };
 
   useEffect(() => {
-    fetchNoCache<LatestTermInfo>("latestTerm.json").then((latestTerm) => {
+    const fetchData = async () => {
+      const latestTerm = await fetchNoCache<LatestTermInfo>("latestTerm.json");
       const params = new URLSearchParams(document.location.search);
       const term = params.get("t") ?? "latest";
-      fetchNoCache<SemesterData>(`${term}.json`)
-        .then(({ classes, lastUpdated, termInfo }) => {
+
+      try {
+        const { classes, lastUpdated, termInfo } =
+          await fetchNoCache<SemesterData>(`${term}.json`);
+        const classesMap = new Map(Object.entries(classes));
+        const hydrantObj = new State(
+          classesMap,
+          new Term(termInfo),
+          lastUpdated,
+          latestTerm.semester.urlName,
+        );
+        hydrantRef.current = hydrantObj;
+        setLoading(false);
+        window.hydrant = hydrantObj;
+      } catch (error) {
+        // TODO: - make this nicer, without the try/catch
+        //       - actually redirect to a valid URL
+        //       - redirect 's'->latestSpring, 'f'->latestFall, etc.
+        //       - have a visual cue if the term in the url is invalid
+        if (error instanceof SyntaxError) {
+          console.log(`Invalid term ${term}, showing latest term`);
+          const { classes, lastUpdated, termInfo } =
+            await fetchNoCache<SemesterData>("latest.json");
           const classesMap = new Map(Object.entries(classes));
           const hydrantObj = new State(
             classesMap,
@@ -70,31 +92,11 @@ function useHydrant(): {
           hydrantRef.current = hydrantObj;
           setLoading(false);
           window.hydrant = hydrantObj;
-        })
-        // TODO: - make this nicer, without the try/catch
-        //       - actually redirect to a valid URL
-        //       - redirect 's'->latestSpring, 'f'->latestFall, etc.
-        //       - have a visual cue if the term in the url is invalid
-        .catch((error) => {
-          if (error instanceof SyntaxError) {
-            console.log(`Invalid term ${term}, showing latest term`);
-            fetchNoCache<SemesterData>("latest.json").then(
-              ({ classes, lastUpdated, termInfo }) => {
-                const classesMap = new Map(Object.entries(classes));
-                const hydrantObj = new State(
-                  classesMap,
-                  new Term(termInfo),
-                  lastUpdated,
-                  latestTerm.semester.urlName,
-                );
-                hydrantRef.current = hydrantObj;
-                setLoading(false);
-                window.hydrant = hydrantObj;
-              },
-            );
-          }
-        });
-    });
+        }
+      }
+    };
+
+    fetchData();
   }, []);
 
   const { colorMode, toggleColorMode } = useColorMode();
