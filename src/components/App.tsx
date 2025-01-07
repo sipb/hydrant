@@ -86,8 +86,6 @@ function useHydrant(): {
         setLoading(false);
         window.hydrant = hydrantObj;
       } else {
-        // TODO: have a visual cue if the term in the url is invalid
-
         // Redirect to the indicated term, while storing the initially requested
         // term in the "ti" parameter (if necessary) so that the user can be
         // notified
