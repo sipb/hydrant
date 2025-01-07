@@ -7,7 +7,12 @@ import { Tooltip } from "./ui/tooltip";
 import { Provider } from "./ui/provider";
 import { useColorMode } from "./ui/color-mode";
 
-import { LatestTermInfo, Term, TermInfo, getUrlNames } from "../lib/dates";
+import {
+  LatestTermInfo,
+  Term,
+  TermInfo,
+  getClosestUrlName,
+} from "../lib/dates";
 import { State } from "../lib/state";
 import { RawClass } from "../lib/rawClass";
 import { Class } from "../lib/class";
@@ -58,10 +63,16 @@ function useHydrant(): {
     const fetchData = async () => {
       const latestTerm = await fetchNoCache<LatestTermInfo>("latestTerm.json");
       const params = new URLSearchParams(document.location.search);
-      const urlNames = getUrlNames(latestTerm.semester.urlName);
-      const term = params.get("t") ?? "latest";
 
-      if (urlNames.includes(term) || term === "latest") {
+      const urlNameOrig = params.get("t");
+      const { urlName, shouldWarn } = getClosestUrlName(
+        urlNameOrig,
+        latestTerm.semester.urlName,
+      );
+
+      if (urlName === urlNameOrig || urlNameOrig === null) {
+        const term =
+          urlName === latestTerm.semester.urlName ? "latest" : urlName;
         const { classes, lastUpdated, termInfo } =
           await fetchNoCache<SemesterData>(`${term}.json`);
         const classesMap = new Map(Object.entries(classes));
@@ -75,13 +86,19 @@ function useHydrant(): {
         setLoading(false);
         window.hydrant = hydrantObj;
       } else {
-        // TODO: - redirect 's'->latestSpring, 'f'->latestFall, etc.
-        //       - have a visual cue if the term in the url is invalid
+        // TODO: have a visual cue if the term in the url is invalid
 
-        // Redirect to the latest term, while storing the initially requested
-        // term in the "ti" parameter so that the user can be notified
-        params.delete("t");
-        params.set("ti", term);
+        // Redirect to the indicated term, while storing the initially requested
+        // term in the "ti" parameter (if necessary) so that the user can be
+        // notified
+        if (urlName === latestTerm.semester.urlName) {
+          params.delete("t");
+        } else {
+          params.set("t", urlName);
+        }
+        if (shouldWarn) {
+          params.set("ti", urlNameOrig!);
+        }
         window.location.search = params.toString();
       }
     };
