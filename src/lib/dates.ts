@@ -23,7 +23,7 @@ const SEMESTER_NAMES = {
 } as const;
 
 /** Type of semester abbreviations. */
-type TSemester = keyof typeof SEMESTER_NAMES;
+export type TSemester = keyof typeof SEMESTER_NAMES;
 
 /** Strings for each weekday. */
 export const WEEKDAY_STRINGS = ["Mon", "Tue", "Wed", "Thu", "Fri"];

@@ -1,6 +1,11 @@
-import { AgGridReact } from "@ag-grid-community/react";
-import AgGrid, { ModuleRegistry } from "@ag-grid-community/core";
-import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import { AgGridReact } from "ag-grid-react";
+import {
+  ModuleRegistry,
+  AllCommunityModule,
+  themeQuartz,
+  type IRowNode,
+  type ColDef,
+} from "ag-grid-community";
 import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
@@ -13,12 +18,75 @@ import { useColorMode } from "./ui/color-mode";
 import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { State } from "../lib/state";
-
-import "@ag-grid-community/core/dist/styles/ag-grid.css";
-import "@ag-grid-community/core/dist/styles/agGridAlpineFont.css";
+import { TSemester } from "../lib/dates";
 import "./ClassTable.scss";
 
-ModuleRegistry.registerModules([ClientSideRowModelModule]);
+const hydrantTheme = themeQuartz.withParams({
+  accentColor: "var(--chakra-colors-fg)",
+  backgroundColor: "var(--chakra-colors-bg)",
+  borderColor: "var(--chakra-colors-border)",
+  browserColorScheme: "inherit",
+  fontFamily: "inherit",
+  foregroundColor: "var(--chakra-colors-fg)",
+  headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
+  rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
+  wrapperBorderRadius: "var(--chakra-radii-md)",
+});
+
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+enum ColorEnum {
+  Muted = "ag-cell-muted-text",
+  Success = "ag-cell-success-text",
+  Warning = "ag-cell-warning-text",
+  Error = "ag-cell-error-text",
+  Normal = "ag-cell-normal-text",
+}
+
+const getRatingColor = (rating?: string | null) => {
+  if (!rating || rating === "N/A") return ColorEnum.Muted;
+  const ratingNumber = Number(rating);
+  if (ratingNumber >= 6) return ColorEnum.Success;
+  if (ratingNumber >= 5) return ColorEnum.Warning;
+  return ColorEnum.Error;
+};
+
+const getHoursColor = (
+  hours: string | null | undefined,
+  totalUnits: number | undefined,
+  term: TSemester,
+  half: number | undefined,
+) => {
+  if (!hours || hours === "N/A") return ColorEnum.Muted;
+  if (totalUnits === undefined) return ColorEnum.Muted;
+  if (totalUnits === 0) return ColorEnum.Normal;
+
+  const hoursNumber = Number(hours);
+  let weeksInTerm = 0;
+
+  switch (term) {
+    case "s":
+      weeksInTerm = 14;
+      break;
+    case "f":
+      weeksInTerm = 14;
+      break;
+    case "m":
+      weeksInTerm = 10;
+      break;
+    case "i":
+      weeksInTerm = 4;
+      break;
+  }
+
+  // https://registrar.mit.edu/registration-academics/academic-requirements/subject-levels-credit
+  const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
+  const proportion = hoursNumber / expectedHours;
+
+  if (proportion < 0.8) return ColorEnum.Success;
+  if (proportion >= 0.8 && proportion <= 1.2) return ColorEnum.Warning;
+  return ColorEnum.Error;
+};
 
 /** A single row in the class table. */
 type ClassTableRow = {
@@ -30,7 +98,7 @@ type ClassTableRow = {
   inCharge: string;
 };
 
-type ClassFilter = (cls: Class) => boolean;
+type ClassFilter = (cls?: Class) => boolean;
 /** Type of filter on class list; null if no filter. */
 type SetClassFilter = React.Dispatch<React.SetStateAction<ClassFilter | null>>;
 
@@ -86,7 +154,7 @@ function ClassInput(props: {
           row.inCharge.includes(simplifyInput),
       );
       const index = new Set(searchResults.current.map((cls) => cls.numbers[0]));
-      setInputFilter(() => (cls: Class) => index.has(cls.number));
+      setInputFilter(() => (cls?: Class) => index.has(cls?.number ?? ""));
     } else {
       setInputFilter(null);
     }
@@ -201,7 +269,8 @@ function ClassFlags(props: {
 
     // careful! we have to wrap it with a () => because otherwise React will
     // think it's an updater function instead of the actual function.
-    setFlagsFilter(() => (cls: Class) => {
+    setFlagsFilter(() => (cls?: Class) => {
+      if (!cls) return false;
       let result = true;
       newFlags.forEach((value, flag) => {
         if (value && flag === "fits" && !state.fitsSchedule(cls)) {
@@ -282,21 +351,21 @@ export function ClassTable(props: {
   const gridRef = useRef<AgGridReact>(null);
 
   // Setup table columns
-  const columnDefs = useMemo(() => {
+  const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
     const initialSort = "asc" as const;
     const sortingOrder: Array<"asc" | "desc"> = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     const numberSortProps = {
-      maxWidth: 90,
       // sort by number, N/A is infinity, tiebreak with class number
       comparator: (
-        valueA: string,
-        valueB: string,
-        nodeA: AgGrid.RowNode,
-        nodeB: AgGrid.RowNode,
+        valueA: string | undefined | null,
+        valueB: string | undefined | null,
+        nodeA: IRowNode<ClassTableRow>,
+        nodeB: IRowNode<ClassTableRow>,
       ) => {
-        const numberA = valueA === "N/A" ? Infinity : Number(valueA);
-        const numberB = valueB === "N/A" ? Infinity : Number(valueB);
+        if (!nodeA.data || !nodeB.data) return 0;
+        const numberA = valueA === "N/A" || !valueA ? Infinity : Number(valueA);
+        const numberB = valueB === "N/A" || !valueB ? Infinity : Number(valueB);
         return numberA !== numberB
           ? numberA - numberB
           : classSort(nodeA.data.number, nodeB.data.number);
@@ -309,13 +378,35 @@ export function ClassTable(props: {
         headerName: "Class",
         comparator: classSort,
         initialSort,
-        maxWidth: 100,
+        maxWidth: 93,
         ...sortProps,
       },
-      { field: "rating", ...numberSortProps },
-      { field: "hours", ...numberSortProps },
-      { field: "name", flex: 1 },
+      {
+        field: "rating",
+        maxWidth: 99,
+        cellClass: (params) => getRatingColor(params.value),
+        ...numberSortProps,
+      },
+      {
+        field: "hours",
+        maxWidth: 97,
+        cellClass: (params) =>
+          getHoursColor(
+            params.value,
+            params.data?.class.totalUnits,
+            state.term.semester,
+            params.data?.class.half,
+          ),
+        ...numberSortProps,
+      },
+      { field: "name", sortable: false, flex: 1 },
     ];
+  }, [state.term.semester]);
+
+  const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
+    return {
+      resizable: false,
+    };
   }, []);
 
   // Setup rows
@@ -339,9 +430,9 @@ export function ClassTable(props: {
   const [flagsFilter, setFlagsFilter] = useState<ClassFilter | null>(null);
 
   const doesExternalFilterPass = useMemo(() => {
-    return (node: AgGrid.RowNode) => {
-      if (inputFilter && !inputFilter(node.data.class)) return false;
-      if (flagsFilter && !flagsFilter(node.data.class)) return false;
+    return (node: IRowNode<ClassTableRow>) => {
+      if (inputFilter && !inputFilter(node.data?.class)) return false;
+      if (flagsFilter && !flagsFilter(node.data?.class)) return false;
       return true;
     };
   }, [inputFilter, flagsFilter]);
@@ -363,18 +454,19 @@ export function ClassTable(props: {
         state={state}
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
-      <Box className="ag-theme-hydrant">
-        <AgGridReact
+      <Box style={{ height: "320px", width: "100%" }}>
+        <AgGridReact<ClassTableRow>
+          theme={hydrantTheme}
           ref={gridRef}
+          defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={rowData}
           suppressMovableColumns={true}
           enableCellTextSelection={true}
           isExternalFilterPresent={() => true}
           doesExternalFilterPass={doesExternalFilterPass}
-          onRowClicked={(e) => state.setViewedActivity(e.data.class)}
-          onRowDoubleClicked={(e) => state.toggleActivity(e.data.class)}
-          onGridReady={() => gridRef.current?.columnApi?.autoSizeAllColumns()}
+          onRowClicked={(e) => state.setViewedActivity(e.data?.class)}
+          onRowDoubleClicked={(e) => state.toggleActivity(e.data?.class)}
           // these have to be set here, not in css:
           headerHeight={40}
           rowHeight={40}

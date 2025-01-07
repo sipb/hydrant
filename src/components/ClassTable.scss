@@ -1,41 +1,27 @@
-.ag-theme-hydrant {
-  height: 320px;
-  width: 100%;
-  --ag-icon-font-family: agGridAlpine;
-}
-
-.ag-cell-wrapper {
-  cursor: pointer;
-  padding: 8px 5px;
-}
-
 .ag-row {
-  border-bottom-width: 1px;
+  cursor: pointer;
 }
 
-.ag-row:hover {
-  background-color: var(--chakra-colors-color-palette-subtle);
-
-  .ag-cell:first-child {
-    text-decoration: underline;
-  }
+.ag-row:hover .ag-cell:first-child {
+  text-decoration: underline;
 }
 
-.ag-cell:first-child {
-  font-weight: 500;
+.ag-cell-muted-text {
+  color: var(--chakra-colors-fg-muted);
 }
 
-.ag-header-cell-text {
-  font-size: 0.8rem;
-  letter-spacing: 0.05rem;
-  font-weight: bold;
-  text-transform: uppercase;
+.ag-cell-success-text {
+  color: var(--chakra-colors-fg-success);
 }
 
-.ag-header-cell-label {
-  padding: 8px 5px;
+.ag-cell-warning-text {
+  color: var(--chakra-colors-fg-warning);
 }
-.ag-header-viewport {
-  background-color: var(--chakra-colors-bg-subtle);
-  border-bottom-width: 1px;
+
+.ag-cell-error-text {
+  color: var(--chakra-colors-fg-error);
+}
+
+.ag-cell-normal-text {
+  color: var(--chakra-colors-fg);
 }

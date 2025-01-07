@@ -23,7 +23,13 @@ const CLASS_REGEX = new RegExp(
 );
 
 /** Three-way comparison for class numbers. */
-export function classSort(a: string, b: string) {
+export function classSort(
+  a: string | null | undefined,
+  b: string | null | undefined,
+) {
+  if (!a && !b) return 0;
+  if (!a) return 1;
+  if (!b) return -1;
   const aGroups = a.match(CLASS_REGEX)?.groups;
   const bGroups = b.match(CLASS_REGEX)?.groups;
   if (!aGroups || !bGroups) return 0;
