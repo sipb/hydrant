@@ -1,4 +1,5 @@
-import { Flex, Image } from "@chakra-ui/react";
+import { Card, IconButton, Flex, Image, Text } from "@chakra-ui/react";
+import { LuX } from "react-icons/lu";
 
 import {
   DialogRoot,
@@ -128,6 +129,19 @@ export function Header(props: { state: State; preferences: Preferences }) {
   const { state, preferences } = props;
   const logoSrc = useColorModeValue(logo, logoDark);
 
+  const params = new URLSearchParams(document.location.search);
+  const urlNameOrig = params.get("ti");
+  const urlName = params.get("t") ?? state.latestUrlName;
+
+  const [show, setShow] = useState(urlNameOrig !== null);
+
+  const onClose = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("ti");
+    window.history.pushState({}, "", url);
+    setShow(false);
+  };
+
   return (
     <Flex align="center" gap={3} wrap="wrap">
       <Flex direction="column" gap={1}>
@@ -143,6 +157,25 @@ export function Header(props: { state: State; preferences: Preferences }) {
         </Flex>
       </Flex>
       <PreferencesDialog preferences={preferences} state={state} />
+      {show && (
+        <Card.Root size="sm" variant="subtle">
+          <Card.Body px={3} py={1}>
+            <Flex align="center" gap={1.5}>
+              <Text fontSize="sm">
+                Term {urlNameOrig} not found; loaded term {urlName} instead.
+              </Text>
+              <IconButton
+                variant="subtle"
+                size="xs"
+                aria-label="Close"
+                onClick={onClose}
+              >
+                <LuX />
+              </IconButton>
+            </Flex>
+          </Card.Body>
+        </Card.Root>
+      )}
     </Flex>
   );
 }
