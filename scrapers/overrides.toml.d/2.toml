@@ -9,7 +9,7 @@ lectureUnits = 4
 labUnits = 0
 preparationUnits = 8
 isVariableUnits = false
-prereq = 'Physics II (GIR) or permission of instructor (undergrad can take it upon approval)'
+prereqs = 'Physics II (GIR) or permission of instructor (undergrad can take it upon approval)'
 description = '''
 “Engineering of nanoscale materials” is designed for graduate students who want to pursueadvanced study in Micro/Nano technology. The course provides in-depth knowledge aboutlow dimensional materials (0D, 1D, and 2D) aswell as thin film 3D materials and theirapplications. Throughout the semester, methodsto fabricate nanoscale materials will betaught. Then students will go through fundamentallevels of i) thinfilm mechanics:stress/strain in films and thin film failureincluding delamination, cracking, and buckling, ii)phase equilibrium and diffusion in thin film solids, and iii) electronic/photonic properties ofnanoscale materials. With those knowledges, students will finally learn about the applicationsof such low dimensional materials. This isa 12-unit subject with two lectures (3 hour) andone recitation (1 hour)'''
 url = 'https://meche.mit.edu/featured-classes'
@@ -35,7 +35,7 @@ lectureUnits = 6
 labUnits = 0
 preparationUnits = 6
 isVariableUnits = false
-prereq = 'an undergraduate degree in Mechanical Engineering; proficiency in Matlab or Python. (UG can particpate with permission of instructor)'
+prereqs = 'an undergraduate degree in Mechanical Engineering; proficiency in Matlab or Python. (UG can particpate with permission of instructor)'
 description = '''
 Large Language Model (LLM) capabilities and environments. Use of GPT-4 in Mechanical Engineering: development of effective system and interactive prompts; critical assessment of GPT-generated results. Application of GPT to teaching and learning: solid mechanics, heat transfer, dynamics, and mechanical design. GPT user models: teacher and student roles. GPT for coding. GPT as database. GPT for image processing. GPT for symbolic computation. GPT for natural language interfaces. GPT for problem-solving en- vironments. GPT as test student. GPT as tutor. Projects requiring Matlab or Python programming within GPT-4 API and Chat contexts. Enrollment limited to 15 students.'''
 url = 'https://meche.mit.edu/featured-classes'
@@ -47,7 +47,7 @@ lectureUnits = 6
 labUnits = 0
 preparationUnits = 6
 isVariableUnits = false
-prereq = '2.670, 2.007, and permission from the instructor'
+prereqs = '2.670, 2.007, and permission from the instructor'
 description = '''
 The Pappalardo Apprentice series is designed to further develop fabrication skills, and provide mentor training and opportunities for peer-to-peer mentoring. Our objective is to push the boundaries of the lab experience, further developing your skills and the workspace as one of the safest, most productive, positive, and creative labs on campus. The program has two primary areas of emphasis:
 
@@ -91,7 +91,7 @@ lectureUnits = 3
 labUnits = 0
 preparationUnits = 3
 isVariableUnits = false
-prereq = 'None'
+prereqs = 'None'
 description = '''
 This seminar will explore challenges and opportunities of climate actions to decarbonize and reduce global temperature raise. We will welcome guest lecturers to share scientific challenges, recent discoveries, research translation, technology innovations, techno-economics and policy. Intended for undergraduate and graduate students who have interests to learn and get involved in energy and environment sustainability.'''
 url = 'https://meche.mit.edu/featured-classes'
