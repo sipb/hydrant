@@ -59,11 +59,20 @@ function toGoogleCalendarEvents(
 ): Array<gapi.client.calendar.Event> {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
-      const startDate = term.startDateFor(slot.startSlot);
-      const startDateEnd = term.startDateFor(slot.endSlot);
-      const endDate = term.endDateFor(slot.startSlot);
+      const rawClass =
+        "rawClass" in event.activity ? event.activity.rawClass : undefined;
+
+      const start = rawClass?.quarterInfo?.start;
+      const end = rawClass?.quarterInfo?.end;
+      const h1 = rawClass?.half === 1;
+      const h2 = rawClass?.half === 2;
+
+      const startDate = term.startDateFor(slot.startSlot, h2, start);
+      const startDateEnd = term.startDateFor(slot.endSlot, h2, start);
+      const endDate = term.endDateFor(slot.startSlot, h1, end);
       const exDates = term.exDatesFor(slot.startSlot);
       const rDate = term.rDateFor(slot.startSlot);
+
       return {
         summary: event.name,
         location: event.room,
@@ -83,12 +92,20 @@ function toGoogleCalendarEvents(
 function toICalEvents(activity: Activity, term: Term): Array<ICalEventData> {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
-      const startDate = term.startDateFor(slot.startSlot);
-      const startDateEnd = term.startDateFor(slot.endSlot);
-      const endDate = term.endDateFor(slot.startSlot);
+      const rawClass =
+        "rawClass" in event.activity ? event.activity.rawClass : undefined;
+
+      const start = rawClass?.quarterInfo?.start;
+      const end = rawClass?.quarterInfo?.end;
+      const h1 = rawClass?.half === 1;
+      const h2 = rawClass?.half === 2;
+
+      const startDate = term.startDateFor(slot.startSlot, h2, start);
+      const startDateEnd = term.startDateFor(slot.endSlot, h2, start);
+      const endDate = term.endDateFor(slot.startSlot, h1, end);
       const exDates = term.exDatesFor(slot.startSlot);
       const rDate = term.rDateFor(slot.startSlot);
-      console.log(event.name, startDate);
+
       return {
         summary: event.name,
         location: event.room,
