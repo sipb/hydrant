@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "title": "Class Override",
+  "description": "Overrides for classes in the scraper",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "number": {
+        "type": "string",
+        "description": "Class number, e.g. \"6.3900\""
+      },
+      "oldNumber": {
+        "type": "string",
+        "description": "Old class number, e.g. \"6.036\""
+      },
+      "course": {
+        "type": "string",
+        "description": "Course number, e.g. \"6\""
+      },
+      "subject": {
+        "type": "string",
+        "description": "Subject number without course, e.g. \"3900\""
+      },
+      "tba": {
+        "type": "boolean",
+        "description": "True if some section is not scheduled yet"
+      },
+      "sectionKinds": {
+        "type": "array",
+        "uniqueItems": true,
+        "description": "Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist",
+        "items": {
+          "type": "string",
+          "enum": ["lecture", "recitation", "lab", "design"]
+        }
+      },
+      "lectureSections": {
+        "type": "array",
+        "description": "Lecture timeslots and rooms",
+        "items": { "$ref": "#/$defs/rawSection" }
+      },
+      "recitationSections": {
+        "type": "array",
+        "description": "Recitation timeslots and rooms",
+        "items": { "$ref": "#/$defs/rawSection" }
+      },
+      "labSections": {
+        "type": "array",
+        "description": "Lab timeslots and rooms",
+        "items": { "$ref": "#/$defs/rawSection" }
+      },
+      "designSections": {
+        "type": "array",
+        "description": "Design timeslots and rooms",
+        "items": { "$ref": "#/$defs/rawSection" }
+      },
+      "lectureRawSections": {
+        "type": "array",
+        "description": "Raw lecture times, e.g. T9.301-11 or TR1,F2",
+        "items": { "type": "string" }
+      },
+      "recitationRawSections": {
+        "type": "array",
+        "description": "Raw recitation times, e.g. T9.301-11 or TR1,F2 ",
+        "items": { "type": "string" }
+      },
+      "labRawSections": {
+        "type": "array",
+        "description": "Raw lab times, e.g. T9.301-11 or TR1,F2",
+        "items": { "type": "string" }
+      },
+      "designRawSections": {
+        "type": "array",
+        "description": "Raw design times, e.g. T9.301-11 or TR1,F2",
+        "items": { "type": "string" }
+      },
+      "hassH": {
+        "type": "boolean",
+        "description": "True if HASS-H"
+      },
+      "hassA": {
+        "type": "boolean",
+        "description": "True if HASS-A"
+      },
+      "hassS": {
+        "type": "boolean",
+        "description": "True if HASS-S"
+      },
+      "hassE": {
+        "type": "boolean",
+        "description": "True if HASS-E"
+      },
+      "cih": {
+        "type": "boolean",
+        "description": "True if CI-H"
+      },
+      "cihw": {
+        "type": "boolean",
+        "description": "True if CI-HW"
+      },
+      "rest": {
+        "type": "boolean",
+        "description": "True if REST"
+      },
+      "lab": {
+        "type": "boolean",
+        "description": "True if institute lab"
+      },
+      "partLab": {
+        "type": "boolean",
+        "description": "True if partial institute lab"
+      },
+      "lectureUnits": {
+        "type": "number",
+        "description": "Lecture or recitation units"
+      },
+      "labUnits": {
+        "type": "number",
+        "description": "Lab or field work units"
+      },
+      "preparationUnits": {
+        "type": "number",
+        "description": "Outside class units"
+      },
+      "isVariableUnits": {
+        "type": "boolean",
+        "description": "Does this class have an arranged number of units?\nIf true, lectureUnits, labUnits, preparationUnits are set to zero."
+      },
+      "level": {
+        "type": "string",
+        "description": "Level: \"U\" undergrad, \"G\" grad",
+        "enum": ["U", "G"]
+      },
+      "same": {
+        "type": "string",
+        "description": "Comma-separated list of classes with same number, e.g. \"21A.103, WGS.225\""
+      },
+      "meets": {
+        "type": "string",
+        "description": "Comma-separated list of classes it meets with"
+      },
+      "terms": {
+        "type": "array",
+        "description": "Terms class is offered",
+        "items": {
+          "type": "string",
+          "enum": ["FA", "JA", "SP", "SU"]
+        }
+      },
+      "prereqs": {
+        "type": "string",
+        "description": "Prereqs, no specific format (but usually contains class numbers)"
+      },
+      "description": {
+        "type": "string",
+        "description": "Description (~paragraph that appears in catalog)"
+      },
+      "name": {
+        "type": "string",
+        "description": "Name of class e.g. \"Algebra I\""
+      },
+      "inCharge": {
+        "type": "string",
+        "description": "(Person) in-charge, e.g. \"Alyssa Hacker\""
+      },
+      "virtualStatus": {
+        "type": "boolean",
+        "description": "True if meeting virtually"
+      },
+      "nonext": {
+        "type": "boolean",
+        "description": "True if NOT offered next year"
+      },
+      "repeat": {
+        "type": "boolean",
+        "description": "True if class can be repeated for credit"
+      },
+      "url": {
+        "type": "string",
+        "description": "Class website"
+      },
+      "final": {
+        "type": "boolean",
+        "description": "True if has final"
+      },
+      "half": {
+        "description": "1 or 2 if first / second half",
+        "oneOf": [
+          {
+            "type": "number",
+            "enum": [1, 2]
+          },
+          {
+            "type": "boolean",
+            "enum": [false]
+          }
+        ]
+      },
+      "limited": {
+        "type": "boolean",
+        "description": "True if limited enrollment"
+      },
+      "rating": {
+        "type": "number",
+        "description": "Rating (out of 7.0) from evals"
+      },
+      "hours": {
+        "type": "number",
+        "description": "Hours per week from evals"
+      },
+      "size": {
+        "type": "number",
+        "description": "Class size from evals"
+      }
+    }
+  },
+  "$defs": {
+    "rawTimeSlot": {
+      "type": "array",
+      "description": "Raw timeslot format: [start slot, length of timeslot].",
+      "prefixItems": [{ "type": "number" }, { "type": "number" }]
+    },
+    "rawSection": {
+      "type": "array",
+      "description": "Raw section format: [[[10, 2], [70, 2]], \"34-101\".",
+      "prefixItems": [
+        {
+          "type": "array",
+          "items": { "$ref": "#/$defs/rawTimeSlot" }
+        },
+        { "type": "string" }
+      ]
+    }
+  }
+}

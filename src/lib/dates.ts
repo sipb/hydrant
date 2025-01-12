@@ -23,7 +23,7 @@ const SEMESTER_NAMES = {
 } as const;
 
 /** Type of semester abbreviations. */
-type TSemester = keyof typeof SEMESTER_NAMES;
+export type TSemester = keyof typeof SEMESTER_NAMES;
 
 /** Strings for each weekday. */
 export const WEEKDAY_STRINGS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -144,6 +144,110 @@ export function parseUrlName(urlName: string): {
     year: urlName.substring(1),
     semester: urlName[0] as TSemester,
   };
+}
+
+/** Given a urlName like i22, return its corresponding URL. */
+export function toFullUrl(urlName: string, latestUrlName: string): string {
+  const url = new URL(window.location.href);
+  Array.from(url.searchParams.keys()).forEach((key) => {
+    url.searchParams.delete(key);
+  });
+  if (urlName !== latestUrlName) {
+    url.searchParams.set("t", urlName);
+  }
+  return url.href;
+}
+
+/** Given a urlName like "i22", return the previous one, "f21". */
+function getLastUrlName(urlName: string): string {
+  const { semester, year } = new Term({ urlName });
+  switch (semester) {
+    case "f":
+      return `m${year}`;
+    case "m":
+      return `s${year}`;
+    case "s":
+      return `i${year}`;
+    case "i":
+      return `f${parseInt(year, 10) - 1}`;
+  }
+}
+
+/** Given a urlName like "i22", return the next one, "s22". */
+function getNextUrlName(urlName: string): string {
+  const { semester, year } = new Term({ urlName });
+  switch (semester) {
+    case "i":
+      return `s${year}`;
+    case "s":
+      return `m${year}`;
+    case "m":
+      return `f${year}`;
+    case "f":
+      return `i${parseInt(year, 10) + 1}`;
+  }
+}
+
+/** urlNames that don't have a State */
+const EXCLUDED_URLS = ["i23", "m23", "i24", "m24"];
+
+/** Earliest urlName we have a State for. */
+const EARLIEST_URL = "f22";
+
+/** Return all urlNames before the given one. */
+export function getUrlNames(latestUrlName: string): Array<string> {
+  let urlName = latestUrlName;
+  const res = [];
+  while (urlName !== EARLIEST_URL) {
+    res.push(urlName);
+    do {
+      urlName = getLastUrlName(urlName);
+    } while (EXCLUDED_URLS.includes(urlName));
+  }
+  res.push(EARLIEST_URL);
+  return res;
+}
+
+/**
+ * Return the "closest" urlName to the one provided, as well as whether or not
+ * the user should be shown a warning that this does not match the term
+ * requested.
+ */
+export function getClosestUrlName(
+  urlName: string | null,
+  latestUrlName: string,
+): {
+  urlName: string;
+  shouldWarn: boolean;
+} {
+  if (urlName === null || urlName === "" || urlName === "latest") {
+    return { urlName: latestUrlName, shouldWarn: false };
+  }
+
+  const urlNames = getUrlNames(latestUrlName);
+  if (urlNames.includes(urlName)) {
+    return { urlName: urlName, shouldWarn: false };
+  }
+
+  // IAP or summer for a year where those were folded into spring/fall
+  if (EXCLUDED_URLS.includes(urlName)) {
+    const nextUrlName = getNextUrlName(urlName);
+    if (urlNames.includes(nextUrlName)) {
+      // modified: false because in these cases, e.g. s24 includes the data
+      // corresponding to i24
+      return { urlName: nextUrlName, shouldWarn: false };
+    }
+  }
+
+  const urlNamesSameSem = urlNames.filter((u) => u[0] === urlName[0]);
+  if (urlNamesSameSem.length > 0) {
+    // Unrecognized term, but we can return the latest term of the same type of
+    // semester (fall, spring, etc.)
+    return { urlName: urlNamesSameSem[0], shouldWarn: true };
+  }
+
+  // Fallback: return latest term
+  return { urlName: latestUrlName, shouldWarn: true };
 }
 
 /** Type of object passed to Term constructor. */

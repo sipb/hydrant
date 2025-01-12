@@ -7,7 +7,12 @@ import { Tooltip } from "./ui/tooltip";
 import { Provider } from "./ui/provider";
 import { useColorMode } from "./ui/color-mode";
 
-import { LatestTermInfo, Term, TermInfo } from "../lib/dates";
+import {
+  LatestTermInfo,
+  Term,
+  TermInfo,
+  getClosestUrlName,
+} from "../lib/dates";
 import { State } from "../lib/state";
 import { RawClass } from "../lib/rawClass";
 import { Class } from "../lib/class";
@@ -55,23 +60,48 @@ function useHydrant(): {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(document.location.search);
-    const term = params.get("t") ?? "latest";
-    Promise.all([
-      fetchNoCache<LatestTermInfo>("latestTerm.json"),
-      fetchNoCache<SemesterData>(`${term}.json`),
-    ]).then(([latestTerm, { classes, lastUpdated, termInfo }]) => {
-      const classesMap = new Map(Object.entries(classes));
-      const hydrantObj = new State(
-        classesMap,
-        new Term(termInfo),
-        lastUpdated,
+    const fetchData = async () => {
+      const latestTerm = await fetchNoCache<LatestTermInfo>("latestTerm.json");
+      const params = new URLSearchParams(document.location.search);
+
+      const urlNameOrig = params.get("t");
+      const { urlName, shouldWarn } = getClosestUrlName(
+        urlNameOrig,
         latestTerm.semester.urlName,
       );
-      hydrantRef.current = hydrantObj;
-      setLoading(false);
-      window.hydrant = hydrantObj;
-    });
+
+      if (urlName === urlNameOrig || urlNameOrig === null) {
+        const term =
+          urlName === latestTerm.semester.urlName ? "latest" : urlName;
+        const { classes, lastUpdated, termInfo } =
+          await fetchNoCache<SemesterData>(`${term}.json`);
+        const classesMap = new Map(Object.entries(classes));
+        const hydrantObj = new State(
+          classesMap,
+          new Term(termInfo),
+          lastUpdated,
+          latestTerm.semester.urlName,
+        );
+        hydrantRef.current = hydrantObj;
+        setLoading(false);
+        window.hydrant = hydrantObj;
+      } else {
+        // Redirect to the indicated term, while storing the initially requested
+        // term in the "ti" parameter (if necessary) so that the user can be
+        // notified
+        if (urlName === latestTerm.semester.urlName) {
+          params.delete("t");
+        } else {
+          params.set("t", urlName);
+        }
+        if (shouldWarn) {
+          params.set("ti", urlNameOrig!);
+        }
+        window.location.search = params.toString();
+      }
+    };
+
+    fetchData();
   }, []);
 
   const { colorMode, toggleColorMode } = useColorMode();
