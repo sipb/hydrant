@@ -15,14 +15,22 @@ export function ColorModeProvider(props: ColorModeProviderProps) {
   );
 }
 
+export type ColorMode = "light" | "dark";
+
+export interface UseColorModeReturn {
+  colorMode: ColorMode;
+  setColorMode: (colorMode: ColorMode) => void;
+  toggleColorMode: () => void;
+}
+
 // eslint-disable-next-line react-refresh/only-export-components
-export function useColorMode() {
+export function useColorMode(): UseColorModeReturn {
   const { resolvedTheme, setTheme } = useTheme();
   const toggleColorMode = () => {
     setTheme(resolvedTheme === "light" ? "dark" : "light");
   };
   return {
-    colorMode: resolvedTheme,
+    colorMode: resolvedTheme as ColorMode,
     setColorMode: setTheme,
     toggleColorMode,
   };
@@ -31,12 +39,12 @@ export function useColorMode() {
 // eslint-disable-next-line react-refresh/only-export-components
 export function useColorModeValue<T>(light: T, dark: T) {
   const { colorMode } = useColorMode();
-  return colorMode === "light" ? light : dark;
+  return colorMode === "dark" ? dark : light;
 }
 
 export function ColorModeIcon() {
   const { colorMode } = useColorMode();
-  return colorMode === "light" ? <LuSun /> : <LuMoon />;
+  return colorMode === "dark" ? <LuMoon /> : <LuSun />;
 }
 
 type ColorModeButtonProps = Omit<IconButtonProps, "aria-label">;
