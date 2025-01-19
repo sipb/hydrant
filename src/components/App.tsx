@@ -48,7 +48,7 @@ function useHydrant(): {
   state: HydrantState;
 } {
   const [loading, setLoading] = useState(true);
-  const hydrantRef = useRef<State>();
+  const hydrantRef = useRef<State>(undefined);
   const hydrant = hydrantRef.current;
 
   const [state, setState] = useState<HydrantState>(DEFAULT_STATE);
@@ -56,7 +56,7 @@ function useHydrant(): {
   /** Fetch from the url, which is JSON of type T. */
   const fetchNoCache = async <T,>(url: string): Promise<T> => {
     const res = await fetch(url, { cache: "no-cache" });
-    return res.json() as Promise<T>;
+    return (await res.json()) as T;
   };
 
   useEffect(() => {
