@@ -125,7 +125,7 @@ function ClassInput(props: {
       name: string;
       class: Class;
     }>
-  >();
+  >(undefined);
 
   const processedRows = useMemo(
     () =>

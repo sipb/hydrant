@@ -1,5 +1,6 @@
 import { Link } from "@chakra-ui/react";
 import Msgpack from "msgpack-lite";
+import { JSX } from "react/jsx-runtime";
 
 import { State } from "./state";
 
