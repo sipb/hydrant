@@ -1,0 +1,26 @@
+#:schema ./override-schema.json
+# Course 21T special subjects (Spring/IAP 2025)
+# https://architecture.mit.edu/classes
+
+['21T.100']
+name = 'Theater Arts Production: Antigonick'
+description = "In this hands-on studio course, students collaborate in all aspects of staging Antigonick, a contemporary, visual adaptation of Sophocles’ Antigone by Anne Carson, with evocative illustrations by Bianca Stone. The play asks how we live through loss, and how individuals navigate tensions between deeply held values, processes of the natural world, and the laws of the state. Opportunities abound for students to engage in myriad ways – as actors, designers, assistant stage managers, musicians, dancers, and technicians. All are encouraged to enroll, and all experience levels are welcome! The production course will be co-taught by actor and director Blythe de Oliveira Foster and designer Sara Brown. MIT students will receive 12 credits, HASS-A."
+
+['21T.420']
+name = "Topics in Performance Technique: Hip-Hop"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+description = "Communicates how hip-hop music was born out of the necessity to express one’s true self in the face of adversity. Course features dance instruction for all levels from beginner to experienced. Discussions, lectures, and demonstrations will explore musicality, gestures, beats, and polyrhythms, while tracing the genre back to the cultures of West Africa."
+
+['21T.421']
+name = "Topics in Performance Practice: Spring Dance Production"
+lectureUnits = 4
+labUnits = 0
+preparationUnits = 8
+hassA = true
+description = "Students enrolled in Rehearsal and Performance 21T.421 will be involved in a creative process culminating in a live multimedia dance performance during the spring semester. The process will be collaborative in nature and include learning set movement material, generating movement through improvisation and choreographic methods, engaging with video projection and other media in lab and performance settings. Students will be given assignments to work on in class, during lab time, and on their own time in order to move the process forward.  The course will offer hands-on experience for those interested in participating on a choreographic, performance, design and /or production level. Some past dance experience is suggested for performers. All forms and styles of past dance experience are welcome. Students interested solely in production and design are also welcome."
+
+['21T.422']
+name = "Advanced Topics in Theater Arts: Dancing with Cameras"
+description = "In Dancing with Cameras we will learn skills for planning, filming and creating your own dance films, or screendances. The form is a hybrid of the various techniques of film/video and the practice of choreography. Participants will be encouraged to use items they have available to them including smartphones or a DSLR camera, and free or non-free editing software. No dance experience is required though you will move and become the subjects in each other’s films! During the course we will make multiple studies and one-minute films culminating in longer final projects to be presented in our mini dance film festival at the end of the semester. We will watch screendances, learn about the history of the genre, and experiment with forming unique cinematic voices."
