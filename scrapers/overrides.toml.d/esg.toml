@@ -1,6 +1,5 @@
 #:schema ./override-schema.json
 # ESG special subjects (Spring/IAP 2025)
-# https://architecture.mit.edu/classes
 
 ['ES.S70']
 name = "Hack Yourself: Data-driven Wellbeing and Learning"

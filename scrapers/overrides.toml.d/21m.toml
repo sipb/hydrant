@@ -1,6 +1,5 @@
 #:schema ./override-schema.json
 # Course 21M special subjects (Spring/IAP 2025)
-# https://architecture.mit.edu/classes
 
 ['21M.128']
 name = "Moments in Music: Miles Davis (1st Half of Term)"

@@ -1,6 +1,5 @@
 #:schema ./override-schema.json
 # Course 21T special subjects (Spring/IAP 2025)
-# https://architecture.mit.edu/classes
 
 ['21T.100']
 name = 'Theater Arts Production: Antigonick'
