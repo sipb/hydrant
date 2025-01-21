@@ -1,0 +1,26 @@
+#:schema ./override-schema.json
+# Course 21G special subjects (spring 2025)
+
+['21G.S03']
+name = "Special Subject: Chinese Calligraphy"
+
+['21G.S52']
+name = "Special Subject: Japanese II (Hybrid)"
+
+['21G.S54']
+name = "Special Subject: Japanese IV (Hybrid)"
+
+['21G.S56']
+name = "Special Subject: Japanese VI (Hybrid)"
+
+['21G.S62']
+name = "Special Subject: Russian II (Hybrid)"
+
+['21G.S64']
+name = "Special Subject: Russian IV (Hybrid)"
+
+['21G.S82']
+name = "Special Subject: Portuguese II (Hybrid)"
+
+['21G.S84']
+name = "Special Subject: Portuguese IV (Hybrid)"
