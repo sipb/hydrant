@@ -1,0 +1,8 @@
+#:schema ./override-schema.json
+# Linguistics (24) special subjects (Spring/IAP 2025)
+
+['24.S93']
+name = "Linguistics in K-12 Education"
+
+['24.S95']
+name = "Special Seminar: Advanced Workshop in Syntax and Semantics"
