@@ -1,0 +1,36 @@
+#:schema ./override-schema.json
+# Course 14 special subjects (spring 2025)
+# Does not include restricted subjects
+
+["15.S04"]
+name = "SSIM: Generative AI Lab"
+
+["15.S05"]
+name = "SSIM: Energy Management and AI: Strategies for a Sustainable Future"
+
+["15.S07"]
+name = "SSIM: Real-time Analytics for Digital Platforms"
+
+["15.S13"]
+name = "SSIM: Identifying Opportunities in Climate Tech"
+
+["15.S14"]
+name = "SSIM: Designing for Behavior Change"
+
+["15.S15"]
+name = "SSIM: Engine Lab: Building & Scaling Tough Tech Ventures (meets in The Engine, 750 Main St)"
+
+["15.S20"]
+name = "SSIM: Global Business of Quantum Computing (GBQC)"
+
+["15.S59"]
+name = "SSIM: Entrepreneurship Through Acquisition"
+
+["15.S65"]
+name = "SSIM: Impact Ventures Collaboration Lab (E38-579)"
+
+["15.S67"]
+name = "SSIM: Real Estate Lab"
+
+["15.S68"]
+name = "SSIM: Generative AI for Managers"
