@@ -1,0 +1,12 @@
+#:schema ./override-schema.json
+# Course 21H special subjects (Spring 2025)
+
+['21H.S01']
+name = "The Laws of War in Global History"
+description = "Explores the history of the modern laws of war from the mid-eighteenth century to the present. Traces the transformations of this body of law from eighteenth-century cabinet warfare to the first codifications of laws of war in the nineteenth century, the effect of these laws on subsequent wars, and the recasting of the laws of war into International Humanitarian Law in the twentieth century. Covers the right to go to war, laws regulating military conduct, and efforts to use law to litigate wartime transgressions. Focuses on colonial hierarchies and exclusions, the persistent problem of new weaponry, and the protection of civilians in wartime."
+hassH = true
+
+['21H.S05']
+name = "Modern Germany"
+description = "Surveys the history of modern Germany from the mid-eighteenth century to the present. Traces the rise of nationalism, German empire-building in Europe and globally, the cataclysms of the First and Second World Wars, Weimar, the Holocaust, occupation and division during the Cold War, and reunification. Places emphasis on memory politics and understanding German history in its European and global contexts."
+hassH = true
