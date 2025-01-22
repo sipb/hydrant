@@ -6,16 +6,15 @@ import {
   type IRowNode,
   type ColDef,
 } from "ag-grid-community";
-import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
+import { Box, Group, Flex, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
 import { InputGroup } from "./ui/input-group";
-import { Button, LabelledButton } from "./ui/button";
-import { useColorMode } from "./ui/color-mode";
+import { Button } from "./ui/button";
 
-import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
+import { Class, Flags, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { State } from "../lib/state";
 import { TSemester } from "../lib/dates";
@@ -299,8 +298,6 @@ function ClassFlags(props: {
     });
   };
 
-  const { colorMode } = useColorMode();
-
   const renderGroup = (group: FilterGroup) => {
     return (
       <Group attached colorPalette="orange" wrap="wrap">
@@ -410,7 +407,7 @@ export function ClassTable(props: {
         headerName: "",
         field: "number",
         maxWidth: 49,
-        cellRenderer: (params: any) => (
+        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
           <StarButton
             classNumber={params.value}
             state={state}
