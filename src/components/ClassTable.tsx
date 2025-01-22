@@ -9,7 +9,7 @@ import {
 import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import { LuPlus, LuMinus, LuSearch } from "react-icons/lu";
+import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
 import { InputGroup } from "./ui/input-group";
 import { Button, LabelledButton } from "./ui/button";
@@ -201,10 +201,11 @@ function ClassInput(props: {
   );
 }
 
-type FilterGroup = Array<[keyof Flags | "fits", string, string?]>;
+type FilterGroup = Array<[keyof Flags | "fits" | "starred", string, React.ReactNode?]>;
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
+  ["starred", "My starred", <LuStar fill="currentColor" />],
   ["hass", "HASS"],
   ["cih", "CI-H"],
   ["fits", "Fits schedule"],
@@ -245,7 +246,7 @@ function ClassFlags(props: {
   const { setFlagsFilter, state, updateFilter } = props;
 
   // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<keyof Flags | "fits", boolean>>(() => {
+  const [flags, setFlags] = useState<Map<keyof Flags | "fits" | "starred", boolean>>(() => {
     const result = new Map();
     for (const flag of CLASS_FLAGS) {
       result.set(flag, false);
@@ -262,7 +263,7 @@ function ClassFlags(props: {
     state.fitsScheduleCallback = () => flags.get("fits") && updateFilter();
   }, [state, flags, updateFilter]);
 
-  const onChange = (flag: keyof Flags | "fits", value: boolean) => {
+  const onChange = (flag: keyof Flags | "fits" | "starred", value: boolean) => {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
     setFlags(newFlags);
@@ -275,7 +276,9 @@ function ClassFlags(props: {
       newFlags.forEach((value, flag) => {
         if (value && flag === "fits" && !state.fitsSchedule(cls)) {
           result = false;
-        } else if (value && flag !== "fits" && !cls.flags[flag]) {
+        } else if (value && flag === "starred" && !state.isClassStarred(cls.number)) {
+          result = false;
+        } else if (value && flag !== "fits" && flag !== "starred" && !cls.flags[flag]) {
           result = false;
         }
       });
@@ -291,23 +294,14 @@ function ClassFlags(props: {
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
           return image ? (
-            <LabelledButton
+            <Button
               key={flag}
               onClick={() => onChange(flag, !checked)}
               title={label}
               variant={checked ? "solid" : "outline"}
-              portalled
             >
-              <Image
-                src={image}
-                alt={label}
-                filter={
-                  colorMode === "dark" && DARK_IMAGES.includes(flag ?? "")
-                    ? "invert()"
-                    : ""
-                }
-              />
-            </LabelledButton>
+              {image}
+            </Button>
           ) : (
             <Button
               key={flag}
@@ -342,6 +336,28 @@ function ClassFlags(props: {
   );
 }
 
+const StarButton = ({ classNumber, state, onStarToggle }: { 
+  classNumber: string; 
+  state: State;
+  onStarToggle?: () => void;
+}) => {
+  const isStarred = state.isClassStarred(classNumber);
+  return (
+    <Button
+      onClick={(e) => {
+        e.stopPropagation();
+        state.toggleStarClass(classNumber);
+        onStarToggle?.();
+      }}
+      variant="ghost"
+      size="sm"
+      aria-label={isStarred ? "Unstar class" : "Star class"}
+    >
+      <LuStar fill={isStarred ? "currentColor" : "none"} />
+    </Button>
+  );
+};
+
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable(props: {
   classes: Map<string, Class>;
@@ -373,6 +389,25 @@ export function ClassTable(props: {
       ...sortProps,
     };
     return [
+      {
+        headerName: "",
+        field: "number",
+        maxWidth: 49,
+        cellRenderer: (params: any) => (
+          <StarButton 
+            classNumber={params.value} 
+            state={state}
+            onStarToggle={() => {
+              gridRef.current?.api?.refreshCells({
+                force: true,
+                columns: ["number"],
+              });
+            }}
+          />
+        ),
+        sortable: false,
+        cellStyle: { padding: 0 },
+      },
       {
         field: "number",
         headerName: "Class",
