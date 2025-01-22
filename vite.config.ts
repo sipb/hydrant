@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     react(),
     tsconfigPaths(),
-    nodePolyfills(),
+    nodePolyfills({ include: ["buffer"] }),
     checker({
       typescript: true,
       eslint: { lintCommand: "eslint .", useFlatConfig: true },

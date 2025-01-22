@@ -4,12 +4,11 @@ import * as React from "react";
 export interface RadioProps extends ChakraRadioGroup.ItemProps {
   rootRef?: React.Ref<HTMLDivElement>;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  checked?: boolean;
 }
 
 export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
   function Radio(props, ref) {
-    const { children, inputProps, rootRef, checked, ...rest } = props;
+    const { children, inputProps, rootRef, ...rest } = props;
     return (
       <ChakraRadioGroup.Item ref={rootRef} {...rest}>
         <ChakraRadioGroup.ItemHiddenInput ref={ref} {...inputProps} />

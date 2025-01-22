@@ -62,8 +62,6 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
     setVisible(false);
   };
 
-  const contentRef = useRef<HTMLDivElement>(null);
-
   return (
     <>
       <DialogRoot
@@ -76,7 +74,7 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
             Change theme <ColorModeIcon />
           </Button>
         </DialogTrigger>
-        <DialogContent ref={contentRef}>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Preferences</DialogTitle>
           </DialogHeader>
@@ -102,7 +100,7 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
                 <SelectTrigger>
                   <SelectValueText />
                 </SelectTrigger>
-                <SelectContent portalRef={contentRef}>
+                <SelectContent portalled={false}>
                   {COLOR_SCHEME_PRESETS.map(({ name }) => (
                     <SelectItem item={name} key={name}>
                       {name}

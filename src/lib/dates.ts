@@ -23,7 +23,7 @@ const SEMESTER_NAMES = {
 } as const;
 
 /** Type of semester abbreviations. */
-type TSemester = keyof typeof SEMESTER_NAMES;
+export type TSemester = keyof typeof SEMESTER_NAMES;
 
 /** Strings for each weekday. */
 export const WEEKDAY_STRINGS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -348,8 +348,18 @@ export class Term {
   }
 
   /** The date a slot starts on. */
-  startDateFor(slot: Slot, secondHalf: boolean = false): Date {
+  startDateFor(
+    slot: Slot,
+    secondHalf: boolean = false,
+    startDay?: [number, number],
+  ): Date {
     const date = new Date((secondHalf ? this.h2Start : this.start).getTime());
+
+    if (startDay !== undefined) {
+      date.setMonth(startDay[0] - 1);
+      date.setDate(startDay[1]);
+    }
+
     while (date.getDay() !== slot.weekday) {
       date.setDate(date.getDate() + 1);
     }
@@ -357,8 +367,18 @@ export class Term {
   }
 
   /** The date a slot ends on, plus an extra day. */
-  endDateFor(slot: Slot, firstHalf: boolean = false): Date {
+  endDateFor(
+    slot: Slot,
+    firstHalf: boolean = false,
+    endDay?: [number, number],
+  ): Date {
     const date = new Date((firstHalf ? this.h1End : this.end).getTime());
+
+    if (endDay !== undefined) {
+      date.setMonth(endDay[0] - 1);
+      date.setDate(endDay[1]);
+    }
+
     while (date.getDay() !== slot.weekday) {
       date.setDate(date.getDate() - 1);
     }

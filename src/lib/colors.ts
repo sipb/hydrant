@@ -1,9 +1,10 @@
+import { ColorMode } from "../components/ui/color-mode";
 import { Activity } from "./activity";
 
 /** The type of color schemes. */
 export type ColorScheme = {
   name: string;
-  colorMode: "light" | "dark";
+  colorMode: ColorMode;
   backgroundColors: Array<string>;
 };
 
