@@ -201,7 +201,9 @@ function ClassInput(props: {
   );
 }
 
-type FilterGroup = Array<[keyof Flags | "fits" | "starred", string, React.ReactNode?]>;
+type FilterGroup = Array<
+  [keyof Flags | "fits" | "starred", string, React.ReactNode?]
+>;
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
@@ -246,7 +248,9 @@ function ClassFlags(props: {
   const { setFlagsFilter, state, updateFilter } = props;
 
   // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<keyof Flags | "fits" | "starred", boolean>>(() => {
+  const [flags, setFlags] = useState<
+    Map<keyof Flags | "fits" | "starred", boolean>
+  >(() => {
     const result = new Map();
     for (const flag of CLASS_FLAGS) {
       result.set(flag, false);
@@ -276,9 +280,18 @@ function ClassFlags(props: {
       newFlags.forEach((value, flag) => {
         if (value && flag === "fits" && !state.fitsSchedule(cls)) {
           result = false;
-        } else if (value && flag === "starred" && !state.isClassStarred(cls.number)) {
+        } else if (
+          value &&
+          flag === "starred" &&
+          !state.isClassStarred(cls.number)
+        ) {
           result = false;
-        } else if (value && flag !== "fits" && flag !== "starred" && !cls.flags[flag]) {
+        } else if (
+          value &&
+          flag !== "fits" &&
+          flag !== "starred" &&
+          !cls.flags[flag]
+        ) {
           result = false;
         }
       });
@@ -336,8 +349,12 @@ function ClassFlags(props: {
   );
 }
 
-const StarButton = ({ classNumber, state, onStarToggle }: { 
-  classNumber: string; 
+const StarButton = ({
+  classNumber,
+  state,
+  onStarToggle,
+}: {
+  classNumber: string;
   state: State;
   onStarToggle?: () => void;
 }) => {
@@ -394,8 +411,8 @@ export function ClassTable(props: {
         field: "number",
         maxWidth: 49,
         cellRenderer: (params: any) => (
-          <StarButton 
-            classNumber={params.value} 
+          <StarButton
+            classNumber={params.value}
             state={state}
             onStarToggle={() => {
               gridRef.current?.api?.refreshCells({

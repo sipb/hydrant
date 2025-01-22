@@ -2,7 +2,7 @@ import { Preferences, Save } from "./schema";
 
 export type TermStore = {
   saves: Save[];
-  starredClasses: string[];  // Array of class numbers that are starred
+  starredClasses: string[]; // Array of class numbers that are starred
   [saveId: string]: unknown[];
 };
 

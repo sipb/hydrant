@@ -70,7 +70,7 @@ export class State {
       this.classes.set(number, new Class(cls, this.colorScheme));
     });
     this.initState();
-    
+
     // Load starred classes from storage
     const storedStarred = this.store.get("starredClasses");
     if (storedStarred) {
@@ -429,7 +429,7 @@ export class State {
   /** Get all starred classes */
   getStarredClasses(): Class[] {
     return Array.from(this.starredClasses)
-      .map(number => this.classes.get(number))
+      .map((number) => this.classes.get(number))
       .filter((cls): cls is Class => cls !== undefined);
   }
 }
