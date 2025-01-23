@@ -7,6 +7,7 @@ same = "CMS.S60"
 lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
+isVariableUnits = false
 hassA = true
 meets = 'CMS.S96'
 description = "To gain a deeper understanding of rap, students engage in the full process of creating rap music, including composing lyrics, recording, performing, and creating an EP length album. Existing rap music is studied, selected lyrics are analyzed, and possible reasons for the structure and success of different songs are presented in case studies. Students analyze rap songs, reflect on their own weekly activities in writing and present their work in class by playing recordings, performing and responding to each other in workshop discussions. Licensed for Fall 2024 by the Committee on Curricula. Limited to 10."

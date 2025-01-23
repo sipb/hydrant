@@ -10,6 +10,7 @@ name = "Topics in Performance Technique: Hip-Hop"
 lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
+isVariableUnits = false
 description = "Communicates how hip-hop music was born out of the necessity to express one’s true self in the face of adversity. Course features dance instruction for all levels from beginner to experienced. Discussions, lectures, and demonstrations will explore musicality, gestures, beats, and polyrhythms, while tracing the genre back to the cultures of West Africa."
 
 ['21T.421']
@@ -17,6 +18,7 @@ name = "Topics in Performance Practice: Spring Dance Production"
 lectureUnits = 4
 labUnits = 0
 preparationUnits = 8
+isVariableUnits = false
 hassA = true
 description = "Students enrolled in Rehearsal and Performance 21T.421 will be involved in a creative process culminating in a live multimedia dance performance during the spring semester. The process will be collaborative in nature and include learning set movement material, generating movement through improvisation and choreographic methods, engaging with video projection and other media in lab and performance settings. Students will be given assignments to work on in class, during lab time, and on their own time in order to move the process forward.  The course will offer hands-on experience for those interested in participating on a choreographic, performance, design and /or production level. Some past dance experience is suggested for performers. All forms and styles of past dance experience are welcome. Students interested solely in production and design are also welcome."
 

@@ -20,6 +20,7 @@ prereqs = "21M.301 or permission of instructor"
 lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
+isVariableUnits = false
 hassA = true
 description = "Music for Animated Films is designed as a complement to 21M.284 (Film Music), from which animation is excluded due to lack of time. The subject's primary objective is to equip students with tools and methods for analysis of this specialized branch of film music, supported by awareness of broader esthetic and historical contexts. The syllabus includes a quick survey of music for silent and early sound films, with attention to stylistic legacies of key studios (Disney, WB, MGM, UPA). Attention is given to landmark early Disney features (Snow White, Pinocchio, Bambi), leading at the term's end to case studies of feature film scores produced by the Ghibli and Pixar studios (among them, Princess Mononoke and the Toy Story and Incredibles series). Throughout the term technological and economic conditions will be noted, along with esthetic and cultural issues of reception and interpretation. Required work will include personal responses and analytic reports—starting with discussion of short segments from early films and soundtracks, culminating in a comparative paper about two contrasting scores overall. During the second half of the term there will be team projects on one or two favorite films."
 
@@ -29,6 +30,7 @@ prereqs = "21M.030 or permission of instructor"
 lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
+isVariableUnits = false
 hassA = true
 description = "This course explores the historical and present-day music created by people of Asian descent in the United States. From Cantonese opera to Mitski, from taiko to bhangra, from classical to hip hop, from amateur community groups to pop stars, we will explore how Asian American musicians have made artistic choices, navigated questions of identity, and pursued musical innovation over the past two centuries. Readings will be drawn primarily from ethnomusicology and Asian American studies. Students will produce a final project based on either original research or creative practice."
 
