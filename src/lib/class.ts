@@ -477,6 +477,10 @@ export class Class {
         url: `http://student.mit.edu/catalog/search.cgi?search=${this.number}`,
       },
       {
+        label: "Course Data on OpenGrades",
+        url: `https://opengrades.mit.edu/classes/aggregate/${this.number}?utm_source=hydrant`,
+      },
+      {
         label: "Class Evaluations",
         url: `https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode=${this.number}`,
       },
