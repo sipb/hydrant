@@ -1,6 +1,13 @@
 #:schema ./override-schema.json
 # ESG special subjects (Spring/IAP 2025)
 
+['ES.S30']
+name = "From Transistors to TikTok"
+
+['ES.S40']
+name = "The Origins of Western Ethical Thought"
+
+
 ['ES.S70']
 name = "Hack Yourself: Data-driven Wellbeing and Learning"
 description = "Do you want to take charge of your wellbeing and learn at your best? In this seminar, you will discover how with practices based on positive psychology supported by data. At the end of the semester, you will have a toolkit of over 60 new habits plus some experience with data science tools you can use to “hack” yourself."
@@ -8,3 +15,6 @@ isVariableUnits = false
 # only info says 6 units, 2 hours of lecture and the rest is extrapolated ig
 lectureUnits = 2
 preparationUnits = 4
+
+['ES.S91']
+name = "Emotional Intelligence for Teams"
