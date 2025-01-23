@@ -1,3 +1,225 @@
 #:schema ./override-schema.json
-# Course 4 special subjects (Spring/IAP 2025)
+# Course 4 special subjects (Spring 2025)
 # https://architecture.mit.edu/classes
+
+['4.S12']
+name = "Special Subject: Architecture Design — Brick x Brick: Drawing a Particular Survey"
+description = "If the architectural drawing moves something unknown to something known (from vision to building), the reverse could be said of the architectural survey. The potential of the architectural survey lies in its mobilizing of something known into unforeseeable future uses (from building to visions). This course centers on recasting the architectural survey from conveyor of building facts to instrument for building stories. Operating somewhere between the limits of absolute truth and virtual truth, our research will aim to uncover new ways of engaging architecture’s relationship to vision, documentation, and the art of renewal (or preservation) against the backdrop of racial, economic, and material conditions in the turn-of-the century South. More specifically, the site of the course will be Tuskegee University and the legacy of Robert R. Taylor, the first accredited Black architect, MIT graduate, and designer and builder of a significant portion of the campus’s brick buildings. Students will consider Taylor’s work both in the present context and its inception under Booker T. Washington’s leadership."
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+
+['4.S13']
+name = "Special Subject: Architecture Design — Design Process, atmospheres"
+description = "The sequence of weekly meetings intends to scrutinize typical atmospheres that tend to surround designers along with the design process. In other words, it is the world affecting architects and pushing them to react by producing architectural propositions. Following a series of proposed 14 topics (as listed below), the discussion will be guided with the purpose of checking their pertinence and validity. Exactly how it happens in a design process, those topics are presented as a first outline, to gain a sharper contour throughout the sequence of discussions. The focus will be on the design process, specifically on the successive moods it inescapably implies."
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+isVariableUnits = false
+
+['4.S14']
+name = "Special Subject: Architecture Design — Bad Translation: Experiments in Language and Typography"
+description = """In his essay, “The Task of the Translator,” Walter Benjamin writes: “it is the task of the translator to release in his own language that pure language that is under the spell of another, to liberate the language imprisoned in a work in his re-creation of that work.” The same can be said of the artist who must give an idea visual form: form beholden to the syntactic constraints of whatever shape it must materialize in, whether as a series of marks etched into stone, a block of text living in the codex, or a pixel activated on a screen. How does the grammar behind tool and substrate set the rules for translation? When do these translations fail, and why—and what do those failures generate instead? How can translations, good and bad, productively challenge an idea’s core?
+
+Part visual language study/seminar, part workshop, this class will examine translation as method and practice for visual experimentation. The course will start by examining typographic printing history, where students will gain knowledge of the various technological precedents for fixing forms of language. Students can also expect to experiment with calligraphic form, modular alphabets, notational conventions, musical transposition, and image-to-text as well as text-to-image translations. These experiments will be supplemented with guest visits from artists, writers, and technologists, as well as references of theoretical writings from Walter Benjamin, Elizabeth Eisenstein, Albrecht Dürer, Donald Knuth, Louis Lüthi, Hito Steyerl, Byung-Chul Han, Édouard Glissant, and Theresa Hak Kyung Cha, among others. By the end of the term, each student will have researched a specific topic of translation and developed it through a publication, broadly defined.
+
+Undergraduates, especially those who are interested in visual language and history, are welcome!"""
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+
+['4.S15']
+name = "Special Subject: Design — Architecture & Thresholds"
+description = """This course is an exploration of the later stages of architectural design that occurs in architectural detailing and construction mock-ups. To initiate this course, students will select a building threshold from a project that they have previously designed and use it as a basis to produce 5-10 new threshold variations. The threshold variations will be a detailed response and study of select architectural precedents. For the final project, students will select one threshold design to build a physical model at full (or half) scale.
+
+Students will explore the design potential of building thresholds, passages, and openings. Every threshold is on the verge of–. Choosing and isolating a threshold allows for an in-depth study of the passage between interiors, and exteriors, and of the in between space itself. For example, in Marcel Duchamp’s door 11 rue Larrey from 1927, the threshold is an opening to, a closure of, and as such it holds the space between both conditions.
+
+In their threshold (re)designs, students will explore multiple threshold design options–each approached through a different tectonic lens. The variations will be supported by two studies: 1. an exploration of a range of cross-cultural threshold precedents drawn from editions of GA Detail, Global Architecture, El Croquis, and when possible, detailed vernacular and classical examples to establish the tectonic lenses; 2. An exploration of material, spatial, and atmospheric properties and qualities, and the bodily performances required of the passage.
+
+The approach to tectonic studies is informed by a range of precedents from literature, mathematics, art, music and architecture. In art and music, instructional compositions are informed by repetition, variation, and singularity (uniqueness). Examples are the chance compositions of John Cage and the wall drawings of Sol Le Witt. Other models for this exploration include Elements of Style by Raymond Queneau and 99 Variations on a Proof by Philip Ording, two works that begin with a simple premise that is reinvented one hundredfold by a new set of principles, techniques, contexts, and histories.
+
+Queneau the cofounder of OuLiPo (workshop of potential literature) begins with a narrative, while Ording begins with a theorem, yet each uses the same method to generate new perspectives of the original through an exploration of style. The class will draw from these examples to devise constraints and rules to conceive of and structure thresholds.
+
+Since the threshold selected by student is from an original design that was given much consideration previously, each new speculation suggests alternative design approaches and potentials for the original building design, and, for their future approach to design in general."""
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+
+
+['4.S23']
+name = "Special Subject: Architecture Studies — Like a Descendant: Haunting, Archives, and Diasporic Senses of Place"
+description = """Place is location, but it’s also people, relationships, and memories, the site of things forgotten, suppressed or unrecorded, terrible and ordinary ways of being. The experience of people and peoples who have migrated, been displaced or exiled add further complexity to place: perhaps, an unshakeable orientation to elsewhere or a sense of in-betweenness; or, a simultaneous yet imperfect belonging to both here and there, to neither here nor there; an intermittent or constant feeling of being entirely out of place. What is a diasporic sense of place, how do we image or describe it, and how might it reimage space and place to define a territory for spatial practice?
+
+This workshop is part of Self and Work, a series that began in 2018 as part of Experiments in Pedagogy at MIT Architecture. Self and Work centers the personal, the body, and lived experience as site of knowledge.
+
+We will study work by authors and artists whose lives and works are profoundly influenced by their own relation to place. Forms that give direction to the semester project are: cartography, annotation, oral history, installation, film. An experimental approach to critique is central to the workshop and will be discussed and shaped as part of the process. Collaborative work will be encouraged."""
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+isVariableUnits = false
+
+['4.S24']
+name = "Special Subject: Architecture Studies — Building an Impactful Creative Career: Entrepreneurial Tools and Strategies"
+description = """Are you aspiring to thrive as an independent creative professional or to launch your creative practice?
+
+This half-semester course offers students in art, cultural, and creative disciplines fundamental tools and strategies for building their careers as independent professionals.
+
+Students will: A) Develop an understanding of the international framework of institutions, relations, and policies that serve as a foundation for professionals seeking to make an impact through their creative practice and how this knowledge can translate into offerings that stand out and create a competitive advantage.
+B) Learn concepts and mechanisms commonly found in the economics of art and culture and understand how critical issues can be transformed into opportunities.
+C) Explore the diverse values generated by cultural production and learn how to combine these into distinctive offerings. Students will also examine relevant business models within the creative industries and develop the skills to adapt and thrive in dynamic market landscapes.
+D) Acquire practical skills in branding, legal business structures, and intellectual property, enabling students to protect and leverage their creative work while building a sustainable professional practice."""
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 4
+isVariableUnits = false
+
+['4.S30']
+meets = "4.S35"
+level = "U"
+name = "Special Subject: Art, Culture and Technology — Digital Art from Nano-Scale to Human Scale: Intro to Making Art Using a Variety of 3D Scanning Techniques at all Scales"
+description = """An introduction to the tools and concepts of capturing and transitioning forms between the human scale and nanoscale. The generation of simulation-based art projects reflects these explorations and the ways they can be used in the context of art, culture, and technology. What dialogs can engage with society when operating on sub-visible scales or taking forms from the nano into the human macro scale, creating artistic simulations, motion from form, or form from motion?
+
+Students will collaborate with MIT Nano on final projects intended for public exhibition in a gallery setting."""
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 3
+preparationUnits = 3
+
+
+['4.S35']
+meets = "4.S30"
+level = "G"
+name = "Special Subject: Art, Culture and Technology — Digital Art from Nano-Scale to Human Scale: Intro to Making Art Using a Variety of 3D Scanning Techniques at all Scales"
+description = """An introduction to the tools and concepts of capturing and transitioning forms between the human scale and nanoscale. The generation of simulation-based art projects reflects these explorations and the ways they can be used in the context of art, culture, and technology. What dialogs can engage with society when operating on sub-visible scales or taking forms from the nano into the human macro scale, creating artistic simulations, motion from form, or form from motion?
+
+Students will collaborate with MIT Nano on final projects intended for public exhibition in a gallery setting."""
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 3
+preparationUnits = 3
+
+['4.S32']
+meets = "4.S38"
+level = "G"
+name = "Special Subject: Art, Culture, and Technology — Monuments Matter"
+description = "This course explores the evolving role of monuments and public memory through the lens of racial justice, decolonization, and the politics of space. Students will critically engage with historical and contemporary monuments, as well as concepts of “ReMemory” (Toni Morrison) that are not yet materialized outside the bodies that hold these traces of the past. Subject focuses on interventions that challenge dominant narratives and foster inclusive, participatory spaces of memory. Deliverables include a semester-long project showcased in an exhibition and/or collaborative publication, aligning with the course’s focus on research, scholarship and creative practice, and public engagement."
+isVariableUnits = false
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 9
+
+['4.S38']
+meets = "4.S32"
+level = "U"
+name = "Special Subject: Art, Culture, and Technology — Monuments Matter"
+description = "This course explores the evolving role of monuments and public memory through the lens of racial justice, decolonization, and the politics of space. Students will critically engage with historical and contemporary monuments, as well as concepts of “ReMemory” (Toni Morrison) that are not yet materialized outside the bodies that hold these traces of the past. Subject focuses on interventions that challenge dominant narratives and foster inclusive, participatory spaces of memory. Deliverables include a semester-long project showcased in an exhibition and/or collaborative publication, aligning with the course’s focus on research, scholarship and creative practice, and public engagement."
+isVariableUnits = false
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 9
+
+['4.S33']
+meets = "4.S37"
+level = "G"
+name = "Special Subject: Art, Culture, and Technology — Beginner’s Guide to Visualizing Data and Life-Like Processes in Digital Art"
+description = """Introduction to basics of biomimicry and natural algorithms in computational design and artificial life. You don’t have any prior programming or modeling software experience is needed. Advanced folks will be accommodated on an individual project-based track.
+
+Students learn about the cultural and visual implications of automation and biotechnological advancements driven by computational technology, exploring their aesthetic significance through data and algorithms.
+
+This is a beginner’s guide to ethical solutions to design problems in computational design and data concerning nature through visualization and art. It considers the broader impact of design decisions on communities, society, and culture.
+
+This is a low-level, beginner-friendly introduction to the basics of data visualization in processing and Python, biomimicry, agent-based systems in Grasshopper visual coding and C#, and animation in Maya."""
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 3
+preparationUnits = 3
+
+['4.S37']
+meets = "4.S33"
+level = "U"
+name = "Special Subject: Art, Culture, and Technology — Beginner’s Guide to Visualizing Data and Life-Like Processes in Digital Art"
+description = """Introduction to basics of biomimicry and natural algorithms in computational design and artificial life. You don’t have any prior programming or modeling software experience is needed. Advanced folks will be accommodated on an individual project-based track.
+
+Students learn about the cultural and visual implications of automation and biotechnological advancements driven by computational technology, exploring their aesthetic significance through data and algorithms.
+
+This is a beginner’s guide to ethical solutions to design problems in computational design and data concerning nature through visualization and art. It considers the broader impact of design decisions on communities, society, and culture.
+
+This is a low-level, beginner-friendly introduction to the basics of data visualization in processing and Python, biomimicry, agent-based systems in Grasshopper visual coding and C#, and animation in Maya."""
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 3
+preparationUnits = 6
+
+['4.S34']
+name = "Special Subject: Art, Culture, and Technology — Publication as Worldmaking: Performative Approaches to Fiction and Publishing"
+description = """This course investigates the interdisciplinary and generative possibilities of publication, emphasizing its role as a practice of expanding public engagement and imagination. Throughout the semester, students will explore worldmaking strategies, speculative fiction and an array of publication methods ranging from traditional techniques—leveraging ACT and MIT’s extensive resources such as riso printing, book binding and maker labs—to experimental approaches in digital media, performance, political systems, architecture, contemporary art, design, and AI.
+
+Rooted in the definition of publication as the act of ‘making public,’ this course offers an opportunity to experiment with the collective meaning-making strategies of editorial work through and beyond printed matter. Participants are encouraged to bring in their personal research and projects to develop them with the lens of artistic publication. The semester culminates in a collective exhibition or public representation of the work produced."""
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 3
+preparationUnits = 6
+
+['4.S42']
+name = "Special Subject: Building Technology — Simulation for Low Energy Building Design"
+description = "Introduces advanced topics in building simulation for design and control of envelope and thermal systems for architects, engineers, environmental consultants, and beyond. Students will gain conceptual knowledge and technical skills to drive design decisions based on environmental performance. The focus of final design projects will be to reduce operational energy usage and carbon intensity. Course format will include a combination of traditional lectures, hands-on exercises, and design project development."
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+
+['4.S60']
+meets = "4.S62"
+level = "U"
+hassH = true
+name = "Special Subject: History, Theory & Criticism of Architecture & Art — Environmental Histories of Architecture"
+description = "How does architecture impact the environment? How does the environment impact architecture? Drawing on case studies from the ancient world to the present day, and from geographies across the globe, this class will explore the myriad ways in which the creation of architecture has involved the modification of natural environments and climates and the exploitation of resources. Rather than examining architecture’s history as a succession of monuments, this course investigates the metabolic processes of raw material extraction, transportation, and manipulation that made the creation of buildings, infrastructures, and designed landscapes possible in the first place. Students will explore how material and climatic considerations played into the design and aesthetic of buildings at various points in time, while gaining an awareness of the largely-invisible, increasingly far-flung networks of environmental management and labor that underpin our built environment."
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+
+['4.S62']
+meets = "4.S60"
+level = "G"
+name = "Special Subject: History, Theory & Criticism of Architecture & Art — Environmental Histories of Architecture"
+description = "How does architecture impact the environment? How does the environment impact architecture? Drawing on case studies from the ancient world to the present day, and from geographies across the globe, this class will explore the myriad ways in which the creation of architecture has involved the modification of natural environments and climates and the exploitation of resources. Rather than examining architecture’s history as a succession of monuments, this course investigates the metabolic processes of raw material extraction, transportation, and manipulation that made the creation of buildings, infrastructures, and designed landscapes possible in the first place. Students will explore how material and climatic considerations played into the design and aesthetic of buildings at various points in time, while gaining an awareness of the largely-invisible, increasingly far-flung networks of environmental management and labor that underpin our built environment."
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+
+['4.S63']
+name = "Special Subject: History, Theory & Criticism of Architecture & Art: Designing Nature"
+description = """Modernist fantasies of infinite growth, premised on the relentless exploitation of natural environments, can be traced back in large part to the early modern period (ca. 1400–1750) in Europe. At this time, artisans, practitioners, intellectuals, and politicians gradually became convinced that humans could master nature, through art and industry, to yield endless abundance and material wealth. Often assimilated by its proponents and later historians under the rubric of “improvement,” it was an explosive and ultimately dangerous idea, and did not go unchallenged: to its detractors, in fact, we owe some our earliest notions of natural balance and sustainability.
+
+This class will study these debates and their manifestation in designed natures across scales, from art and decorative objects, to gardens, to engineered territories, focusing on Europe and its overseas empires. Throughout, we will explore how nature came to be seen as a resource, and examine how concepts of ingenuity, labor, value, abundance, and scarcity inflected early modern thinking across the interconnected realms of natural philosophy, political economy, and art and architecture."""
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+
+['4.S66']
+name = "Special Subject: History, Theory & Criticism of Art — Extinction: Architecture and Art for the Unsustainable Future"
+description = "According to some scientists we are at the beginning of the ‘sixth extinction process.’ No-one seems to really care too much. After all what are we to do. One of the problems is that it seems to be easier to imagine the cosmos - and for some even God - than it is to imagine the nature and history of our species despite the thousands years of pontificating on the subject. We seem to have something missing in our cognitive bandwidth. But we all know what is coming. “She went for a Walk on the Beach and found a Rare “Doomsday Fish’” was a recent headline in the New York Times. Our end is now everyday news. The seminar/workshop will research the problem, myth, and the very probable reality of human extinction. Students will be expected to develop a project that explores these conditions, whether on a real or fictive site or as an exhibition."
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+
+['4.S69']
+name = "Special Subject: Advanced Study in the History of Urban Form — Alternative Futures from the Sahara: Design Strategies for Reclaiming Commons"
+description = """This course examines the challenges faced by the oasis agro-ecosystems, focusing on Tunisia's Nefzawa region as a case study and delves into the historical, environmental, and socio-economic factors at play in the region. By reviewing the literature, analyzing climate projections, and utilizing Earth observation data, students will learn about the unsustainable use of natural resources, worsened by climate change and land/water dispossession processes.
+
+The course will highlight pathways to resilience and alternative economic models centered on “commons” and “oasis connectivity.” We will identify ways to integrate/combine traditional low-tech commoning practices with modern technology to enhance community resilience and promote biodiversity, while seeking innovative approaches that go beyond simply preserving environmental and agricultural heritage.
+
+Students will participate in scenario-building exercises for the Nefzawa oases, drawing insights applicable to broader urban areas across the Arab world, many of which are projected to become uninhabitable by the end of the century. The course will emphasize social and climate justice as essential components of sustainable futures, positioning design as a tool for societal transformation and collective action.
+
+In this interdisciplinary setting, that bridges humanities and STEM fields, students will critically assess the balance between innovation and remembrance in design. They will explore how these unique eco-social landscapes can inform broader decolonial frameworks in architecture, urban planning, and design, addressing urgent challenges like climate change, resource scarcity, and socio-economic inequality. In this studio, we will delve into the dual narratives of the heavenly aspects and imaginaries of oases while confronting the harsh realities of plunder, drought, and ecological destruction."""
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
