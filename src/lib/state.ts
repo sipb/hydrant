@@ -23,8 +23,6 @@ export class State {
   conflicts: number = 0;
   /** Browser-specific saved state. */
   store: Store;
-  /** Set of starred class numbers */
-  private starredClasses: Set<string> = new Set();
 
   // The following are React state, so should be private. Even if we pass the
   // State object to React components, they shouldn't be looking at these
@@ -49,6 +47,8 @@ export class State {
   private saves: Array<Save> = [];
   /** Current preferences. */
   private preferences: Preferences = DEFAULT_PREFERENCES;
+  /** Set of starred class numbers */
+  private starredClasses: Set<string> = new Set();
 
   /** React callback to update state. */
   callback: ((state: HydrantState) => void) | undefined;
@@ -70,12 +70,6 @@ export class State {
       this.classes.set(number, new Class(cls, this.colorScheme));
     });
     this.initState();
-
-    // Load starred classes from storage
-    const storedStarred = this.store.get("starredClasses");
-    if (storedStarred) {
-      this.starredClasses = new Set(storedStarred);
-    }
   }
 
   /** All activities. */
@@ -272,6 +266,29 @@ export class State {
     this.updateState(save);
   }
 
+  /** Star or unstar a class */
+  toggleStarClass(cls: Class): void {
+    if (this.starredClasses.has(cls.number)) {
+      this.starredClasses.delete(cls.number);
+    } else {
+      this.starredClasses.add(cls.number);
+    }
+    this.store.set("starredClasses", Array.from(this.starredClasses));
+    this.updateState();
+  }
+
+  /** Check if a class is starred */
+  isClassStarred(cls: Class): boolean {
+    return this.starredClasses.has(cls.number);
+  }
+
+  /** Get all starred classes */
+  getStarredClasses(): Class[] {
+    return Array.from(this.starredClasses)
+      .map((number) => this.classes.get(number))
+      .filter((cls): cls is Class => cls !== undefined);
+  }
+
   //========================================================================
   // Loading and saving
 
@@ -408,28 +425,10 @@ export class State {
     } else {
       this.loadSave(this.saves[0]!.id);
     }
-  }
-
-  /** Star or unstar a class */
-  toggleStarClass(classNumber: string): void {
-    if (this.starredClasses.has(classNumber)) {
-      this.starredClasses.delete(classNumber);
-    } else {
-      this.starredClasses.add(classNumber);
+    // Load starred classes from storage
+    const storedStarred = this.store.get("starredClasses");
+    if (storedStarred) {
+      this.starredClasses = new Set(storedStarred);
     }
-    this.store.set("starredClasses", Array.from(this.starredClasses));
-    this.updateState();
-  }
-
-  /** Check if a class is starred */
-  isClassStarred(classNumber: string): boolean {
-    return this.starredClasses.has(classNumber);
-  }
-
-  /** Get all starred classes */
-  getStarredClasses(): Class[] {
-    return Array.from(this.starredClasses)
-      .map((number) => this.classes.get(number))
-      .filter((cls): cls is Class => cls !== undefined);
   }
 }

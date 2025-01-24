@@ -6,15 +6,16 @@ import {
   type IRowNode,
   type ColDef,
 } from "ag-grid-community";
-import { Box, Group, Flex, Input } from "@chakra-ui/react";
+import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
 import { InputGroup } from "./ui/input-group";
-import { Button } from "./ui/button";
+import { Button, LabelledButton } from "./ui/button";
+import { useColorMode } from "./ui/color-mode";
 
-import { Class, Flags, getFlagImg } from "../lib/class";
+import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { State } from "../lib/state";
 import { TSemester } from "../lib/dates";
@@ -206,7 +207,7 @@ type FilterGroup = Array<
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
-  ["starred", "My starred", <LuStar fill="currentColor" />],
+  ["starred", "Starred", <LuStar fill="currentColor" />],
   ["hass", "HASS"],
   ["cih", "CI-H"],
   ["fits", "Fits schedule"],
@@ -279,11 +280,7 @@ function ClassFlags(props: {
       newFlags.forEach((value, flag) => {
         if (value && flag === "fits" && !state.fitsSchedule(cls)) {
           result = false;
-        } else if (
-          value &&
-          flag === "starred" &&
-          !state.isClassStarred(cls.number)
-        ) {
+        } else if (value && flag === "starred" && !state.isClassStarred(cls)) {
           result = false;
         } else if (
           value &&
@@ -297,21 +294,49 @@ function ClassFlags(props: {
       return result;
     });
   };
+  const { colorMode } = useColorMode();
 
   const renderGroup = (group: FilterGroup) => {
     return (
       <Group attached colorPalette="orange" wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
+
+          // hide starred button if no classes starred
+          if (flag === "starred" && state.getStarredClasses().length === 0) {
+            return null;
+          }
+
           return image ? (
-            <Button
-              key={flag}
-              onClick={() => onChange(flag, !checked)}
-              title={label}
-              variant={checked ? "solid" : "outline"}
-            >
-              {image}
-            </Button>
+            typeof image === "string" ? (
+              // if image is a string, it's a path to an image
+              <LabelledButton
+                key={flag}
+                onClick={() => onChange(flag, !checked)}
+                title={label}
+                variant={checked ? "solid" : "outline"}
+              >
+                <Image
+                  src={image}
+                  alt={label}
+                  filter={
+                    colorMode === "dark" && DARK_IMAGES.includes(flag ?? "")
+                      ? "invert()"
+                      : ""
+                  }
+                />
+              </LabelledButton>
+            ) : (
+              // image is a react element, like an icon
+              <Button
+                key={flag}
+                onClick={() => onChange(flag, !checked)}
+                aria-label={label}
+                variant={checked ? "solid" : "outline"}
+              >
+                {image}
+              </Button>
+            )
           ) : (
             <Button
               key={flag}
@@ -347,23 +372,23 @@ function ClassFlags(props: {
 }
 
 const StarButton = ({
-  classNumber,
+  cls,
   state,
   onStarToggle,
 }: {
-  classNumber: string;
+  cls: Class;
   state: State;
   onStarToggle?: () => void;
 }) => {
-  const isStarred = state.isClassStarred(classNumber);
+  const isStarred = state.isClassStarred(cls);
   return (
     <Button
       onClick={(e) => {
         e.stopPropagation();
-        state.toggleStarClass(classNumber);
+        state.toggleStarClass(cls);
         onStarToggle?.();
       }}
-      variant="ghost"
+      variant="plain"
       size="sm"
       aria-label={isStarred ? "Unstar class" : "Star class"}
     >
@@ -409,7 +434,7 @@ export function ClassTable(props: {
         maxWidth: 49,
         cellRenderer: (params: { value: string; data: ClassTableRow }) => (
           <StarButton
-            classNumber={params.value}
+            cls={params.data.class}
             state={state}
             onStarToggle={() => {
               gridRef.current?.api?.refreshCells({
@@ -450,7 +475,7 @@ export function ClassTable(props: {
       },
       { field: "name", sortable: false, flex: 1 },
     ];
-  }, [state.term.semester]);
+  }, [state]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
     return {
