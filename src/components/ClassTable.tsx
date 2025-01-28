@@ -210,6 +210,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["starred", "Starred", <LuStar fill="currentColor" />],
   ["hass", "HASS"],
   ["cih", "CI-H"],
+  ["cim", "CI-M"],
   ["fits", "Fits schedule"],
   ["nofinal", "No final"],
   ["nopreq", "No prereq"],

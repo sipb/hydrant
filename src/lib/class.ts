@@ -50,6 +50,7 @@ export type Flags = {
   cih: boolean;
   cihw: boolean;
   notcih: boolean;
+  cim: boolean;
   final: boolean;
   nofinal: boolean;
   nopreq: boolean;
@@ -375,6 +376,7 @@ export class Class {
       cih: this.rawClass.cih,
       cihw: this.rawClass.cihw,
       notcih: !this.rawClass.cih && !this.rawClass.cihw,
+      cim: !!this.rawClass.cim?.length,
       final: this.rawClass.final,
       nofinal: !this.rawClass.final,
       nopreq: this.rawClass.prereqs === "None",
