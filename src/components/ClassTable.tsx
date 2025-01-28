@@ -303,7 +303,11 @@ function ClassFlags(props: {
           const checked = flags.get(flag);
 
           // hide starred button if no classes starred
-          if (flag === "starred" && state.getStarredClasses().length === 0) {
+          if (
+            flag === "starred" &&
+            state.getStarredClasses().length === 0 &&
+            !checked
+          ) {
             return null;
           }
 
