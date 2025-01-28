@@ -1,9 +1,8 @@
-import { Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
+import { Flex, Heading, Image, Link, Text, Button } from "@chakra-ui/react";
 import { decode } from "html-entities";
 
 import { useColorMode } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
-import { Button } from "./ui/button";
 
 import { Activity, NonClass } from "../lib/activity";
 import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";

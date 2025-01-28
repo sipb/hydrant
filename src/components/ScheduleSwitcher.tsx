@@ -5,6 +5,7 @@ import {
   Input,
   Link,
   createListCollection,
+  Button,
 } from "@chakra-ui/react";
 import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 
@@ -18,7 +19,6 @@ import {
   DialogTrigger,
   DialogActionTrigger,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
 
 import { State } from "../lib/state";

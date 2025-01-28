@@ -1,4 +1,4 @@
-import { Card, IconButton, Flex, Image, Text } from "@chakra-ui/react";
+import { Card, IconButton, Flex, Image, Text, Button } from "@chakra-ui/react";
 import { LuX } from "react-icons/lu";
 
 import {
@@ -12,7 +12,6 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 import { useColorModeValue, ColorModeIcon } from "./ui/color-mode";
-import { Button } from "./ui/button";
 import {
   SelectContent,
   SelectItem,

@@ -24,6 +24,7 @@ export function MatrixLink(props: { selectedActivities: Array<Activity> }) {
         colorPalette="teal"
         size="sm"
         href={matrixLink}
+        variant="solid"
         target="_blank"
         rel="noreferrer"
         fontWeight={"semibold"}
