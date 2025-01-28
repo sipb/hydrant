@@ -9,6 +9,7 @@ Functions:
 
 import fireroad
 import catalog
+import cim
 import package
 
 
@@ -22,6 +23,8 @@ def run():
     fireroad.run(True)
     print("=== Update catalog data ===")
     catalog.run()
+    print("=== Update CI-M data ===")
+    cim.run()
     print("=== Packaging ===")
     package.run()
 
