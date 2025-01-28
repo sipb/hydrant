@@ -6,13 +6,13 @@ import {
   type IRowNode,
   type ColDef,
 } from "ag-grid-community";
-import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
+import { Box, Flex, Image, Input, Button, ButtonGroup } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
 import { InputGroup } from "./ui/input-group";
-import { Button, LabelledButton } from "./ui/button";
+import { LabelledButton } from "./ui/button";
 import { useColorMode } from "./ui/color-mode";
 
 import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
@@ -298,7 +298,7 @@ function ClassFlags(props: {
 
   const renderGroup = (group: FilterGroup) => {
     return (
-      <Group attached colorPalette="orange" wrap="wrap">
+      <ButtonGroup attached colorPalette="orange" wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
@@ -351,7 +351,7 @@ function ClassFlags(props: {
             </Button>
           );
         })}
-      </Group>
+      </ButtonGroup>
     );
   };
 

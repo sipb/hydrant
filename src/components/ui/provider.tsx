@@ -18,6 +18,15 @@ const system = createSystem(defaultConfig, {
         l3: { value: "{radii.lg}" },
       },
     },
+    recipes: {
+      button: {
+        defaultVariants: {
+          // @ts-expect-error: this works I promise :(
+          variant: "subtle",
+          fontweight: "semibold",
+        },
+      },
+    },
   },
 });
 

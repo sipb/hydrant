@@ -24,6 +24,7 @@ export function PreregLink(props: { selectedActivities: Array<Activity> }) {
         colorPalette="cyan"
         size="sm"
         href={preregLink}
+        variant="solid"
         target="_blank"
         rel="noreferrer"
         fontWeight={"semibold"}
