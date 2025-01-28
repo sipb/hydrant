@@ -103,6 +103,8 @@ MONTHS = {
 }
 
 
+# missing-class-docstring is disabled in .pylintrc for now
+# this class is WAY too trivial to need a docstring
 class Term(Enum):
     FA = "fall"
     JA = "IAP"
@@ -125,14 +127,16 @@ def find_timeslot(day, slot, pm):
 
     Raises KeyError if no matching timeslot could be found.
     """
-    if pm:
-        return DAYS[day] + EVE_TIMES[slot]
-    return DAYS[day] + TIMES[slot]
+    time_dict = EVE_TIMES if pm else TIMES
+    if day not in DAYS or slot not in time_dict:  # error handling!
+        raise ValueError(f"Invalid timeslot {day}, {slot}, {pm}")
+    return DAYS[day] + time_dict[slot]
 
 
 def zip_strict(*iterables):
     """
-    Helper function for grouper. Groups values of the iterator on the same iteration together.
+    Helper function for grouper.
+    Groups values of the iterator on the same iteration together.
 
     Args:
     * iterables (tuple[Iterable[any]]): a list of iterables.
@@ -141,10 +145,10 @@ def zip_strict(*iterables):
     * generator: A generator, which you can iterate over.
     """
     sentinel = object()
-    for tuple in itertools.zip_longest(*iterables, fillvalue=sentinel):
-        if any(sentinel is t for t in tuple):
+    for group in itertools.zip_longest(*iterables, fillvalue=sentinel):
+        if any(sentinel is t for t in group):
             raise ValueError("Iterables have different lengths")
-        yield tuple
+        yield group
 
 
 def grouper(iterable, n):
@@ -169,14 +173,16 @@ def grouper(iterable, n):
 def get_term_info(is_semester_term):
     """
     Gets the latest term info from "../public/latestTerm.json" as a dictionary.
+    If is_semester_term = True, looks at semester term (fall/spring).
+    If is_semester_term = False, looks at pre-semester term (summer/IAP)
 
     Args:
-    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+    * is_semester_term (bool): whether to look at the semester or the pre-semester term.
 
     Returns:
     * dict: the term info for the selected term from latestTerm.json.
     """
-    with open("../public/latestTerm.json") as f:
+    with open("../public/latestTerm.json", encoding="utf-8") as f:
         term_info = json.load(f)
     if is_semester_term:
         return term_info["semester"]

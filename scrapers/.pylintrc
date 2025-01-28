@@ -4,4 +4,10 @@ disable=
     invalid-name, 
 
     # false alarms: these files all import each other
-    import-error
+    import-error,
+
+    # this is good coding style, no need to flag
+    no-else-return,
+
+    # the Term class in utils.py is too trivial to need a doctoring
+    missing-class-docstring

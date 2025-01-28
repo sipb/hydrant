@@ -16,8 +16,9 @@ Functions:
 * parse_attributes(course)
 * parse_terms(course)
 * parse_prereqs(course)
-* get_course_data(courses, course)
-* run()
+* get_course_data(courses, course, term)
+* get_raw_data()
+* run(is_semester_term)
 """
 
 import json
@@ -313,8 +314,9 @@ def get_course_data(courses, course, term):
                 raw_class.update(parse_schedule(course["scheduleSpring"]))
             else:
                 raw_class.update(parse_schedule(course["schedule"]))
-        except Exception as e:
+        except ValueError as e:
             # if we can't parse the schedule, warn
+            # NOTE: parse_schedule will raise a ValueError
             print(f"Can't parse schedule {course_code}: {e!r}")
             has_schedule = False
     if not has_schedule:
@@ -388,18 +390,35 @@ def get_course_data(courses, course, term):
     return True
 
 
-def run(is_semester_term):
+def get_raw_data():
     """
-    The main entry point. All data is written to `fireroad.json`.
+    Obtains raw data directly from the Fireroad API.
+    Helper function for run().
 
     Args:
-    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+    * is_semester_term (bool): whether to look at the semester or the pre-semester term.
+    """
+    r = requests.get(
+        URL, timeout=10
+    )  # more generous here; empirically usually ~1-1.5 seconds
+    text = r.text
+    data = json.loads(text)
+    return data
+
+
+def run(is_semester_term):
+    """
+    Gets the latest term info from "../public/latestTerm.json" as a dictionary.
+    If is_semester_term = True, looks at semester term (fall/spring).
+    If is_semester_term = False, looks at pre-semester term (summer/IAP)
+
+    Args:
+    * is_semester_term (bool): whether to look at the semester or the pre-semester term.
 
     Returns: none
     """
-    text = requests.get(URL).text
-    data = json.loads(text)
-    courses = dict()
+    data = get_raw_data()
+    courses = {}
     term = utils.url_name_to_term(utils.get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
     missing = 0
@@ -409,7 +428,7 @@ def run(is_semester_term):
         if not included:
             missing += 1
 
-    with open(fname, "w") as f:
+    with open(fname, "w", encoding="utf-8") as f:
         json.dump(courses, f)
     print(f"Got {len (courses)} courses")
     print(f"Skipped {missing} courses that are not offered in the {term.value} term")
