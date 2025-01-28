@@ -9,7 +9,7 @@ import {
 import { Box, Group, Flex, Image, Input } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import { LuPlus, LuMinus, LuSearch } from "react-icons/lu";
+import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
 import { InputGroup } from "./ui/input-group";
 import { Button, LabelledButton } from "./ui/button";
@@ -201,10 +201,13 @@ function ClassInput(props: {
   );
 }
 
-type FilterGroup = Array<[keyof Flags | "fits", string, string?]>;
+type FilterGroup = Array<
+  [keyof Flags | "fits" | "starred", string, React.ReactNode?]
+>;
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
+  ["starred", "Starred", <LuStar fill="currentColor" />],
   ["hass", "HASS"],
   ["cih", "CI-H"],
   ["fits", "Fits schedule"],
@@ -245,7 +248,9 @@ function ClassFlags(props: {
   const { setFlagsFilter, state, updateFilter } = props;
 
   // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<keyof Flags | "fits", boolean>>(() => {
+  const [flags, setFlags] = useState<
+    Map<keyof Flags | "fits" | "starred", boolean>
+  >(() => {
     const result = new Map();
     for (const flag of CLASS_FLAGS) {
       result.set(flag, false);
@@ -262,7 +267,7 @@ function ClassFlags(props: {
     state.fitsScheduleCallback = () => flags.get("fits") && updateFilter();
   }, [state, flags, updateFilter]);
 
-  const onChange = (flag: keyof Flags | "fits", value: boolean) => {
+  const onChange = (flag: keyof Flags | "fits" | "starred", value: boolean) => {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
     setFlags(newFlags);
@@ -275,14 +280,20 @@ function ClassFlags(props: {
       newFlags.forEach((value, flag) => {
         if (value && flag === "fits" && !state.fitsSchedule(cls)) {
           result = false;
-        } else if (value && flag !== "fits" && !cls.flags[flag]) {
+        } else if (value && flag === "starred" && !state.isClassStarred(cls)) {
+          result = false;
+        } else if (
+          value &&
+          flag !== "fits" &&
+          flag !== "starred" &&
+          !cls.flags[flag]
+        ) {
           result = false;
         }
       });
       return result;
     });
   };
-
   const { colorMode } = useColorMode();
 
   const renderGroup = (group: FilterGroup) => {
@@ -290,24 +301,42 @@ function ClassFlags(props: {
       <Group attached colorPalette="orange" wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
+
+          // hide starred button if no classes starred
+          if (flag === "starred" && state.getStarredClasses().length === 0) {
+            return null;
+          }
+
           return image ? (
-            <LabelledButton
-              key={flag}
-              onClick={() => onChange(flag, !checked)}
-              title={label}
-              variant={checked ? "solid" : "outline"}
-              portalled
-            >
-              <Image
-                src={image}
-                alt={label}
-                filter={
-                  colorMode === "dark" && DARK_IMAGES.includes(flag ?? "")
-                    ? "invert()"
-                    : ""
-                }
-              />
-            </LabelledButton>
+            typeof image === "string" ? (
+              // if image is a string, it's a path to an image
+              <LabelledButton
+                key={flag}
+                onClick={() => onChange(flag, !checked)}
+                title={label}
+                variant={checked ? "solid" : "outline"}
+              >
+                <Image
+                  src={image}
+                  alt={label}
+                  filter={
+                    colorMode === "dark" && DARK_IMAGES.includes(flag ?? "")
+                      ? "invert()"
+                      : ""
+                  }
+                />
+              </LabelledButton>
+            ) : (
+              // image is a react element, like an icon
+              <Button
+                key={flag}
+                onClick={() => onChange(flag, !checked)}
+                aria-label={label}
+                variant={checked ? "solid" : "outline"}
+              >
+                {image}
+              </Button>
+            )
           ) : (
             <Button
               key={flag}
@@ -342,6 +371,32 @@ function ClassFlags(props: {
   );
 }
 
+const StarButton = ({
+  cls,
+  state,
+  onStarToggle,
+}: {
+  cls: Class;
+  state: State;
+  onStarToggle?: () => void;
+}) => {
+  const isStarred = state.isClassStarred(cls);
+  return (
+    <Button
+      onClick={(e) => {
+        e.stopPropagation();
+        state.toggleStarClass(cls);
+        onStarToggle?.();
+      }}
+      variant="plain"
+      size="sm"
+      aria-label={isStarred ? "Unstar class" : "Star class"}
+    >
+      <LuStar fill={isStarred ? "currentColor" : "none"} />
+    </Button>
+  );
+};
+
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable(props: {
   classes: Map<string, Class>;
@@ -374,6 +429,25 @@ export function ClassTable(props: {
     };
     return [
       {
+        headerName: "",
+        field: "number",
+        maxWidth: 49,
+        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
+          <StarButton
+            cls={params.data.class}
+            state={state}
+            onStarToggle={() => {
+              gridRef.current?.api?.refreshCells({
+                force: true,
+                columns: ["number"],
+              });
+            }}
+          />
+        ),
+        sortable: false,
+        cellStyle: { padding: 0 },
+      },
+      {
         field: "number",
         headerName: "Class",
         comparator: classSort,
@@ -401,7 +475,7 @@ export function ClassTable(props: {
       },
       { field: "name", sortable: false, flex: 1 },
     ];
-  }, [state.term.semester]);
+  }, [state]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
     return {
