@@ -1,6 +1,21 @@
 #:schema ./override-schema.json
 # Course 21L special subjects (Spring/IAP 2025)
 
+['21L.000']
+url = "https://lit.mit.edu/academics/subject-offerings/#21L.000[J]-60940"
+
+['21L.014']
+same = "21H.007"
+
+['21L.609']
+url = "https://lit.mit.edu/academics/subject-offerings/#21L.609-60975"
+
+['21L.610']
+url = "https://lit.mit.edu/academics/subject-offerings/#21L.610-60976"
+
+['21L.636']
+url = "https://lit.mit.edu/academics/subject-offerings/#21L.636[J]-60979"
+
 ['21L.S60']
 name = "Special Subject in Literature: Rap Theory and Practice"
 same = "CMS.S60"
@@ -11,7 +26,9 @@ isVariableUnits = false
 hassA = true
 meets = 'CMS.S96'
 description = "To gain a deeper understanding of rap, students engage in the full process of creating rap music, including composing lyrics, recording, performing, and creating an EP length album. Existing rap music is studied, selected lyrics are analyzed, and possible reasons for the structure and success of different songs are presented in case studies. Students analyze rap songs, reflect on their own weekly activities in writing and present their work in class by playing recordings, performing and responding to each other in workshop discussions. Licensed for Fall 2024 by the Committee on Curricula. Limited to 10."
+url = "https://lit.mit.edu/academics/subject-offerings/#21L.S60-60953"
 
 ['21L.S89']
 name = "Special Subject in Literature: *Beowulf* and *Judith*"
 description = "Translation and discussion of key passages of the Old English Beowulf and Judith, whose sole surviving copies were bound together over a thousand years ago.  Other topics to be shaped by student interest but may include: hypermeter and theories of Old English meter more generally, Old English prose composition,; the dating and religious perspective of Beowulf; and, depending on availability, workshopping the ongoing development of a chamber opera of Judith, sung in both modern and Old English."
+url = "https://lit.mit.edu/academics/subject-offerings/#21L.S89-60955"
