@@ -34,7 +34,7 @@ jobs:
           pip install pylint
       - name: Analysing the code with pylint
         run: |
-          find . -name '*.py' -exec pylint {} \;
+          pylint `ls -R|grep .py$|xargs`
   prettier:
     name: Prettier
     runs-on: ubuntu-latest
