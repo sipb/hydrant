@@ -77,13 +77,12 @@ def main():
             zfh.extractall(OUTPUT_DIR)
         success = True
         break
-    return (
-        "Fetched artifact successfully"
-        if success
-        else f"Could not find artifact among {len(artifacts)}: {", ".join(
-            a.get("name") for a in artifacts
-        )}"
-    )
+
+    if success:
+        return "Fetched artifact successfully"
+
+    artifact_names = ", ".join(a.get("name") for a in artifacts)
+    return f"Could not find artifact among {len(artifacts)}: {artifact_names}"
 
 
 if __name__ == "__main__":

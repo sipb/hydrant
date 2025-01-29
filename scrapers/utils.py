@@ -103,9 +103,9 @@ MONTHS = {
 }
 
 
-# missing-class-docstring is disabled in .pylintrc for now
-# this class is WAY too trivial to need a docstring
 class Term(Enum):
+    """Terms for the academic year."""
+
     FA = "fall"
     JA = "IAP"
     SP = "spring"
@@ -154,7 +154,9 @@ def zip_strict(*iterables):
 def grouper(iterable, n):
     """
     Groups items of the iterable in equally spaced blocks of n items.
-    If the iterable's length ISN'T a multiple of n, you'll get a ValueError on the last iteration.
+    If the iterable's length ISN'T a multiple of n, you'll get a ValueError
+    on the last iteration.
+
     Example: grouper("ABCDEFGHI", 3) -> ABC DEF GHI
 
     From https://docs.python.org/3/library/itertools.html#itertools-recipes.
@@ -186,8 +188,8 @@ def get_term_info(is_semester_term):
         term_info = json.load(f)
     if is_semester_term:
         return term_info["semester"]
-    else:
-        return term_info["preSemester"]
+
+    return term_info["preSemester"]
 
 
 def url_name_to_term(url_name):

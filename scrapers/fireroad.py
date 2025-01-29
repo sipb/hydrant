@@ -133,13 +133,13 @@ def parse_schedule(schedule):
         result[kind + "RawSections"] = sections
 
         # Section timeslots and rooms.
-        kindSectionsName = kind + "Sections"
-        result[kindSectionsName] = []
+        kind_section_name = kind + "Sections"
+        result[kind_section_name] = []
         for info in sections:
             if info == "TBA":
                 section_tba = True
             else:
-                result[kindSectionsName].append(parse_section(info))
+                result[kind_section_name].append(parse_section(info))
 
     # True if some schedule is not scheduled yet.
     result["tba"] = section_tba
@@ -159,7 +159,7 @@ def decode_quarter_date(date: str):
     if "/" in date:
         month, day = date.split("/")
         return int(month), int(day)
-    elif " " in date:
+    if " " in date:
         month, day = MONTHS[(date.split())[0]], (date.split())[1]
         return int(month), int(day)
 
@@ -284,8 +284,10 @@ def get_course_data(courses, course, term):
     True otherwise. The `courses` variable is modified in place.
 
     Args:
-    * courses (list[dict[str, Union[bool, float, int, list[str], str]]]): The list of courses.
-    * course (dict[str, Union[bool, float, int, list[str], str]]): The course in particular.
+    * courses (list[dict[str, Union[bool, float, int, list[str], str]]]):
+        The list of courses.
+    * course (dict[str, Union[bool, float, int, list[str], str]]):
+        The course in particular.
     * term (Term): The current term (fall, IAP, or spring).
 
     Returns:

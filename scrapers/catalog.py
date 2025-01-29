@@ -105,7 +105,7 @@ def get_half(html):
     """
     if html.find(text=re.compile("first half of term")):
         return 1
-    elif html.find(text=re.compile("second half of term")):
+    if html.find(text=re.compile("second half of term")):
         return 2
     return False
 

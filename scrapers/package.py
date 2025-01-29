@@ -15,10 +15,11 @@ Dependencies:
 
 import datetime
 import json
-import utils
 import os
 import os.path
 import sys
+
+from .utils import get_term_info
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -102,9 +103,9 @@ def run():
         keys_to_keep=set(fireroad_sem) & set(catalog),
     )
 
-    term_info_presem = utils.get_term_info(False)
+    term_info_presem = get_term_info(False)
     url_name_presem = term_info_presem["urlName"]
-    term_info_sem = utils.get_term_info(True)
+    term_info_sem = get_term_info(True)
     url_name_sem = term_info_sem["urlName"]
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
