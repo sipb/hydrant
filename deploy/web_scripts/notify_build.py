@@ -23,7 +23,9 @@ GITHUB_TOKEN = path.join(CI_SECRETS_DIR, "github_token")
 
 # pylint: disable=too-many-locals
 def main():
-    """Fetch the artifact from the GitHub API and extract it into the output directory."""
+    """
+    Fetch the artifact from the GitHub API and extract it into the output directory.
+    """
     # Secret, used for HMAC input validation (so we know GitHub is being real)
     with open(HASH_SECRET, encoding="utf-8") as fh:
         secret = fh.read().strip().encode("utf-8")

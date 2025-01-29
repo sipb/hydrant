@@ -207,11 +207,11 @@ def url_name_to_term(url_name):
     """
     if url_name[0] == "f":
         return Term.FA
-    elif url_name[0] == "i":
+    if url_name[0] == "i":
         return Term.JA
-    elif url_name[0] == "s":
+    if url_name[0] == "s":
         return Term.SP
-    elif url_name[0] == "m":
+    if url_name[0] == "m":
         return Term.SU
-    else:
-        raise ValueError(f"Invalid term {url_name[0]}")
+
+    raise ValueError(f"Invalid term {url_name[0]}")
