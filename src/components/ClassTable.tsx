@@ -212,21 +212,25 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["cim", "CI-M"],
   ["fits", "Fits schedule"],
-  ["nofinal", "No final"],
-  ["nopreq", "No prereq"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
 const CLASS_FLAGS_2: FilterGroup = [
+  ["nofinal", "No final"],
+  ["nopreq", "No prereq"],
   ["under", "Undergrad", getFlagImg("under")],
   ["grad", "Graduate", getFlagImg("grad")],
+];
+
+/** Second row of hidden filter IDs. */
+const CLASS_FLAGS_3: FilterGroup = [
   ["le9units", "≤ 9 units"],
   ["half", "Half-term"],
   ["limited", "Limited enrollment"],
 ];
 
-/** Second row of hidden filter IDs. */
-const CLASS_FLAGS_3: FilterGroup = [
+/** Third row of hidden filter IDs. */
+const CLASS_FLAGS_4: FilterGroup = [
   ["rest", "REST", getFlagImg("rest")],
   ["Lab", "Institute Lab", getFlagImg("Lab")],
   ["hassA", "HASS-A", getFlagImg("hassA")],
@@ -236,7 +240,9 @@ const CLASS_FLAGS_3: FilterGroup = [
   ["notcih", "Not CI-H"],
 ];
 
-const CLASS_FLAGS = CLASS_FLAGS_1.concat(CLASS_FLAGS_2).concat(CLASS_FLAGS_3);
+const CLASS_FLAGS = CLASS_FLAGS_1.concat(CLASS_FLAGS_2)
+  .concat(CLASS_FLAGS_3)
+  .concat(CLASS_FLAGS_4);
 
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
@@ -370,6 +376,7 @@ function ClassFlags(props: {
         <>
           {renderGroup(CLASS_FLAGS_2)}
           {renderGroup(CLASS_FLAGS_3)}
+          {renderGroup(CLASS_FLAGS_4)}
         </>
       )}
     </Flex>
