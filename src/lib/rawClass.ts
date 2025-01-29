@@ -55,6 +55,9 @@ export type RawClass = {
   /** True if partial institute lab */
   partLab: boolean;
 
+  /** Array of programs (free text) for which this class is a CI-M */
+  cim?: Array<string>;
+
   /** Lecture or recitation units */
   lectureUnits: number;
   /** Lab or field work units */

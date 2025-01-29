@@ -201,31 +201,35 @@ function ClassInput(props: {
   );
 }
 
-type FilterGroup = Array<
-  [keyof Flags | "fits" | "starred", string, React.ReactNode?]
->;
+type Filter = keyof Flags | "fits" | "starred";
+type FilterGroup = Array<[Filter, string, React.ReactNode?]>;
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
   ["starred", "Starred", <LuStar fill="currentColor" />],
   ["hass", "HASS"],
   ["cih", "CI-H"],
+  ["cim", "CI-M"],
   ["fits", "Fits schedule"],
-  ["nofinal", "No final"],
-  ["nopreq", "No prereq"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
 const CLASS_FLAGS_2: FilterGroup = [
+  ["nofinal", "No final"],
+  ["nopreq", "No prereq"],
   ["under", "Undergrad", getFlagImg("under")],
   ["grad", "Graduate", getFlagImg("grad")],
+];
+
+/** Second row of hidden filter IDs. */
+const CLASS_FLAGS_3: FilterGroup = [
   ["le9units", "≤ 9 units"],
   ["half", "Half-term"],
   ["limited", "Limited enrollment"],
 ];
 
-/** Second row of hidden filter IDs. */
-const CLASS_FLAGS_3: FilterGroup = [
+/** Third row of hidden filter IDs. */
+const CLASS_FLAGS_4: FilterGroup = [
   ["rest", "REST", getFlagImg("rest")],
   ["Lab", "Institute Lab", getFlagImg("Lab")],
   ["hassA", "HASS-A", getFlagImg("hassA")],
@@ -235,7 +239,12 @@ const CLASS_FLAGS_3: FilterGroup = [
   ["notcih", "Not CI-H"],
 ];
 
-const CLASS_FLAGS = CLASS_FLAGS_1.concat(CLASS_FLAGS_2).concat(CLASS_FLAGS_3);
+const CLASS_FLAGS = [
+  ...CLASS_FLAGS_1,
+  ...CLASS_FLAGS_2,
+  ...CLASS_FLAGS_3,
+  ...CLASS_FLAGS_4,
+];
 
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
@@ -248,9 +257,7 @@ function ClassFlags(props: {
   const { setFlagsFilter, state, updateFilter } = props;
 
   // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<
-    Map<keyof Flags | "fits" | "starred", boolean>
-  >(() => {
+  const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
     const result = new Map();
     for (const flag of CLASS_FLAGS) {
       result.set(flag, false);
@@ -267,7 +274,7 @@ function ClassFlags(props: {
     state.fitsScheduleCallback = () => flags.get("fits") && updateFilter();
   }, [state, flags, updateFilter]);
 
-  const onChange = (flag: keyof Flags | "fits" | "starred", value: boolean) => {
+  const onChange = (flag: Filter, value: boolean) => {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
     setFlags(newFlags);
@@ -360,7 +367,6 @@ function ClassFlags(props: {
       <Flex align="center">
         {renderGroup(CLASS_FLAGS_1)}
         <Button onClick={() => setAllFlags(!allFlags)} size="sm" ml={2}>
-          {" "}
           {allFlags ? <LuMinus /> : <LuPlus />}
           {allFlags ? "Less filters" : "More filters"}
         </Button>
@@ -369,6 +375,7 @@ function ClassFlags(props: {
         <>
           {renderGroup(CLASS_FLAGS_2)}
           {renderGroup(CLASS_FLAGS_3)}
+          {renderGroup(CLASS_FLAGS_4)}
         </>
       )}
     </Flex>

@@ -50,6 +50,7 @@ export type Flags = {
   cih: boolean;
   cihw: boolean;
   notcih: boolean;
+  cim: boolean;
   final: boolean;
   nofinal: boolean;
   nopreq: boolean;
@@ -375,6 +376,7 @@ export class Class {
       cih: this.rawClass.cih,
       cihw: this.rawClass.cihw,
       notcih: !this.rawClass.cih && !this.rawClass.cihw,
+      cim: !!this.rawClass.cim?.length,
       final: this.rawClass.final,
       nofinal: !this.rawClass.final,
       nopreq: this.rawClass.prereqs === "None",
@@ -382,6 +384,11 @@ export class Class {
       half: this.rawClass.half,
       limited: this.rawClass.limited,
     };
+  }
+
+  /** Array of programs (free text) for which this class is a CI-M */
+  get cim(): Array<string> {
+    return this.rawClass.cim ?? [];
   }
 
   /** Evals, or N/A if non-existent. */

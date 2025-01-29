@@ -87,17 +87,18 @@ def run():
     fireroad_presem = load_json_data("fireroad-presem.json")
     fireroad_sem = load_json_data("fireroad-sem.json")
     catalog = load_json_data("catalog.json")
+    cim = load_json_data("cim.json")
     overrides = load_toml_data("overrides.toml.d")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
     # If it's not in catalog, it's not offered this year.
     courses_presem = merge_data(
-        datasets=[fireroad_presem, catalog, overrides],
+        datasets=[fireroad_presem, catalog, cim, overrides],
         keys_to_keep=set(fireroad_presem) & set(catalog),
     )
     courses_sem = merge_data(
-        datasets=[fireroad_sem, catalog, overrides],
+        datasets=[fireroad_sem, catalog, cim, overrides],
         keys_to_keep=set(fireroad_sem) & set(catalog),
     )
 

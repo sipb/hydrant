@@ -149,7 +149,7 @@ def get_home_catalog_links():
     Returns:
     * list[str]: relative links to major-specific subpages to scrape
     """
-    r = requests.get(BASE_URL + "/index.cgi", timeout=1)
+    r = requests.get(BASE_URL + "/index.cgi", timeout=3)
     html = BeautifulSoup(r.content, "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
     return [a["href"] for a in home_list.find_all("a", href=True)]
@@ -167,7 +167,7 @@ def get_all_catalog_links(initial_hrefs):
     """
     hrefs = []
     for il in initial_hrefs:
-        r = requests.get(f"{BASE_URL}/{il}", timeout=1)
+        r = requests.get(f"{BASE_URL}/{il}", timeout=3)
         html = BeautifulSoup(r.content, "html.parser")
         # Links should be in the only table in the #contentmini div
         tables = html.find("div", id="contentmini").find_all("table")
@@ -214,7 +214,7 @@ def scrape_courses_from_page(courses, href):
 
     Returns: none
     """
-    r = requests.get(f"{BASE_URL}/{href}", timeout=1)
+    r = requests.get(f"{BASE_URL}/{href}", timeout=3)
     # The "html.parser" parses pretty badly
     html = BeautifulSoup(r.content, "lxml")
     classes_content = html.find("table", width="100%", border="0").find("td")
