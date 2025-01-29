@@ -128,6 +128,29 @@ function ClassRelated(props: { cls: Class; state: State }) {
   );
 }
 
+/** List of programs for which this class is a CI-M. */
+function ClassCIM(props: { cls: Class }) {
+  const { cls } = props;
+  const { cim } = cls;
+
+  const url =
+    "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject";
+
+  if (cim.length > 0) {
+    return (
+      <Text>
+        CI-M for: {cim.join("; ")} (
+        <Link href={url} target="_blank" colorPalette="blue">
+          more info
+        </Link>
+        )
+      </Text>
+    );
+  } else {
+    return <></>;
+  }
+}
+
 /** Class evaluation info. */
 function ClassEval(props: { cls: Class }) {
   const { cls } = props;
@@ -185,6 +208,7 @@ function ClassDescription(props: { cls: Class; state: State }) {
       <Flex direction="column" gap={0.5}>
         <ClassTypes cls={cls} state={state} />
         <ClassRelated cls={cls} state={state} />
+        <ClassCIM cls={cls} />
         <ClassEval cls={cls} />
       </Flex>
       <ClassButtons cls={cls} state={state} />

@@ -386,6 +386,11 @@ export class Class {
     };
   }
 
+  /** Array of programs (free text) for which this class is a CI-M */
+  get cim(): Array<string> {
+    return this.rawClass.cim ?? [];
+  }
+
   /** Evals, or N/A if non-existent. */
   get evals(): {
     rating: string;
