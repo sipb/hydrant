@@ -423,8 +423,8 @@ export function ClassTable(props: {
         columns: ["number"],
       });
     };
-    window.addEventListener('refreshStarCells', refreshCells);
-    return () => window.removeEventListener('refreshStarCells', refreshCells);
+    window.addEventListener("refreshStarCells", refreshCells);
+    return () => window.removeEventListener("refreshStarCells", refreshCells);
   }, []);
 
   // Setup table columns
