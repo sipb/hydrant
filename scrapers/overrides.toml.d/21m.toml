@@ -1,0 +1,59 @@
+#:schema ./override-schema.json
+# Course 21M special subjects (Spring/IAP 2025)
+
+['21M.128']
+name = "Moments in Music: Miles Davis (1st Half of Term)"
+description = "New York, 1945: a young Juilliard student from East St. Louis, IL finds himself in the vortex of the bebop revolution, replacing Dizzy Gillespie in the Charlie Parker Quintet. Over the next 46 years, Miles Davis transformed the sound and scope of modern jazz several times over, pioneering cool jazz (Birth of the Cool), hard bop, and modal jazz (Kind of Blue) in the 1950s, plunging into electronics and inventing jazz-rock (In a Silent Way, Bitches Brew) in the 1960s and ‘70s, then re-emerging in the 1980s to embrace pop forms, all while maintaining a unique and immediately recognizable persona, both musically and personally.  This class will cover the breadth of Davis' career and influence, contextualizing his work both musically and culturally.  Coursework will include close listening to Davis and other music of the period, reading (source material and later histories and analysis), and a final project focusing on one album from Davis' vast oeuvre."
+
+['21M.129']
+name = "Moments in Music: Bob Dylan (2nd Half of Term)"
+description = "Because Bob Dylan didn’t exist, Robert Zimmerman was forced to invent himself, in the early 1960s cafés of New York’s Greenwich Village. After his early anthems (Blowin' in the Wind, Hard Rain, The Times They Are a-Changin') established him as reluctant ‘voice of his generation,’ Dylan just as quickly rejected the honor, abruptly shifting styles, refusing to be pigeonholed, and reshaping the landscape of folk and rock.  600+ songs later, with 10 Grammys, an Oscar, a Presidential Medal of Freedom, and the Nobel Prize for Literature under his belt, he continues to write, tour, and reinvent both his own work and his legacy. His songs continue to permeate every aspect of pop culture.  In this class we examine the craft of his songwriting and the scope of his career, through close listening to Dylan, his precursors and contemporaries, reading (source material and later histories and analyses) and a final project focusing on one aspect of Dylan's variegated career and work."
+
+['21M.139']
+name = "Moments in Music: Introduction to Arranging (2nd Half of Term)"
+description = "Do you love listening to different covers of your favorite artists and songs? Are you intrigued by how a simple melody can be heard in a variety of colors and styles by different ensembles and instruments? The craft of arranging previously composed music, whether one’s own or another’s, is a way to express oneself musically in a variety of timbres, sounds, and textures. We will explore arranging as a bi-directional process: reducing a large score to a piano reduction and taking something as basic as a lead sheet melody with chords and expanding it to a larger vocal or instrumental piece. As a final project students will arrange a short piece of their choice for an a cappella or small instrumental ensemble."
+prereqs = "21M.051, 21M.150/21M.151, or equivalent"
+
+['21M.269']
+name = "Studies in Western Music History: Music for Animated Films"
+prereqs = "21M.301 or permission of instructor"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+hassA = true
+description = "Music for Animated Films is designed as a complement to 21M.284 (Film Music), from which animation is excluded due to lack of time. The subject's primary objective is to equip students with tools and methods for analysis of this specialized branch of film music, supported by awareness of broader esthetic and historical contexts. The syllabus includes a quick survey of music for silent and early sound films, with attention to stylistic legacies of key studios (Disney, WB, MGM, UPA). Attention is given to landmark early Disney features (Snow White, Pinocchio, Bambi), leading at the term's end to case studies of feature film scores produced by the Ghibli and Pixar studios (among them, Princess Mononoke and the Toy Story and Incredibles series). Throughout the term technological and economic conditions will be noted, along with esthetic and cultural issues of reception and interpretation. Required work will include personal responses and analytic reports—starting with discussion of short segments from early films and soundtracks, culminating in a comparative paper about two contrasting scores overall. During the second half of the term there will be team projects on one or two favorite films."
+
+['21M.299']
+name = "Studies in Global Musics: Music of Asian America"
+prereqs = "21M.030 or permission of instructor"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+hassA = true
+description = "This course explores the historical and present-day music created by people of Asian descent in the United States. From Cantonese opera to Mitski, from taiko to bhangra, from classical to hip hop, from amateur community groups to pop stars, we will explore how Asian American musicians have made artistic choices, navigated questions of identity, and pursued musical innovation over the past two centuries. Readings will be drawn primarily from ethnomusicology and Asian American studies. Students will produce a final project based on either original research or creative practice."
+
+['21M.369']
+name = "Studies in Music Technology: Musical acoustics, synthesis, and digital audio effects"
+description = """Covers the physics and acoustics of music and musical instruments, computational models of musical acoustics, and digital signal processing techniques for audio effects. Topics include the basics of sound propagation and auditory perception; the specific acoustical phenomena of wind, string, and percussion instruments as well as the voice; room acoustics; vibration and acoustic measurement techniques; historical contexts of instrument designs; instrument building and design; music synthesis; physical modeling synthesis including digital waveguides, modal models, and finite difference schemes; programming of digital audio effects such as equalization and filtering, delay effects, dynamic range control, reverberation, and distortion.
+
+Emphasis will be placed on practical applications including measurements, real-time audio programming, critical listening, and physical making.  Students will work on a significant final project with topics including building an instrument, augmenting an instrument with an acoustic or digital intervention, developing a synthesis model of an instrument, or programming a real-time audio effect not covered in the class. Students taking the graduate version will complete extended assignments.
+
+Students should be familiar with signal processing, digital audio, and programming (Python with some C++)."""
+
+['21M.S53']
+name = "Axiom Chamber Ensemble"
+description = """This spring, AXIOM will examine the sound world of the nonet by studying and performing the Nonet in F major of Louis Spohr (sometimes called the “Grand Nonet”), and the Nonet in Eb major of Louise Farrenc. The instrumentation required for both is the same: Flute, Oboe, Clarinet, Bassoon, French horn, Violin, Viola, Cello, and Bass
+
+Auditions for the Spohr will be February 4, 2025 at 3:35pm in W18-4311. Please prepare a solo of your choice no longer than one minute. After that, there will be sight reading.
+
+Please email Dr. Boyles (akboyles@mit.edu) for further information."""
+
+['21M.S54']
+name = "Axiom Chamber Ensemble"
+description = """This spring, AXIOM will examine the sound world of the nonet by studying and performing the Nonet in F major of Louis Spohr (sometimes called the “Grand Nonet”), and the Nonet in Eb major of Louise Farrenc. The instrumentation required for both is the same: Flute, Oboe, Clarinet, Bassoon, French horn, Violin, Viola, Cello, and Bass
+
+Auditions for the Spohr will be February 4, 2025 at 3:35pm in W18-4311. Please prepare a solo of your choice no longer than one minute. After that, there will be sight reading.
+
+Please email Dr. Boyles (akboyles@mit.edu) for further information."""

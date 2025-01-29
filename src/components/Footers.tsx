@@ -1,4 +1,4 @@
-import { Flex, Link, Text } from "@chakra-ui/react";
+import { Flex, Link, Text, Button } from "@chakra-ui/react";
 import { useState } from "react";
 
 import {
@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogActionTrigger,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
 
 import { State } from "../lib/state";
 

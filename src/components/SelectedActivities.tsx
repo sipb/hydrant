@@ -1,7 +1,5 @@
-import { Flex, Group, Text } from "@chakra-ui/react";
+import { Flex, Text, Button, ButtonGroup } from "@chakra-ui/react";
 import { ComponentPropsWithoutRef } from "react";
-
-import { Button } from "./ui/button";
 
 import { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
@@ -60,7 +58,7 @@ export function SelectedActivities(props: {
         <Text>{units} units</Text>
         <Text>{hours.toFixed(1)} hours</Text>
       </Flex>
-      <Group gap={0} wrap="wrap">
+      <ButtonGroup gap={0} wrap="wrap">
         {selectedActivities.map((activity) => (
           <ActivityButton
             key={activity instanceof Class ? activity.number : activity.id}
@@ -72,7 +70,7 @@ export function SelectedActivities(props: {
           <LuPlus />
           Activity
         </Button>
-      </Group>
+      </ButtonGroup>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
           <Text fontSize="sm">{warning}</Text>

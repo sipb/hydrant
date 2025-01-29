@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
-import { Center, Flex, Group, Spinner } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Group,
+  Spinner,
+  Button,
+  ButtonGroup,
+} from "@chakra-ui/react";
 
-import { Button } from "./ui/button";
 import { Tooltip } from "./ui/tooltip";
 import { Provider } from "./ui/provider";
 import { useColorMode } from "./ui/color-mode";
@@ -213,7 +219,7 @@ function HydrantApp() {
               </Group>
             </Center>
             <Center>
-              <Group wrap="wrap" justifyContent="center" gap={2}>
+              <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
                 {/* <Tooltip
                   label={
                     isExporting
@@ -245,7 +251,7 @@ function HydrantApp() {
                 </Tooltip>
                 <PreregLink selectedActivities={state.selectedActivities} />
                 <MatrixLink selectedActivities={state.selectedActivities} />
-              </Group>
+              </ButtonGroup>
             </Center>
             <SelectedActivities
               selectedActivities={state.selectedActivities}

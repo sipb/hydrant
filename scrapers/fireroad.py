@@ -16,48 +16,58 @@ Functions:
 * parse_attributes(course)
 * parse_terms(course)
 * parse_prereqs(course)
-* get_course_data(courses, course)
-* run()
+* get_course_data(courses, course, term)
+* get_raw_data()
+* run(is_semester_term)
 """
 
 import json
+import os.path
+
 import requests
-import utils
-from utils import Term
+from .utils import (
+    Term,
+    find_timeslot,
+    grouper,
+    MONTHS,
+    GIR_REWRITE,
+    url_name_to_term,
+    get_term_info,
+)
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
-def parse_timeslot(day, slot, pm):
+def parse_timeslot(day, slot, time_is_pm):
     """Parses a timeslot. Example: parse_timeslot("M", "10-11.30", False) -> [4, 3]
 
     Args:
     * day (str): The day as a string
     * slot (str): The slot as a string
-    * pm (bool): Whether the timeslot is in the evening
+    * time_is_pm (bool): Whether the timeslot is in the evening
 
     Returns:
     * list[int]: The parsed day and timeslot
 
-    Raises AssertionError if pm and slot disagree on whether the slot is in the
-    evening, or if the start slot is later than the end slot.
+    Raises AssertionError if time_is_pm and slot disagree on whether the slot is in
+    the evening, or if the start slot is later than the end slot.
 
     Raises KeyError if no matching timeslot could be found.
     """
-    assert pm == slot.endswith(" PM")
+    assert time_is_pm == slot.endswith(" PM")
     slot = slot.rstrip(" PM")
 
     if "-" in slot:
         start, end = slot.split("-")
         try:
-            start_slot = utils.find_timeslot(day, start, pm)
-            end_slot = utils.find_timeslot(day, end, pm)
+            start_slot = find_timeslot(day, start, time_is_pm)
+            end_slot = find_timeslot(day, end, time_is_pm)
         except KeyError:
             # Maybe the start time is AM but the end time is PM
-            start_slot = utils.find_timeslot(day, start, False)
-            end_slot = utils.find_timeslot(day, end, True)
+            start_slot = find_timeslot(day, start, False)
+            end_slot = find_timeslot(day, end, True)
     else:
-        start_slot = utils.find_timeslot(day, slot, pm)
+        start_slot = find_timeslot(day, slot, time_is_pm)
         # Slot is one hour long, so length is 2.
         end_slot = start_slot + 2
 
@@ -81,11 +91,11 @@ def parse_section(section):
     place, *infos = section.split("/")
     slots = []
 
-    for weekdays, pm, slot in utils.grouper(infos, 3):
+    for weekdays, is_pm_int, slot in grouper(infos, 3):
         for day in weekdays:
             if day == "S":
-                continue  # TODO: handle saturday
-            slots.append(parse_timeslot(day, slot, bool(int(pm))))
+                continue
+            slots.append(parse_timeslot(day, slot, bool(int(is_pm_int))))
 
     return [slots, place]
 
@@ -125,13 +135,13 @@ def parse_schedule(schedule):
         result[kind + "RawSections"] = sections
 
         # Section timeslots and rooms.
-        kindSectionsName = kind + "Sections"
-        result[kindSectionsName] = []
+        kind_section_name = kind + "Sections"
+        result[kind_section_name] = []
         for info in sections:
             if info == "TBA":
                 section_tba = True
             else:
-                result[kindSectionsName].append(parse_section(info))
+                result[kind_section_name].append(parse_section(info))
 
     # True if some schedule is not scheduled yet.
     result["tba"] = section_tba
@@ -151,8 +161,8 @@ def decode_quarter_date(date: str):
     if "/" in date:
         month, day = date.split("/")
         return int(month), int(day)
-    elif " " in date:
-        month, day = utils.MONTHS[(date.split())[0]], (date.split())[1]
+    if " " in date:
+        month, day = MONTHS[(date.split())[0]], (date.split())[1]
         return int(month), int(day)
 
     return None
@@ -262,7 +272,7 @@ def parse_prereqs(course):
     * dict[str, str]: The parsed prereqs, in the key "prereqs".
     """
     prereqs = course.get("prerequisites", "")
-    for gir, gir_rw in utils.GIR_REWRITE.items():
+    for gir, gir_rw in GIR_REWRITE.items():
         prereqs = prereqs.replace(gir, gir_rw)
     if not prereqs:
         prereqs = "None"
@@ -276,8 +286,10 @@ def get_course_data(courses, course, term):
     True otherwise. The `courses` variable is modified in place.
 
     Args:
-    * courses (list[dict[str, Union[bool, float, int, list[str], str]]]): The list of courses.
-    * course (dict[str, Union[bool, float, int, list[str], str]]): The course in particular.
+    * courses (list[dict[str, Union[bool, float, int, list[str], str]]]):
+        The list of courses.
+    * course (dict[str, Union[bool, float, int, list[str], str]]):
+        The course in particular.
     * term (Term): The current term (fall, IAP, or spring).
 
     Returns:
@@ -313,9 +325,10 @@ def get_course_data(courses, course, term):
                 raw_class.update(parse_schedule(course["scheduleSpring"]))
             else:
                 raw_class.update(parse_schedule(course["schedule"]))
-        except Exception as e:
+        except ValueError as val_err:
             # if we can't parse the schedule, warn
-            print(f"Can't parse schedule {course_code}: {e!r}")
+            # NOTE: parse_schedule will raise a ValueError
+            print(f"Can't parse schedule {course_code}: {val_err!r}")
             has_schedule = False
     if not has_schedule:
         raw_class.update(
@@ -347,8 +360,8 @@ def get_course_data(courses, course, term):
                 "meets": ", ".join(course.get("meets_with_subjects", [])),
             }
         )
-    except KeyError as e:
-        print(f"Can't parse {course_code}: {e!r}")
+    except KeyError as key_err:
+        print(f"Can't parse {course_code}: {key_err!r}")
         return False
     # This should be the case with variable-units classes, but just to make
     # sure.
@@ -364,7 +377,6 @@ def get_course_data(courses, course, term):
         {
             "description": course.get("description", ""),
             "name": course.get("title", ""),
-            # TODO: improve instructor parsing
             "inCharge": ",".join(course.get("instructors", [])),
             "virtualStatus": course.get("virtual_status", "") == "Virtual",
         }
@@ -388,20 +400,38 @@ def get_course_data(courses, course, term):
     return True
 
 
+def get_raw_data():
+    """
+    Obtains raw data directly from the Fireroad API.
+    Helper function for run().
+
+    Args:
+    * is_semester_term (bool): whether to look at the semester or the pre-semester term.
+    """
+    raw_data_req = requests.get(
+        URL, timeout=10
+    )  # more generous here; empirically usually ~1-1.5 seconds
+    text = raw_data_req.text
+    data = json.loads(text)
+    return data
+
+
 def run(is_semester_term):
     """
     The main entry point. All data is written to `fireroad.json`.
+    If is_semester_term = True, looks at semester term (fall/spring).
+    If is_semester_term = False, looks at pre-semester term (summer/IAP)
 
     Args:
-    * is_semester_term (bool): whether to look at the semester term (fall/spring) or the pre-semester term (summer/IAP).
+    * is_semester_term (bool): whether to look at the semester or the pre-semester term.
 
     Returns: none
     """
-    text = requests.get(URL).text
-    data = json.loads(text)
-    courses = dict()
-    term = utils.url_name_to_term(utils.get_term_info(is_semester_term)["urlName"])
+    data = get_raw_data()
+    courses = {}
+    term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
+    fname = os.path.join(os.path.dirname(__file__), fname)
     missing = 0
 
     for course in data:
@@ -409,8 +439,8 @@ def run(is_semester_term):
         if not included:
             missing += 1
 
-    with open(fname, "w") as f:
-        json.dump(courses, f)
+    with open(fname, "w", encoding="utf-8") as fireroad_file:
+        json.dump(courses, fireroad_file)
     print(f"Got {len (courses)} courses")
     print(f"Skipped {missing} courses that are not offered in the {term.value} term")
 

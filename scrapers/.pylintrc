@@ -1,7 +1,0 @@
-[MESSAGES CONTROL]
-disable=
-    # one-letter variable names are OK!
-    invalid-name, 
-
-    # false alarms: these files all import each other
-    import-error

@@ -1,0 +1,16 @@
+#:schema ./override-schema.json
+# STS special subjects (IAP/Spring 2025)
+
+['STS.S20']
+name = "Discards, Technologies, and Everyday Ecologies"
+hassS = true
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+
+['STS.S21']
+name = "Social Life of the Brain: Neuroscience and Society"
+hassS = true
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9

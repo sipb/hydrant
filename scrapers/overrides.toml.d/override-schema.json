@@ -133,6 +133,13 @@
         "type": "boolean",
         "description": "True if partial institute lab"
       },
+      "cim": {
+        "type": "array",
+        "description": "Array of programs (free text) for which this class is a CI-M",
+        "items": {
+          "type": "string"
+        }
+      },
       "lectureUnits": {
         "type": "number",
         "description": "Lecture or recitation units"

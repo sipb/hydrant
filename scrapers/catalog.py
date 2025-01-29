@@ -16,7 +16,9 @@ run() scrapes this data and writes it to catalog.json, in the format:
 """
 
 import json
+import os.path
 import re
+
 import requests
 from bs4 import BeautifulSoup, Tag
 
@@ -105,7 +107,7 @@ def get_half(html):
     """
     if html.find(text=re.compile("first half of term")):
         return 1
-    elif html.find(text=re.compile("second half of term")):
+    if html.find(text=re.compile("second half of term")):
         return 2
     return False
 
@@ -118,7 +120,6 @@ def is_limited(html):
     Returns:
     * bool: True if enrollment in the class is limited
     """
-    # TODO: can we do better?
     if html.find(text=re.compile("[Ll]imited")):
         return True
     return False
@@ -149,8 +150,8 @@ def get_home_catalog_links():
     Returns:
     * list[str]: relative links to major-specific subpages to scrape
     """
-    r = requests.get(BASE_URL + "/index.cgi")
-    html = BeautifulSoup(r.content, "html.parser")
+    catalog_req = requests.get(BASE_URL + "/index.cgi", timeout=3)
+    html = BeautifulSoup(catalog_req.content, "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
     return [a["href"] for a in home_list.find_all("a", href=True)]
 
@@ -166,12 +167,12 @@ def get_all_catalog_links(initial_hrefs):
     * list[str]: A more complete list of relative links to subpages to scrape
     """
     hrefs = []
-    for il in initial_hrefs:
-        r = requests.get(f"{BASE_URL}/{il}")
-        html = BeautifulSoup(r.content, "html.parser")
+    for initial_href in initial_hrefs:
+        href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
+        html = BeautifulSoup(href_req.content, "html.parser")
         # Links should be in the only table in the #contentmini div
         tables = html.find("div", id="contentmini").find_all("table")
-        hrefs.append(il)
+        hrefs.append(initial_href)
         for table in tables:
             hrefs.extend([ele["href"] for ele in table.findAll("a", href=True)])
     return hrefs
@@ -206,7 +207,8 @@ def get_anchors_with_classname(element):
 def scrape_courses_from_page(courses, href):
     """
     Fills courses with course data from the href
-    (This function does NOT return a value. Instead, it modifies the `courses` variable.)
+
+    This function does NOT return a value. Instead, it modifies the `courses` variable.
 
     Args:
     * courses
@@ -214,9 +216,9 @@ def scrape_courses_from_page(courses, href):
 
     Returns: none
     """
-    r = requests.get(f"{BASE_URL}/{href}")
+    href_req = requests.get(f"{BASE_URL}/{href}", timeout=3)
     # The "html.parser" parses pretty badly
-    html = BeautifulSoup(r.content, "lxml")
+    html = BeautifulSoup(href_req.content, "lxml")
     classes_content = html.find("table", width="100%", border="0").find("td")
 
     # For index idx, contents[idx] corresponds to the html content for the courses in
@@ -229,7 +231,7 @@ def scrape_courses_from_page(courses, href):
         if anchors:
             new_course_nums = [anchor["name"] for anchor in anchors]
             # This means the course listed is a class range (e.g. 11.S196-11.S199)
-            # Therefore, we continue looking for content but also add an extra course_num
+            # Thus, we continue looking for content but also add an extra course_num
             if contents and not contents[-1]:
                 course_nums_list[-1].extend(new_course_nums)
                 continue
@@ -260,13 +262,15 @@ def run():
     """
     home_hrefs = get_home_catalog_links()
     all_hrefs = get_all_catalog_links(home_hrefs)
-    courses = dict()
+    courses = {}
     for href in all_hrefs:
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)
     print(f"Got {len(courses)} courses")
-    with open("catalog.json", "w") as f:
-        json.dump(courses, f)
+
+    fname = os.path.join(os.path.dirname(__file__), "catalog.json")
+    with open(fname, "w", encoding="utf-8") as catalog_file:
+        json.dump(courses, catalog_file)
 
 
 if __name__ == "__main__":

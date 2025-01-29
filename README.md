@@ -22,7 +22,7 @@ There's the frontend, which is the website and the interface. Then there's the b
 
 To spin up the site, we need two steps:
 
-(1) We need to update the backend to get the data. `cd scrapers` then run `python update.py`.
+(1) We need to update the backend to get the data. Run `python3 -m scrapers`.
 
 (2) We then can update the frontend, via running `npm run dev`. This will start a developer server. Open a browser tab to [`http://localhost:5173/`](http://localhost:5173/), which will update live as you edit code.
 

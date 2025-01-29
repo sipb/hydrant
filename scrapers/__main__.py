@@ -1,5 +1,5 @@
 """
-This is the entry point. Run `python3 update.py` to test this code.
+This is the entry point. Run `python3 -m scrapers` to test this code.
 
 In production, there's a cron job that runs this script every hour.
 
@@ -7,9 +7,10 @@ Functions:
 * run()
 """
 
-import fireroad
-import catalog
-import package
+from .fireroad import run as fireroad_run
+from .catalog import run as catalog_run
+from .cim import run as cim_run
+from .package import run as package_run
 
 
 def run():
@@ -17,13 +18,15 @@ def run():
     This function is the entry point. There are no arguments.
     """
     print("=== Update fireroad data (pre-semester) ===")
-    fireroad.run(False)
+    fireroad_run(False)
     print("=== Update fireroad data (semester) ===")
-    fireroad.run(True)
+    fireroad_run(True)
     print("=== Update catalog data ===")
-    catalog.run()
+    catalog_run()
+    print("=== Update CI-M data ===")
+    cim_run()
     print("=== Packaging ===")
-    package.run()
+    package_run()
 
 
 if __name__ == "__main__":

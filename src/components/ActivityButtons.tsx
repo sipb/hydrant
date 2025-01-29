@@ -8,11 +8,12 @@ import {
   parseColor,
   HStack,
   Stack,
+  Button,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import { ComponentPropsWithoutRef, FormEvent, useState } from "react";
 
 import { Radio, RadioGroup } from "./ui/radio";
-import { Button } from "./ui/button";
 import {
   SelectContent,
   SelectItem,
@@ -219,11 +220,11 @@ function ActivityColor(props: {
             </HStack>
           </ColorPickerContent>
         </ColorPickerRoot>
-        <Group>
+        <ButtonGroup>
           <Button onClick={onReset}>Reset</Button>
           <Button onClick={onCancel}>Cancel</Button>
           <Button onClick={onConfirm}>Confirm</Button>
-        </Group>
+        </ButtonGroup>
       </Flex>
     </Flex>
   );
@@ -238,7 +239,7 @@ export function ClassButtons(props: { cls: Class; state: State }) {
 
   return (
     <Flex direction="column" gap={2}>
-      <Group wrap="wrap">
+      <ButtonGroup wrap="wrap">
         <Button onClick={() => state.toggleActivity(cls)}>
           {isSelected ? "Remove class" : "Add class"}
         </Button>
@@ -264,7 +265,7 @@ export function ClassButtons(props: { cls: Class; state: State }) {
             Edit color
           </ToggleButton>
         )}
-      </Group>
+      </ButtonGroup>
       {isSelected && showManual && (
         <ClassManualSections cls={cls} state={state} />
       )}
@@ -478,7 +479,7 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
   return (
     <Flex direction="column" gap={4}>
       {RenderHeading()}
-      <Group wrap="wrap">{RenderButtons()}</Group>
+      <ButtonGroup wrap="wrap">{RenderButtons()}</ButtonGroup>
       {isSelected && showColors && (
         <ActivityColor
           activity={activity}

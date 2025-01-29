@@ -15,10 +15,11 @@ Dependencies:
 
 import datetime
 import json
-import utils
 import os
 import os.path
 import sys
+
+from .utils import get_term_info
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -26,21 +27,25 @@ else:
     import tomli as tomllib
 
 
-def load_json_data(jsonfile):
+package_dir = os.path.dirname(__file__)
+
+
+def load_json_data(json_path):
     """
     Loads data from the provided file
 
     Args:
-    * jsonfile (str): The file to load from
+    * json_path (str): The file to load from
 
     Returns:
     * any: The data contained within the file
     """
-    with open(jsonfile, mode="r", encoding="utf-8") as f:
-        return json.load(f)
+    json_path = os.path.join(package_dir, json_path)
+    with open(json_path, mode="r", encoding="utf-8") as json_file:
+        return json.load(json_file)
 
 
-def load_toml_data(tomldir):
+def load_toml_data(toml_dir):
     """
     Loads data from the provided directory that consists exclusively of TOML files
 
@@ -50,11 +55,12 @@ def load_toml_data(tomldir):
     Returns:
     * dict: The data contained within the directory
     """
+    toml_dir = os.path.join(package_dir, toml_dir)
     out = {}
-    for fname in os.listdir(tomldir):
+    for fname in os.listdir(toml_dir):
         if fname.endswith(".toml"):
-            with open(os.path.join(tomldir, fname), "rb") as f:
-                out.update(tomllib.load(f))
+            with open(os.path.join(toml_dir, fname), "rb") as toml_file:
+                out.update(tomllib.load(toml_file))
     return out
 
 
@@ -78,6 +84,7 @@ def merge_data(datasets, keys_to_keep):
     return result
 
 
+# pylint: disable=too-many-locals
 def run():
     """
     The main entry point.
@@ -87,23 +94,24 @@ def run():
     fireroad_presem = load_json_data("fireroad-presem.json")
     fireroad_sem = load_json_data("fireroad-sem.json")
     catalog = load_json_data("catalog.json")
+    cim = load_json_data("cim.json")
     overrides = load_toml_data("overrides.toml.d")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
     # If it's not in catalog, it's not offered this year.
     courses_presem = merge_data(
-        datasets=[fireroad_presem, catalog, overrides],
+        datasets=[fireroad_presem, catalog, cim, overrides],
         keys_to_keep=set(fireroad_presem) & set(catalog),
     )
     courses_sem = merge_data(
-        datasets=[fireroad_sem, catalog, overrides],
+        datasets=[fireroad_sem, catalog, cim, overrides],
         keys_to_keep=set(fireroad_sem) & set(catalog),
     )
 
-    term_info_presem = utils.get_term_info(False)
+    term_info_presem = get_term_info(False)
     url_name_presem = term_info_presem["urlName"]
-    term_info_sem = utils.get_term_info(True)
+    term_info_sem = get_term_info(True)
     url_name_sem = term_info_sem["urlName"]
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -118,10 +126,18 @@ def run():
         "classes": courses_sem,
     }
 
-    with open(f"../public/{url_name_presem}.json", mode="w", encoding="utf-8") as f:
-        json.dump(obj_presem, f, separators=(",", ":"))
-    with open("../public/latest.json", mode="w", encoding="utf-8") as f:
-        json.dump(obj_sem, f, separators=(",", ":"))
+    with open(
+        os.path.join(package_dir, f"../public/{url_name_presem}.json"),
+        mode="w",
+        encoding="utf-8",
+    ) as presem_file:
+        json.dump(obj_presem, presem_file, separators=(",", ":"))
+
+    with open(
+        os.path.join(package_dir, "../public/latest.json"), mode="w", encoding="utf-8"
+    ) as latest_file:
+        json.dump(obj_sem, latest_file, separators=(",", ":"))
+
     print(f"{url_name_presem}: got {len(courses_presem)} courses")
     print(f"{url_name_sem}: got {len(courses_sem)} courses")
 

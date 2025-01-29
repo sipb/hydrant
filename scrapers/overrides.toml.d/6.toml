@@ -1,5 +1,5 @@
 #:schema ./override-schema.json
-# Course 6 special subjects (IAP)
+# Course 6 special subjects (IAP/Spring 2025)
 # https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/
 
 ['6.S088']
@@ -84,7 +84,6 @@ In this class, students will participate in the Schmidt Center’s machine learn
 
 Students will learn the basics of genomics and data analysis needed to succeed in the challenge. Top-scoring submissions will be validated in a lab at the Broad Institute, and winners will be eligible for monetary prizes and paper authorship.'''
 url = 'https://www.eecs.mit.edu/academics/iap-offerings/iap-2025/'
-
 
 ['6.S183']
 name = 'A Practical Introduction to Diffusion Models -- From Algorithms to Implementation'
