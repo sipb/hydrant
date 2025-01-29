@@ -20,10 +20,12 @@ const system = createSystem(defaultConfig, {
     },
     recipes: {
       button: {
+        base: {
+          fontWeight: "semibold",
+        },
         defaultVariants: {
           // @ts-expect-error: this works I promise :(
           variant: "subtle",
-          fontweight: "semibold",
         },
       },
     },

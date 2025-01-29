@@ -15,17 +15,17 @@ run() scrapes this data and writes it to cim.json, in the format:
 }
 """
 
-import itertools
 import json
 import requests
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 
+CIM_URL = "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject"
+
 
 def get_sections():
     """
-    Scrapes accordion sections from
-    https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject
+    Scrapes accordion sections from Registrar page that contains lists of CI-M
 
     Args: none
 
@@ -34,7 +34,7 @@ def get_sections():
     subjects
     """
     r = requests.get(
-        "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject",
+        CIM_URL,
         timeout=1,
     )
     soup = BeautifulSoup(r.text, "html.parser")

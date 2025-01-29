@@ -147,7 +147,7 @@ function ClassCIM(props: { cls: Class }) {
       </Text>
     );
   } else {
-    return <></>;
+    return null;
   }
 }
 
