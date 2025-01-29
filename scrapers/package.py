@@ -79,6 +79,7 @@ def merge_data(datasets, keys_to_keep):
     return result
 
 
+# pylint: disable=too-many-locals
 def run():
     """
     The main entry point.
