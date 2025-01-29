@@ -3,7 +3,9 @@
 This folder contains several files. The files tracked by git are:
 
 * `__init__.py`
+* `__main__.py`
 * `catalog.py`
+* `cim.py`
 * `fireroad.py`
 * `math_dept.py`
 * `package.py`
@@ -16,13 +18,15 @@ This folder contains several files. The files tracked by git are:
 The files intentionally left out of git are:
 
 * `catalog.json`
+* `cim.json`
 * `fireroad.json`
+* `fireroad-presem.json`
 * `__pycache__`
 * `.DS_Store`
 
 ## Usage ##
 
-Run `python3 update.py` to execute the code. In production, there is a cron job that runs this every hour.
+Run `python3 -m scrapers` from the root directory to execute the code. In production, there is a cron job that runs this every hour.
 
 This program gets its data from MIT classes from two sources:
 
@@ -33,11 +37,12 @@ It is mainly intended to serve as a data source for the frontend, which is the r
 
 ## How it works ##
 
-`update.py` calls three other programs, in this order: `fireroad.py`, `catalog.py`, `package.py`. Each of these four files has a `run()` function, which is its main entry point to the codebase. Broadly speaking:
+`__main__.py` calls four other programs, in this order: `fireroad.py`, `catalog.py`, `cim.py`, `package.py`. Each of these four files has a `run()` function, which is its main entry point to the codebase. Broadly speaking:
 
-* `fireroad.py` creates `fireroad.json`
+* `fireroad.py` creates `fireroad.json` and `fireroad-presem.json`
 * `catalog.py` creates `catalog.json`
-* `package.py` combines these to create `../public/latest.json`. (This is the final product that our frontend ingests.)
+* `cim.py` creates `cim.json`
+* `package.py` combines these to create `../public/latest.json` and another JSON file under `../public/` that corresponds to IAP or summer. (This is the final product that our frontend ingests.)
 
 `math_dept.py` is an irregularly run file that helps create override data for courses in the MIT math department (since those are formatted slightly differently). `utils.py` contains a few utility functions and variables, which in turn are used by `fireroad.py` and `package.py`. The file `__init__.py` is empty but we include it anyways for completeness.
 

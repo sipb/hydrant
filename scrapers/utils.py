@@ -18,6 +18,7 @@ Functions:
 
 import itertools
 import json
+import os.path
 from enum import Enum
 
 GIR_REWRITE = {
@@ -184,7 +185,8 @@ def get_term_info(is_semester_term):
     Returns:
     * dict: the term info for the selected term from latestTerm.json.
     """
-    with open("../public/latestTerm.json", encoding="utf-8") as latest_term_file:
+    fname = os.path.join(os.path.dirname(__file__), "../public/latestTerm.json")
+    with open(fname, encoding="utf-8") as latest_term_file:
         term_info = json.load(latest_term_file)
     if is_semester_term:
         return term_info["semester"]

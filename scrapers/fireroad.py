@@ -22,6 +22,8 @@ Functions:
 """
 
 import json
+import os.path
+
 import requests
 from .utils import (
     Term,
@@ -416,7 +418,7 @@ def get_raw_data():
 
 def run(is_semester_term):
     """
-    Gets the latest term info from "../public/latestTerm.json" as a dictionary.
+    The main entry point. All data is written to `fireroad.json`.
     If is_semester_term = True, looks at semester term (fall/spring).
     If is_semester_term = False, looks at pre-semester term (summer/IAP)
 
@@ -429,6 +431,7 @@ def run(is_semester_term):
     courses = {}
     term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
+    fname = os.path.join(os.path.dirname(__file__), fname)
     missing = 0
 
     for course in data:

@@ -16,7 +16,9 @@ run() scrapes this data and writes it to catalog.json, in the format:
 """
 
 import json
+import os.path
 import re
+
 import requests
 from bs4 import BeautifulSoup, Tag
 
@@ -265,7 +267,9 @@ def run():
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)
     print(f"Got {len(courses)} courses")
-    with open("catalog.json", "w", encoding="utf-8") as catalog_file:
+
+    fname = os.path.join(os.path.dirname(__file__), "catalog.json")
+    with open(fname, "w", encoding="utf-8") as catalog_file:
         json.dump(courses, catalog_file)
 
 

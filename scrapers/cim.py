@@ -16,6 +16,7 @@ run() scrapes this data and writes it to cim.json, in the format:
 """
 
 import json
+import os.path
 from collections import OrderedDict
 
 import requests
@@ -102,7 +103,8 @@ def run():
             for number in subj.replace("J", "").split("/"):
                 subjects.setdefault(number, {"cim": []})["cim"].append(course)
 
-    with open("cim.json", "w", encoding="utf-8") as cim_file:
+    fname = os.path.join(os.path.dirname(__file__), "cim.json")
+    with open(fname, "w", encoding="utf-8") as cim_file:
         json.dump(subjects, cim_file)
 
 

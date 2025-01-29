@@ -27,6 +27,9 @@ else:
     import tomli as tomllib
 
 
+package_dir = os.path.dirname(__file__)
+
+
 def load_json_data(json_path):
     """
     Loads data from the provided file
@@ -37,6 +40,7 @@ def load_json_data(json_path):
     Returns:
     * any: The data contained within the file
     """
+    json_path = os.path.join(package_dir, json_path)
     with open(json_path, mode="r", encoding="utf-8") as json_file:
         return json.load(json_file)
 
@@ -51,6 +55,7 @@ def load_toml_data(toml_dir):
     Returns:
     * dict: The data contained within the directory
     """
+    toml_dir = os.path.join(package_dir, toml_dir)
     out = {}
     for fname in os.listdir(toml_dir):
         if fname.endswith(".toml"):
@@ -122,11 +127,17 @@ def run():
     }
 
     with open(
-        f"../public/{url_name_presem}.json", mode="w", encoding="utf-8"
+        os.path.join(package_dir, f"../public/{url_name_presem}.json"),
+        mode="w",
+        encoding="utf-8",
     ) as presem_file:
         json.dump(obj_presem, presem_file, separators=(",", ":"))
-    with open("../public/latest.json", mode="w", encoding="utf-8") as latest_file:
+
+    with open(
+        os.path.join(package_dir, "../public/latest.json"), mode="w", encoding="utf-8"
+    ) as latest_file:
         json.dump(obj_sem, latest_file, separators=(",", ":"))
+
     print(f"{url_name_presem}: got {len(courses_presem)} courses")
     print(f"{url_name_sem}: got {len(courses_sem)} courses")
 

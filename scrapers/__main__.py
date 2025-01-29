@@ -1,5 +1,5 @@
 """
-This is the entry point. Run `python3 update.py` to test this code.
+This is the entry point. Run `python3 -m scrapers` to test this code.
 
 In production, there's a cron job that runs this script every hour.
 
