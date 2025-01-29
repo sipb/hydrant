@@ -19,7 +19,7 @@ jobs:
       - uses: psf/black@stable
   pylint:
     name: Pylint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.7
