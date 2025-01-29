@@ -39,6 +39,7 @@ import { Class, LockOption, SectionLockOption, Sections } from "../lib/class";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
 import { State } from "../lib/state";
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
+import { StarButton } from "./ClassTable";
 
 /**
  * A button that toggles the active value, and is outlined if active, solid
@@ -240,6 +241,14 @@ export function ClassButtons(props: { cls: Class; state: State }) {
   return (
     <Flex direction="column" gap={2}>
       <ButtonGroup wrap="wrap">
+        <StarButton
+          cls={cls}
+          state={state}
+          onStarToggle={() => {
+            const event = new CustomEvent("refreshStarCells");
+            window.dispatchEvent(event);
+          }}
+        />
         <Button onClick={() => state.toggleActivity(cls)}>
           {isSelected ? "Remove class" : "Add class"}
         </Button>
