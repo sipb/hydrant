@@ -35,11 +35,11 @@ def get_sections():
     * list[bs4.element.Tag]: The accordion sections that contain lists of CI-M
     subjects
     """
-    r = requests.get(
+    cim_req = requests.get(
         CIM_URL,
         timeout=1,
     )
-    soup = BeautifulSoup(r.text, "html.parser")
+    soup = BeautifulSoup(cim_req.text, "html.parser")
 
     return [
         item
@@ -102,8 +102,8 @@ def run():
             for number in subj.replace("J", "").split("/"):
                 subjects.setdefault(number, {"cim": []})["cim"].append(course)
 
-    with open("cim.json", "w", encoding="utf-8") as f:
-        json.dump(subjects, f)
+    with open("cim.json", "w", encoding="utf-8") as cim_file:
+        json.dump(subjects, cim_file)
 
 
 if __name__ == "__main__":

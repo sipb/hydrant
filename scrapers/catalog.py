@@ -148,8 +148,8 @@ def get_home_catalog_links():
     Returns:
     * list[str]: relative links to major-specific subpages to scrape
     """
-    r = requests.get(BASE_URL + "/index.cgi", timeout=3)
-    html = BeautifulSoup(r.content, "html.parser")
+    catalog_req = requests.get(BASE_URL + "/index.cgi", timeout=3)
+    html = BeautifulSoup(catalog_req.content, "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
     return [a["href"] for a in home_list.find_all("a", href=True)]
 
@@ -165,12 +165,12 @@ def get_all_catalog_links(initial_hrefs):
     * list[str]: A more complete list of relative links to subpages to scrape
     """
     hrefs = []
-    for il in initial_hrefs:
-        r = requests.get(f"{BASE_URL}/{il}", timeout=3)
-        html = BeautifulSoup(r.content, "html.parser")
+    for initial_href in initial_hrefs:
+        href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
+        html = BeautifulSoup(href_req.content, "html.parser")
         # Links should be in the only table in the #contentmini div
         tables = html.find("div", id="contentmini").find_all("table")
-        hrefs.append(il)
+        hrefs.append(initial_href)
         for table in tables:
             hrefs.extend([ele["href"] for ele in table.findAll("a", href=True)])
     return hrefs
@@ -214,9 +214,9 @@ def scrape_courses_from_page(courses, href):
 
     Returns: none
     """
-    r = requests.get(f"{BASE_URL}/{href}", timeout=3)
+    href_req = requests.get(f"{BASE_URL}/{href}", timeout=3)
     # The "html.parser" parses pretty badly
-    html = BeautifulSoup(r.content, "lxml")
+    html = BeautifulSoup(href_req.content, "lxml")
     classes_content = html.find("table", width="100%", border="0").find("td")
 
     # For index idx, contents[idx] corresponds to the html content for the courses in
@@ -265,8 +265,8 @@ def run():
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)
     print(f"Got {len(courses)} courses")
-    with open("catalog.json", "w", encoding="utf-8") as f:
-        json.dump(courses, f)
+    with open("catalog.json", "w", encoding="utf-8") as catalog_file:
+        json.dump(courses, catalog_file)
 
 
 if __name__ == "__main__":

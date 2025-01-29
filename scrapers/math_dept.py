@@ -32,14 +32,14 @@ def parse_when(when):
     """
     # special casing is good enough (otherwise this could be a for loop)
     if when[1].isdigit():
-        r = when[:1], when[1:]
+        day_times = when[:1], when[1:]
     elif when[2].isdigit():
-        r = when[:2], when[2:]
+        day_times = when[:2], when[2:]
     elif when[3].isdigit():
-        r = when[:3], when[3:]
+        day_times = when[:3], when[3:]
     else:
         assert False
-    days, times = r
+    days, times = day_times
     # fireroad.py wants dots instead of colons
     times = times.replace(":", ".")
     return days, times

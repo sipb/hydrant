@@ -27,11 +27,11 @@ def main():
     Fetch the artifact from the GitHub API and extract it into the output directory.
     """
     # Secret, used for HMAC input validation (so we know GitHub is being real)
-    with open(HASH_SECRET, encoding="utf-8") as fh:
-        secret = fh.read().strip().encode("utf-8")
+    with open(HASH_SECRET, encoding="utf-8") as file_hash:
+        secret = file_hash.read().strip().encode("utf-8")
     # API token for GitHub API requests (to get a path to the file).
-    with open(GITHUB_TOKEN, encoding="utf-8") as ft:
-        token = ft.read().strip()
+    with open(GITHUB_TOKEN, encoding="utf-8") as file_token:
+        token = file_token.read().strip()
 
     # Slurp content and validate with HMAC
     body = stdin.read()
@@ -71,9 +71,9 @@ def main():
             url, headers={"Authorization": ("Bearer " + token)}, timeout=3
         )
         fname = path.join(LOCKER_DIR, "build_artifact.zip")
-        with open(fname, "wb") as fb:
+        with open(fname, "wb") as file_buffer:
             for chunk in response.iter_content(chunk_size=4096):
-                fb.write(chunk)
+                file_buffer.write(chunk)
         # Extract into the output directory.
         with ZipFile(fname, "r") as zfh:
             zfh.extractall(OUTPUT_DIR)

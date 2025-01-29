@@ -112,7 +112,7 @@ class Term(Enum):
     SU = "summer"
 
 
-def find_timeslot(day, slot, pm):
+def find_timeslot(day, slot, is_slot_pm):
     """
     Finds the numeric code for a timeslot.
     Example: find_timeslot("W", "11.30", False) -> 67
@@ -120,16 +120,16 @@ def find_timeslot(day, slot, pm):
     Args:
     * day (str): The day of the timeslot
     * slot (str): The time of the timeslot
-    * pm (bool): Whether the timeslot is in the evening
+    * is_slot_pm (bool): Whether the timeslot is in the evening
 
     Returns:
     * int: A numeric code for the timeslot
 
     Raises KeyError if no matching timeslot could be found.
     """
-    time_dict = EVE_TIMES if pm else TIMES
+    time_dict = EVE_TIMES if is_slot_pm else TIMES
     if day not in DAYS or slot not in time_dict:  # error handling!
-        raise ValueError(f"Invalid timeslot {day}, {slot}, {pm}")
+        raise ValueError(f"Invalid timeslot {day}, {slot}, {is_slot_pm}")
     return DAYS[day] + time_dict[slot]
 
 
@@ -151,11 +151,11 @@ def zip_strict(*iterables):
         yield group
 
 
-def grouper(iterable, n):
+def grouper(iterable, group_size):
     """
-    Groups items of the iterable in equally spaced blocks of n items.
-    If the iterable's length ISN'T a multiple of n, you'll get a ValueError
-    on the last iteration.
+    Groups items of the iterable in equally spaced blocks of group_size items.
+    If the iterable's length ISN'T a multiple of group_size, you'll get a
+    ValueError on the last iteration.
 
     Example: grouper("ABCDEFGHI", 3) -> ABC DEF GHI
 
@@ -163,12 +163,12 @@ def grouper(iterable, n):
 
     Args:
     * iterable (Iterable[Any]): an iterator
-    * n (int): The size of the groups
+    * group_size (int): The size of the groups
 
     Returns:
     * generator: The result of the grouping, which you can iterate over.
     """
-    args = [iter(iterable)] * n
+    args = [iter(iterable)] * group_size
     return zip_strict(*args)
 
 
@@ -184,8 +184,8 @@ def get_term_info(is_semester_term):
     Returns:
     * dict: the term info for the selected term from latestTerm.json.
     """
-    with open("../public/latestTerm.json", encoding="utf-8") as f:
-        term_info = json.load(f)
+    with open("../public/latestTerm.json", encoding="utf-8") as latest_term_file:
+        term_info = json.load(latest_term_file)
     if is_semester_term:
         return term_info["semester"]
 

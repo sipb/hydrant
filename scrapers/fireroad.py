@@ -36,36 +36,36 @@ from .utils import (
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
-def parse_timeslot(day, slot, pm):
+def parse_timeslot(day, slot, time_is_pm):
     """Parses a timeslot. Example: parse_timeslot("M", "10-11.30", False) -> [4, 3]
 
     Args:
     * day (str): The day as a string
     * slot (str): The slot as a string
-    * pm (bool): Whether the timeslot is in the evening
+    * time_is_pm (bool): Whether the timeslot is in the evening
 
     Returns:
     * list[int]: The parsed day and timeslot
 
-    Raises AssertionError if pm and slot disagree on whether the slot is in the
-    evening, or if the start slot is later than the end slot.
+    Raises AssertionError if time_is_pm and slot disagree on whether the slot is in
+    the evening, or if the start slot is later than the end slot.
 
     Raises KeyError if no matching timeslot could be found.
     """
-    assert pm == slot.endswith(" PM")
+    assert time_is_pm == slot.endswith(" PM")
     slot = slot.rstrip(" PM")
 
     if "-" in slot:
         start, end = slot.split("-")
         try:
-            start_slot = find_timeslot(day, start, pm)
-            end_slot = find_timeslot(day, end, pm)
+            start_slot = find_timeslot(day, start, time_is_pm)
+            end_slot = find_timeslot(day, end, time_is_pm)
         except KeyError:
             # Maybe the start time is AM but the end time is PM
             start_slot = find_timeslot(day, start, False)
             end_slot = find_timeslot(day, end, True)
     else:
-        start_slot = find_timeslot(day, slot, pm)
+        start_slot = find_timeslot(day, slot, time_is_pm)
         # Slot is one hour long, so length is 2.
         end_slot = start_slot + 2
 
@@ -89,11 +89,11 @@ def parse_section(section):
     place, *infos = section.split("/")
     slots = []
 
-    for weekdays, pm, slot in grouper(infos, 3):
+    for weekdays, is_pm_int, slot in grouper(infos, 3):
         for day in weekdays:
             if day == "S":
                 continue
-            slots.append(parse_timeslot(day, slot, bool(int(pm))))
+            slots.append(parse_timeslot(day, slot, bool(int(is_pm_int))))
 
     return [slots, place]
 
@@ -323,10 +323,10 @@ def get_course_data(courses, course, term):
                 raw_class.update(parse_schedule(course["scheduleSpring"]))
             else:
                 raw_class.update(parse_schedule(course["schedule"]))
-        except ValueError as e:
+        except ValueError as val_err:
             # if we can't parse the schedule, warn
             # NOTE: parse_schedule will raise a ValueError
-            print(f"Can't parse schedule {course_code}: {e!r}")
+            print(f"Can't parse schedule {course_code}: {val_err!r}")
             has_schedule = False
     if not has_schedule:
         raw_class.update(
@@ -358,8 +358,8 @@ def get_course_data(courses, course, term):
                 "meets": ", ".join(course.get("meets_with_subjects", [])),
             }
         )
-    except KeyError as e:
-        print(f"Can't parse {course_code}: {e!r}")
+    except KeyError as key_err:
+        print(f"Can't parse {course_code}: {key_err!r}")
         return False
     # This should be the case with variable-units classes, but just to make
     # sure.
@@ -406,10 +406,10 @@ def get_raw_data():
     Args:
     * is_semester_term (bool): whether to look at the semester or the pre-semester term.
     """
-    r = requests.get(
+    raw_data_req = requests.get(
         URL, timeout=10
     )  # more generous here; empirically usually ~1-1.5 seconds
-    text = r.text
+    text = raw_data_req.text
     data = json.loads(text)
     return data
 
@@ -436,8 +436,8 @@ def run(is_semester_term):
         if not included:
             missing += 1
 
-    with open(fname, "w", encoding="utf-8") as f:
-        json.dump(courses, f)
+    with open(fname, "w", encoding="utf-8") as fireroad_file:
+        json.dump(courses, fireroad_file)
     print(f"Got {len (courses)} courses")
     print(f"Skipped {missing} courses that are not offered in the {term.value} term")
 

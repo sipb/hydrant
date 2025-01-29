@@ -27,21 +27,21 @@ else:
     import tomli as tomllib
 
 
-def load_json_data(jsonfile):
+def load_json_data(json_path):
     """
     Loads data from the provided file
 
     Args:
-    * jsonfile (str): The file to load from
+    * json_path (str): The file to load from
 
     Returns:
     * any: The data contained within the file
     """
-    with open(jsonfile, mode="r", encoding="utf-8") as f:
-        return json.load(f)
+    with open(json_path, mode="r", encoding="utf-8") as json_file:
+        return json.load(json_file)
 
 
-def load_toml_data(tomldir):
+def load_toml_data(toml_dir):
     """
     Loads data from the provided directory that consists exclusively of TOML files
 
@@ -52,10 +52,10 @@ def load_toml_data(tomldir):
     * dict: The data contained within the directory
     """
     out = {}
-    for fname in os.listdir(tomldir):
+    for fname in os.listdir(toml_dir):
         if fname.endswith(".toml"):
-            with open(os.path.join(tomldir, fname), "rb") as f:
-                out.update(tomllib.load(f))
+            with open(os.path.join(toml_dir, fname), "rb") as toml_file:
+                out.update(tomllib.load(toml_file))
     return out
 
 
@@ -120,10 +120,12 @@ def run():
         "classes": courses_sem,
     }
 
-    with open(f"../public/{url_name_presem}.json", mode="w", encoding="utf-8") as f:
-        json.dump(obj_presem, f, separators=(",", ":"))
-    with open("../public/latest.json", mode="w", encoding="utf-8") as f:
-        json.dump(obj_sem, f, separators=(",", ":"))
+    with open(
+        f"../public/{url_name_presem}.json", mode="w", encoding="utf-8"
+    ) as presem_file:
+        json.dump(obj_presem, presem_file, separators=(",", ":"))
+    with open("../public/latest.json", mode="w", encoding="utf-8") as latest_file:
+        json.dump(obj_sem, latest_file, separators=(",", ":"))
     print(f"{url_name_presem}: got {len(courses_presem)} courses")
     print(f"{url_name_sem}: got {len(courses_sem)} courses")
 
