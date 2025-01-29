@@ -23,8 +23,15 @@ Functions:
 
 import json
 import requests
-import utils
-from utils import Term
+from .utils import (
+    Term,
+    find_timeslot,
+    grouper,
+    MONTHS,
+    GIR_REWRITE,
+    url_name_to_term,
+    get_term_info,
+)
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
@@ -51,14 +58,14 @@ def parse_timeslot(day, slot, pm):
     if "-" in slot:
         start, end = slot.split("-")
         try:
-            start_slot = utils.find_timeslot(day, start, pm)
-            end_slot = utils.find_timeslot(day, end, pm)
+            start_slot = find_timeslot(day, start, pm)
+            end_slot = find_timeslot(day, end, pm)
         except KeyError:
             # Maybe the start time is AM but the end time is PM
-            start_slot = utils.find_timeslot(day, start, False)
-            end_slot = utils.find_timeslot(day, end, True)
+            start_slot = find_timeslot(day, start, False)
+            end_slot = find_timeslot(day, end, True)
     else:
-        start_slot = utils.find_timeslot(day, slot, pm)
+        start_slot = find_timeslot(day, slot, pm)
         # Slot is one hour long, so length is 2.
         end_slot = start_slot + 2
 
@@ -82,10 +89,10 @@ def parse_section(section):
     place, *infos = section.split("/")
     slots = []
 
-    for weekdays, pm, slot in utils.grouper(infos, 3):
+    for weekdays, pm, slot in grouper(infos, 3):
         for day in weekdays:
             if day == "S":
-                continue  # TODO: handle saturday
+                continue
             slots.append(parse_timeslot(day, slot, bool(int(pm))))
 
     return [slots, place]
@@ -153,7 +160,7 @@ def decode_quarter_date(date: str):
         month, day = date.split("/")
         return int(month), int(day)
     elif " " in date:
-        month, day = utils.MONTHS[(date.split())[0]], (date.split())[1]
+        month, day = MONTHS[(date.split())[0]], (date.split())[1]
         return int(month), int(day)
 
     return None
@@ -263,7 +270,7 @@ def parse_prereqs(course):
     * dict[str, str]: The parsed prereqs, in the key "prereqs".
     """
     prereqs = course.get("prerequisites", "")
-    for gir, gir_rw in utils.GIR_REWRITE.items():
+    for gir, gir_rw in GIR_REWRITE.items():
         prereqs = prereqs.replace(gir, gir_rw)
     if not prereqs:
         prereqs = "None"
@@ -366,7 +373,6 @@ def get_course_data(courses, course, term):
         {
             "description": course.get("description", ""),
             "name": course.get("title", ""),
-            # TODO: improve instructor parsing
             "inCharge": ",".join(course.get("instructors", [])),
             "virtualStatus": course.get("virtual_status", "") == "Virtual",
         }
@@ -419,7 +425,7 @@ def run(is_semester_term):
     """
     data = get_raw_data()
     courses = {}
-    term = utils.url_name_to_term(utils.get_term_info(is_semester_term)["urlName"])
+    term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
     missing = 0
 

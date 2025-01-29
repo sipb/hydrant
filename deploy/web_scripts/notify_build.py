@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
-# Accept a web-hook from GitHub telling us about
-# a new built version of Hydrant.
+""" Accept a web-hook from GitHub telling us about a new built version of Hydrant. """
 
-import json, requests, traceback
-
-from sys import stdin, stdout
-from os import environ, path
+import json
+import traceback
 from hmac import digest
-from tempfile import TemporaryDirectory
+from os import environ, path
+from sys import stdin, stdout
 from zipfile import ZipFile
+
+import requests
 
 LOCKER_DIR = "/afs/sipb.mit.edu/project/hydrant"
 
@@ -21,13 +21,15 @@ HASH_SECRET = path.join(CI_SECRETS_DIR, "hash_secret")
 GITHUB_TOKEN = path.join(CI_SECRETS_DIR, "github_token")
 
 
+# pylint: disable=too-many-locals
 def main():
+    """Fetch the artifact from the GitHub API and extract it into the output directory."""
     # Secret, used for HMAC input validation (so we know GitHub is being real)
-    with open(HASH_SECRET) as fh:
+    with open(HASH_SECRET, encoding="utf-8") as fh:
         secret = fh.read().strip().encode("utf-8")
     # API token for GitHub API requests (to get a path to the file).
-    with open(GITHUB_TOKEN) as fh:
-        token = fh.read().strip()
+    with open(GITHUB_TOKEN, encoding="utf-8") as ft:
+        token = ft.read().strip()
 
     # Slurp content and validate with HMAC
     body = stdin.read()
@@ -45,9 +47,8 @@ def main():
 
     # Fetch a list of artifacts from the GitHub API
     response = requests.get(
-        "https://api.github.com/repos/sipb/hydrant/actions/runs/{}/artifacts".format(
-            job_id
-        )
+        f"https://api.github.com/repos/sipb/hydrant/actions/runs/{job_id}/artifacts",
+        timeout=3,
     )
     if not response.ok:
         raise ValueError("bad artifact fetch response: " + str(response.status_code))
@@ -64,11 +65,13 @@ def main():
         if not url:
             continue
         # then fetch it.
-        response = requests.get(url, headers={"Authorization": ("Bearer " + token)})
+        response = requests.get(
+            url, headers={"Authorization": ("Bearer " + token)}, timeout=3
+        )
         fname = path.join(LOCKER_DIR, "build_artifact.zip")
-        with open(fname, "wb") as fh:
+        with open(fname, "wb") as fb:
             for chunk in response.iter_content(chunk_size=4096):
-                fh.write(chunk)
+                fb.write(chunk)
         # Extract into the output directory.
         with ZipFile(fname, "r") as zfh:
             zfh.extractall(OUTPUT_DIR)
@@ -77,9 +80,9 @@ def main():
     return (
         "Fetched artifact successfully"
         if success
-        else "Could not find artifact among {}: {}".format(
-            len(artifacts), ", ".join(a.get("name") for a in artifacts)
-        )
+        else f"Could not find artifact among {len(artifacts)}: {", ".join(
+            a.get("name") for a in artifacts
+        )}"
     )
 
 
@@ -88,7 +91,8 @@ if __name__ == "__main__":
     print("Content-Type: text/plain\r\n\r")
     try:
         print(main())
+    # pylint: disable=broad-except
     except Exception as e:
         print(traceback.format_exc(), file=stdout)
-        with open(ERROR_LOG, "w") as fh:
-            print(traceback.format_exc(), file=fh)
+        with open(ERROR_LOG, "w", encoding="utf-8") as fe:
+            print(traceback.format_exc(), file=fe)

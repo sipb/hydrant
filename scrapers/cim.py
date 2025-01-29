@@ -16,10 +16,12 @@ run() scrapes this data and writes it to cim.json, in the format:
 """
 
 import json
-import requests
-from bs4 import BeautifulSoup
 from collections import OrderedDict
 
+import requests
+from bs4 import BeautifulSoup
+
+# pylint: disable=line-too-long
 CIM_URL = "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject"
 
 

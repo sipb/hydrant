@@ -118,7 +118,6 @@ def is_limited(html):
     Returns:
     * bool: True if enrollment in the class is limited
     """
-    # TODO: can we do better?
     if html.find(text=re.compile("[Ll]imited")):
         return True
     return False
@@ -206,7 +205,8 @@ def get_anchors_with_classname(element):
 def scrape_courses_from_page(courses, href):
     """
     Fills courses with course data from the href
-    (This function does NOT return a value. Instead, it modifies the `courses` variable.)
+
+    This function does NOT return a value. Instead, it modifies the `courses` variable.
 
     Args:
     * courses
@@ -229,7 +229,7 @@ def scrape_courses_from_page(courses, href):
         if anchors:
             new_course_nums = [anchor["name"] for anchor in anchors]
             # This means the course listed is a class range (e.g. 11.S196-11.S199)
-            # Therefore, we continue looking for content but also add an extra course_num
+            # Thus, we continue looking for content but also add an extra course_num
             if contents and not contents[-1]:
                 course_nums_list[-1].extend(new_course_nums)
                 continue

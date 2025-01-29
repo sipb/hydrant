@@ -1,5 +1,5 @@
 """
-This isn't run automatically, but it is a temporary workaround to the math classes being wrong.
+Temporary workaround to the math classes being wrong (2023).
 Was used to generate the math overrides in package.py; currently unnecessary.
 
 Functions:
@@ -17,7 +17,7 @@ Functions:
 from pprint import pprint
 from bs4 import BeautifulSoup
 import requests
-from fireroad import parse_timeslot, parse_section
+from .fireroad import parse_timeslot, parse_section
 
 
 def parse_when(when):
