@@ -13,7 +13,7 @@ REPO_DIR="/afs/sipb.mit.edu/project/hydrant/hydrant"
 # internet. In the locker, this is ~/web_scripts/hydrant.
 OUT_DIR="/afs/sipb.mit.edu/project/hydrant/web_scripts/hydrant"
 
-cd "$REPO_DIR/scrapers"
+cd "$REPO_DIR"
 
 # -q means quietly; don't report anything in stdout or stderr.
 # make sure we're in the right branch:
@@ -22,7 +22,7 @@ git pull -q
 
 # The scripts machine we use has Python 3.7, so use that.
 # This updates $OUT_FILE.
-python3.7 update.py
+python3.7 -m scrapers
 OUT_FILE="$REPO_DIR/public/*.json"
 
 # Copy $OUT_FILE to the output directory, so it can be served to the internet.

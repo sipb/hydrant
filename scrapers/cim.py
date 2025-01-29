@@ -16,10 +16,13 @@ run() scrapes this data and writes it to cim.json, in the format:
 """
 
 import json
-import requests
-from bs4 import BeautifulSoup
+import os.path
 from collections import OrderedDict
 
+import requests
+from bs4 import BeautifulSoup
+
+# pylint: disable=line-too-long
 CIM_URL = "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject"
 
 
@@ -33,11 +36,11 @@ def get_sections():
     * list[bs4.element.Tag]: The accordion sections that contain lists of CI-M
     subjects
     """
-    r = requests.get(
+    cim_req = requests.get(
         CIM_URL,
         timeout=1,
     )
-    soup = BeautifulSoup(r.text, "html.parser")
+    soup = BeautifulSoup(cim_req.text, "html.parser")
 
     return [
         item
@@ -100,8 +103,9 @@ def run():
             for number in subj.replace("J", "").split("/"):
                 subjects.setdefault(number, {"cim": []})["cim"].append(course)
 
-    with open("cim.json", "w", encoding="utf-8") as f:
-        json.dump(subjects, f)
+    fname = os.path.join(os.path.dirname(__file__), "cim.json")
+    with open(fname, "w", encoding="utf-8") as cim_file:
+        json.dump(subjects, cim_file)
 
 
 if __name__ == "__main__":

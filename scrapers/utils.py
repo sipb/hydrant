@@ -18,6 +18,7 @@ Functions:
 
 import itertools
 import json
+import os.path
 from enum import Enum
 
 GIR_REWRITE = {
@@ -103,16 +104,16 @@ MONTHS = {
 }
 
 
-# missing-class-docstring is disabled in .pylintrc for now
-# this class is WAY too trivial to need a docstring
 class Term(Enum):
+    """Terms for the academic year."""
+
     FA = "fall"
     JA = "IAP"
     SP = "spring"
     SU = "summer"
 
 
-def find_timeslot(day, slot, pm):
+def find_timeslot(day, slot, is_slot_pm):
     """
     Finds the numeric code for a timeslot.
     Example: find_timeslot("W", "11.30", False) -> 67
@@ -120,16 +121,16 @@ def find_timeslot(day, slot, pm):
     Args:
     * day (str): The day of the timeslot
     * slot (str): The time of the timeslot
-    * pm (bool): Whether the timeslot is in the evening
+    * is_slot_pm (bool): Whether the timeslot is in the evening
 
     Returns:
     * int: A numeric code for the timeslot
 
     Raises KeyError if no matching timeslot could be found.
     """
-    time_dict = EVE_TIMES if pm else TIMES
+    time_dict = EVE_TIMES if is_slot_pm else TIMES
     if day not in DAYS or slot not in time_dict:  # error handling!
-        raise ValueError(f"Invalid timeslot {day}, {slot}, {pm}")
+        raise ValueError(f"Invalid timeslot {day}, {slot}, {is_slot_pm}")
     return DAYS[day] + time_dict[slot]
 
 
@@ -151,22 +152,24 @@ def zip_strict(*iterables):
         yield group
 
 
-def grouper(iterable, n):
+def grouper(iterable, group_size):
     """
-    Groups items of the iterable in equally spaced blocks of n items.
-    If the iterable's length ISN'T a multiple of n, you'll get a ValueError on the last iteration.
+    Groups items of the iterable in equally spaced blocks of group_size items.
+    If the iterable's length ISN'T a multiple of group_size, you'll get a
+    ValueError on the last iteration.
+
     Example: grouper("ABCDEFGHI", 3) -> ABC DEF GHI
 
     From https://docs.python.org/3/library/itertools.html#itertools-recipes.
 
     Args:
     * iterable (Iterable[Any]): an iterator
-    * n (int): The size of the groups
+    * group_size (int): The size of the groups
 
     Returns:
     * generator: The result of the grouping, which you can iterate over.
     """
-    args = [iter(iterable)] * n
+    args = [iter(iterable)] * group_size
     return zip_strict(*args)
 
 
@@ -182,12 +185,13 @@ def get_term_info(is_semester_term):
     Returns:
     * dict: the term info for the selected term from latestTerm.json.
     """
-    with open("../public/latestTerm.json", encoding="utf-8") as f:
-        term_info = json.load(f)
+    fname = os.path.join(os.path.dirname(__file__), "../public/latestTerm.json")
+    with open(fname, encoding="utf-8") as latest_term_file:
+        term_info = json.load(latest_term_file)
     if is_semester_term:
         return term_info["semester"]
-    else:
-        return term_info["preSemester"]
+
+    return term_info["preSemester"]
 
 
 def url_name_to_term(url_name):
@@ -205,11 +209,11 @@ def url_name_to_term(url_name):
     """
     if url_name[0] == "f":
         return Term.FA
-    elif url_name[0] == "i":
+    if url_name[0] == "i":
         return Term.JA
-    elif url_name[0] == "s":
+    if url_name[0] == "s":
         return Term.SP
-    elif url_name[0] == "m":
+    if url_name[0] == "m":
         return Term.SU
-    else:
-        raise ValueError(f"Invalid term {url_name[0]}")
+
+    raise ValueError(f"Invalid term {url_name[0]}")
