@@ -37,6 +37,8 @@ import {
   LuEllipsis,
   LuFilePlus2,
   LuPencilLine,
+  LuPin,
+  LuPinOff,
   LuSave,
   LuShare2,
   LuTrash2,
@@ -61,13 +63,9 @@ function SelectWithWarn(props: {
   const { state, saveId, saves } = props;
   const [confirmSave, setConfirmSave] = useState("");
   const confirmName = saves.find((save) => save.id === confirmSave)?.name;
-  const defaultScheduleId = state.getDefaultSchedule();
+  const defaultScheduleId = state.defaultSchedule;
 
   const formatScheduleName = (id: string, name: string) => {
-    // If no default is set, treat first schedule as default
-    if (!defaultScheduleId && saves.length > 0 && saves[0].id === id) {
-      return `${name} (default)`;
-    }
     return id === defaultScheduleId ? `${name} (default)` : name;
   };
 
@@ -226,7 +224,7 @@ export function ScheduleSwitcher(props: {
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";
   const [isRenaming, setIsRenaming] = useState(false);
   const [name, setName] = useState(currentName);
-  const defaultScheduleId = state.getDefaultSchedule();
+  const defaultScheduleId = state.defaultSchedule;
 
   useEffect(() => {
     setName(saves.find((save) => save.id === saveId)?.name ?? "");
@@ -321,21 +319,27 @@ export function ScheduleSwitcher(props: {
               </>
             )}
           </MenuItem>
-          <MenuItem
-            value="toggleDefault"
-            onClick={() => {
-              state.setDefaultSchedule(
-                defaultScheduleId === saveId ? null : saveId,
-              );
-            }}
-          >
-            <LuSave />
-            <Box flex="1">
-              {defaultScheduleId === saveId
-                ? "Unset as default"
-                : "Set as default"}
-            </Box>
-          </MenuItem>
+          {saveId && (
+            <MenuItem
+              value="toggleDefault"
+              onClick={() => {
+                state.defaultSchedule =
+                  defaultScheduleId === saveId ? null : saveId;
+              }}
+            >
+              {defaultScheduleId === saveId ? (
+                <>
+                  <LuPinOff />
+                  <Box flex="1">Unset as default</Box>
+                </>
+              ) : (
+                <>
+                  <LuPin />
+                  <Box flex="1">Set as default</Box>
+                </>
+              )}
+            </MenuItem>
+          )}
           <ExportDialog state={state}>
             <MenuItem value="share">
               <LuShare2 />

@@ -405,7 +405,7 @@ export class State {
   }
 
   /** Set a schedule as the default schedule */
-  setDefaultSchedule(id: string | null): void {
+  set defaultSchedule(id: string | null) {
     this.preferences = {
       ...this.preferences,
       defaultScheduleId: id,
@@ -414,7 +414,7 @@ export class State {
   }
 
   /** Get the current default schedule id */
-  getDefaultSchedule(): string | null {
+  get defaultSchedule(): string | null {
     return this.preferences.defaultScheduleId;
   }
 
