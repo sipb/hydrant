@@ -317,12 +317,12 @@ def get_course_data(courses, course, term):
     # designRawSections
     if has_schedule:
         try:
-            if term == Term.FA and "scheduleFall" in course:
-                raw_class.update(parse_schedule(course["scheduleFall"]))
-            elif term == Term.JA and "scheduleIAP" in course:
-                raw_class.update(parse_schedule(course["scheduleIAP"]))
-            elif term == Term.SP and "scheduleSpring" in course:
-                raw_class.update(parse_schedule(course["scheduleSpring"]))
+            if term == Term.FA and "schedule_fall" in course:
+                raw_class.update(parse_schedule(course["schedule_fall"]))
+            elif term == Term.JA and "schedule_IAP" in course:
+                raw_class.update(parse_schedule(course["schedule_IAP"]))
+            elif term == Term.SP and "schedule_spring" in course:
+                raw_class.update(parse_schedule(course["schedule_spring"]))
             else:
                 raw_class.update(parse_schedule(course["schedule"]))
         except ValueError as val_err:
