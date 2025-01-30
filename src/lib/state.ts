@@ -439,7 +439,10 @@ export class State {
     } else {
       // Try to load default schedule if set, otherwise load first save
       const defaultScheduleId = this.preferences.defaultScheduleId;
-      if (defaultScheduleId && this.saves.some(save => save.id === defaultScheduleId)) {
+      if (
+        defaultScheduleId &&
+        this.saves.some((save) => save.id === defaultScheduleId)
+      ) {
         this.loadSave(defaultScheduleId);
       } else {
         this.loadSave(this.saves[0]!.id);

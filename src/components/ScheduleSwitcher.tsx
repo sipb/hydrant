@@ -77,9 +77,9 @@ function SelectWithWarn(props: {
         collection={createListCollection({
           items: [
             { label: "Not saved", value: "" },
-            ...saves.map(({ id, name }) => ({ 
-              label: formatScheduleName(id, name), 
-              value: id 
+            ...saves.map(({ id, name }) => ({
+              label: formatScheduleName(id, name),
+              value: id,
             })),
           ],
         })}
@@ -324,11 +324,17 @@ export function ScheduleSwitcher(props: {
           <MenuItem
             value="toggleDefault"
             onClick={() => {
-              state.setDefaultSchedule(defaultScheduleId === saveId ? null : saveId);
+              state.setDefaultSchedule(
+                defaultScheduleId === saveId ? null : saveId,
+              );
             }}
           >
             <LuSave />
-            <Box flex="1">{defaultScheduleId === saveId ? "Unset as default" : "Set as default"}</Box>
+            <Box flex="1">
+              {defaultScheduleId === saveId
+                ? "Unset as default"
+                : "Set as default"}
+            </Box>
           </MenuItem>
           <ExportDialog state={state}>
             <MenuItem value="share">
