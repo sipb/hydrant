@@ -1,14 +1,6 @@
-import {
-  Center,
-  Flex,
-  Text,
-  Box,
-  Float,
-  IconButton,
-  Presence,
-} from "@chakra-ui/react";
-import { LuX } from "react-icons/lu";
+import { Center, Flex, Text, Box, Float, Presence } from "@chakra-ui/react";
 import { LinkButton } from "./ui/link-button";
+import { CloseButton } from "./ui/close-button";
 
 export const FeedbackBanner = (props: {
   isOpen: boolean;
@@ -53,13 +45,12 @@ export const FeedbackBanner = (props: {
           </Flex>
         </Center>
         <Float placement="middle-end" offset="8">
-          <IconButton
+          <CloseButton
             variant="ghost"
+            color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
             onClick={setOpen}
-          >
-            <LuX />
-          </IconButton>
+          />
         </Float>
       </Box>
     </Presence>
