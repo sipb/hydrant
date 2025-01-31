@@ -539,7 +539,7 @@ export function ClassTable(props: {
         state={state}
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
-      <Box style={{ height: "320px", width: "100%" }}>
+      <Box style={{ height: "320px", width: "100%", overflow: 'auto' }}>
         <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
