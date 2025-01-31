@@ -4,7 +4,7 @@ import { CloseButton } from "./ui/close-button";
 
 export const FeedbackBanner = (props: {
   isOpen: boolean;
-  setOpen: () => void;
+  setOpen: (setBool: boolean) => void;
 }) => {
   const { isOpen, setOpen } = props;
 
@@ -42,14 +42,21 @@ export const FeedbackBanner = (props: {
             >
               Contact us
             </LinkButton>
+            <CloseButton
+              hideFrom="sm"
+              variant="ghost"
+              color="whiteAlpha.900"
+              _hover={{ bg: "blackAlpha.300" }}
+              onClick={() => setOpen(false)}
+            />
           </Flex>
         </Center>
-        <Float placement="middle-end" offset="8">
+        <Float placement="middle-end" offset="8" hideBelow="sm">
           <CloseButton
             variant="ghost"
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
-            onClick={setOpen}
+            onClick={() => setOpen(false)}
           />
         </Float>
       </Box>

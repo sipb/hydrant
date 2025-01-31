@@ -196,8 +196,8 @@ function HydrantApp() {
         <>
           <FeedbackBanner
             isOpen={hydrant.showFeedback}
-            setOpen={() => {
-              hydrant.showFeedback = false;
+            setOpen={(setBool: boolean) => {
+              hydrant.showFeedback = setBool;
             }}
           />
           <Flex
