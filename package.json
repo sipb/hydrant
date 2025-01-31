@@ -30,8 +30,8 @@
     "start": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "format": "prettier --write **/*.{ts,tsx}",
-    "ci-prettier": "prettier --check **/*.{ts,tsx}",
+    "format": "prettier --write '**/*.{ts,tsx}'",
+    "ci-prettier": "prettier --check '**/*.{ts,tsx}'",
     "ci-eslint": "eslint ."
   },
   "engines": {
