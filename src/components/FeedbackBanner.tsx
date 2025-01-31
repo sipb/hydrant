@@ -2,13 +2,13 @@ import {
   Center,
   Flex,
   Text,
-  Link,
   Box,
   Float,
   IconButton,
   Presence,
 } from "@chakra-ui/react";
 import { LuX } from "react-icons/lu";
+import { LinkButton } from "./ui/link-button";
 
 export const FeedbackBanner = (props: {
   isOpen: boolean;
@@ -36,7 +36,7 @@ export const FeedbackBanner = (props: {
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
               Do you have feedback on Hydrant? We'd love to hear it!
             </Text>
-            <Link
+            <LinkButton
               flexShrink={0}
               variant="plain"
               href={"mailto:sipb-hydrant@mit.edu"}
@@ -46,10 +46,10 @@ export const FeedbackBanner = (props: {
               fontWeight="semibold"
               px="3"
               py="1"
-              rounded="l2"
+              height="inherit"
             >
               Contact us
-            </Link>
+            </LinkButton>
           </Flex>
         </Center>
         <Float placement="middle-end" offset="8">
