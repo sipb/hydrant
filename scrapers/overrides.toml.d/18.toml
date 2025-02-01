@@ -1,0 +1,28 @@
+#:schema ./override-schema.json
+# Course 18 special subjects (spring 2025)
+
+['18.S096']
+name = 'Discrete Geometry'
+description = '''
+This spring 18.S096 will be an undergraduate introduction to discrete and convex geometry.
+
+Discrete geometry is in some ways the simplest form of geometry. For example, a discrete point configuration is enormously simpler than a manifold. This means what we’ll be studying is particularly concrete and accessible. In other ways, having less structure can make problems difficult to resolve, and the close connections with combinatorics and number theory can lead to serious challenges. The net effect is a fascinating mixture: some topics are shockingly simple and beautiful, while others are more complex than you might guess at first glance.
+
+Prerequisites:
+Previous experience with proofs, since we’ll be proving lots of things in class and on the problem sets.
+Linear algebra and group theory at the level of 18.701 or 18.700/703. The specific class isn’t important, just that you’re comfortable with the idea of proving something about or using linear algebra and aren’t intimidated when groups of symmetries come up.
+We won’t need any advanced background in probability theory, but you should know basics like what a probability distribution is.'''
+
+['18.S190']
+name = 'Common Ground Numerical Analysis (H3 - wheel)'
+
+['18.S191']
+name = 'Common Ground Numerical Analysis (H4 - spoke)'
+
+['18.S996']
+name = 'Introduction to Geometric Matrix Algebra and Scientific Applications'
+
+['18.S997']
+name = 'Generative AI for Biology'
+description = '''
+Covers the recent advances in computational biology brought about by modern machine learning and artificial intelligence, and in particular Generative AI. This course will center on a detailed understanding of generative AI models and will discuss representative applications to biology. Students will build and use a variety of deep learning models (e.g., VAEs, transformers, diffusion models) in the context of biological problems. This course is intended for students who are interested in the intersection of machine learning and biology but may have previous experience in only one of these topics. Problem sets throughout the semester will provide written and practical experience with model design and training. The course will culminate in a final project in which students will work in groups to apply generative AI to a novel problem in the life sciences. Builds on biology concepts from 6.8700/20.S900, but can be taken independently. Graduate subjects will include additional work on problem sets.'''

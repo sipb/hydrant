@@ -33,6 +33,7 @@ import { ScheduleOption } from "./ScheduleOption";
 import { ScheduleSwitcher } from "./ScheduleSwitcher";
 import { SelectedActivities } from "./SelectedActivities";
 import { TermSwitcher } from "./TermSwitcher";
+import { FeedbackBanner } from "./FeedbackBanner";
 
 import "@fontsource-variable/inter/index.css";
 import { MatrixLink } from "./MatrixLink";
@@ -192,35 +193,47 @@ function HydrantApp() {
           <Spinner />
         </Flex>
       ) : (
-        <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
-          <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-            <Header preferences={state.preferences} state={hydrant} />
-            <ScheduleOption
-              selectedOption={state.selectedOption}
-              totalOptions={state.totalOptions}
-              state={hydrant}
-            />
-            <Calendar
-              selectedActivities={state.selectedActivities}
-              viewedActivity={state.viewedActivity}
-              state={hydrant}
-            />
-            <LeftFooter state={hydrant} />
-          </Flex>
-          <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-            <Center>
-              <Group wrap="wrap" justifyContent="center" gap={2}>
-                <TermSwitcher state={hydrant} />
-                <ScheduleSwitcher
-                  saveId={state.saveId}
-                  saves={state.saves}
-                  state={hydrant}
-                />
-              </Group>
-            </Center>
-            <Center>
-              <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
-                {/* <Tooltip
+        <>
+          <FeedbackBanner
+            isOpen={hydrant.showFeedback}
+            setOpen={(setBool: boolean) => {
+              hydrant.showFeedback = setBool;
+            }}
+          />
+          <Flex
+            w="100%"
+            direction={{ base: "column", lg: "row" }}
+            p={4}
+            gap={8}
+          >
+            <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
+              <Header preferences={state.preferences} state={hydrant} />
+              <ScheduleOption
+                selectedOption={state.selectedOption}
+                totalOptions={state.totalOptions}
+                state={hydrant}
+              />
+              <Calendar
+                selectedActivities={state.selectedActivities}
+                viewedActivity={state.viewedActivity}
+                state={hydrant}
+              />
+              <LeftFooter state={hydrant} />
+            </Flex>
+            <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
+              <Center>
+                <Group wrap="wrap" justifyContent="center" gap={2}>
+                  <TermSwitcher state={hydrant} />
+                  <ScheduleSwitcher
+                    saveId={state.saveId}
+                    saves={state.saves}
+                    state={hydrant}
+                  />
+                </Group>
+              </Center>
+              <Center>
+                <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
+                  {/* <Tooltip
                   label={
                     isExporting
                       ? "Loading..."
@@ -233,45 +246,46 @@ function HydrantApp() {
                     <Image src={calendarButtonImg} alt="Sign in with Google" />
                   )}
                 </Tooltip> */}
-                <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
-                  <Button
-                    colorPalette="blue"
-                    variant="solid"
-                    size="sm"
-                    loading={isExporting}
-                    loadingText="Loading..."
-                    onClick={() => {
-                      setIsExporting(true);
-                      onICSExport();
-                    }}
-                  >
-                    <LuCalendar />
-                    Export calendar
-                  </Button>
-                </Tooltip>
-                <PreregLink selectedActivities={state.selectedActivities} />
-                <MatrixLink selectedActivities={state.selectedActivities} />
-              </ButtonGroup>
-            </Center>
-            <SelectedActivities
-              selectedActivities={state.selectedActivities}
-              units={state.units}
-              hours={state.hours}
-              warnings={state.warnings}
-              state={hydrant}
-            />
-            <ClassTable
-              classes={hydrant.classes} // this is a constant; no need to add to state
-              state={hydrant}
-            />
-            {state.viewedActivity ? (
-              <ActivityDescription
-                activity={state.viewedActivity}
+                  <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
+                    <Button
+                      colorPalette="blue"
+                      variant="solid"
+                      size="sm"
+                      loading={isExporting}
+                      loadingText="Loading..."
+                      onClick={() => {
+                        setIsExporting(true);
+                        onICSExport();
+                      }}
+                    >
+                      <LuCalendar />
+                      Export calendar
+                    </Button>
+                  </Tooltip>
+                  <PreregLink selectedActivities={state.selectedActivities} />
+                  <MatrixLink selectedActivities={state.selectedActivities} />
+                </ButtonGroup>
+              </Center>
+              <SelectedActivities
+                selectedActivities={state.selectedActivities}
+                units={state.units}
+                hours={state.hours}
+                warnings={state.warnings}
                 state={hydrant}
               />
-            ) : null}
+              <ClassTable
+                classes={hydrant.classes} // this is a constant; no need to add to state
+                state={hydrant}
+              />
+              {state.viewedActivity ? (
+                <ActivityDescription
+                  activity={state.viewedActivity}
+                  state={hydrant}
+                />
+              ) : null}
+            </Flex>
           </Flex>
-        </Flex>
+        </>
       )}
     </>
   );

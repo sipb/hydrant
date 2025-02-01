@@ -392,7 +392,14 @@ export class Term {
     const res = this.holidays.filter((date) => date.getDay() === slot.weekday);
     // ex dates can't be empty, so add an extra one:
     res.push(new Date("2000-01-01"));
-    return res.map((date) => slot.onDate(date));
+    const resDates = res.map((date) => slot.onDate(date));
+
+    // remove the tuesday for monday schedule
+    if (slot.weekday === 2 && this.mondaySchedule) {
+      resDates.push(slot.onDate(this.mondaySchedule));
+    }
+
+    return resDates;
   }
 
   /** An extra date a given slot would fall on, if it exists. */

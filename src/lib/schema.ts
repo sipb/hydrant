@@ -13,6 +13,7 @@ export type Preferences = {
   roundedCorners: boolean;
   showEventTimes: boolean;
   defaultScheduleId: string | null;
+  showFeedback: boolean;
 };
 
 /** The default user preferences. */
@@ -21,6 +22,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   roundedCorners: false,
   showEventTimes: false,
   defaultScheduleId: null,
+  showFeedback: true,
 };
 
 /** React state. */
