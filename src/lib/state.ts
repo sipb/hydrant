@@ -289,6 +289,15 @@ export class State {
       .filter((cls): cls is Class => cls !== undefined);
   }
 
+  get showFeedback(): boolean {
+    return this.preferences.showFeedback;
+  }
+
+  set showFeedback(show: boolean) {
+    this.preferences.showFeedback = show;
+    this.updateState();
+  }
+
   //========================================================================
   // Loading and saving
 
