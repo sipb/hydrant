@@ -1,5 +1,6 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { ICalCalendar, ICalEventData } from "ical-generator";
+import { RRule, RRuleSet } from "rrule";
 import { tzlib_get_ical_block } from "timezones-ical-library";
 
 import { Activity } from "./activity";
@@ -45,13 +46,6 @@ function download(filename: string, text: string) {
   document.body.removeChild(element);
 }
 
-/** Returns a date as an RRULE string without a timezone. */
-function toRRuleString(date: Date): string {
-  return Array.from(toISOString(date))
-    .filter((char) => char !== "-" && char !== ":")
-    .join("");
-}
-
 /** Return a list of events for an activity that happen on a given term. */
 function toGoogleCalendarEvents(
   activity: Activity,
@@ -73,18 +67,29 @@ function toGoogleCalendarEvents(
       const exDates = term.exDatesFor(slot.startSlot);
       const rDate = term.rDateFor(slot.startSlot);
 
+      const rrule = new RRule({
+        freq: RRule.WEEKLY,
+        until: endDate,
+      });
+
+      const rruleSet = new RRuleSet();
+      rruleSet.rrule(rrule);
+
+      for (const exdate of exDates) {
+        rruleSet.exdate(exdate);
+      }
+
+      if (rDate) {
+        rruleSet.rdate(rDate);
+      }
+
       return {
         summary: event.name,
         location: event.room,
         start: { dateTime: toISOString(startDate), timeZone: TIMEZONE },
         end: { dateTime: toISOString(startDateEnd), timeZone: TIMEZONE },
-        recurrence: [
-          // for some reason, gcal wants UNTIL to be a date, not time
-          `RRULE:FREQ=WEEKLY;UNTIL=${toRRuleString(endDate).split("T")[0]}`,
-          `EXDATE;TZID=${TIMEZONE}:${exDates.map(toRRuleString).join(",")}`,
-          rDate && `RDATE;TZID=${TIMEZONE}:${toRRuleString(rDate)}`,
-        ].filter((t): t is string => t !== undefined),
-      };
+        recurrence: rruleSet.valueOf(),
+      } satisfies gapi.client.calendar.Event;
     }),
   );
 }
@@ -106,19 +111,30 @@ function toICalEvents(activity: Activity, term: Term): Array<ICalEventData> {
       const exDates = term.exDatesFor(slot.startSlot);
       const rDate = term.rDateFor(slot.startSlot);
 
+      const rrule = new RRule({
+        freq: RRule.WEEKLY,
+        until: endDate,
+      });
+
+      const rruleSet = new RRuleSet();
+      rruleSet.rrule(rrule);
+
+      for (const exdate of exDates) {
+        rruleSet.exdate(exdate);
+      }
+
+      if (rDate) {
+        rruleSet.rdate(rDate);
+      }
+
       return {
         summary: event.name,
         location: event.room,
         start: startDate,
         end: startDateEnd,
         timezone: TIMEZONE,
-        repeating: [
-          // for some reason, gcal wants UNTIL to be a date, not time
-          `FREQ=WEEKLY;UNTIL=${toRRuleString(endDate).split("T")[0]}`,
-          `EXDATE;TZID=${TIMEZONE}:${exDates.map(toRRuleString).join(",")}`,
-          rDate && `RDATE;TZID=${TIMEZONE}:${toRRuleString(rDate)}`,
-        ].filter((t): t is string => t !== undefined)[0],
-      };
+        repeating: rruleSet,
+      } satisfies ICalEventData;
     }),
   );
 }
