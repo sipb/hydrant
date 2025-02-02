@@ -12,6 +12,7 @@ export type Preferences = {
   colorScheme: ColorScheme;
   roundedCorners: boolean;
   showEventTimes: boolean;
+  defaultScheduleId: string | null;
   showFeedback: boolean;
 };
 
@@ -20,6 +21,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   colorScheme: COLOR_SCHEME_PRESETS[0],
   roundedCorners: false,
   showEventTimes: false,
+  defaultScheduleId: null,
   showFeedback: true,
 };
 

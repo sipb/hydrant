@@ -413,7 +413,21 @@ export class State {
     return url.href;
   }
 
-  /** Initialize the state from either the URL or localStorage. */
+  /** Set a schedule as the default schedule */
+  set defaultSchedule(id: string | null) {
+    this.preferences = {
+      ...this.preferences,
+      defaultScheduleId: id,
+    };
+    this.updateState();
+  }
+
+  /** Get the current default schedule id */
+  get defaultSchedule(): string | null {
+    return this.preferences.defaultScheduleId;
+  }
+
+  /** Initialize the state from either the URL, default schedule, or first schedule. */
   initState(): void {
     const preferences = this.store.globalGet("preferences");
     if (preferences) {
@@ -432,7 +446,16 @@ export class State {
     if (save) {
       this.inflate(urldecode(save));
     } else {
-      this.loadSave(this.saves[0]!.id);
+      // Try to load default schedule if set, otherwise load first save
+      const defaultScheduleId = this.preferences.defaultScheduleId;
+      if (
+        defaultScheduleId &&
+        this.saves.some((save) => save.id === defaultScheduleId)
+      ) {
+        this.loadSave(defaultScheduleId);
+      } else {
+        this.loadSave(this.saves[0]!.id);
+      }
     }
     // Load starred classes from storage
     const storedStarred = this.store.get("starredClasses");
