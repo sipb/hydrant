@@ -31,7 +31,7 @@ LIMITED_REGEX = re.compile(
     |([Ll]imited|[Rr]estricted)[ ]
     (enrollment|by[ ]lottery|number|\d+|to[ ]\d+)
     |([Ll]imited|[Rr]estricted|([Pp]reference|[Pp]riority)( given| is given)?)
-    [ ]to[ ][A-Za-z0-9-' ]+
+    [ ]to[ ]([A-Za-z0-9-' ]+)?
     (
         students?|freshmen|sophomores|juniors|seniors|majors|minors
         |concentrators|[Ff]ellows|MBAs?|undergraduates|candidates
