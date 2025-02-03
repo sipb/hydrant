@@ -25,7 +25,7 @@ from bs4 import BeautifulSoup, Tag
 BASE_URL = "http://student.mit.edu/catalog"
 
 LIMITED_REGEX = re.compile(
-    """(?x)
+    r"""(?x)
     [Ee]nrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ])(limited|restricted|by[ ]application)
     |([Ll]imited|[Rr]estricted)[ ](enrollment|by[ ]lottery|number|\d+|to[ ]\d+)
     |([Ll]imited|[Rr]estricted|([Pp]reference|[Pp]riority)( given| is given)?)[ ]to[ ][A-Za-z-' ]+
