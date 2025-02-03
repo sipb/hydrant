@@ -24,6 +24,9 @@ from bs4 import BeautifulSoup, Tag
 
 BASE_URL = "http://student.mit.edu/catalog"
 
+# various limited/restricted/etc enrollment phrases in course descriptions
+# PLEASE use regex101.com and/or test_mining.py to test changes before pushing to production!!!
+
 LIMITED_REGEX = re.compile(
     r"""(?x)
     [Ee]nrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ])
