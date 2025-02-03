@@ -24,6 +24,17 @@ from bs4 import BeautifulSoup, Tag
 
 BASE_URL = "http://student.mit.edu/catalog"
 
+LIMITED_REGEX = re.compile(
+    """(?x)
+    [Ee]nrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ])(limited|restricted|by[ ]application)
+    |([Ll]imited|[Rr]estricted)[ ](enrollment|by[ ]lottery|number|\d+|to[ ]\d+)
+    |([Ll]imited|[Rr]estricted|([Pp]reference|[Pp]riority)( given| is given)?)[ ]to[ ][A-Za-z-' ]+
+    (students?|freshmen|sophomores|juniors|seniors|majors|minors|concentrators|Fellows|MBAs?|undergraduates|candidates)
+    |required[ ]prior[ ]to[ ]enrollment
+    |have[ ]priority
+"""
+)
+
 
 def is_not_offered_this_year(html):
     """
@@ -120,7 +131,7 @@ def is_limited(html):
     Returns:
     * bool: True if enrollment in the class is limited
     """
-    if html.find(text=re.compile("[Ll]imited")):
+    if html.find(text=LIMITED_REGEX):
         return True
     return False
 
