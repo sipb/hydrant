@@ -13,6 +13,32 @@ run() scrapes this data and writes it to catalog.json, in the format:
         "limited": true | false,
     }
 }
+
+Functions:
+* is_not_offered_this_year(html)
+* is_not_offered_next_year(html)
+* is_repeat_allowed(html)
+* get_url(html)
+* has_final(html)
+* get_half(html)
+* is_limited(html)
+* get_course_data(filtered_html)
+* get_home_catalog_links()
+* get_all_catalog_links(initial_hrefs)
+* get_anchors_with_classname(element)
+* scrape_courses_from_page(courses, href)
+* run()
+
+Constants:
+* BASE_URL
+* LIMITED_REGEX
+
+Dependencies:
+* json
+* os.path
+* re
+* requests
+* bs4
 """
 
 import json
@@ -23,6 +49,27 @@ import requests
 from bs4 import BeautifulSoup, Tag
 
 BASE_URL = "http://student.mit.edu/catalog"
+
+# various limited/restricted/etc enrollment phrases in course descriptions
+# PLEASE use regex101.com to test changes before pushing to production!!!
+# text_mining.py also helps by finding test sentences from our entire database
+
+LIMITED_REGEX = re.compile(
+    r"""(?x)
+    [Ee]nrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ])
+    (limited|restricted|by[ ]application)
+    |([Ll]imited|[Rr]estricted)[ ]
+    (enrollment|by[ ]lottery|number|\d+|to[ ]\d+)
+    |([Ll]imited|[Rr]estricted|([Pp]reference|[Pp]riority)( given| is given)?)
+    [ ]to[ ]([A-Za-z0-9-' ]+)?
+    (
+        students?|freshmen|sophomores|juniors|seniors|majors|minors
+        |concentrators|[Ff]ellows|MBAs?|undergraduates|candidates
+    )
+    |required[ ]prior[ ]to[ ]enrollment
+    |have[ ]priority
+"""
+)
 
 
 def is_not_offered_this_year(html):
@@ -120,7 +167,7 @@ def is_limited(html):
     Returns:
     * bool: True if enrollment in the class is limited
     """
-    if html.find(text=re.compile("[Ll]imited")):
+    if html.find(text=LIMITED_REGEX):
         return True
     return False
 
