@@ -20,6 +20,7 @@ export const FeedbackBanner = (props: {
           px="3"
           bgGradient="to-r"
           gradientFrom="cyan.700"
+          gradientVia="purple.600"
           gradientTo="red.500"
           color="white"
           textAlign="center"
