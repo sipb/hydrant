@@ -11,7 +11,12 @@ import {
   Button,
   ButtonGroup,
 } from "@chakra-ui/react";
-import { ComponentPropsWithoutRef, FormEvent, useState } from "react";
+import {
+  ComponentPropsWithoutRef,
+  FormEvent,
+  useLayoutEffect,
+  useState,
+} from "react";
 
 import { Radio, RadioGroup } from "./ui/radio";
 import {
@@ -104,15 +109,16 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class; state: State }) {
   const { cls, state } = props;
-  const [selected, setSelected] = useState(
+  const genSelected = (cls: Class) =>
     cls.sections.map((sections) =>
       sections.locked
         ? sections.selected
           ? sections.selected.rawTime
           : LockOption.None
         : LockOption.Auto,
-    ),
-  );
+    );
+  const [selected, setSelected] = useState(genSelected(cls));
+  useLayoutEffect(() => setSelected(genSelected(cls)), [cls]);
 
   const RenderOptions = () => {
     const getLabel = (sec: SectionLockOption) => {
