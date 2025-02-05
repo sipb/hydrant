@@ -38,7 +38,7 @@ def get_sections():
     """
     cim_req = requests.get(
         CIM_URL,
-        timeout=1,
+        timeout=5,
     )
     soup = BeautifulSoup(cim_req.text, "html.parser")
 
