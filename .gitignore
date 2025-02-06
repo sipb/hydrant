@@ -37,3 +37,6 @@ __pycache__
 
 # deploy script
 deploy.sh
+
+#virtual env
+hydrant-venv
