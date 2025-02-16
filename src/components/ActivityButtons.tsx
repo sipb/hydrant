@@ -88,6 +88,13 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
       <Input
         value={room}
         onChange={(e) => setRoom(e.target.value)}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            onConfirm();
+          } else if (e.key === "Escape") {
+            onCancel();
+          }
+        }}
         placeholder="26-100"
       />
       <Button onClick={onConfirm}>
@@ -121,13 +128,13 @@ function ClassManualSections(props: { cls: Class; state: State }) {
   useLayoutEffect(() => setSelected(genSelected(cls)), [cls]);
 
   const RenderOptions = () => {
-    const getLabel = (sec: SectionLockOption) => {
+    const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
       if (sec === LockOption.Auto) {
-        return LockOption.Auto;
+        return humanReadable ? "Auto (default)" : LockOption.Auto;
       } else if (sec === LockOption.None) {
         return LockOption.None;
       } else {
-        return sec.rawTime;
+        return humanReadable ? sec.parsedTime : sec.rawTime;
       }
     };
 
@@ -168,9 +175,7 @@ function ClassManualSections(props: { cls: Class; state: State }) {
                 <Stack>
                   {options.map((sec) => (
                     <Radio key={getLabel(sec)} value={getLabel(sec)}>
-                      {getLabel(sec) === LockOption.Auto
-                        ? "Auto (default)"
-                        : getLabel(sec)}
+                      {getLabel(sec, true)}
                     </Radio>
                   ))}
                 </Stack>

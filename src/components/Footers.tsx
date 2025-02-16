@@ -21,11 +21,7 @@ function AboutDialog() {
       <Link onClick={() => setVisible(true)} colorPalette="blue">
         About
       </Link>
-      <DialogRoot
-        lazyMount
-        open={visible}
-        onOpenChange={() => setVisible(false)}
-      >
+      <DialogRoot open={visible} onOpenChange={() => setVisible(false)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Hydrant</DialogTitle>
@@ -83,11 +79,7 @@ function PrivacyPolicyDialog() {
       <Link onClick={() => setVisible(true)} colorPalette="blue">
         Privacy Policy
       </Link>
-      <DialogRoot
-        lazyMount
-        open={visible}
-        onOpenChange={() => setVisible(false)}
-      >
+      <DialogRoot open={visible} onOpenChange={() => setVisible(false)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Privacy Policy</DialogTitle>

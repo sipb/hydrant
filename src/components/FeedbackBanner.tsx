@@ -1,6 +1,13 @@
-import { Center, Flex, Text, Box, Float, Presence } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Text,
+  Box,
+  Float,
+  Presence,
+  CloseButton,
+} from "@chakra-ui/react";
 import { LinkButton } from "./ui/link-button";
-import { CloseButton } from "./ui/close-button";
 
 export const FeedbackBanner = (props: {
   isOpen: boolean;

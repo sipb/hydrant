@@ -64,7 +64,6 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
   return (
     <>
       <DialogRoot
-        lazyMount
         open={visible}
         onOpenChange={(e) => (e.open ? onOpen() : onCancel())}
       >

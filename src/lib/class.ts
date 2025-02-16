@@ -109,6 +109,19 @@ export class Section {
     this.room = room;
   }
 
+  /** Get the parsed time for this section in a format similar to the Registrar. */
+  get parsedTime(): string {
+    const [room, days, eveningBool, times] = this.rawTime.split("/");
+
+    const isEvening = eveningBool === "1";
+
+    if (isEvening) {
+      return `${days} EVE (${times}) (${room})`;
+    }
+
+    return `${days}${times} (${room})`;
+  }
+
   /**
    * @param currentSlots - array of timeslots currently occupied
    * @returns number of conflicts this section has with currentSlots
