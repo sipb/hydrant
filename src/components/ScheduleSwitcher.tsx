@@ -107,7 +107,6 @@ function SelectWithWarn(props: {
         </SelectContent>
       </SelectRoot>
       <DialogRoot
-        lazyMount
         open={Boolean(confirmSave)}
         onOpenChange={(e) => (!e.open ? setConfirmSave("") : null)}
       >
@@ -150,7 +149,6 @@ function DeleteDialog(props: {
 
   return (
     <DialogRoot
-      lazyMount
       open={show}
       onOpenChange={(e) => setShow(e.open)}
       role="alertdialog"
@@ -188,7 +186,7 @@ function ExportDialog(props: { state: State; children: React.ReactNode }) {
   const [clipboardState, copyToClipboard] = useCopyToClipboard();
 
   return (
-    <DialogRoot lazyMount open={show} onOpenChange={(e) => setShow(e.open)}>
+    <DialogRoot open={show} onOpenChange={(e) => setShow(e.open)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
