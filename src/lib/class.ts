@@ -109,6 +109,19 @@ export class Section {
     this.room = room;
   }
 
+  /** Get the parsed time for this section in a format similar to the Registrar. */
+  get parsedTime(): string {
+    const [room, days, eveningBool, times] = this.rawTime.split("/");
+
+    const isEvening = eveningBool === "1";
+
+    if (isEvening) {
+      return `${days} EVE (${times}) (${room})`;
+    }
+
+    return `${days}${times} (${room})`;
+  }
+
   /**
    * @param currentSlots - array of timeslots currently occupied
    * @returns number of conflicts this section has with currentSlots
@@ -199,12 +212,12 @@ export class Sections {
   get event(): Event | null {
     return this.selected
       ? new Event(
-          this.cls,
-          `${this.cls.number} ${this.shortName}`,
-          this.selected.timeslots,
-          this.roomOverride || this.selected.room,
-          this.cls.half,
-        )
+        this.cls,
+        `${this.cls.number} ${this.shortName}`,
+        this.selected.timeslots,
+        this.roomOverride || this.selected.room,
+        this.cls.half,
+      )
       : null;
   }
 
@@ -525,10 +538,10 @@ export class Class {
   }
 
   /** Doesn't actually do anything (yet?), just makes compiler happy. */
-  addTimeslot(): void {}
+  addTimeslot(): void { }
 
   /** Doesn't actually do anything (yet?), just makes compiler happy. */
-  removeTimeslot(): void {}
+  removeTimeslot(): void { }
 
   /** Deflate a class to something JSONable. */
   deflate() {
