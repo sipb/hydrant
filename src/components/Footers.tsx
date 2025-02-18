@@ -123,6 +123,9 @@ export function LeftFooter(props: { state: State }) {
           Contact
         </Link>
         <PrivacyPolicyDialog />
+        <Link href="https://accessibility.mit.edu/" colorPalette="blue">
+          Accessibility
+        </Link>
       </Flex>
     </Flex>
   );
