@@ -271,7 +271,7 @@ export function ScheduleSwitcher(props: {
     const onSave = () => state.addSave(Boolean(saveId));
     const onCopy = () => state.addSave(false, `${currentName} copy`);
     const renderButtons = () => (
-      <MenuRoot>
+      <MenuRoot unmountOnExit={false}>
         <MenuTrigger asChild>
           <IconButton variant="outline" size="sm" aria-label="Schedule options">
             <LuEllipsis />
