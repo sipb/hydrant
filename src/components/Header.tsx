@@ -30,6 +30,7 @@ import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
 
 import logo from "../assets/logo.svg";
 import logoDark from "../assets/logo-dark.svg";
+import hydraAnt from "../assets/hydraAnt.png";
 import { SIPBLogo } from "./SIPBLogo";
 
 function PreferencesDialog(props: { state: State; preferences: Preferences }) {
@@ -140,6 +141,14 @@ export function Header(props: { state: State; preferences: Preferences }) {
 
   return (
     <Flex align="center" gap={3} wrap="wrap">
+      <Image
+        src={hydraAnt}
+        alt="Hydrant ant logo"
+        h="90px"
+        pos="relative"
+        top={-0.6}
+        right={-1}
+      />
       <Flex direction="column" gap={1}>
         <Image
           src={logoSrc}
