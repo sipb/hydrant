@@ -1,5 +1,5 @@
 import { Card, IconButton, Flex, Image, Text, Button } from "@chakra-ui/react";
-import { LuX } from "react-icons/lu";
+import { LuSettings, LuX } from "react-icons/lu";
 
 import {
   DialogRoot,
@@ -11,7 +11,7 @@ import {
   DialogTrigger,
   DialogActionTrigger,
 } from "./ui/dialog";
-import { useColorModeValue, ColorModeIcon } from "./ui/color-mode";
+import { useColorModeValue } from "./ui/color-mode";
 import {
   SelectContent,
   SelectItem,
@@ -33,7 +33,10 @@ import logoDark from "../assets/logo-dark.svg";
 import hydraAnt from "../assets/hydraAnt.png";
 import { SIPBLogo } from "./SIPBLogo";
 
-function PreferencesDialog(props: { state: State; preferences: Preferences }) {
+export function PreferencesDialog(props: {
+  state: State;
+  preferences: Preferences;
+}) {
   const { preferences: originalPreferences, state } = props;
   const [visible, setVisible] = useState(false);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
@@ -69,9 +72,9 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
         onOpenChange={(e) => (e.open ? onOpen() : onCancel())}
       >
         <DialogTrigger asChild>
-          <Button size="sm">
-            Change theme <ColorModeIcon />
-          </Button>
+          <IconButton size="sm" aria-label="Change theme" variant="outline">
+            <LuSettings />
+          </IconButton>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -122,8 +125,8 @@ function PreferencesDialog(props: { state: State; preferences: Preferences }) {
 }
 
 /** Header above the left column, with logo and semester selection. */
-export function Header(props: { state: State; preferences: Preferences }) {
-  const { state, preferences } = props;
+export function Header(props: { state: State }) {
+  const { state } = props;
   const logoSrc = useColorModeValue(logo, logoDark);
 
   const params = new URLSearchParams(document.location.search);
@@ -149,7 +152,7 @@ export function Header(props: { state: State; preferences: Preferences }) {
         top={-0.6}
         right={-1}
       />
-      <Flex direction="column" gap={1}>
+      <Flex direction="column" gap={2}>
         <Image
           src={logoSrc}
           alt="Hydrant logo"
@@ -157,11 +160,10 @@ export function Header(props: { state: State; preferences: Preferences }) {
           pos="relative"
           top={2}
         />
-        <Flex justify="flex-end">
+        <Flex justify="flex-start">
           <SIPBLogo />
         </Flex>
       </Flex>
-      <PreferencesDialog preferences={preferences} state={state} />
       {show && (
         <Card.Root size="sm" variant="subtle">
           <Card.Body px={3} py={1}>

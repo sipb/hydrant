@@ -28,7 +28,7 @@ import { ActivityDescription } from "./ActivityDescription";
 import { Calendar } from "./Calendar";
 import { ClassTable } from "./ClassTable";
 import { LeftFooter } from "./Footers";
-import { Header } from "./Header";
+import { Header, PreferencesDialog } from "./Header";
 import { ScheduleOption } from "./ScheduleOption";
 import { ScheduleSwitcher } from "./ScheduleSwitcher";
 import { SelectedActivities } from "./SelectedActivities";
@@ -207,7 +207,7 @@ function HydrantApp() {
             gap={8}
           >
             <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-              <Header preferences={state.preferences} state={hydrant} />
+              <Header state={hydrant} />
               <ScheduleOption
                 selectedOption={state.selectedOption}
                 totalOptions={state.totalOptions}
@@ -222,12 +222,18 @@ function HydrantApp() {
             </Flex>
             <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
               <Center>
-                <Group wrap="wrap" justifyContent="center" gap={2}>
+                <Group wrap="wrap" justifyContent="center" gap={4}>
                   <TermSwitcher state={hydrant} />
-                  <ScheduleSwitcher
-                    saveId={state.saveId}
-                    saves={state.saves}
+                  <Group gap={4}>
+                    <ScheduleSwitcher
+                      saveId={state.saveId}
+                      saves={state.saves}
+                      state={hydrant}
+                    />
+                  </Group>
+                  <PreferencesDialog
                     state={hydrant}
+                    preferences={state.preferences}
                   />
                 </Group>
               </Center>

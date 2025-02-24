@@ -117,7 +117,7 @@ export function LeftFooter(props: { state: State }) {
   return (
     <Flex direction="column" align="center" gap={2}>
       <Text>Last updated: {state.lastUpdated}.</Text>
-      <Flex gap={4}>
+      <Flex gap={4} wrap="wrap">
         <AboutDialog />
         <Link href="mailto:sipb-hydrant@mit.edu" colorPalette="blue">
           Contact
