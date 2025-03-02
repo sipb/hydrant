@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-""" Accept a web-hook from GitHub telling us about a new built version of Hydrant. """
+"""Accept a web-hook from GitHub telling us about a new built version of Hydrant."""
 
 import json
 import traceback
