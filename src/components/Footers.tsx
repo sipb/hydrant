@@ -1,4 +1,4 @@
-import { Flex, Link, Text, Button } from "@chakra-ui/react";
+import { Flex, Link, Text, Button, Image } from "@chakra-ui/react";
 import { useState } from "react";
 
 import {
@@ -12,6 +12,8 @@ import {
 } from "./ui/dialog";
 
 import { State } from "../lib/state";
+
+import fuzzAndAnt from "../assets/fuzzAndAnt.png";
 
 function AboutDialog() {
   const [visible, setVisible] = useState(false);
@@ -115,17 +117,26 @@ export function LeftFooter(props: { state: State }) {
   const { state } = props;
 
   return (
-    <Flex direction="column" align="center" gap={2}>
-      <Text>Last updated: {state.lastUpdated}.</Text>
-      <Flex gap={4}>
-        <AboutDialog />
-        <Link href="mailto:sipb-hydrant@mit.edu" colorPalette="blue">
-          Contact
-        </Link>
-        <PrivacyPolicyDialog />
-        <Link href="https://accessibility.mit.edu/" colorPalette="blue">
-          Accessibility
-        </Link>
+    <Flex direction="row" align="center" justify="center" gap={5}>
+      <Image
+        src={fuzzAndAnt}
+        alt="Hydra ant and fuzzball stare at a calendar"
+        h="70px"
+        pos="relative"
+        top={-1.5}
+      />
+      <Flex direction="column" align="center" gap={2}>
+        <Text>Last updated: {state.lastUpdated}.</Text>
+        <Flex gap={4} wrap="wrap">
+          <AboutDialog />
+          <Link href="mailto:sipb-hydrant@mit.edu" colorPalette="blue">
+            Contact
+          </Link>
+          <PrivacyPolicyDialog />
+          <Link href="https://accessibility.mit.edu/" colorPalette="blue">
+            Accessibility
+          </Link>
+        </Flex>
       </Flex>
     </Flex>
   );

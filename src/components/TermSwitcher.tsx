@@ -34,7 +34,6 @@ export function TermSwitcher(props: { state: State }) {
       }}
       size="sm"
       w="8rem"
-      mr={3}
     >
       <SelectLabel hidden>Select semester</SelectLabel>
       <SelectTrigger>
