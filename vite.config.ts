@@ -12,7 +12,7 @@ export default defineConfig({
     nodePolyfills({ include: ["buffer"] }),
     checker({
       typescript: true,
-      eslint: { lintCommand: "eslint .", useFlatConfig: true },
+      eslint: { lintCommand: "eslint **/*.{ts,tsx}", useFlatConfig: true },
     }),
   ],
 });
