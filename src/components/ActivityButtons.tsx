@@ -149,7 +149,7 @@ function ClassManualSections(props: { cls: Class; state: State }) {
                 value={selected[sectionIndex]}
                 onValueChange={(e) => {
                   setSelected((oldArray) => {
-                    oldArray[sectionIndex] = e.value;
+                    oldArray[sectionIndex] = e.value as string;
                     return oldArray;
                   });
 
