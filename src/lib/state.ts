@@ -196,13 +196,42 @@ export class State {
    * localStorage.
    */
   updateState(save: boolean = true): void {
+    // Calculate hours for each half
+    const firstHalfHours = sum(
+      this.selectedActivities
+        .filter(act => {
+          if ('rawClass' in act) {
+            // Include if class is full semester or first half
+            return !act.rawClass.half || act.rawClass.half === 1;
+          }
+          // Include all non-class activities in both halves
+          return true;
+        })
+        .map(activity => activity.hours)
+    );
+
+    const secondHalfHours = sum(
+      this.selectedActivities
+        .filter(act => {
+          if ('rawClass' in act) {
+            // Include if class is full semester or second half
+            return !act.rawClass.half || act.rawClass.half === 2;
+          }
+          // Include all non-class activities in both halves
+          return true;
+        })
+        .map(activity => activity.hours)
+    );
+
     this.callback?.({
       selectedActivities: this.selectedActivities,
       viewedActivity: this.viewedActivity,
       selectedOption: this.selectedOption,
       totalOptions: this.options.length,
       units: sum(this.selectedClasses.map((cls) => cls.totalUnits)),
-      hours: sum(this.selectedActivities.map((activity) => activity.hours)),
+      hours: Math.max(firstHalfHours, secondHalfHours), // Use max for total hours
+      hoursFirstHalf: firstHalfHours,
+      hoursSecondHalf: secondHalfHours,
       warnings: Array.from(
         new Set(this.selectedClasses.flatMap((cls) => cls.warnings.messages)),
       ),
@@ -210,6 +239,7 @@ export class State {
       saves: this.saves,
       preferences: this.preferences,
     });
+    
     if (save) {
       this.storeSave(this.saveId, false);
     }

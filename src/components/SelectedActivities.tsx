@@ -47,16 +47,29 @@ export function SelectedActivities(props: {
   selectedActivities: Array<Activity>;
   units: number;
   hours: number;
+  hoursFirstHalf: number;
+  hoursSecondHalf: number;
   warnings: Array<string>;
   state: State;
 }) {
-  const { selectedActivities, units, hours, warnings, state } = props;
+  const { selectedActivities, units, hours, hoursFirstHalf, hoursSecondHalf, warnings, state } = props;
+
+  const formatHours = () => {
+    if (hoursFirstHalf === hoursSecondHalf) {
+      return `${hours.toFixed(1)} hours`;
+    }
+    
+    // Use Q1/Q2 for fall semester, Q3/Q4 for spring semester
+    const [firstLabel, secondLabel] = state.term.semester === 'f' ? ['Q1', 'Q2'] : ['Q3', 'Q4'];
+    
+    return `\u2264 ${hours.toFixed(1)} hours (${hoursFirstHalf.toFixed(1)} ${firstLabel}, ${hoursSecondHalf.toFixed(1)} ${secondLabel})`;
+  };
 
   return (
     <Flex direction="column" gap={2}>
       <Flex gap={8} justify="center">
         <Text>{units} units</Text>
-        <Text>{hours.toFixed(1)} hours</Text>
+        <Text>{formatHours()}</Text>
       </Flex>
       <ButtonGroup gap={0} wrap="wrap">
         {selectedActivities.map((activity) => (

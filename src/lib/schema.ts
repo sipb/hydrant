@@ -33,6 +33,8 @@ export type HydrantState = {
   totalOptions: number;
   units: number;
   hours: number;
+  hoursFirstHalf: number;
+  hoursSecondHalf: number;
   warnings: Array<string>;
   saveId: string;
   saves: Array<Save>;
@@ -47,6 +49,8 @@ export const DEFAULT_STATE: HydrantState = {
   totalOptions: 0,
   units: 0,
   hours: 0,
+  hoursFirstHalf: 0,
+  hoursSecondHalf: 0,
   warnings: [],
   saveId: "",
   saves: [],

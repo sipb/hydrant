@@ -276,6 +276,8 @@ function HydrantApp() {
                 selectedActivities={state.selectedActivities}
                 units={state.units}
                 hours={state.hours}
+                hoursFirstHalf={state.hoursFirstHalf}
+                hoursSecondHalf={state.hoursSecondHalf}
                 warnings={state.warnings}
                 state={hydrant}
               />
