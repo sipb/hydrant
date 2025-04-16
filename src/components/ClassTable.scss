@@ -29,3 +29,8 @@
 .ag-cell-normal-text {
   color: var(--chakra-colors-fg);
 }
+
+.ag-cell.ag-column-last span{
+  overflow-x: auto;
+  text-overflow: unset;
+}
