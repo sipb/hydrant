@@ -1,37 +1,35 @@
 #:schema ./override-schema.json
 # Course 21L special subjects (fall 2025)
 
-# UNCOMMENT AFTER GETTING APPROVAL FROM DEPARTMENT
+['21L.003']
+name = "Jane Austen: Reading Fiction"
 
-# ['21L.003']
-# name = "Jane Austen: Reading Fiction"
+['21L.050']
+name = "The Art of Seeing Things: Reading Nonfiction"
 
-# ['21L.050']
-# name = "The Art of Seeing Things: Reading Nonfiction"
+['21L.345']
+name = "Around the World in Short Film: On the Screen"
 
-# ['21L.345']
-# name = "Around the World in Short Film: On the Screen"
+['21L.433']
+name = "Kubrick: Film Styles and Genres"
 
-# ['21L.433']
-# name = "Kubrick: Film Styles and Genres"
+['21L.450']
+name = "Ecofeminism: Global Environmental Literature"
 
-# ['21L.450']
-# name = "Ecofeminism: Global Environmental Literature"
+['21L.475']
+name = "Writers Responding to a Rapidly Modernizing World: Enlightenment and Modernity"
 
-# ['21L.475']
-# name = "Writers Responding to a Rapidly Modernizing World: Enlightenment and Modernity"
+['21L.S89']
+name = "French Modernity: Special Subject in Literature"
 
-# ['21L.S89']
-# name = "French Modernity: Special Subject in Literature"
+['21L.703']
+name = "Murder & Mayhem Remade: Studies in Drama"
 
-# ['21L.703']
-# name = "Murder & Mayhem Remade: Studies in Drama"
+['21L.704']
+name = "The Poetry of Witness: Studies in Poetry"
 
-# ['21L.704']
-# name = "The Poetry of Witness: Studies in Poetry"
+['21L.706']
+name = "On Love: Studies in Film"
 
-# ['21L.706']
-# name = "On Love: Studies in Film"
-
-# ['21L.707']
-# name = "The Art of War and Peace: Problems in Cultural Interpretation"
+['21L.707']
+name = "The Art of War and Peace: Problems in Cultural Interpretation"
