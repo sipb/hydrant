@@ -257,7 +257,7 @@ export type TermInfo = {
   h1EndDate?: string;
   h2StartDate?: string;
   endDate: string;
-  mondayScheduleDate?: string;
+  mondayScheduleDate?: string | null;
   holidayDates?: Array<string>;
 };
 
@@ -310,10 +310,9 @@ export class Term {
     this.h1End = midnight(h1EndDate);
     this.h2Start = midnight(h2StartDate);
     this.end = midnight(endDate);
-    this.mondaySchedule =
-      mondayScheduleDate === undefined
-        ? undefined
-        : midnight(mondayScheduleDate);
+    this.mondaySchedule = mondayScheduleDate
+      ? midnight(mondayScheduleDate)
+      : undefined;
     this.holidays = holidayDates.map((date) => midnight(date));
   }
 

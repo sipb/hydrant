@@ -1,31 +1,6 @@
 #:schema ./override-schema.json
-# Course 21G special subjects (spring 2025)
+# Course 21G special subjects (fall 2025)
 
-['21G.S03']
-name = "Special Subject: Chinese Calligraphy"
-
-['21G.S52']
-name = "Special Subject: Japanese II (Hybrid)"
-
-['21G.S54']
-name = "Special Subject: Japanese IV (Hybrid)"
-
-['21G.S56']
-name = "Special Subject: Japanese VI (Hybrid)"
-
-['21G.S62']
-name = "Special Subject: Russian II (Hybrid)"
-
-['21G.S64']
-name = "Special Subject: Russian IV (Hybrid)"
-
-['21G.S82']
-name = "Special Subject: Portuguese II (Hybrid)"
-
-['21G.S84']
-name = "Special Subject: Portuguese IV (Hybrid)"
-
-# FALL 2025
-# ['21G.312']
-# name = "Basic Themes in French Literature and Culture: Science, Mysteries, and the Francophone World"
-# description = "Discover the unknown through the stories of the French-speaking world. This course is designed for intermediate and advanced French learners who are curious about science, innovation, and culture. Through exciting topics like Marie Curie, artificial intelligence, climate change, and science fiction, you will improve your French while exploring the mysteries and big questions of our time — from the past to the future, and from Europe to Africa to the Caribbean."
+['21G.312']
+name = "Basic Themes in French Literature and Culture: Science, Mysteries, and the Francophone World"
+description = "Discover the unknown through the stories of the French-speaking world. This course is designed for intermediate and advanced French learners who are curious about science, innovation, and culture. Through exciting topics like Marie Curie, artificial intelligence, climate change, and science fiction, you will improve your French while exploring the mysteries and big questions of our time — from the past to the future, and from Europe to Africa to the Caribbean."
