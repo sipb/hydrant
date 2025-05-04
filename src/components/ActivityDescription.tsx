@@ -4,9 +4,10 @@ import { decode } from "html-entities";
 import { useColorMode } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
-import { Activity, NonClass } from "../lib/activity";
-import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
-import { State } from "../lib/state";
+import type { Activity, NonClass } from "../lib/activity";
+import type { Flags} from "../lib/class";
+import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
+import type { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";
 
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
@@ -44,7 +45,7 @@ function ClassTypes(props: { cls: Class; state: State }) {
    *
    * @param arr - Arrays with [flag name, alt text].
    */
-  const makeFlags = (arr: Array<[keyof Flags, string]>) =>
+  const makeFlags = (arr: [keyof Flags, string][]) =>
     arr
       .filter(([flag, _]) => flags[flag])
       .map(([flag, title]) => (
@@ -57,7 +58,10 @@ function ClassTypes(props: { cls: Class; state: State }) {
   const nextAcademicYearEnd = nextAcademicYearStart + 1;
 
   const types1 = makeFlags([
-    ["nonext", `Not offered ${nextAcademicYearStart}-${nextAcademicYearEnd}`],
+    [
+      "nonext",
+      `Not offered ${nextAcademicYearStart.toString()}-${nextAcademicYearEnd.toString()}`,
+    ],
     ["under", "Undergrad"],
     ["grad", "Graduate"],
   ]);
@@ -96,7 +100,7 @@ function ClassTypes(props: { cls: Class; state: State }) {
 
   const unitsDescription = cls.isVariableUnits
     ? "Units arranged"
-    : `${totalUnits} units: ${units.join("-")}`;
+    : `${totalUnits.toString()} units: ${units.join("-")}`;
 
   return (
     <Flex gap={4} align="center">
@@ -225,9 +229,14 @@ function NonClassDescription(props: { activity: NonClass; state: State }) {
     <Flex direction="column" gap={4}>
       <NonClassButtons activity={activity} state={state} />
       <Flex direction="column" gap={2}>
-        {activity.timeslots?.map((t) => (
+        {activity.timeslots.map((t) => (
           <Flex key={t.toString()} align="center" gap={2}>
-            <Button size="sm" onClick={() => state.removeTimeslot(activity, t)}>
+            <Button
+              size="sm"
+              onClick={() => {
+                state.removeTimeslot(activity, t);
+              }}
+            >
               Remove
             </Button>
             <Text>{t.toString()}</Text>

@@ -29,17 +29,17 @@ export type TSemester = keyof typeof SEMESTER_NAMES;
 export const WEEKDAY_STRINGS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
 /** See {@link TIMESLOT_STRINGS}. */
-function generateTimeslotStrings(): Array<string> {
+function generateTimeslotStrings(): string[] {
   const res = [];
   for (let i = 8; i <= 11; i++) {
-    res.push(`${i}:00 AM`);
-    res.push(`${i}:30 AM`);
+    res.push(`${i.toString()}:00 AM`);
+    res.push(`${i.toString()}:30 AM`);
   }
   res.push("12:00 PM");
   res.push("12:30 PM");
   for (let i = 1; i <= 9; i++) {
-    res.push(`${i}:00 PM`);
-    res.push(`${i}:30 PM`);
+    res.push(`${i.toString()}:00 PM`);
+    res.push(`${i.toString()}:30 PM`);
   }
   res.push(`10:00 PM`);
   return res;
@@ -49,7 +49,7 @@ function generateTimeslotStrings(): Array<string> {
 export const TIMESLOT_STRINGS = generateTimeslotStrings();
 
 /** We maintain only one copy of each slot object. */
-const SLOT_OBJECTS: { [slot: number]: Slot } = {};
+const SLOT_OBJECTS: Record<number, Slot> = {};
 
 /**
  * A thirty-minute slot. Each day has 30 slots from 8 AM to 11 PM, times five
@@ -62,12 +62,10 @@ const SLOT_OBJECTS: { [slot: number]: Slot } = {};
  * problem with respect to ending slots.
  */
 export class Slot {
-  constructor(/** The slot number. */ public slot: number) {}
+  constructor(/** The slot number. */ public slot: number) { }
 
   static fromSlotNumber(slot: number): Slot {
-    if (!SLOT_OBJECTS[slot]) {
-      SLOT_OBJECTS[slot] = new Slot(slot);
-    }
+    SLOT_OBJECTS[slot] = new Slot(slot);
     return SLOT_OBJECTS[slot];
   }
 
@@ -75,8 +73,8 @@ export class Slot {
   static fromStartDate(date: Date): Slot {
     return new Slot(
       30 * (date.getDay() - 1) +
-        2 * (date.getHours() - 8) +
-        Math.floor(date.getMinutes() / 30),
+      2 * (date.getHours() - 8) +
+      Math.floor(date.getMinutes() / 30),
     );
   }
 
@@ -169,7 +167,7 @@ function getLastUrlName(urlName: string): string {
     case "s":
       return `i${year}`;
     case "i":
-      return `f${parseInt(year, 10) - 1}`;
+      return `f${(parseInt(year, 10) - 1).toString()}`;
   }
 }
 
@@ -184,7 +182,7 @@ function getNextUrlName(urlName: string): string {
     case "m":
       return `f${year}`;
     case "f":
-      return `i${parseInt(year, 10) + 1}`;
+      return `i${(parseInt(year, 10) + 1).toString()}`;
   }
 }
 
@@ -195,7 +193,7 @@ const EXCLUDED_URLS = ["i23", "m23", "i24", "m24"];
 const EARLIEST_URL = "f22";
 
 /** Return all urlNames before the given one. */
-export function getUrlNames(latestUrlName: string): Array<string> {
+export function getUrlNames(latestUrlName: string): string[] {
   let urlName = latestUrlName;
   const res = [];
   while (urlName !== EARLIEST_URL) {
@@ -239,7 +237,7 @@ export function getClosestUrlName(
     }
   }
 
-  const urlNamesSameSem = urlNames.filter((u) => u[0] === urlName[0]);
+  const urlNamesSameSem = urlNames.filter((u) => u.startsWith(urlName[0]));
   if (urlNamesSameSem.length > 0) {
     // Unrecognized term, but we can return the latest term of the same type of
     // semester (fall, spring, etc.)
@@ -251,25 +249,25 @@ export function getClosestUrlName(
 }
 
 /** Type of object passed to Term constructor. */
-export type TermInfo = {
+export interface TermInfo {
   urlName: string;
   startDate: string;
   h1EndDate?: string;
   h2StartDate?: string;
   endDate: string;
   mondayScheduleDate?: string | null;
-  holidayDates?: Array<string>;
-};
+  holidayDates?: string[];
+}
 
 /**
  * Type of object parsed from latestTerm.json, including information about the
  * current semester term (fall or spring) and the associated pre-semester term
  * (summer or IAP).
  */
-export type LatestTermInfo = {
+export interface LatestTermInfo {
   preSemester: TermInfo;
   semester: Required<TermInfo>;
-};
+}
 
 /**
  * A term object, containing all information about non-class, term-specific
@@ -291,7 +289,7 @@ export class Term {
   /** A Tuesday which runs on Monday schedule, if it exists. */
   public mondaySchedule?: Date;
   /** A list of dates with no class. */
-  public holidays: Array<Date>;
+  public holidays: Date[];
 
   constructor({
     urlName,
@@ -349,7 +347,7 @@ export class Term {
   /** The date a slot starts on. */
   startDateFor(
     slot: Slot,
-    secondHalf: boolean = false,
+    secondHalf = false,
     startDay?: [number, number],
   ): Date {
     const date = new Date((secondHalf ? this.h2Start : this.start).getTime());
@@ -368,7 +366,7 @@ export class Term {
   /** The date a slot ends on, plus an extra day. */
   endDateFor(
     slot: Slot,
-    firstHalf: boolean = false,
+    firstHalf = false,
     endDay?: [number, number],
   ): Date {
     const date = new Date((firstHalf ? this.h1End : this.end).getTime());
@@ -387,7 +385,7 @@ export class Term {
   }
 
   /** Dates that a given slot *doesn't* run on. */
-  exDatesFor(slot: Slot): Array<Date> {
+  exDatesFor(slot: Slot): Date[] {
     const res = this.holidays.filter((date) => date.getDay() === slot.weekday);
     // ex dates can't be empty, so add an extra one:
     res.push(new Date("2000-01-01"));

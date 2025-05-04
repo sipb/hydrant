@@ -1,6 +1,7 @@
 import { Timeslot, Event } from "./activity";
-import { ColorScheme, fallbackColor } from "./colors";
-import { RawClass, RawSection } from "./rawClass";
+import type { ColorScheme} from "./colors";
+import { fallbackColor } from "./colors";
+import type { RawClass, RawSection } from "./rawClass";
 
 import nonextImg from "../assets/nonext.gif";
 import underImg from "../assets/under.gif";
@@ -30,7 +31,7 @@ enum SectionKind {
 }
 
 /** Flags. */
-export type Flags = {
+export interface Flags {
   nonext: boolean;
   under: boolean;
   grad: boolean;
@@ -57,7 +58,7 @@ export type Flags = {
   le9units: boolean;
   half: number | false;
   limited: boolean;
-};
+}
 
 export const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
 
@@ -94,7 +95,7 @@ export class Section {
   /** Group of sections this section belongs to */
   secs: Sections;
   /** Timeslots this section meets */
-  timeslots: Array<Timeslot>;
+  timeslots: Timeslot[];
   /** String representing raw timeslots, e.g. MW9-11 or T2,F1. */
   rawTime: string;
   /** Room this section meets in */
@@ -126,7 +127,7 @@ export class Section {
    * @param currentSlots - array of timeslots currently occupied
    * @returns number of conflicts this section has with currentSlots
    */
-  countConflicts(currentSlots: Array<Timeslot>): number {
+  countConflicts(currentSlots: Timeslot[]): number {
     let conflicts = 0;
     for (const slot of this.timeslots) {
       for (const otherSlot of currentSlots) {
@@ -157,25 +158,25 @@ export type SectionLockOption = Section | TLockOption;
 export class Sections {
   cls: Class;
   kind: SectionKind;
-  sections: Array<Section>;
+  sections: Section[];
   /** Are these sections locked? None counts as locked. */
   locked: boolean;
   /** Currently selected section out of these. None is null. */
   selected: Section | null;
   /** Overridden location for this particular section. */
-  roomOverride: string = "";
+  roomOverride = "";
 
   constructor(
     cls: Class,
     kind: SectionKind,
-    rawTimes: Array<string>,
-    secs: Array<RawSection>,
+    rawTimes: string[],
+    secs: RawSection[],
     locked?: boolean,
     selected?: Section | null,
   ) {
     this.cls = cls;
     this.kind = kind;
-    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i]!, sec));
+    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
     this.locked = locked ?? false;
     this.selected = selected ?? null;
   }
@@ -212,12 +213,12 @@ export class Sections {
   get event(): Event | null {
     return this.selected
       ? new Event(
-          this.cls,
-          `${this.cls.number} ${this.shortName}`,
-          this.selected.timeslots,
-          this.roomOverride || this.selected.room,
-          this.cls.half,
-        )
+        this.cls,
+        `${this.cls.number} ${this.shortName}`,
+        this.selected.timeslots,
+        this.roomOverride || this.selected.room,
+        this.cls.half,
+      )
       : null;
   }
 
@@ -243,11 +244,11 @@ export class Class {
    */
   readonly rawClass: RawClass;
   /** The sections associated with this class. */
-  readonly sections: Array<Sections>;
+  readonly sections: Sections[];
   /** The background color for the class, used for buttons and calendar. */
   backgroundColor: string;
   /** Is the color set by the user (as opposed to chosen automatically?) */
-  manualColor: boolean = false;
+  manualColor = false;
 
   customLocation: string | undefined = undefined;
 
@@ -324,7 +325,7 @@ export class Class {
   }
 
   /** Units [in class, lab, out of class]. */
-  get units(): Array<number> {
+  get units(): number[] {
     return [
       this.rawClass.lectureUnits,
       this.rawClass.labUnits,
@@ -357,7 +358,7 @@ export class Class {
   }
 
   /** Get all calendar events corresponding to this class. */
-  get events(): Array<Event> {
+  get events(): Event[] {
     return this.sections
       .map((secs) => secs.event)
       .filter((event): event is Event => event instanceof Event);
@@ -400,7 +401,7 @@ export class Class {
   }
 
   /** Array of programs (free text) for which this class is a CI-M */
-  get cim(): Array<string> {
+  get cim(): string[] {
     return this.rawClass.cim ?? [];
   }
 
@@ -419,8 +420,8 @@ export class Class {
     } else {
       return {
         rating: `${this.rawClass.rating.toFixed(1)}/7.0`,
-        hours: `${this.rawClass.hours.toFixed(1)}`,
-        people: `${this.rawClass.size.toFixed(1)}`,
+        hours: this.rawClass.hours.toFixed(1),
+        people: this.rawClass.size.toFixed(1),
       };
     }
   }
@@ -443,10 +444,10 @@ export class Class {
 
   get warnings(): {
     suffix: string;
-    messages: Array<string>;
+    messages: string[];
   } {
-    const suffixes: Array<string> = [];
-    const messages: Array<string> = [];
+    const suffixes: string[] = [];
+    const messages: string[] = [];
     if (this.rawClass.tba) {
       suffixes.push("+");
       messages.push(
@@ -489,7 +490,7 @@ export class Class {
   get description(): {
     description: string;
     inCharge: string;
-    extraUrls: Array<{ label: string; url: string }>;
+    extraUrls: { label: string; url: string }[];
   } {
     const extraUrls = [
       {
@@ -507,7 +508,7 @@ export class Class {
     ];
 
     if (this.oldNumber) {
-      extraUrls.at(-1)!.label = `Class Evaluations (for ${this.number})`;
+      extraUrls[extraUrls.length - 1].label = `Class Evaluations (for ${this.number})`;
       extraUrls.push({
         label: `Class Evaluations (for ${this.oldNumber})`,
         url: `https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode=${this.oldNumber}`,
@@ -538,10 +539,10 @@ export class Class {
   }
 
   /** Doesn't actually do anything (yet?), just makes compiler happy. */
-  addTimeslot(): void {}
+  // addTimeslot(): void { }
 
   /** Doesn't actually do anything (yet?), just makes compiler happy. */
-  removeTimeslot(): void {}
+  // removeTimeslot(): void { }
 
   /** Deflate a class to something JSONable. */
   deflate() {
@@ -569,14 +570,18 @@ export class Class {
     }
     // we ignore parsed[0] as that has the class number
     let offset = 1;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (typeof parsed[1] === "string") {
       offset += 1;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let sectionLocs: Array<any> | null = null;
+    let sectionLocs: any[] | null = null;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (Array.isArray(parsed[offset])) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       sectionLocs = parsed[offset];
       offset += 1;
     }
@@ -584,11 +589,13 @@ export class Class {
       if (sectionLocs && typeof sectionLocs[i] === "string") {
         secs.roomOverride = sectionLocs[i];
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const parse = parsed[i + offset];
       if (!parse && parse !== 0) {
         secs.locked = false;
       } else {
         secs.locked = true;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         secs.selected = secs.sections[parse];
       }
     });

@@ -13,16 +13,18 @@ import { Tooltip } from "./ui/tooltip";
 import { Provider } from "./ui/provider";
 import { useColorMode } from "./ui/color-mode";
 
-import {
+import type {
   LatestTermInfo,
+  TermInfo} from "../lib/dates";
+import {
   Term,
-  TermInfo,
   getClosestUrlName,
 } from "../lib/dates";
 import { State } from "../lib/state";
-import { RawClass } from "../lib/rawClass";
+import type { RawClass } from "../lib/rawClass";
 import { Class } from "../lib/class";
-import { DEFAULT_STATE, HydrantState } from "../lib/schema";
+import type { HydrantState } from "../lib/schema";
+import { DEFAULT_STATE } from "../lib/schema";
 
 import { ActivityDescription } from "./ActivityDescription";
 import { Calendar } from "./Calendar";
@@ -43,11 +45,11 @@ import { LuCalendar } from "react-icons/lu";
 
 // import calendarButtonImg from "../assets/calendar-button.svg";
 
-type SemesterData = {
-  classes: { [cls: string]: RawClass };
+interface SemesterData {
+  classes: Record<string, RawClass>;
   lastUpdated: string;
   termInfo: TermInfo;
-};
+}
 
 /** Hook to fetch data and initialize State object. */
 function useHydrant(): {
@@ -102,13 +104,13 @@ function useHydrant(): {
           params.set("t", urlName);
         }
         if (shouldWarn) {
-          params.set("ti", urlNameOrig!);
+          params.set("ti", urlNameOrig);
         }
         window.location.search = params.toString();
       }
     };
 
-    fetchData();
+    void fetchData();
   }, []);
 
   const { colorMode, toggleColorMode } = useColorMode();
@@ -119,10 +121,10 @@ function useHydrant(): {
     hydrant.callback = (newState: HydrantState) => {
       setState(newState);
       if (colorMode !== newState.preferences.colorScheme.colorMode) {
-        toggleColorMode?.();
+        toggleColorMode();
       }
     };
-    hydrant?.updateState();
+    hydrant.updateState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colorMode, hydrant, loading]);
 
@@ -164,14 +166,11 @@ function HydrantApp() {
     const callback = params.get("callback");
     if (!callback || !ALLOWED_INTEGRATION_CALLBACKS.includes(callback)) {
       console.warn("callback", callback, "not in allowed callbacks list!");
-      window.alert(`${callback} is not allowed to read your class list!`);
+      window.alert(`${callback ?? ""} is not allowed to read your class list!`);
       return;
     }
-    const encodedClasses = (
-      hydrant.selectedActivities.filter(
-        (activity) => activity instanceof Class,
-      ) as Class[]
-    )
+    const encodedClasses = hydrant.selectedActivities
+      .filter((activity) => activity instanceof Class)
       .map((cls) => `&class=${cls.number}`)
       .join("");
     const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
@@ -181,9 +180,13 @@ function HydrantApp() {
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
-    hydrant!,
-    () => setIsExporting(false),
-    () => setIsExporting(false),
+    hydrant,
+    () => {
+      setIsExporting(false);
+    },
+    () => {
+      setIsExporting(false);
+    },
   );
 
   return (

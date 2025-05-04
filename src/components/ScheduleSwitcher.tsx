@@ -7,7 +7,8 @@ import {
   createListCollection,
   Button,
 } from "@chakra-ui/react";
-import { ComponentPropsWithoutRef, useEffect, useState } from "react";
+import type { ComponentPropsWithoutRef} from "react";
+import { useEffect, useState } from "react";
 
 import {
   DialogRoot,
@@ -21,8 +22,8 @@ import {
 } from "./ui/dialog";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
 
-import { State } from "../lib/state";
-import { Save } from "../lib/schema";
+import type { State } from "../lib/state";
+import type { Save } from "../lib/schema";
 import {
   SelectContent,
   SelectItem,
@@ -58,7 +59,7 @@ function SmallButton(props: ComponentPropsWithoutRef<"button">) {
 function SelectWithWarn(props: {
   state: State;
   saveId: string;
-  saves: Array<Save>;
+  saves: Save[];
 }) {
   const { state, saveId, saves } = props;
   const [confirmSave, setConfirmSave] = useState("");
@@ -108,7 +109,11 @@ function SelectWithWarn(props: {
       </SelectRoot>
       <DialogRoot
         open={Boolean(confirmSave)}
-        onOpenChange={(e) => (!e.open ? setConfirmSave("") : null)}
+        onOpenChange={(e) => {
+          if (!e.open) {
+            setConfirmSave("");
+          }
+        }}
       >
         <DialogContent>
           <DialogHeader>
@@ -150,7 +155,9 @@ function DeleteDialog(props: {
   return (
     <DialogRoot
       open={show}
-      onOpenChange={(e) => setShow(e.open)}
+      onOpenChange={(e) => {
+        setShow(e.open);
+      }}
       role="alertdialog"
     >
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -186,7 +193,12 @@ function ExportDialog(props: { state: State; children: React.ReactNode }) {
   const [clipboardState, copyToClipboard] = useCopyToClipboard();
 
   return (
-    <DialogRoot open={show} onOpenChange={(e) => setShow(e.open)}>
+    <DialogRoot
+      open={show}
+      onOpenChange={(e) => {
+        setShow(e.open);
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -203,7 +215,11 @@ function ExportDialog(props: { state: State; children: React.ReactNode }) {
           <DialogActionTrigger asChild>
             <Button>Close</Button>
           </DialogActionTrigger>
-          <Button onClick={() => copyToClipboard(link)}>
+          <Button
+            onClick={() => {
+              copyToClipboard(link);
+            }}
+          >
             {clipboardState.value === link ? "Copied!" : "Copy"}
           </Button>
         </DialogFooter>
@@ -214,7 +230,7 @@ function ExportDialog(props: { state: State; children: React.ReactNode }) {
 
 export function ScheduleSwitcher(props: {
   saveId: string;
-  saves: Array<Save>;
+  saves: Save[];
   state: State;
 }) {
   const { saveId, saves, state } = props;
@@ -233,7 +249,9 @@ export function ScheduleSwitcher(props: {
       const renderHeading = () => (
         <Input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
           autoFocus
           onKeyUp={(e) => {
             if (e.key === "Enter") {
@@ -267,9 +285,15 @@ export function ScheduleSwitcher(props: {
     const renderHeading = () => (
       <SelectWithWarn state={state} saveId={saveId} saves={saves} />
     );
-    const onRename = () => setIsRenaming(true);
-    const onSave = () => state.addSave(Boolean(saveId));
-    const onCopy = () => state.addSave(false, `${currentName} copy`);
+    const onRename = () => {
+      setIsRenaming(true);
+    };
+    const onSave = () => {
+      state.addSave(Boolean(saveId));
+    };
+    const onCopy = () => {
+      state.addSave(false, `${currentName} copy`);
+    };
     const renderButtons = () => (
       <MenuRoot unmountOnExit={false}>
         <MenuTrigger asChild>
@@ -292,7 +316,7 @@ export function ScheduleSwitcher(props: {
             <DeleteDialog
               state={state}
               saveId={saveId}
-              name={saves.find((save) => save.id === saveId)!.name}
+              name={saves.find((save) => save.id === saveId)?.name ?? ""}
             >
               <MenuItem
                 value="delete"

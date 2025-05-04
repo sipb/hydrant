@@ -23,10 +23,11 @@ import {
 
 import { createListCollection } from "@chakra-ui/react";
 
-import { State } from "../lib/state";
+import type { State } from "../lib/state";
 import { useState, useRef } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
-import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
+import type { Preferences} from "../lib/schema";
+import { DEFAULT_PREFERENCES } from "../lib/schema";
 
 import logo from "../assets/logo.svg";
 import logoDark from "../assets/logo-dark.svg";
@@ -69,7 +70,13 @@ export function PreferencesDialog(props: {
     <>
       <DialogRoot
         open={visible}
-        onOpenChange={(e) => (e.open ? onOpen() : onCancel())}
+        onOpenChange={(e) => {
+          if (e.open) {
+            onOpen();
+          } else {
+            onCancel();
+          }
+        }}
       >
         <DialogTrigger asChild>
           <IconButton size="sm" aria-label="Change theme" variant="outline">

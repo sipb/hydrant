@@ -1,10 +1,11 @@
-import { EventInput } from "@fullcalendar/core";
+import type { EventInput } from "@fullcalendar/core";
 import { nanoid } from "nanoid";
 
-import { Class } from "./class";
-import { ColorScheme, fallbackColor, textColor } from "./colors";
+import type { Class } from "./class";
+import type { ColorScheme} from "./colors";
+import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
-import { RawTimeslot } from "./rawClass";
+import type { RawTimeslot } from "./rawClass";
 import { sum } from "./utils";
 
 /** A period of time, spanning several Slots. */
@@ -74,7 +75,7 @@ export class Event {
   /** The name of the event. */
   name: string;
   /** All slots of the event. */
-  slots: Array<Timeslot>;
+  slots: Timeslot[];
   /** The room of the event. */
   room: string | undefined;
   /** If defined, 1 -> first half; 2 -> second half. */
@@ -83,7 +84,7 @@ export class Event {
   constructor(
     activity: Activity,
     name: string,
-    slots: Array<Timeslot>,
+    slots: Timeslot[],
     room: string | undefined = undefined,
     half: number | undefined = undefined,
   ) {
@@ -95,7 +96,7 @@ export class Event {
   }
 
   /** List of events that can be directly given to FullCalendar. */
-  get eventInputs(): Array<EventInput> {
+  get eventInputs(): EventInput[] {
     const color = this.activity.backgroundColor;
     return this.slots.map((slot) => ({
       textColor: textColor(color),
@@ -114,12 +115,12 @@ export class Event {
 export class NonClass {
   /** ID unique over all Activities. */
   readonly id: string;
-  name: string = "New Activity";
+  name = "New Activity";
   /** The background color for the activity, used for buttons and calendar. */
   backgroundColor: string;
   /** Is the color set by the user (as opposed to chosen automatically?) */
-  manualColor: boolean = false;
-  timeslots: Array<Timeslot> = [];
+  manualColor = false;
+  timeslots: Timeslot[] = [];
   room: string | undefined = undefined;
 
   constructor(colorScheme: ColorScheme) {
@@ -138,7 +139,7 @@ export class NonClass {
   }
 
   /** Get all calendar events corresponding to this activity. */
-  get events(): Array<Event> {
+  get events(): Event[] {
     return [new Event(this, this.name, this.timeslots, this.room)];
   }
 
@@ -162,7 +163,7 @@ export class NonClass {
   }
 
   /** Deflate an activity to something JSONable. */
-  deflate(): Array<Array<RawTimeslot> | string> {
+  deflate(): (RawTimeslot[] | string)[] {
     const res = [
       this.timeslots.map<RawTimeslot>((slot) => [
         slot.startSlot.slot,
@@ -176,9 +177,9 @@ export class NonClass {
   }
 
   /** Inflate a non-class activity with info from the output of deflate. */
-  inflate(parsed: Array<Array<RawTimeslot> | string>): void {
+  inflate(parsed: (RawTimeslot[] | string)[]): void {
     const [timeslots, name, backgroundColor, room] = parsed;
-    this.timeslots = (timeslots as Array<RawTimeslot>).map(
+    this.timeslots = (timeslots as RawTimeslot[]).map(
       (slot) => new Timeslot(...slot),
     );
     this.name = name as string;

@@ -3,7 +3,7 @@ import { IconButton, Flex, Text } from "@chakra-ui/react";
 import { CloseButton } from "./ui/close-button";
 import { useState } from "react";
 
-import { State } from "../lib/state";
+import type { State } from "../lib/state";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 
 export function ScheduleOption(props: {
@@ -18,11 +18,11 @@ export function ScheduleOption(props: {
     <Flex direction="column" align="end" gap={2} mt={-5}>
       <Flex gap={2} alignItems="center">
         <IconButton
-          onClick={() =>
+          onClick={() => {
             state.selectOption(
               (selectedOption - 1 + totalOptions) % totalOptions,
-            )
-          }
+            );
+          }}
           size="xs"
           variant="ghost"
           aria-label="Previous schedule"
@@ -31,7 +31,9 @@ export function ScheduleOption(props: {
         </IconButton>
         {selectedOption + 1} of {totalOptions}
         <IconButton
-          onClick={() => state.selectOption(selectedOption + 1)}
+          onClick={() => {
+            state.selectOption(selectedOption + 1);
+          }}
           size="xs"
           variant="ghost"
           aria-label="Next schedule"
@@ -45,7 +47,12 @@ export function ScheduleOption(props: {
             Too many options? Use the "Edit sections" button above the class
             description.
           </Text>
-          <CloseButton size="sm" onClick={() => setTooManyOptions(false)} />
+          <CloseButton
+            size="sm"
+            onClick={() => {
+              setTooManyOptions(false);
+            }}
+          />
         </Flex>
       )}
     </Flex>

@@ -1,12 +1,13 @@
 import { useGoogleLogin } from "@react-oauth/google";
-import { ICalCalendar, ICalEventData } from "ical-generator";
+import type { ICalEventData } from "ical-generator";
+import { ICalCalendar } from "ical-generator";
 import { RRule, RRuleSet } from "rrule";
 import { tzlib_get_ical_block } from "timezones-ical-library";
 
-import { Activity } from "./activity";
+import type { Activity } from "./activity";
 import { CALENDAR_COLOR } from "./colors";
-import { Term } from "./dates";
-import { State } from "./state";
+import type { Term } from "./dates";
+import type { State } from "./state";
 
 /** Timezone string. */
 const TIMEZONE = "America/New_York";
@@ -50,7 +51,7 @@ function download(filename: string, text: string) {
 function toGoogleCalendarEvents(
   activity: Activity,
   term: Term,
-): Array<gapi.client.calendar.Event> {
+): gapi.client.calendar.Event[] {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
       const rawClass =
@@ -94,7 +95,7 @@ function toGoogleCalendarEvents(
   );
 }
 
-function toICalEvents(activity: Activity, term: Term): Array<ICalEventData> {
+function toICalEvents(activity: Activity, term: Term): ICalEventData[] {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
       const rawClass =
@@ -152,7 +153,7 @@ export function useGoogleCalendarExport(
       {},
       { summary: calendarName },
     );
-    return resp.result.id!;
+    return resp.result.id ?? "";
   };
 
   /** Set the background of the calendar to the State color. */
@@ -161,7 +162,7 @@ export function useGoogleCalendarExport(
     const calendar = resp.result;
     calendar.backgroundColor = CALENDAR_COLOR;
     await gapi.client.calendar.calendarList.update({
-      calendarId: calendar.id!,
+      calendarId: calendar.id ?? "",
       colorRgbFormat: true,
       resource: calendar,
     });
@@ -172,13 +173,14 @@ export function useGoogleCalendarExport(
     const batch = gapi.client.newBatch();
     state.selectedActivities
       .flatMap((activity) => toGoogleCalendarEvents(activity, state.term))
-      .forEach((resource) =>
+      .forEach((resource) => {
         batch.add(
           gapi.client.calendar.events.insert({
             calendarId,
             resource,
           }),
-        ),
+        );
+      },
       );
     await batch.then();
   };
@@ -196,9 +198,14 @@ export function useGoogleCalendarExport(
   const onCalendarExport = useGoogleLogin({
     scope: "https://www.googleapis.com/auth/calendar",
     onSuccess: (tokenResponse) => {
-      if (tokenResponse?.access_token) {
+      if (tokenResponse.access_token) {
         gapi.client.setApiKey(import.meta.env.VITE_GOOGLE_CLIENT_ID);
-        gapi.client.load("calendar", "v3", exportCalendar);
+        gapi.client
+          .load('https://calendar-json.googleapis.com/$discovery/rest?version=v3')
+          .then(() => exportCalendar)
+          .catch((err: unknown) => {
+            console.error("Error loading Google Calendar API", err);
+          });
       }
     },
     onError,
@@ -208,25 +215,25 @@ export function useGoogleCalendarExport(
 }
 
 export function useICSExport(
-  state: State,
+  state: State | undefined,
   onSuccess?: () => void,
   onError?: () => void,
 ): () => void {
-  return async () => {
+  return () => {
     const cal = new ICalCalendar({
-      name: `Hydrant: ${state.term.niceName}`,
+      name: `Hydrant: ${state?.term.niceName ?? ""}`,
       timezone: {
         name: TIMEZONE,
         generator: (zone) => tzlib_get_ical_block(zone)[0],
       },
-      events: state.selectedActivities.flatMap((activity) =>
+      events: state?.selectedActivities.flatMap((activity) =>
         toICalEvents(activity, state.term),
       ),
     });
     console.log(cal);
 
     try {
-      download(`${state.term.urlName}.ics`, cal.toString());
+      download(`${state?.term.urlName ?? ""}.ics`, cal.toString());
     } catch (_err) {
       onError?.();
     }

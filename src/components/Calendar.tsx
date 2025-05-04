@@ -4,9 +4,10 @@ import type { EventContentArg } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { Activity, NonClass, Timeslot } from "../lib/activity";
+import type { Activity} from "../lib/activity";
+import { NonClass, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
-import { State } from "../lib/state";
+import type { State } from "../lib/state";
 import { Class } from "../lib/class";
 
 import "./Calendar.scss";
@@ -17,7 +18,7 @@ import { Tooltip } from "./ui/tooltip";
  * change the schedule option selected.
  */
 export function Calendar(props: {
-  selectedActivities: Array<Activity>;
+  selectedActivities: Activity[];
   viewedActivity: Activity | undefined;
   state: State;
 }) {
@@ -84,23 +85,24 @@ export function Calendar(props: {
         return hour === 12
           ? "noon"
           : hour < 12
-            ? `${hour} AM`
-            : `${hour - 12} PM`;
+            ? `${hour.toString()} AM`
+            : `${(hour - 12).toString()} PM`;
       }}
       slotMinTime="08:00:00"
       slotMaxTime="22:00:00"
       weekends={false}
       selectable={viewedActivity instanceof NonClass}
-      select={(e) =>
-        viewedActivity instanceof NonClass &&
-        state.addTimeslot(
-          viewedActivity,
-          Timeslot.fromStartEnd(
-            Slot.fromStartDate(e.start),
-            Slot.fromStartDate(e.end),
-          ),
-        )
-      }
+      select={(e) => {
+        if (viewedActivity instanceof NonClass) {
+          state.addTimeslot(
+            viewedActivity,
+            Timeslot.fromStartEnd(
+              Slot.fromStartDate(e.start),
+              Slot.fromStartDate(e.end),
+            ),
+          );
+        }
+      }}
     />
   );
 }

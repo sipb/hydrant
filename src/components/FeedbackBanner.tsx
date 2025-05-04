@@ -17,7 +17,7 @@ export const FeedbackBanner = (props: {
 
   return (
     <Presence
-      present={isOpen ?? true}
+      present={isOpen || true}
       animationName={{ _open: "fade-in", _closed: "fade-out" }}
       animationDuration="moderate"
     >
@@ -55,7 +55,9 @@ export const FeedbackBanner = (props: {
               variant="ghost"
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+              }}
             />
           </Flex>
         </Center>
@@ -64,7 +66,9 @@ export const FeedbackBanner = (props: {
             variant="ghost"
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+            }}
           />
         </Float>
       </Box>
