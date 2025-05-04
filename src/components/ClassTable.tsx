@@ -119,13 +119,10 @@ function ClassInput(props: {
   const [classInput, setClassInput] = useState("");
 
   // Search results for classes.
-  const searchResults = useRef<
-    Array<{
-      numbers: Array<string>;
-      name: string;
-      class: Class;
-    }>
-  >(undefined);
+  const searchResults =
+    useRef<Array<{ numbers: Array<string>; name: string; class: Class }>>(
+      undefined,
+    );
 
   const processedRows = useMemo(
     () =>
@@ -489,9 +486,7 @@ export function ClassTable(props: {
   }, [state]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
-    return {
-      resizable: false,
-    };
+    return { resizable: false };
   }, []);
 
   // Setup rows
