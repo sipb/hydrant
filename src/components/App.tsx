@@ -13,13 +13,8 @@ import { Tooltip } from "./ui/tooltip";
 import { Provider } from "./ui/provider";
 import { useColorMode } from "./ui/color-mode";
 
-import type {
-  LatestTermInfo,
-  TermInfo} from "../lib/dates";
-import {
-  Term,
-  getClosestUrlName,
-} from "../lib/dates";
+import type { LatestTermInfo, TermInfo } from "../lib/dates";
+import { Term, getClosestUrlName } from "../lib/dates";
 import { State } from "../lib/state";
 import type { RawClass } from "../lib/rawClass";
 import { Class } from "../lib/class";

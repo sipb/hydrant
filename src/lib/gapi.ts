@@ -180,8 +180,7 @@ export function useGoogleCalendarExport(
             resource,
           }),
         );
-      },
-      );
+      });
     await batch.then();
   };
 
@@ -201,7 +200,9 @@ export function useGoogleCalendarExport(
       if (tokenResponse.access_token) {
         gapi.client.setApiKey(import.meta.env.VITE_GOOGLE_CLIENT_ID);
         gapi.client
-          .load('https://calendar-json.googleapis.com/$discovery/rest?version=v3')
+          .load(
+            "https://calendar-json.googleapis.com/$discovery/rest?version=v3",
+          )
           .then(() => exportCalendar)
           .catch((err: unknown) => {
             console.error("Error loading Google Calendar API", err);

@@ -6,7 +6,7 @@ export interface ColorScheme {
   name: string;
   colorMode: ColorMode;
   backgroundColors: string[];
-};
+}
 
 const classic: ColorScheme = {
   name: "Classic",

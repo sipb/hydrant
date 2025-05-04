@@ -5,7 +5,7 @@ import { useColorMode } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
 import type { Activity, NonClass } from "../lib/activity";
-import type { Flags} from "../lib/class";
+import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import type { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";

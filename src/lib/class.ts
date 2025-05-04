@@ -1,5 +1,5 @@
 import { Timeslot, Event } from "./activity";
-import type { ColorScheme} from "./colors";
+import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
 import type { RawClass, RawSection } from "./rawClass";
 
@@ -213,12 +213,12 @@ export class Sections {
   get event(): Event | null {
     return this.selected
       ? new Event(
-        this.cls,
-        `${this.cls.number} ${this.shortName}`,
-        this.selected.timeslots,
-        this.roomOverride || this.selected.room,
-        this.cls.half,
-      )
+          this.cls,
+          `${this.cls.number} ${this.shortName}`,
+          this.selected.timeslots,
+          this.roomOverride || this.selected.room,
+          this.cls.half,
+        )
       : null;
   }
 
@@ -508,7 +508,8 @@ export class Class {
     ];
 
     if (this.oldNumber) {
-      extraUrls[extraUrls.length - 1].label = `Class Evaluations (for ${this.number})`;
+      extraUrls[extraUrls.length - 1].label =
+        `Class Evaluations (for ${this.number})`;
       extraUrls.push({
         label: `Class Evaluations (for ${this.oldNumber})`,
         url: `https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode=${this.oldNumber}`,

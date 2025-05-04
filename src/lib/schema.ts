@@ -1,5 +1,5 @@
 import type { Activity } from "./activity";
-import type { ColorScheme} from "./colors";
+import type { ColorScheme } from "./colors";
 import { COLOR_SCHEME_PRESETS } from "./colors";
 
 /** A save has an ID and a name. */

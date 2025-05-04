@@ -2,7 +2,7 @@ import type { EventInput } from "@fullcalendar/core";
 import { nanoid } from "nanoid";
 
 import type { Class } from "./class";
-import type { ColorScheme} from "./colors";
+import type { ColorScheme } from "./colors";
 import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
 import type { RawTimeslot } from "./rawClass";

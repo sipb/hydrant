@@ -6,7 +6,7 @@ import { scheduleSlots } from "./calendarSlots";
 import type { Section, SectionLockOption, Sections } from "./class";
 import { Class } from "./class";
 import type { Term } from "./dates";
-import type { ColorScheme} from "./colors";
+import type { ColorScheme } from "./colors";
 import { chooseColors, fallbackColor } from "./colors";
 import type { RawClass } from "./rawClass";
 import { Store } from "./store";
@@ -340,8 +340,8 @@ export class State {
       const cls =
         typeof deflated === "string"
           ? this.classes.get(deflated)
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-          : this.classes.get(deflated[0]);
+          : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+            this.classes.get(deflated[0]);
       if (!cls) continue;
       cls.inflate(deflated);
       this.selectedClasses.push(cls);

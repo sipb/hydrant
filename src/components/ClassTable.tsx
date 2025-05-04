@@ -15,7 +15,7 @@ import { InputGroup } from "./ui/input-group";
 import { LabelledButton } from "./ui/button";
 import { useColorMode } from "./ui/color-mode";
 
-import type { Class, Flags} from "../lib/class";
+import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { State } from "../lib/state";

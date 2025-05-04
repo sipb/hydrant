@@ -62,7 +62,7 @@ const SLOT_OBJECTS: Record<number, Slot> = {};
  * problem with respect to ending slots.
  */
 export class Slot {
-  constructor(/** The slot number. */ public slot: number) { }
+  constructor(/** The slot number. */ public slot: number) {}
 
   static fromSlotNumber(slot: number): Slot {
     SLOT_OBJECTS[slot] = new Slot(slot);
@@ -73,8 +73,8 @@ export class Slot {
   static fromStartDate(date: Date): Slot {
     return new Slot(
       30 * (date.getDay() - 1) +
-      2 * (date.getHours() - 8) +
-      Math.floor(date.getMinutes() / 30),
+        2 * (date.getHours() - 8) +
+        Math.floor(date.getMinutes() / 30),
     );
   }
 
@@ -364,11 +364,7 @@ export class Term {
   }
 
   /** The date a slot ends on, plus an extra day. */
-  endDateFor(
-    slot: Slot,
-    firstHalf = false,
-    endDay?: [number, number],
-  ): Date {
+  endDateFor(slot: Slot, firstHalf = false, endDay?: [number, number]): Date {
     const date = new Date((firstHalf ? this.h1End : this.end).getTime());
 
     if (endDay !== undefined) {

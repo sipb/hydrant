@@ -11,13 +11,8 @@ import {
   Button,
   ButtonGroup,
 } from "@chakra-ui/react";
-import type {
-  ComponentPropsWithoutRef,
-  FormEvent} from "react";
-import {
-  useLayoutEffect,
-  useState,
-} from "react";
+import type { ComponentPropsWithoutRef, FormEvent } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { Radio, RadioGroup } from "./ui/radio";
 import {
@@ -40,7 +35,7 @@ import {
   ColorPickerTrigger,
 } from "./ui/color-picker";
 
-import type { Activity, NonClass} from "../lib/activity";
+import type { Activity, NonClass } from "../lib/activity";
 import { Timeslot } from "../lib/activity";
 import type { Class, SectionLockOption, Sections } from "../lib/class";
 import { LockOption } from "../lib/class";

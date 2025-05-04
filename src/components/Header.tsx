@@ -26,7 +26,7 @@ import { createListCollection } from "@chakra-ui/react";
 import type { State } from "../lib/state";
 import { useState, useRef } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
-import type { Preferences} from "../lib/schema";
+import type { Preferences } from "../lib/schema";
 import { DEFAULT_PREFERENCES } from "../lib/schema";
 
 import logo from "../assets/logo.svg";

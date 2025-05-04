@@ -7,7 +7,7 @@ import {
   createListCollection,
   Button,
 } from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef} from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { useEffect, useState } from "react";
 
 import {

@@ -4,7 +4,7 @@ import type { EventContentArg } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import type { Activity} from "../lib/activity";
+import type { Activity } from "../lib/activity";
 import { NonClass, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import type { State } from "../lib/state";
