@@ -1,8 +1,11 @@
 import { Flex, Heading, Image } from "@chakra-ui/react";
+import { JsonForms } from "@jsonforms/react";
+import { materialCells, materialRenderers } from "@jsonforms/material-renderers";
 
 import { Provider } from "./ui/provider";
 
 import logo from "../assets/logo.svg";
+import schema from "../../scrapers/overrides.toml.d/override-schema.json";
 
 /** The main application. */
 export default function App() {
@@ -19,6 +22,11 @@ export default function App() {
           />
         </Flex>
         <Heading>Submit Overrides</Heading>
+        <JsonForms
+          schema={schema}
+          renderers={materialRenderers}
+          cells={materialCells}
+        />
       </Flex>
     </Provider>
   );
