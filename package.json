@@ -27,6 +27,7 @@
     "react-icons": "^5.5.0",
     "react-use": "^17.6.0",
     "rrule": "^2.8.1",
+    "smol-toml": "^1.3.4",
     "timezones-ical-library": "^1.9.1"
   },
   "scripts": {

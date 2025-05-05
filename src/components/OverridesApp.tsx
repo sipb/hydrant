@@ -6,7 +6,9 @@ import {
   materialCells,
   materialRenderers,
 } from "@jsonforms/material-renderers";
-import Button from "@mui/material/Button";
+import { Button, Typography } from "@mui/material";
+
+import TOML from "smol-toml";
 
 import { Provider } from "./ui/provider";
 
@@ -175,12 +177,32 @@ export default function App() {
         <Button
           variant="contained"
           onClick={() => {
-            // TODO convert data to TOML, compose email
-            console.log(data);
+            const contents = TOML.stringify(Object.fromEntries((data || []).map(
+              override => {
+                const { number: num, ...rest } = override;
+                return [num, rest];
+              }
+            )));
+
+            const subject = encodeURIComponent("Hydrant subject overrides");
+
+            const body = encodeURIComponent(`\
+(Add an optional description.)
+
+Please do not modify anything below this line.
+--------------------------------------------------\n`
+              + contents);
+
+            window.location.href =
+              `mailto:sipb-hydrant@mit.edu?subject=${subject}&body=${body}`;
           }}
         >
           Submit
         </Button>
+        <Typography variant="subtitle2">
+          Clicking "Submit" will populate an email in your mail client in order
+          to send your requested subject overrides to the Hydrant team.
+        </Typography>
       </Flex>
     </Provider>
   );
