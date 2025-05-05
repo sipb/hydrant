@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-// import { GoogleOAuthProvider } from "@react-oauth/google";
 import {
   Center,
   Flex,
@@ -237,19 +236,6 @@ function HydrantApp() {
               </Center>
               <Center>
                 <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
-                  {/* <Tooltip
-                  label={
-                    isExporting
-                      ? "Loading..."
-                      : "Google Calendar export is currently broken, we're fixing it!"
-                  }
-                >
-                  {isExporting ? (
-                    <Spinner m={3} />
-                  ) : (
-                    <Image src={calendarButtonImg} alt="Sign in with Google" />
-                  )}
-                </Tooltip> */}
                   <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
                     <Button
                       colorPalette="blue"
@@ -299,9 +285,7 @@ function HydrantApp() {
 export default function App() {
   return (
     <Provider>
-      {/* <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID!}> */}
       <HydrantApp />
-      {/* </GoogleOAuthProvider> */}
     </Provider>
   );
 }

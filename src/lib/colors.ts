@@ -155,4 +155,4 @@ export function canonicalizeColor(code: string): string | undefined {
 }
 
 /** The Google calendar background color. */
-export const CALENDAR_COLOR = "#DB5E45";
+// export const CALENDAR_COLOR = "#DB5E45";

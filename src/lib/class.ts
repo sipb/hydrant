@@ -213,12 +213,12 @@ export class Sections {
   get event(): Event | null {
     return this.selected
       ? new Event(
-          this.cls,
-          `${this.cls.number} ${this.shortName}`,
-          this.selected.timeslots,
-          this.roomOverride || this.selected.room,
-          this.cls.half,
-        )
+        this.cls,
+        `${this.cls.number} ${this.shortName}`,
+        this.selected.timeslots,
+        this.roomOverride || this.selected.room,
+        this.cls.half,
+      )
       : null;
   }
 
@@ -538,12 +538,6 @@ export class Class {
       extraUrls: extraUrls,
     };
   }
-
-  /** Doesn't actually do anything (yet?), just makes compiler happy. */
-  // addTimeslot(): void { }
-
-  /** Doesn't actually do anything (yet?), just makes compiler happy. */
-  // removeTimeslot(): void { }
 
   /** Deflate a class to something JSONable. */
   deflate() {

@@ -341,7 +341,7 @@ export class State {
         typeof deflated === "string"
           ? this.classes.get(deflated)
           : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-            this.classes.get(deflated[0]);
+          this.classes.get(deflated[0]);
       if (!cls) continue;
       cls.inflate(deflated);
       this.selectedClasses.push(cls);

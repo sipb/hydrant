@@ -1,7 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
 import {
   ModuleRegistry,
-  AllCommunityModule,
+  ClientSideRowModelModule,
   themeQuartz,
   type IRowNode,
   type ColDef,
@@ -34,7 +34,7 @@ const hydrantTheme = themeQuartz.withParams({
   wrapperBorderRadius: "var(--chakra-radii-md)",
 });
 
-ModuleRegistry.registerModules([AllCommunityModule]);
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 enum ColorEnum {
   Muted = "ag-cell-muted-text",
