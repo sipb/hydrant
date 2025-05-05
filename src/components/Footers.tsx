@@ -11,7 +11,7 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 
-import { State } from "../lib/state";
+import type { State } from "../lib/state";
 
 import fuzzAndAnt from "../assets/fuzzAndAnt.png";
 
@@ -20,10 +20,20 @@ function AboutDialog() {
 
   return (
     <>
-      <Link onClick={() => setVisible(true)} colorPalette="blue">
+      <Link
+        onClick={() => {
+          setVisible(true);
+        }}
+        colorPalette="blue"
+      >
         About
       </Link>
-      <DialogRoot open={visible} onOpenChange={() => setVisible(false)}>
+      <DialogRoot
+        open={visible}
+        onOpenChange={() => {
+          setVisible(false);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Hydrant</DialogTitle>
@@ -78,10 +88,20 @@ function PrivacyPolicyDialog() {
 
   return (
     <>
-      <Link onClick={() => setVisible(true)} colorPalette="blue">
+      <Link
+        onClick={() => {
+          setVisible(true);
+        }}
+        colorPalette="blue"
+      >
         Privacy Policy
       </Link>
-      <DialogRoot open={visible} onOpenChange={() => setVisible(false)}>
+      <DialogRoot
+        open={visible}
+        onOpenChange={() => {
+          setVisible(false);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Privacy Policy</DialogTitle>

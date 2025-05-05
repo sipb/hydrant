@@ -1,4 +1,4 @@
-import { State } from "./State";
+import type { State } from "./state";
 
 declare global {
   interface Window {

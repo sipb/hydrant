@@ -1,10 +1,10 @@
 import { Flex, Text, Button, ButtonGroup } from "@chakra-ui/react";
-import { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 
-import { Activity } from "../lib/activity";
+import type { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
-import { State } from "../lib/state";
+import type { State } from "../lib/state";
 
 import { LuPlus } from "react-icons/lu";
 
@@ -34,8 +34,12 @@ function ActivityButton(props: { activity: Activity; state: State }) {
   return (
     <ColorButton
       color={color}
-      onClick={() => state.setViewedActivity(activity)}
-      onDoubleClick={() => state.removeActivity(activity)}
+      onClick={() => {
+        state.setViewedActivity(activity);
+      }}
+      onDoubleClick={() => {
+        state.removeActivity(activity);
+      }}
     >
       <Text textStyle="md">{activity.buttonName}</Text>
     </ColorButton>
@@ -44,10 +48,10 @@ function ActivityButton(props: { activity: Activity; state: State }) {
 
 /** List of selected activities; one button for each activity. */
 export function SelectedActivities(props: {
-  selectedActivities: Array<Activity>;
+  selectedActivities: Activity[];
   units: number;
   hours: number;
-  warnings: Array<string>;
+  warnings: string[];
   state: State;
 }) {
   const { selectedActivities, units, hours, warnings, state } = props;
@@ -66,7 +70,11 @@ export function SelectedActivities(props: {
             state={state}
           />
         ))}
-        <Button onClick={() => state.addActivity()}>
+        <Button
+          onClick={() => {
+            state.addActivity();
+          }}
+        >
           <LuPlus />
           Activity
         </Button>

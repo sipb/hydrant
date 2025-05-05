@@ -9,7 +9,7 @@ import {
 
 import { createListCollection } from "@chakra-ui/react";
 
-import { State } from "../lib/state";
+import type { State } from "../lib/state";
 import { Term, toFullUrl, getUrlNames } from "../lib/dates";
 
 export function TermSwitcher(props: { state: State }) {

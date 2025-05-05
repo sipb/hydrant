@@ -2,10 +2,10 @@
 export type RawTimeslot = [number, number];
 
 /** Raw section format: [[[10, 2], [70, 2]], "34-101". */
-export type RawSection = [Array<RawTimeslot>, string];
+export type RawSection = [RawTimeslot[], string];
 
 /** The raw class format produced by combiner_ws.py. */
-export type RawClass = {
+export interface RawClass {
   /** Class number, e.g. "6.3900" */
   number: string;
   /** Old class number, e.g. "6.036" */
@@ -18,23 +18,23 @@ export type RawClass = {
   tba: boolean;
 
   /** Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist */
-  sectionKinds: Array<"lecture" | "recitation" | "lab" | "design">;
+  sectionKinds: ("lecture" | "recitation" | "lab" | "design")[];
   /** Lecture timeslots and rooms */
-  lectureSections: Array<RawSection>;
+  lectureSections: RawSection[];
   /** Recitation timeslots and rooms */
-  recitationSections: Array<RawSection>;
+  recitationSections: RawSection[];
   /** Lab timeslots and rooms */
-  labSections: Array<RawSection>;
+  labSections: RawSection[];
   /** Design timeslots and rooms */
-  designSections: Array<RawSection>;
+  designSections: RawSection[];
   /** Raw lecture times, e.g. T9.301-11 or TR1,F2 */
-  lectureRawSections: Array<string>;
+  lectureRawSections: string[];
   /** Raw recitation times, e.g. T9.301-11 or TR1,F2 */
-  recitationRawSections: Array<string>;
+  recitationRawSections: string[];
   /** Raw lab times, e.g. T9.301-11 or TR1,F2 */
-  labRawSections: Array<string>;
+  labRawSections: string[];
   /** Raw design times, e.g. T9.301-11 or TR1,F2 */
-  designRawSections: Array<string>;
+  designRawSections: string[];
 
   /** True if HASS-H */
   hassH: boolean;
@@ -56,7 +56,7 @@ export type RawClass = {
   partLab: boolean;
 
   /** Array of programs (free text) for which this class is a CI-M */
-  cim?: Array<string>;
+  cim?: string[];
 
   /** Lecture or recitation units */
   lectureUnits: number;
@@ -81,7 +81,7 @@ export type RawClass = {
   meets: string;
 
   /** Terms class is offered */
-  terms: Array<"FA" | "JA" | "SP" | "SU">;
+  terms: ("FA" | "JA" | "SP" | "SU")[];
   /** Prereqs, no specific format (but usually contains class numbers) */
   prereqs: string;
 
@@ -117,4 +117,4 @@ export type RawClass = {
 
   /** Record with start and end time information */
   quarterInfo?: Partial<Record<"start" | "end", [number, number]>>;
-};
+}
