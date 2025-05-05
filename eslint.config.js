@@ -6,8 +6,13 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 
+import { includeIgnoreFile } from "@eslint/compat";
+import { fileURLToPath } from "node:url";
+
+const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url));
+
 export default tseslint.config(
-  { ignores: ["dist"] },
+  includeIgnoreFile(gitignorePath),
   {
     extends: [
       js.configs.recommended,
