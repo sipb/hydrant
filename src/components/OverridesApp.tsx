@@ -10,13 +10,14 @@ import {
 import "@fontsource/roboto/index.css";
 import {
   Button,
+  Link,
   Typography,
   Container,
   Stack,
   CssBaseline,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Link } from "react-router";
+import { Link as RouterLink } from "react-router";
 
 import TOML from "smol-toml";
 
@@ -179,7 +180,7 @@ export default function App() {
       <Container maxWidth="md">
         <Stack gap={2} paddingY={4}>
           <Stack>
-            <Link to="/">
+            <Link component={RouterLink} to="/">
               <img
                 src={logo}
                 alt="Hydrant logo"
@@ -192,6 +193,22 @@ export default function App() {
             </Link>
           </Stack>
           <Typography variant="h4">Submit Overrides</Typography>
+          <Typography>
+            This page is for department academic administrators to submit
+            requests for Hydrant to override the details of a class from the
+            official subject listing and catalog. For example, this can be used
+            so that a special subject shows up under its title for the current
+            semester rather than under a generic name.
+          </Typography>
+          <Typography>
+            You don't need to populate all of the available
+            fields&nbsp;&mdash;&nbsp;only the ones that differ from the course
+            catalog. Thank you for your time, and feel free to reach out to {}
+            <Link component={RouterLink} to="mailto:sipb-hydrant@mit.edu">
+              sipb-hydrant@mit.edu
+            </Link>
+            {} with any questions or concerns!
+          </Typography>
           <JsonForms
             schema={schema}
             uischema={uischema}
@@ -233,7 +250,8 @@ Please do not modify anything below this line.
           </Button>
           <Typography variant="subtitle2">
             Clicking "Submit" will populate an email in your mail client in
-            order to send your requested subject overrides to the Hydrant team.
+            order to send your requested subject overrides to the Hydrant team,
+            where you will have an opportunity to add comments.
           </Typography>
         </Stack>
       </Container>
