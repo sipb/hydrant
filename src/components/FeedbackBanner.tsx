@@ -17,7 +17,7 @@ export const FeedbackBanner = (props: {
 
   return (
     <Presence
-      present={isOpen || true}
+      present={isOpen}
       animationName={{ _open: "fade-in", _closed: "fade-out" }}
       animationDuration="moderate"
     >

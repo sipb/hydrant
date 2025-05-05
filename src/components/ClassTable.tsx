@@ -1,7 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
 import {
   ModuleRegistry,
-  ClientSideRowModelModule,
+  AllCommunityModule,
   themeQuartz,
   type IRowNode,
   type ColDef,
@@ -34,7 +34,7 @@ const hydrantTheme = themeQuartz.withParams({
   wrapperBorderRadius: "var(--chakra-radii-md)",
 });
 
-ModuleRegistry.registerModules([ClientSideRowModelModule]);
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 enum ColorEnum {
   Muted = "ag-cell-muted-text",
@@ -433,7 +433,7 @@ export function ClassTable(props: {
   state: State;
 }) {
   const { classes, state } = props;
-  const gridRef = useRef<AgGridReact>(null);
+  const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
@@ -467,7 +467,8 @@ export function ClassTable(props: {
             cls={params.data.class}
             state={state}
             onStarToggle={() => {
-              gridRef.current?.api.refreshCells({
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              gridRef.current?.api?.refreshCells({
                 force: true,
                 columns: ["number"],
               });
@@ -543,7 +544,8 @@ export function ClassTable(props: {
 
   // Need to notify grid every time we update the filter
   useEffect(() => {
-    gridRef.current?.api.onFilterChanged();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    gridRef.current?.api?.onFilterChanged();
   }, [doesExternalFilterPass]);
 
   return (
@@ -556,7 +558,8 @@ export function ClassTable(props: {
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
         state={state}
-        updateFilter={() => gridRef.current?.api.onFilterChanged()}
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
         <AgGridReact<ClassTableRow>
