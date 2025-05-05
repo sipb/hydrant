@@ -40,7 +40,6 @@
   "devDependencies": {
     "@chakra-ui/cli": "^3.17.0",
     "@eslint/js": "^9.25.1",
-    "@types/gapi.client.calendar-v3": "^0.0.4",
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "19.0.4",
