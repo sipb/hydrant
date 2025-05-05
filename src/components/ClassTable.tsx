@@ -11,7 +11,15 @@ import {
   type ColDef,
 } from "ag-grid-community";
 import { Box, Flex, Image, Input, Button, ButtonGroup } from "@chakra-ui/react";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from "react";
 
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
@@ -116,7 +124,7 @@ interface ClassTableRow {
 
 type ClassFilter = (cls?: Class) => boolean;
 /** Type of filter on class list; null if no filter. */
-type SetClassFilter = React.Dispatch<React.SetStateAction<ClassFilter | null>>;
+type SetClassFilter = Dispatch<SetStateAction<ClassFilter | null>>;
 
 /**
  * Textbox for typing in the name or number of the class to search. Maintains
@@ -220,7 +228,7 @@ function ClassInput(props: {
 }
 
 type Filter = keyof Flags | "fits" | "starred";
-type FilterGroup = [Filter, string, React.ReactNode?][];
+type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [

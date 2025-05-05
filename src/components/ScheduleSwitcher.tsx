@@ -7,7 +7,7 @@ import {
   createListCollection,
   Button,
 } from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 import {
@@ -45,7 +45,7 @@ import {
   LuTrash2,
 } from "react-icons/lu";
 
-import { useCopyToClipboard } from "react-use";
+import useCopyToClipboard from "react-use/lib/useCopyToClipboard.js";
 
 function SmallButton(props: ComponentPropsWithoutRef<"button">) {
   const { children, ...otherProps } = props;
@@ -147,7 +147,7 @@ function DeleteDialog(props: {
   state: State;
   saveId: string;
   name: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const { state, saveId, name, children } = props;
   const [show, setShow] = useState(false);
@@ -186,7 +186,7 @@ function DeleteDialog(props: {
   );
 }
 
-function ExportDialog(props: { state: State; children: React.ReactNode }) {
+function ExportDialog(props: { state: State; children: ReactNode }) {
   const { state, children } = props;
   const [show, setShow] = useState(false);
   const link = state.urlify();
