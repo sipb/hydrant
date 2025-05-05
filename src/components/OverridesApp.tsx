@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { JsonForms } from "@jsonforms/react";
+import type { JsonSchema7 } from "@jsonforms/core";
 import {
   materialCells,
   materialRenderers,
@@ -22,12 +23,10 @@ import TOML from "smol-toml";
 import logo from "../assets/logo.svg";
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
 
-// @ts-expect-error just ignore it <3
-itemSchema.required = ["number"];
 const schema = {
   title: "Overrides",
   type: "array",
-  items: itemSchema,
+  items: { ...itemSchema, required: ["number"] } as JsonSchema7,
   $defs: {
     ...itemSchema.$defs,
   },
