@@ -1,4 +1,3 @@
-import { Flex, Image } from "@chakra-ui/react";
 import { useState } from "react";
 
 import { JsonForms } from "@jsonforms/react";
@@ -7,13 +6,18 @@ import {
   materialRenderers,
 } from "@jsonforms/material-renderers";
 
-// @ts-expect-error importing font
-import "@fontsource/roboto";
-import { Button, Typography } from "@mui/material";
+import "@fontsource/roboto/index.css";
+import {
+  Button,
+  Typography,
+  Container,
+  Stack,
+  CssBaseline,
+} from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Link } from "react-router";
 
 import TOML from "smol-toml";
-
-import { Provider } from "./ui/provider";
 
 import logo from "../assets/logo.svg";
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
@@ -161,64 +165,77 @@ const uischema = {
   },
 };
 
+const theme = createTheme({
+  colorSchemes: {
+    dark: true,
+  },
+});
+
 /** The main application. */
 export default function App() {
   const [data, setData] = useState<Record<string, unknown>[]>([]);
   return (
-    <Provider>
-      <Flex direction="column" gap={5} px="20%" py={4}>
-        <Flex>
-          <Image
-            src={logo}
-            alt="Hydrant logo"
-            h="40px"
-            pos="relative"
-            top={2}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container maxWidth="md">
+        <Stack gap={2} paddingY={4}>
+          <Stack>
+            <Link to="/">
+              <img
+                src={logo}
+                alt="Hydrant logo"
+                height="40px"
+                style={{
+                  position: "relative",
+                  top: 2,
+                }}
+              />
+            </Link>
+          </Stack>
+          <Typography variant="h4">Submit Overrides</Typography>
+          <JsonForms
+            schema={schema}
+            uischema={uischema}
+            renderers={materialRenderers}
+            cells={materialCells}
+            data={data}
+            onChange={({ data: formData }) => {
+              setData(formData as Record<string, unknown>[]);
+            }}
           />
-        </Flex>
-        <Typography variant="h4">Submit Overrides</Typography>
-        <JsonForms
-          schema={schema}
-          uischema={uischema}
-          renderers={materialRenderers}
-          cells={materialCells}
-          data={data}
-          onChange={({ data: formData }) => {
-            setData(formData as Record<string, unknown>[]);
-          }}
-        />
-        <Button
-          variant="contained"
-          onClick={() => {
-            const contents = TOML.stringify(
-              Object.fromEntries(
-                (data.length > 0 ? data : []).map((override) => {
-                  const { number: num, ...rest } = override;
-                  return [num, rest];
-                }),
-              ),
-            );
+          <Button
+            variant="contained"
+            onClick={() => {
+              const contents = TOML.stringify(
+                Object.fromEntries(
+                  (data.length > 0 ? data : []).map((override) => {
+                    const { number: num, ...rest } = override;
+                    return [num, rest];
+                  }),
+                ),
+              );
 
-            const subject = encodeURIComponent("Hydrant subject overrides");
+              const subject = encodeURIComponent("Hydrant subject overrides");
 
-            const body = encodeURIComponent(
-              `\
+              const body = encodeURIComponent(
+                `\
 (Add an optional description.)
 
 Please do not modify anything below this line.
 --------------------------------------------------\n` + contents,
-            );
+              );
 
-            window.location.href = `mailto:sipb-hydrant@mit.edu?subject=${subject}&body=${body}`;
-          }}
-        >
-          Submit
-        </Button>
-        <Typography variant="subtitle2">
-          Clicking "Submit" will populate an email in your mail client in order
-          to send your requested subject overrides to the Hydrant team.
-        </Typography>
-      </Flex>
-    </Provider>
+              window.location.href = `mailto:sipb-hydrant@mit.edu?subject=${subject}&body=${body}`;
+            }}
+          >
+            Submit
+          </Button>
+          <Typography variant="subtitle2">
+            Clicking "Submit" will populate an email in your mail client in
+            order to send your requested subject overrides to the Hydrant team.
+          </Typography>
+        </Stack>
+      </Container>
+    </ThemeProvider>
   );
 }
