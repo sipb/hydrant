@@ -11,8 +11,8 @@ createRoot(document.getElementById("root")!).render(
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-          <Route path="/" Component={App} />
-          <Route path="/overrides" Component={Overrides} />
+          <Route index Component={App} />
+          <Route path="overrides" Component={Overrides} />
         </Routes>
       </Suspense>
     </Router>
