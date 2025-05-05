@@ -1,4 +1,4 @@
-import { Flex, Heading, Image } from "@chakra-ui/react";
+import { Flex, Image } from "@chakra-ui/react";
 import { useState } from "react";
 
 import { JsonForms } from "@jsonforms/react";
@@ -6,6 +6,8 @@ import {
   materialCells,
   materialRenderers,
 } from "@jsonforms/material-renderers";
+
+import "@fontsource/roboto";
 import { Button, Typography } from "@mui/material";
 
 import TOML from "smol-toml";
@@ -166,7 +168,7 @@ export default function App() {
             top={2}
           />
         </Flex>
-        <Heading>Submit Overrides</Heading>
+        <Typography variant="h4">Submit Overrides</Typography>
         <JsonForms
           schema={schema}
           uischema={uischema}
