@@ -1,14 +1,18 @@
 import { nanoid } from "nanoid";
 
-import { Timeslot, NonClass, Activity } from "./activity";
+import type { Timeslot, Activity } from "./activity";
+import { NonClass } from "./activity";
 import { scheduleSlots } from "./calendarSlots";
-import { Class, Section, SectionLockOption, Sections } from "./class";
-import { Term } from "./dates";
-import { ColorScheme, chooseColors, fallbackColor } from "./colors";
-import { RawClass } from "./rawClass";
+import type { Section, SectionLockOption, Sections } from "./class";
+import { Class } from "./class";
+import type { Term } from "./dates";
+import type { ColorScheme } from "./colors";
+import { chooseColors, fallbackColor } from "./colors";
+import type { RawClass, RawTimeslot } from "./rawClass";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
-import { DEFAULT_PREFERENCES, HydrantState, Preferences, Save } from "./schema";
+import type { HydrantState, Preferences, Save } from "./schema";
+import { DEFAULT_PREFERENCES } from "./schema";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -18,9 +22,9 @@ export class State {
   /** Map from class number to Class object. */
   classes: Map<string, Class>;
   /** Possible section choices. */
-  options: Array<Array<Section>> = [[]];
+  options: Section[][] = [[]];
   /** Current number of schedule conflicts. */
-  conflicts: number = 0;
+  conflicts = 0;
   /** Browser-specific saved state. */
   store: Store;
 
@@ -36,19 +40,19 @@ export class State {
   /** Activity whose description is being viewed. */
   private viewedActivity: Activity | undefined;
   /** Selected class activities. */
-  private selectedClasses: Array<Class> = [];
+  private selectedClasses: Class[] = [];
   /** Selected non-class activities. */
-  private selectedNonClasses: Array<NonClass> = [];
+  private selectedNonClasses: NonClass[] = [];
   /** Selected schedule option; zero-indexed. */
-  private selectedOption: number = 0;
+  private selectedOption = 0;
   /** Currently loaded save slot, empty if none of them. */
-  private saveId: string = "";
+  private saveId = "";
   /** Names of each save slot. */
-  private saves: Array<Save> = [];
+  private saves: Save[] = [];
   /** Current preferences. */
   private preferences: Preferences = DEFAULT_PREFERENCES;
   /** Set of starred class numbers */
-  private starredClasses: Set<string> = new Set();
+  private starredClasses = new Set<string>();
 
   /** React callback to update state. */
   callback: ((state: HydrantState) => void) | undefined;
@@ -73,7 +77,7 @@ export class State {
   }
 
   /** All activities. */
-  get selectedActivities(): Array<Activity> {
+  get selectedActivities(): Activity[] {
     return [...this.selectedClasses, ...this.selectedNonClasses];
   }
 
@@ -162,7 +166,10 @@ export class State {
   renameNonClass(nonClass: NonClass, name: string): void {
     const nonClass_ = this.selectedNonClasses.find(
       (nonClass_) => nonClass_.id === nonClass.id,
-    )!;
+    );
+
+    if (!nonClass_) return;
+
     nonClass_.name = name;
     this.updateState();
   }
@@ -171,7 +178,10 @@ export class State {
   relocateNonClass(nonClass: NonClass, room: string | undefined): void {
     const nonClass_ = this.selectedNonClasses.find(
       (nonClass_) => nonClass_.id === nonClass.id,
-    )!;
+    );
+
+    if (!nonClass_) return;
+
     nonClass_.room = room;
     this.updateState();
   }
@@ -195,7 +205,7 @@ export class State {
    * Update React state by calling React callback, and store state into
    * localStorage.
    */
-  updateState(save: boolean = true): void {
+  updateState(save = true): void {
     this.callback?.({
       selectedActivities: this.selectedActivities,
       viewedActivity: this.viewedActivity,
@@ -231,7 +241,7 @@ export class State {
    * Update selected activities: reschedule them and assign colors. Call after
    * every update of this.selectedClasses or this.selectedActivities.
    */
-  updateActivities(save: boolean = true): void {
+  updateActivities(save = true): void {
     chooseColors(this.selectedActivities, this.colorScheme);
     const result = scheduleSlots(this.selectedClasses, this.selectedNonClasses);
     this.options = result.options;
@@ -260,7 +270,7 @@ export class State {
   }
 
   /** Set the preferences. */
-  setPreferences(preferences: Preferences, save: boolean = true): void {
+  setPreferences(preferences: Preferences, save = true): void {
     this.preferences = preferences;
     chooseColors(this.selectedActivities, this.colorScheme);
     this.updateState(save);
@@ -320,16 +330,28 @@ export class State {
   }
 
   /** Parse all program state. */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  inflate(obj: any[] | null): void {
+  inflate(
+    obj:
+      | (
+          | number
+          | (string | number | string[])[][]
+          | (string | RawTimeslot[])[][]
+          | null
+        )[]
+      | null,
+  ): void {
     if (!obj) return;
     this.reset();
-    const [classes, nonClasses, selectedOption] = obj;
+    const [classes, nonClasses, selectedOption] = obj as [
+      (string | number | string[])[][],
+      (string | RawTimeslot[])[][] | null,
+      number | undefined,
+    ];
     for (const deflated of classes) {
       const cls =
         typeof deflated === "string"
           ? this.classes.get(deflated)
-          : this.classes.get(deflated[0]);
+          : this.classes.get((deflated as string[])[0]);
       if (!cls) continue;
       cls.inflate(deflated);
       this.selectedClasses.push(cls);
@@ -356,13 +378,13 @@ export class State {
     }
     const storage = this.store.get(id);
     if (!storage) return;
-    this.inflate(storage);
+    this.inflate(storage as Parameters<State["inflate"]>[0]);
     this.saveId = id;
     this.updateState(false);
   }
 
   /** Store state as a save in localStorage, and store save metadata. */
-  storeSave(id?: string, update: boolean = true): void {
+  storeSave(id?: string, update = true): void {
     if (id) {
       this.store.set(id, this.deflate());
     }
@@ -376,7 +398,7 @@ export class State {
   /** Add a new save. If reset, then make the new save blank. */
   addSave(
     reset: boolean,
-    name: string = `Schedule ${this.saves.length + 1}`,
+    name = `Schedule ${(this.saves.length + 1).toString()}`,
   ): void {
     const id = nanoid(8);
     this.saveId = id;
@@ -400,7 +422,7 @@ export class State {
       this.addSave(true);
     }
     if (id === this.saveId) {
-      this.loadSave(this.saves[0]!.id);
+      this.loadSave(this.saves[0].id);
     }
     this.storeSave();
   }
@@ -439,12 +461,12 @@ export class State {
     if (saves) {
       this.saves = saves;
     }
-    if (!this.saves || !this.saves.length) {
+    if (!this.saves.length) {
       this.saves = [];
       this.addSave(true);
     }
     if (save) {
-      this.inflate(urldecode(save));
+      this.inflate(urldecode(save) as Parameters<State["inflate"]>[0]);
     } else {
       // Try to load default schedule if set, otherwise load first save
       const defaultScheduleId = this.preferences.defaultScheduleId;
@@ -454,7 +476,7 @@ export class State {
       ) {
         this.loadSave(defaultScheduleId);
       } else {
-        this.loadSave(this.saves[0]!.id);
+        this.loadSave(this.saves[0].id);
       }
     }
     // Load starred classes from storage

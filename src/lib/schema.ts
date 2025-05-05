@@ -1,20 +1,21 @@
-import { Activity } from "./activity";
-import { ColorScheme, COLOR_SCHEME_PRESETS } from "./colors";
+import type { Activity } from "./activity";
+import type { ColorScheme } from "./colors";
+import { COLOR_SCHEME_PRESETS } from "./colors";
 
 /** A save has an ID and a name. */
-export type Save = {
+export interface Save {
   id: string;
   name: string;
-};
+}
 
 /** Browser-specific user preferences. */
-export type Preferences = {
+export interface Preferences {
   colorScheme: ColorScheme;
   roundedCorners: boolean;
   showEventTimes: boolean;
   defaultScheduleId: string | null;
   showFeedback: boolean;
-};
+}
 
 /** The default user preferences. */
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -26,18 +27,18 @@ export const DEFAULT_PREFERENCES: Preferences = {
 };
 
 /** React state. */
-export type HydrantState = {
-  selectedActivities: Array<Activity>;
+export interface HydrantState {
+  selectedActivities: Activity[];
   viewedActivity: Activity | undefined;
   selectedOption: number;
   totalOptions: number;
   units: number;
   hours: number;
-  warnings: Array<string>;
+  warnings: string[];
   saveId: string;
-  saves: Array<Save>;
+  saves: Save[];
   preferences: Preferences;
-};
+}
 
 /** Default React state. */
 export const DEFAULT_STATE: HydrantState = {

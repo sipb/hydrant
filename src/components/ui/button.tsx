@@ -1,15 +1,12 @@
-import {
-  Tooltip as ChakraTooltip,
-  Button,
-  type ButtonProps,
-} from "@chakra-ui/react";
+import type { Tooltip as ChakraTooltip } from "@chakra-ui/react";
+import { Button, type ButtonProps } from "@chakra-ui/react";
 import { Tooltip } from "./tooltip";
-import * as React from "react";
+import type { RefObject } from "react";
 
 export interface LabelledButtonProps extends ButtonProps {
   showArrow?: boolean;
   portalled?: boolean;
-  portalRef?: React.RefObject<HTMLElement>;
+  portalRef?: RefObject<HTMLElement>;
   titleProps?: ChakraTooltip.ContentProps;
   disabled?: boolean;
 }

@@ -9,26 +9,29 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import * as React from "react";
+import type { RefObject } from "react";
+import { forwardRef } from "react";
 import { LuCheck, LuPipette } from "react-icons/lu";
 
-export const ColorPickerTrigger = React.forwardRef<
+export const ColorPickerTrigger = forwardRef<
   HTMLButtonElement,
   ChakraColorPicker.TriggerProps & { fitContent?: boolean }
 >(function ColorPickerTrigger(props, ref) {
   const { fitContent, ...rest } = props;
   return (
     <ChakraColorPicker.Trigger
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       data-fit-content={fitContent || undefined}
       ref={ref}
       {...rest}
     >
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
       {props.children || <ChakraColorPicker.ValueSwatch />}
     </ChakraColorPicker.Trigger>
   );
 });
 
-export const ColorPickerInput = React.forwardRef<
+export const ColorPickerInput = forwardRef<
   HTMLInputElement,
   Omit<ChakraColorPicker.ChannelInputProps, "channel">
 >(function ColorHexInput(props, ref) {
@@ -37,10 +40,10 @@ export const ColorPickerInput = React.forwardRef<
 
 interface ColorPickerContentProps extends ChakraColorPicker.ContentProps {
   portalled?: boolean;
-  portalRef?: React.RefObject<HTMLElement>;
+  portalRef?: RefObject<HTMLElement>;
 }
 
-export const ColorPickerContent = React.forwardRef<
+export const ColorPickerContent = forwardRef<
   HTMLDivElement,
   ColorPickerContentProps
 >(function ColorPickerContent(props, ref) {
@@ -54,7 +57,7 @@ export const ColorPickerContent = React.forwardRef<
   );
 });
 
-export const ColorPickerInlineContent = React.forwardRef<
+export const ColorPickerInlineContent = forwardRef<
   HTMLDivElement,
   ChakraColorPicker.ContentProps
 >(function ColorPickerInlineContent(props, ref) {
@@ -69,7 +72,7 @@ export const ColorPickerInlineContent = React.forwardRef<
   );
 });
 
-export const ColorPickerSliders = React.forwardRef<HTMLDivElement, StackProps>(
+export const ColorPickerSliders = forwardRef<HTMLDivElement, StackProps>(
   function ColorPickerSliders(props, ref) {
     return (
       <Stack gap="1" flex="1" px="1" ref={ref} {...props}>
@@ -80,7 +83,7 @@ export const ColorPickerSliders = React.forwardRef<HTMLDivElement, StackProps>(
   },
 );
 
-export const ColorPickerArea = React.forwardRef<
+export const ColorPickerArea = forwardRef<
   HTMLDivElement,
   ChakraColorPicker.AreaProps
 >(function ColorPickerArea(props, ref) {
@@ -92,7 +95,7 @@ export const ColorPickerArea = React.forwardRef<
   );
 });
 
-export const ColorPickerEyeDropper = React.forwardRef<
+export const ColorPickerEyeDropper = forwardRef<
   HTMLButtonElement,
   IconButtonProps
 >(function ColorPickerEyeDropper(props, ref) {
@@ -105,7 +108,7 @@ export const ColorPickerEyeDropper = React.forwardRef<
   );
 });
 
-export const ColorPickerChannelSlider = React.forwardRef<
+export const ColorPickerChannelSlider = forwardRef<
   HTMLDivElement,
   ChakraColorPicker.ChannelSliderProps
 >(function ColorPickerSlider(props, ref) {
@@ -118,7 +121,7 @@ export const ColorPickerChannelSlider = React.forwardRef<
   );
 });
 
-export const ColorPickerSwatchTrigger = React.forwardRef<
+export const ColorPickerSwatchTrigger = forwardRef<
   HTMLButtonElement,
   ChakraColorPicker.SwatchTriggerProps & {
     swatchSize?: ChakraColorPicker.SwatchTriggerProps["boxSize"];
@@ -131,6 +134,7 @@ export const ColorPickerSwatchTrigger = React.forwardRef<
       style={{ ["--color" as string]: props.value }}
       {...rest}
     >
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
       {children || (
         <ChakraColorPicker.Swatch boxSize={swatchSize} value={props.value}>
           <ChakraColorPicker.SwatchIndicator>
@@ -142,7 +146,7 @@ export const ColorPickerSwatchTrigger = React.forwardRef<
   );
 });
 
-export const ColorPickerRoot = React.forwardRef<
+export const ColorPickerRoot = forwardRef<
   HTMLDivElement,
   ChakraColorPicker.RootProps
 >(function ColorPickerRoot(props, ref) {
@@ -161,7 +165,7 @@ const formatMap = {
   hexa: ["hex", "alpha"],
 } as const;
 
-export const ColorPickerChannelInputs = React.forwardRef<
+export const ColorPickerChannelInputs = forwardRef<
   HTMLDivElement,
   ChakraColorPicker.ViewProps
 >(function ColorPickerChannelInputs(props, ref) {
@@ -186,7 +190,7 @@ export const ColorPickerChannelInputs = React.forwardRef<
   );
 });
 
-export const ColorPickerChannelSliders = React.forwardRef<
+export const ColorPickerChannelSliders = forwardRef<
   HTMLDivElement,
   ChakraColorPicker.ViewProps
 >(function ColorPickerChannelSliders(props, ref) {

@@ -11,12 +11,8 @@ import {
   Button,
   ButtonGroup,
 } from "@chakra-ui/react";
-import {
-  ComponentPropsWithoutRef,
-  FormEvent,
-  useLayoutEffect,
-  useState,
-} from "react";
+import type { ComponentPropsWithoutRef, FormEvent } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { Radio, RadioGroup } from "./ui/radio";
 import {
@@ -39,10 +35,12 @@ import {
   ColorPickerTrigger,
 } from "./ui/color-picker";
 
-import { Activity, NonClass, Timeslot } from "../lib/activity";
-import { Class, LockOption, SectionLockOption, Sections } from "../lib/class";
+import type { Activity, NonClass } from "../lib/activity";
+import { Timeslot } from "../lib/activity";
+import type { Class, SectionLockOption, Sections } from "../lib/class";
+import { LockOption } from "../lib/class";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
-import { State } from "../lib/state";
+import type { State } from "../lib/state";
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 
 /**
@@ -87,7 +85,9 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
     <Flex gap={1} mr={1} mt={2}>
       <Input
         value={room}
-        onChange={(e) => setRoom(e.target.value)}
+        onChange={(e) => {
+          setRoom(e.target.value);
+        }}
         onKeyUp={(e) => {
           if (e.key === "Enter") {
             onConfirm();
@@ -125,7 +125,9 @@ function ClassManualSections(props: { cls: Class; state: State }) {
         : LockOption.Auto,
     );
   const [selected, setSelected] = useState(genSelected(cls));
-  useLayoutEffect(() => setSelected(genSelected(cls)), [cls]);
+  useLayoutEffect(() => {
+    setSelected(genSelected(cls));
+  }, [cls]);
 
   const RenderOptions = () => {
     const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
@@ -149,7 +151,7 @@ function ClassManualSections(props: { cls: Class; state: State }) {
                 value={selected[sectionIndex]}
                 onValueChange={(e) => {
                   setSelected((oldArray) => {
-                    oldArray[sectionIndex] = e.value as string;
+                    oldArray[sectionIndex] = e.value ?? "";
                     return oldArray;
                   });
 
@@ -218,7 +220,12 @@ function ActivityColor(props: {
   return (
     <Flex gap={2}>
       <Flex direction="row" gap={2}>
-        <ColorPickerRoot value={color} onValueChange={(e) => setColor(e.value)}>
+        <ColorPickerRoot
+          value={color}
+          onValueChange={(e) => {
+            setColor(e.value);
+          }}
+        >
           <ColorPickerControl>
             <ColorPickerInput autoFocus />
             <ColorPickerTrigger />
@@ -251,7 +258,11 @@ export function ClassButtons(props: { cls: Class; state: State }) {
   return (
     <Flex direction="column" gap={2}>
       <ButtonGroup wrap="wrap">
-        <Button onClick={() => state.toggleActivity(cls)}>
+        <Button
+          onClick={() => {
+            state.toggleActivity(cls);
+          }}
+        >
           {isSelected ? "Remove class" : "Add class"}
         </Button>
         {isSelected && (
@@ -284,7 +295,9 @@ export function ClassButtons(props: { cls: Class; state: State }) {
         <ActivityColor
           activity={cls}
           state={state}
-          onHide={() => setShowColors(false)}
+          onHide={() => {
+            setShowColors(false);
+          }}
         />
       )}
     </Flex>
@@ -320,7 +333,9 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
           <Checkbox
             key={day}
             checked={days[day]}
-            onCheckedChange={(e) => setDays({ ...days, [day]: !!e.checked })}
+            onCheckedChange={(e) => {
+              setDays({ ...days, [day]: !!e.checked });
+            }}
           >
             {day}
           </Checkbox>
@@ -340,7 +355,9 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
       size="sm"
       width="8rem"
       value={[times[key]]}
-      onValueChange={(e) => setTimes({ ...times, [key]: e.value[0] })}
+      onValueChange={(e) => {
+        setTimes({ ...times, [key]: e.value[0] });
+      }}
     >
       <SelectTrigger>
         <SelectValueText />
@@ -391,7 +408,9 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       return (
         <Input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
           fontWeight="bold"
           placeholder="New Activity"
           autoFocus
@@ -408,7 +427,9 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       return (
         <Input
           value={room}
-          onChange={(e) => setRoom(e.target.value)}
+          onChange={(e) => {
+            setRoom(e.target.value);
+          }}
           placeholder="W20-557"
           autoFocus
           onKeyUp={(e) => {
@@ -467,7 +488,11 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
     } else {
       return (
         <>
-          <Button onClick={() => state.toggleActivity(activity)}>
+          <Button
+            onClick={() => {
+              state.toggleActivity(activity);
+            }}
+          >
             {isSelected ? "Remove activity" : "Add activity"}
           </Button>
           <Button onClick={onRenameElse}>Rename activity</Button>
@@ -495,7 +520,9 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
         <ActivityColor
           activity={activity}
           state={state}
-          onHide={() => setShowColors(false)}
+          onHide={() => {
+            setShowColors(false);
+          }}
         />
       )}
       <Text>

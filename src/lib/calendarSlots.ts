@@ -1,5 +1,5 @@
-import { NonClass, Timeslot } from "./activity";
-import { Section, Sections, Class } from "./class";
+import type { NonClass, Timeslot } from "./activity";
+import type { Section, Sections, Class } from "./class";
 
 /**
  * Helper function for selectSlots. Implements backtracking: we try to place
@@ -14,20 +14,20 @@ import { Section, Sections, Class } from "./class";
  * @returns Object with best options found so far and number of conflicts
  */
 function selectHelper(
-  freeSections: Array<Sections>,
-  filledSlots: Array<Timeslot>,
-  foundOptions: Array<Section>,
+  freeSections: Sections[],
+  filledSlots: Timeslot[],
+  foundOptions: Section[],
   curConflicts: number,
   foundMinConflicts: number,
 ): {
-  options: Array<Array<Section>>;
+  options: Section[][];
   minConflicts: number;
 } {
   if (freeSections.length === 0) {
     return { options: [foundOptions], minConflicts: curConflicts };
   }
 
-  let options: Array<Array<Section>> = [];
+  let options: Section[][] = [];
   let minConflicts: number = foundMinConflicts;
 
   const [secs, ...remainingSections] = freeSections;
@@ -69,16 +69,16 @@ function selectHelper(
  *    conflicts - number of conflicts in any option
  */
 export function scheduleSlots(
-  selectedClasses: Array<Class>,
-  selectedNonClasses: Array<NonClass>,
+  selectedClasses: Class[],
+  selectedNonClasses: NonClass[],
 ): {
-  options: Array<Array<Section>>;
+  options: Section[][];
   conflicts: number;
 } {
-  const lockedSections: Array<Sections> = [];
-  const lockedOptions: Array<Section> = [];
-  const initialSlots: Array<Timeslot> = [];
-  const freeSections: Array<Sections> = [];
+  const lockedSections: Sections[] = [];
+  const lockedOptions: Section[] = [];
+  const initialSlots: Timeslot[] = [];
+  const freeSections: Sections[] = [];
 
   for (const cls of selectedClasses) {
     for (const secs of cls.sections) {
