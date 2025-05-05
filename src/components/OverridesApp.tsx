@@ -7,6 +7,7 @@ import {
   materialRenderers,
 } from "@jsonforms/material-renderers";
 
+// @ts-expect-error importing font
 import "@fontsource/roboto";
 import { Button, Typography } from "@mui/material";
 
@@ -17,6 +18,7 @@ import { Provider } from "./ui/provider";
 import logo from "../assets/logo.svg";
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
 
+// @ts-expect-error just ignore it <3
 itemSchema.required = ["number"];
 const schema = {
   title: "Overrides",
@@ -61,7 +63,11 @@ const uischema = {
             },
           ],
         },
-        { type: "Control", label: "Prerequisites", scope: "#/properties/prereqs" },
+        {
+          type: "Control",
+          label: "Prerequisites",
+          scope: "#/properties/prereqs",
+        },
         {
           type: "HorizontalLayout",
           elements: [
@@ -144,18 +150,20 @@ const uischema = {
             },
           ],
         },
-        { type: "Control", label: "Instructors", scope: "#/properties/inCharge" },
+        {
+          type: "Control",
+          label: "Instructors",
+          scope: "#/properties/inCharge",
+        },
         { type: "Control", label: "URL", scope: "#/properties/url" },
       ],
     },
   },
 };
 
-
-
 /** The main application. */
 export default function App() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Record<string, unknown>[]>([]);
   return (
     <Provider>
       <Flex direction="column" gap={5} px="20%" py={4}>
@@ -174,29 +182,34 @@ export default function App() {
           uischema={uischema}
           renderers={materialRenderers}
           cells={materialCells}
-          onChange={({ data, _errors }) => setData(data)}
+          data={data}
+          onChange={({ data: formData }) => {
+            setData(formData as Record<string, unknown>[]);
+          }}
         />
         <Button
           variant="contained"
           onClick={() => {
-            const contents = TOML.stringify(Object.fromEntries((data || []).map(
-              override => {
-                const { number: num, ...rest } = override;
-                return [num, rest];
-              }
-            )));
+            const contents = TOML.stringify(
+              Object.fromEntries(
+                (data.length > 0 ? data : []).map((override) => {
+                  const { number: num, ...rest } = override;
+                  return [num, rest];
+                }),
+              ),
+            );
 
             const subject = encodeURIComponent("Hydrant subject overrides");
 
-            const body = encodeURIComponent(`\
+            const body = encodeURIComponent(
+              `\
 (Add an optional description.)
 
 Please do not modify anything below this line.
---------------------------------------------------\n`
-              + contents);
+--------------------------------------------------\n` + contents,
+            );
 
-            window.location.href =
-              `mailto:sipb-hydrant@mit.edu?subject=${subject}&body=${body}`;
+            window.location.href = `mailto:sipb-hydrant@mit.edu?subject=${subject}&body=${body}`;
           }}
         >
           Submit
