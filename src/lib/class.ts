@@ -190,7 +190,7 @@ export class Sections {
         return "rec";
       case SectionKind.DESIGN:
         return "des";
-      default:
+      case SectionKind.LAB:
         return "lab";
     }
   }
@@ -204,7 +204,7 @@ export class Sections {
         return "Recitation";
       case SectionKind.DESIGN:
         return "Design";
-      default:
+      case SectionKind.LAB:
         return "Lab";
     }
   }
@@ -278,7 +278,7 @@ export class Class {
               rawClass.designRawSections,
               rawClass.designSections,
             );
-          default:
+          case "lab":
             return new Sections(
               this,
               SectionKind.LAB,

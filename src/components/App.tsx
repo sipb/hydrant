@@ -37,8 +37,6 @@ import { PreregLink } from "./PreregLink";
 import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
 
-// import calendarButtonImg from "../assets/calendar-button.svg";
-
 interface SemesterData {
   classes: Record<string, RawClass>;
   lastUpdated: string;
