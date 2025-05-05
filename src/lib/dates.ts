@@ -62,10 +62,13 @@ const SLOT_OBJECTS: Record<number, Slot> = {};
  * problem with respect to ending slots.
  */
 export class Slot {
-  constructor(/** The slot number. */ public slot: number) {}
+  /** @param slot The slot number. */
+  constructor(public slot: number) { }
 
   static fromSlotNumber(slot: number): Slot {
-    SLOT_OBJECTS[slot] = new Slot(slot);
+    if (!(slot in SLOT_OBJECTS)) {
+      SLOT_OBJECTS[slot] = new Slot(slot);
+    }
     return SLOT_OBJECTS[slot];
   }
 
@@ -73,8 +76,8 @@ export class Slot {
   static fromStartDate(date: Date): Slot {
     return new Slot(
       30 * (date.getDay() - 1) +
-        2 * (date.getHours() - 8) +
-        Math.floor(date.getMinutes() / 30),
+      2 * (date.getHours() - 8) +
+      Math.floor(date.getMinutes() / 30),
     );
   }
 
