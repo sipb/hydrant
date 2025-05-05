@@ -63,7 +63,7 @@ const SLOT_OBJECTS: Record<number, Slot> = {};
  */
 export class Slot {
   /** @param slot The slot number. */
-  constructor(public slot: number) { }
+  constructor(public slot: number) {}
 
   static fromSlotNumber(slot: number): Slot {
     if (!(slot in SLOT_OBJECTS)) {
@@ -76,8 +76,8 @@ export class Slot {
   static fromStartDate(date: Date): Slot {
     return new Slot(
       30 * (date.getDay() - 1) +
-      2 * (date.getHours() - 8) +
-      Math.floor(date.getMinutes() / 30),
+        2 * (date.getHours() - 8) +
+        Math.floor(date.getMinutes() / 30),
     );
   }
 
