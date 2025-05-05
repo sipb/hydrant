@@ -14,5 +14,5 @@ export default defineConfig({
       typescript: true,
       eslint: { lintCommand: "eslint **/*.{ts,tsx}", useFlatConfig: true },
     }),
-  ]
+  ],
 });
