@@ -8,7 +8,7 @@ import { Class } from "./class";
 import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
 import { chooseColors, fallbackColor } from "./colors";
-import type { RawClass } from "./rawClass";
+import type { RawClass, RawTimeslot } from "./rawClass";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
@@ -330,18 +330,28 @@ export class State {
   }
 
   /** Parse all program state. */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  inflate(obj: any[] | null): void {
+  inflate(
+    obj:
+      | (
+          | number
+          | (string | number | string[])[][]
+          | (string | RawTimeslot[])[][]
+          | null
+        )[]
+      | null,
+  ): void {
     if (!obj) return;
     this.reset();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const [classes, nonClasses, selectedOption] = obj;
+    const [classes, nonClasses, selectedOption] = obj as [
+      (string | number | string[])[][],
+      (string | RawTimeslot[])[][] | null,
+      number | undefined,
+    ];
     for (const deflated of classes) {
       const cls =
         typeof deflated === "string"
           ? this.classes.get(deflated)
-          : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-            this.classes.get(deflated[0]);
+          : this.classes.get((deflated as string[])[0]);
       if (!cls) continue;
       cls.inflate(deflated);
       this.selectedClasses.push(cls);
@@ -349,12 +359,10 @@ export class State {
     if (nonClasses) {
       for (const deflated of nonClasses) {
         const nonClass = new NonClass(this.colorScheme);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         nonClass.inflate(deflated);
         this.selectedNonClasses.push(nonClass);
       }
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.selectedOption = selectedOption ?? 0;
     this.saveId = "";
     this.updateActivities(false);
@@ -370,7 +378,7 @@ export class State {
     }
     const storage = this.store.get(id);
     if (!storage) return;
-    this.inflate(storage);
+    this.inflate(storage as Parameters<State["inflate"]>[0]);
     this.saveId = id;
     this.updateState(false);
   }
@@ -458,7 +466,7 @@ export class State {
       this.addSave(true);
     }
     if (save) {
-      this.inflate(urldecode(save) as unknown[]);
+      this.inflate(urldecode(save) as Parameters<State["inflate"]>[0]);
     } else {
       // Try to load default schedule if set, otherwise load first save
       const defaultScheduleId = this.preferences.defaultScheduleId;

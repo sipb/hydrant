@@ -552,46 +552,38 @@ export class Class {
       this.number,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
       ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
-      ...(sections.length > 0 ? sections : []), // number
+      ...(sections.length > 0 ? (sections as number[]) : []), // number
     ];
   }
 
   /** Inflate a class with info from the output of deflate. */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  inflate(parsed: any): void {
+  inflate(parsed: string | (string | number | string[])[]): void {
     if (typeof parsed === "string") {
       // just the class number, ignore
       return;
     }
     // we ignore parsed[0] as that has the class number
     let offset = 1;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (typeof parsed[1] === "string") {
       offset += 1;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let sectionLocs: any[] | null = null;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    let sectionLocs: (string | number | string[])[] | null = null;
     if (Array.isArray(parsed[offset])) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      sectionLocs = parsed[offset];
+      sectionLocs = parsed[offset] as string[];
       offset += 1;
     }
     this.sections.forEach((secs, i) => {
       if (sectionLocs && typeof sectionLocs[i] === "string") {
         secs.roomOverride = sectionLocs[i];
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const parse = parsed[i + offset];
       if (!parse && parse !== 0) {
         secs.locked = false;
       } else {
         secs.locked = true;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        secs.selected = secs.sections[parse];
+        secs.selected = secs.sections[parse as number];
       }
     });
   }
