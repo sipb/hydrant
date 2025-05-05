@@ -174,6 +174,8 @@ const theme = createTheme({
 /** The main application. */
 export default function App() {
   const [data, setData] = useState<Record<string, unknown>[]>([]);
+  const [error, setError] = useState<boolean>(false);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -199,12 +201,14 @@ export default function App() {
             renderers={materialRenderers}
             cells={materialCells}
             data={data}
-            onChange={({ data: formData }) => {
+            onChange={({ data: formData, errors }) => {
               setData(formData as Record<string, unknown>[]);
+              setError(errors && errors.length > 0 ? true : false);
             }}
           />
           <Button
             variant="contained"
+            disabled={data.length === 0 || error}
             onClick={() => {
               const contents = TOML.stringify(
                 Object.fromEntries(
