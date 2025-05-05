@@ -27,9 +27,7 @@ const schema = {
   title: "Overrides",
   type: "array",
   items: { ...itemSchema, required: ["number"] } as JsonSchema7,
-  $defs: {
-    ...itemSchema.$defs,
-  },
+  $defs: itemSchema.$defs,
 };
 
 const uischema = {
@@ -211,7 +209,7 @@ export default function App() {
             onClick={() => {
               const contents = TOML.stringify(
                 Object.fromEntries(
-                  (data.length > 0 ? data : []).map((override) => {
+                  data.map((override) => {
                     const { number: num, ...rest } = override;
                     return [num, rest];
                   }),
