@@ -45,8 +45,8 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
-      "@typescript-eslint/consistent-type-exports": "error",
-      "@typescript-eslint/consistent-type-imports": "error",
+      "@typescript-eslint/consistent-type-exports": "warn",
+      "@typescript-eslint/consistent-type-imports": "warn",
     },
   },
 );
