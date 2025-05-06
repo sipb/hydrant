@@ -1,0 +1,40 @@
+#:schema ./override-schema.json
+# Course 6 special subjects (fall 2025)
+
+['6.S056']
+name = "Hack Yourself: Data-driven Wellbeing and Learning"
+inCharge = "A. Bell"
+
+['6.S061']
+name = "Humane User Experience Design"
+inCharge = "A. Satyanarayan"
+
+['6.S077']
+name = "Life Science and Semiconductor"
+meets = "6.S897"
+inCharge = "A. Bahai, T. Heldt"
+
+['6.S897']
+name = "Life Science and Semiconductor"
+meets = "6.S077"
+inCharge = "A. Bahai, T. Heldt"
+
+['6.S890']
+name = "Topics in Mulitagent Learning"
+inCharge = "G. Farina"
+
+['6.S892']
+name = "Advanced Topics in Power Electronics"
+inCharge = "D. Perreault"
+
+['6.S894']
+name = "Accelerated Computing"
+inCharge = "J. Ragan-Kelley"
+
+['6.S896']
+name = "Algorithmic Statistics"
+inCharge = "S. Hopkins"
+
+['6.S965']
+name = "Digital Systems Laboratory II"
+inCharge = "J. Steinmeyer"
