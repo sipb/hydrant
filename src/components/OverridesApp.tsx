@@ -8,6 +8,7 @@ import {
 } from "@jsonforms/material-renderers";
 
 import "@fontsource/roboto/index.css";
+import type { SelectChangeEvent } from "@mui/material";
 import {
   Button,
   Link,
@@ -15,6 +16,10 @@ import {
   Container,
   Stack,
   CssBaseline,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Link as RouterLink } from "react-router";
@@ -23,6 +28,21 @@ import TOML from "smol-toml";
 
 import logo from "../assets/logo.svg";
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
+
+const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
+  "../../scrapers/overrides.toml.d/*.toml",
+  {
+    query: "raw",
+    import: "default",
+  },
+);
+const overrideNames = Object.assign(
+  {},
+  ...Object.keys(overrides).map((key) => {
+    const newKey = key.split("/").slice(-1)[0].split(".")[0].toUpperCase();
+    return { [newKey]: overrides[key] };
+  }),
+) as typeof overrides;
 
 const schema = {
   title: "Overrides",
@@ -173,6 +193,38 @@ const theme = createTheme({
 export default function App() {
   const [data, setData] = useState<Record<string, unknown>[]>([]);
   const [error, setError] = useState<boolean>(false);
+  const [selected, setSelected] = useState<string>("");
+
+  const handleChange = (file: SelectChangeEvent) => {
+    const fileName = file.target.value;
+
+    if (fileName === "") {
+      setData([]);
+      setSelected("");
+      return;
+    }
+
+    (overrideNames[fileName]() as Promise<string>)
+      .then((textToml) => {
+        const mod = TOML.parse(textToml);
+
+        const newData = Object.entries(mod).map(([key, value]) => {
+          const { number: num, ...rest } = value as Record<string, unknown>;
+          return {
+            number: key,
+            ...rest,
+          };
+        });
+
+        setData(newData);
+        setSelected(fileName);
+      })
+      .catch((err: unknown) => {
+        console.error("Error loading TOML file:", err);
+        setData([]);
+        setSelected("");
+      });
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -209,6 +261,25 @@ export default function App() {
             </Link>
             {} with any questions or concerns!
           </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="select-data-label">Pre-fill data</InputLabel>
+            <Select
+              labelId="select-data-label"
+              id="select-data"
+              value={selected}
+              label="Pre-fill data"
+              onChange={handleChange}
+            >
+              <MenuItem key={0} value={""}>
+                Clear
+              </MenuItem>
+              {Object.entries(overrideNames).map(([name], key) => (
+                <MenuItem key={key} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <JsonForms
             schema={schema}
             uischema={uischema}
