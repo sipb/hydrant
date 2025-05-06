@@ -9,7 +9,7 @@ const Overrides = lazy(() => import("./components/OverridesApp"));
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense>
         <Routes>
           <Route index Component={App} />
           <Route path="overrides" Component={Overrides} />
