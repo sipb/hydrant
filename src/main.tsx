@@ -12,7 +12,7 @@ createRoot(document.getElementById("root")!).render(
       <Suspense>
         <Routes>
           <Route index Component={App} />
-          <Route path="overrides" Component={Overrides} />
+          <Route path="overrides/:prefillId?" Component={Overrides} />
         </Routes>
       </Suspense>
     </Router>

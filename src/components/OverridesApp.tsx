@@ -22,7 +22,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Link as RouterLink } from "react-router";
+import { Link as RouterLink, useParams } from "react-router";
 
 import TOML from "smol-toml";
 
@@ -194,16 +194,9 @@ export default function App() {
   const [data, setData] = useState<Record<string, unknown>[]>([]);
   const [error, setError] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>("");
+  const { prefillId } = useParams();
 
-  const handleChange = (file: SelectChangeEvent) => {
-    const fileName = file.target.value;
-
-    if (fileName === "") {
-      setData([]);
-      setSelected("");
-      return;
-    }
-
+  const getDataFromFile = (fileName: string) => {
     (overrideNames[fileName]() as Promise<string>)
       .then((textToml) => {
         const mod = TOML.parse(textToml);
@@ -224,6 +217,28 @@ export default function App() {
         setData([]);
         setSelected("");
       });
+  };
+
+  if (prefillId) {
+    const fileName = prefillId.toUpperCase();
+
+    if (fileName in overrideNames) {
+      getDataFromFile(fileName);
+    } else {
+      console.error("Invalid prefill ID:", fileName);
+    }
+  }
+
+  const handleChange = (file: SelectChangeEvent) => {
+    const fileName = file.target.value;
+
+    if (fileName === "") {
+      setData([]);
+      setSelected("");
+      return;
+    }
+
+    getDataFromFile(fileName);
   };
 
   return (
