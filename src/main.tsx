@@ -1,20 +1,30 @@
-import { StrictMode, Suspense, lazy } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router";
 
-const App = lazy(() => import("./components/App"));
-const Overrides = lazy(() => import("./components/OverridesApp"));
+const router = createBrowserRouter([
+  {
+    index: true,
+    lazy: async () => ({
+      Component: (await import("./components/App")).default,
+    }),
+  },
+  {
+    path: "overrides/:prefillId?",
+    lazy: async () => {
+      const overrides = await import("./components/OverridesApp");
+
+      return {
+        Component: overrides.Component,
+        loader: overrides.loader,
+      };
+    },
+  },
+]);
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Router>
-      <Suspense>
-        <Routes>
-          <Route index Component={App} />
-          <Route path="overrides/:prefillId?" Component={Overrides} />
-        </Routes>
-      </Suspense>
-    </Router>
+    <RouterProvider router={router} />
   </StrictMode>,
 );

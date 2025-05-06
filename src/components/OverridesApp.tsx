@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { JsonForms } from "@jsonforms/react";
 import type { JsonSchema7 } from "@jsonforms/core";
@@ -22,27 +22,12 @@ import {
   MenuItem,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Link as RouterLink, useParams } from "react-router";
+import { Link as RouterLink, useParams, useLoaderData } from "react-router";
 
 import TOML from "smol-toml";
 
 import logo from "../assets/logo.svg";
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
-
-const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
-  "../../scrapers/overrides.toml.d/*.toml",
-  {
-    query: "raw",
-    import: "default",
-  },
-);
-const overrideNames = Object.assign(
-  {},
-  ...Object.keys(overrides).map((key) => {
-    const newKey = key.split("/").slice(-1)[0].split(".")[0].toUpperCase();
-    return { [newKey]: overrides[key] };
-  }),
-) as typeof overrides;
 
 const schema = {
   title: "Overrides",
@@ -189,45 +174,79 @@ const theme = createTheme({
   },
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
+export function loader() {
+  const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
+    "../../scrapers/overrides.toml.d/*.toml",
+    {
+      query: "raw",
+      import: "default",
+    },
+  );
+  const overrideNames = Object.assign(
+    {},
+    ...Object.keys(overrides).map((key) => {
+      const newKey = key.split("/").slice(-1)[0].split(".")[0].toUpperCase();
+      return { [newKey]: overrides[key] };
+    }),
+  ) as typeof overrides;
+
+  return { overrideNames };
+}
+
 /** The main application. */
-export default function App() {
+export function Component() {
   const [data, setData] = useState<Record<string, unknown>[]>([]);
   const [error, setError] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>("");
   const { prefillId } = useParams();
+  const { overrideNames } = useLoaderData<ReturnType<typeof loader>>();
 
-  const getDataFromFile = (fileName: string) => {
-    (overrideNames[fileName]() as Promise<string>)
-      .then((textToml) => {
+  const getDataFromFile = useCallback(
+    async (fileName: string) => {
+      try {
+        const textToml = await (overrideNames[fileName]() as Promise<string>);
         const mod = TOML.parse(textToml);
 
-        const newData = Object.entries(mod).map(([key, value]) => {
-          const { number: num, ...rest } = value as Record<string, unknown>;
+        const newData = Object.entries(mod).map(([key, value_1]) => {
+          const { number: num, ...rest } = value_1 as Record<string, unknown>;
           return {
             number: key,
             ...rest,
           };
         });
-
-        setData(newData);
-        setSelected(fileName);
-      })
-      .catch((err: unknown) => {
+        return newData;
+      } catch (err) {
         console.error("Error loading TOML file:", err);
-        setData([]);
-        setSelected("");
-      });
-  };
+        return [];
+      }
+    },
+    [overrideNames],
+  );
 
-  if (prefillId) {
-    const fileName = prefillId.toUpperCase();
+  useEffect(() => {
+    const getData = async () => {
+      if (prefillId) {
+        const fileName = prefillId.toUpperCase();
 
-    if (fileName in overrideNames) {
-      getDataFromFile(fileName);
-    } else {
-      console.error("Invalid prefill ID:", fileName);
-    }
-  }
+        if (fileName in overrideNames) {
+          const newData = await getDataFromFile(fileName);
+          if (newData.length > 0) {
+            setData(newData);
+            setSelected(fileName);
+          } else {
+            console.error("No data found for prefill ID:", fileName);
+            setData([]);
+            setSelected("");
+          }
+        } else {
+          console.error("Invalid prefill ID:", fileName);
+        }
+      }
+    };
+
+    void getData();
+  }, [prefillId, overrideNames, getDataFromFile]);
 
   const handleChange = (file: SelectChangeEvent) => {
     const fileName = file.target.value;
@@ -238,7 +257,16 @@ export default function App() {
       return;
     }
 
-    getDataFromFile(fileName);
+    getDataFromFile(fileName)
+      .then((newData) => {
+        setData(newData);
+        setSelected(fileName);
+      })
+      .catch((err: unknown) => {
+        console.error("Error loading TOML file:", err);
+        setData([]);
+        setSelected("");
+      });
   };
 
   return (
