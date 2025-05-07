@@ -37,6 +37,8 @@ import { PreregLink } from "./PreregLink";
 import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
 
+import type { Route } from "./+types/App";
+
 interface SemesterData {
   classes: Record<string, RawClass>;
   lastUpdated: string;
@@ -278,6 +280,14 @@ function HydrantApp() {
     </>
   );
 }
+
+export const meta: Route.MetaFunction = () => [
+  { title: "Hydrant" },
+  {
+    name: "description",
+    content: "Hydrant is a class planner for MIT students.",
+  },
+];
 
 /** The main application. */
 export default function App() {

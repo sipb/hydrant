@@ -22,8 +22,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import type { LoaderFunctionArgs } from "react-router";
-import { Link as RouterLink, useLoaderData } from "react-router";
+
+import { Link as RouterLink } from "react-router";
+import type { Route } from "./+types/OverridesApp";
 
 import TOML from "smol-toml";
 
@@ -175,8 +176,7 @@ const theme = createTheme({
   },
 });
 
-// eslint-disable-next-line react-refresh/only-export-components
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
     "../../scrapers/overrides.toml.d/*.toml",
     {
@@ -235,9 +235,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 /** The main application. */
-export function Component() {
-  const { overrideNames, prefillData, prefillId } =
-    useLoaderData<Awaited<ReturnType<typeof loader>>>();
+export default function App({ loaderData }: Route.ComponentProps) {
+  const { overrideNames, prefillData, prefillId } = loaderData;
 
   const [data, setData] = useState<Record<string, unknown>[]>(prefillData);
   const [error, setError] = useState<boolean>(false);
@@ -391,3 +390,12 @@ export function Component() {
     </ThemeProvider>
   );
 }
+
+export const meta: Route.MetaFunction = () => [
+  { title: "Hydrant - Overrides Form" },
+  {
+    name: "description",
+    content:
+      "Form for department administrators to overrides to the Hydrant team.",
+  },
+];
