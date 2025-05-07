@@ -1,0 +1,114 @@
+#:schema ./override-schema.json
+# Course 11 special subjects (fall 2025)
+
+["11.S187"]
+name = "Social Carbon Economy"
+meets = "11.S955"
+level = "U"
+lectureUnits = 3
+labUnits = 1
+preparationUnits = 8
+description = "The course explores the emerging basis of a social carbon economy and focuses on the understanding of how to integrate technology and social considerations into carbon management and emissions reduction strategies within urban areas. Urban areas are significant contributors to carbon emissions due to factors like transportation, industry, and energy consumption. Therefore, addressing carbon emissions in cities is crucial for global efforts to combat climate change. In an urban social carbon economy, the course will focus on efforts to reduce carbon emissions and will explore methodologies to design solutions with a focus on social equity, community well-being, and inclusive development within urban contexts. \n\nThe course examines the intersections that enable individuals, communities, institutions, and corporations to take action by actively measuring, monitoring, and reducing their carbon emissions. By deepening in the understanding of the power of Artificial Intelligence and behavior change, which has the potential to reduce carbon emissions by one-third globally, the new carbon economy will create opportunities to accelerate the net-zero goals across all industries. Students will deepen their understanding of carbon avoidance and reduction products and infrastructure that leverage existing and new technologies like AI, sensor fusion, gamification, blockchain, and incentive systems that will power the new economy."
+inCharge = "Ramiro Almeida, Ryan Chin"
+
+["11.S955"]
+name = "Social Carbon Economy"
+meets = "11.S187"
+level = "G"
+lectureUnits = 3
+labUnits = 1
+preparationUnits = 8
+description = "The course explores the emerging basis of a social carbon economy and focuses on the understanding of how to integrate technology and social considerations into carbon management and emissions reduction strategies within urban areas. Urban areas are significant contributors to carbon emissions due to factors like transportation, industry, and energy consumption. Therefore, addressing carbon emissions in cities is crucial for global efforts to combat climate change. In an urban social carbon economy, the course will focus on efforts to reduce carbon emissions and will explore methodologies to design solutions with a focus on social equity, community well-being, and inclusive development within urban contexts. \n\nThe course examines the intersections that enable individuals, communities, institutions, and corporations to take action by actively measuring, monitoring, and reducing their carbon emissions. By deepening in the understanding of the power of Artificial Intelligence and behavior change, which has the potential to reduce carbon emissions by one-third globally, the new carbon economy will create opportunities to accelerate the net-zero goals across all industries. Students will deepen their understanding of carbon avoidance and reduction products and infrastructure that leverage existing and new technologies like AI, sensor fusion, gamification, blockchain, and incentive systems that will power the new economy."
+inCharge = "Ramiro Almeida, Ryan Chin"
+
+["11.S188"]
+name = "Indigenous Water and Energy Planning: Emergent Futures in Scaling Traditional Ecological Knowledge"
+meets = "11.S953"
+description = "This under/graduate-level reading seminar focuses on the critical intersections between Indigenous knowledge systems, water resources management, and environmental justice. The course centers readings in genres of Indigenous futurisms to cover the basics of Indigenous water and energy planning. Through the lens of these genres, guest lectures, discussions, and case studies, students will understand the emergent trends in the development of traditional ecological knowledge. At the end of the course, students will propose speculative projects to scale community-based water planning interventions and initiatives towards utility scale to support the sovereignty and self-determination of Indigenous governments."
+level = "U"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 10
+inCharge = "Janelle Knox-Hayes, Jean-Luc Pierite"
+
+["11.S953"]
+inCharge = "Janelle Knox-Hayes, Jean-Luc Pierite"
+description = "This under/graduate-level reading seminar focuses on the critical intersections between Indigenous knowledge systems, water resources management, and environmental justice. The course centers readings in genres of Indigenous futurisms to cover the basics of Indigenous water and energy planning. Through the lens of these genres, guest lectures, discussions, and case studies, students will understand the emergent trends in the development of traditional ecological knowledge. At the end of the course, students will propose speculative projects to scale community-based water planning interventions and initiatives towards utility scale to support the sovereignty and self-determination of Indigenous governments."
+name = "Indigenous Water and Energy Planning: Emergent Futures in Scaling Traditional Ecological Knowledge"
+meets = "11.S188"
+level = "G"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 10
+
+["11.S189"]
+name = "Topics in Urban Health Policy"
+meets = "11.S939"
+level = "U"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+description = "Introduces the fundamental components of urban health systems, including emergency medical services, community health centers and primary and specialty care facilities, hospitals and hospital networks, and health insurance providers. Explores the role of public policy, and state, local, and provider variation in these structures on access to care, health care costs, and health equity. This is a Half One class."
+inCharge = "Justin Steil"
+
+["11.S939"]
+description = "Introduces the fundamental components of urban health systems, including emergency medical services, community health centers and primary and specialty care facilities, hospitals and hospital networks, and health insurance providers. Explores the role of public policy, and state, local, and provider variation in these structures on access to care, health care costs, and health equity. This is a Half One class."
+name = "Topics in Urban Health Policy"
+meets = "11.S189"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+
+["11.S197"]
+name = "Renewing the Great Society: A New Era of Progressive National Policies"
+meets = "11.S947"
+description = "President Johnson's short five-year tenure ushered in some of the most essential midcentury rights policies that touched all Americans. Starting in 1964, Johnson ushered in the Civil Rights Act, and then in 1965, he pushed through the Voting Rights Act of 1965. Policy programs included the creation of Medicare, Medicaid, and Head Start, and he made critical early steps toward environmental policy reform. Understanding how these monumental programs emerged and were designed and implemented provides lessons for planners and prospective policymakers practicing in a new era of radical reform. Mondays 2-5."
+level = "G"
+inCharge = "Amy Glasmeier"
+
+["11.S947"]
+name = "President Johnson's short five-year tenure ushered in some of the most essential midcentury rights policies that touched all Americans. Starting in 1964, Johnson ushered in the Civil Rights Act, and then in 1965, he pushed through the Voting Rights Act of 1965. Policy programs included the creation of Medicare, Medicaid, and Head Start, and he made critical early steps toward environmental policy reform. Understanding how these monumental programs emerged and were designed and implemented provides lessons for planners and prospective policymakers practicing in a new era of radical reform. Mondays 2-5."
+meets = "11.S197"
+description = "President Johnson's short five-year tenure ushered in some of the most essential midcentury rights policies that touched all Americans. Starting in 1964, Johnson ushered in the Civil Rights Act, and then in 1965, he pushed through the Voting Rights Act of 1965. Policy programs included the creation of Medicare, Medicaid, and Head Start, and he made critical early steps toward environmental policy reform. Understanding how these monumental programs emerged and were designed and implemented provides lessons for planners and prospective policymakers practicing in a new era of radical reform. Mondays 2-5."
+level = "G"
+inCharge = "Amy Glasmeier"
+
+["11.S940"]
+name = "Hacking the Archive: A Field Guide to Co-Designing Alternative Urban Futures"
+description = "This course offers a cross-disciplinary introduction to the archive as a site of contestation, erasure and possibility for students, planning practitioners and local communities seeking innovative models for city justice and reconciliation. Combining academic theory with client-engaged practice, this course gives students a hands-on learning opportunity to tackle ground level issues with real stakeholders in real time. Co-taught by a textile artist-historian and archival educator, students will be presented with a set of woven documents highlighting the major themes of the course: collective agency, social activism and diverse histories of resistance and disruption. Students will learn how to analyze these woven documents in order to become more nuanced readers of a variety of cultural objects including landscapes, urban plans and social histories spanning Toronto, Boston and Rochester (New York). This course will ultimately provide students with a research and action framework intent on destabilizing colonial modes of data extraction by re-centering community-driven design and use."
+level = "G"
+lectureUnits = 3
+labUnits = 2
+preparationUnits = 7
+inCharge = "Karilyn Crockett"
+
+["11.S941"]
+name = "Designing urban energy intersections: An integrated, multi-scale approach in NYC"
+level = "G"
+description = "How can integrated inter-scale design – from the systems level (e.g., energy systems, workforce systems, mobility systems) to the neighborhood level (e.g., street design, building design), the community level (e.g., engagement systems), and the “device” level (e.g., energy storage) – be used to co-create (with communities) green-economy based local economic development strategies? This workshop class aims to answer this question (taught in parallel with an Architecture Urban Design Studio) in collaboration with local government (NYC Economic Development Corporation, EDC) and a local community organization. The subject is driven by the theory of change that just urban transitions require work at the intersection of a range of needs and opportunities driven by the climate crisis, including designing: for waterfront resilience, systems for energy transitions (e.g., battery storage, vehicle electrification), and approaches to maximize community benefits (e.g., workforce training for “green jobs”, entrepreneurial development, cooperative ownership models).  "
+inCharge = "J. Phillip Thompson"
+
+["11.S945"]
+name = "Land Banks for Affordable Housing Production in New Mexico"
+description = "The New Mexico Housing Finance Authority is New Mexico's statewide housing finance agency. They wish to bring on a team from DUSP to study available land and a potential land banking program for affordable housing in New Mexico. The class will include a site visit and exploration of recent state legislation to develop a proposed land bank program. The course will focus on sites in the Santa Fe and Los Alamos areas."
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+inCharge = "Jeff Levine"
+
+["11.S950"]
+name = "Rebuilding the American Region: Urban Design at Large Scale"
+description = "The role of the region is changing. With limited resources, there is an urgency to address urban design and planning challenges that transcend local municipalities. Contemporary imperatives dictate new design strategies to advance contemporary urbanism with aging infrastructure, climate change, migration and an increasingly polarized social, racial and economic environment in the U.S."
+level = "G"
+inCharge = "David Gamble"
+
+["11.S957"]
+name = "Advanced Doctoral Workshop: Political Economy of the Climate Crisis"
+level = "G"
+lectureUnits = 2
+labUnits = 1
+preparationUnits = 9
+description = "This course is an advanced doctoral workshop on the political economy of climate change. The workshop aims to provide Ph.D. students working on climate change, across sectors and disciplines, with a foundation in the theoretical and methodological approaches of polit-ical economy to conceptualize and conduct independent research. Substantively, the work-shop takes a critical political economy approach to the climate crisis and examines three in-terrelated dimensions: (1) the political governance challenge of mobilizing climate action, given the need to design new institutional mechanisms to address the global and intergener-ational distributional aspects of climate change; (2) the economic challenge of devising new institutional approaches to equitably finance climate action in ways that go beyond the cur-rently dominant economic rationale; and (3) the cultural challenge – and opportunity – of empowering an adaptive socio-cultural ecology through traditional knowledge and local-level social networks to achieve climate resilience."
+inCharge = "Jason Jackson"
