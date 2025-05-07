@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { JsonForms } from "@jsonforms/react";
 import type { JsonSchema7 } from "@jsonforms/core";
@@ -22,7 +22,8 @@ import {
   MenuItem,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Link as RouterLink, useParams, useLoaderData } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
+import { Link as RouterLink, useLoaderData } from "react-router";
 
 import TOML from "smol-toml";
 
@@ -175,7 +176,7 @@ const theme = createTheme({
 });
 
 // eslint-disable-next-line react-refresh/only-export-components
-export function loader() {
+export async function loader({ params }: LoaderFunctionArgs) {
   const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
     "../../scrapers/overrides.toml.d/*.toml",
     {
@@ -191,16 +192,58 @@ export function loader() {
     }),
   ) as typeof overrides;
 
-  return { overrideNames };
+  let prefillData: Record<string, unknown>[] = [];
+  const prefillId = (
+    params as Record<string, string | undefined>
+  ).prefillId?.toUpperCase();
+
+  const getDataFromFile = async (fileName: string) => {
+    try {
+      const textToml = await (overrideNames[fileName]() as Promise<string>);
+      const mod = TOML.parse(textToml);
+
+      const newData = Object.entries(mod).map(([key, value_1]) => {
+        const { number: num, ...rest } = value_1 as Record<string, unknown>;
+        return {
+          number: key,
+          ...rest,
+        };
+      });
+      return newData;
+    } catch (err) {
+      console.error("Error loading TOML file:", err);
+      return [];
+    }
+  };
+
+  if (prefillId) {
+    const fileName = prefillId.toUpperCase();
+
+    if (fileName in overrideNames) {
+      const newData = await getDataFromFile(fileName);
+      if (newData.length > 0) {
+        prefillData = newData;
+      } else {
+        console.error("No data found for prefill ID:", fileName);
+      }
+    } else {
+      console.error("Invalid prefill ID:", fileName);
+    }
+  }
+
+  return { overrideNames, prefillData, prefillId };
 }
 
 /** The main application. */
 export function Component() {
-  const [data, setData] = useState<Record<string, unknown>[]>([]);
+  const { overrideNames, prefillData, prefillId } =
+    useLoaderData<Awaited<ReturnType<typeof loader>>>();
+
+  const [data, setData] = useState<Record<string, unknown>[]>(prefillData);
   const [error, setError] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string>("");
-  const { prefillId } = useParams();
-  const { overrideNames } = useLoaderData<ReturnType<typeof loader>>();
+  const [selected, setSelected] = useState<string>(
+    prefillId && prefillId in overrideNames ? prefillId : "",
+  );
 
   const getDataFromFile = useCallback(
     async (fileName: string) => {
@@ -223,30 +266,6 @@ export function Component() {
     },
     [overrideNames],
   );
-
-  useEffect(() => {
-    const getData = async () => {
-      if (prefillId) {
-        const fileName = prefillId.toUpperCase();
-
-        if (fileName in overrideNames) {
-          const newData = await getDataFromFile(fileName);
-          if (newData.length > 0) {
-            setData(newData);
-            setSelected(fileName);
-          } else {
-            console.error("No data found for prefill ID:", fileName);
-            setData([]);
-            setSelected("");
-          }
-        } else {
-          console.error("Invalid prefill ID:", fileName);
-        }
-      }
-    };
-
-    void getData();
-  }, [prefillId, overrideNames, getDataFromFile]);
 
   const handleChange = (file: SelectChangeEvent) => {
     const fileName = file.target.value;
