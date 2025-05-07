@@ -8,9 +8,9 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 
-import { Tooltip } from "./ui/tooltip";
-import { Provider } from "./ui/provider";
-import { useColorMode } from "./ui/color-mode";
+import { Tooltip } from "../components/ui/tooltip";
+import { Provider } from "../components/ui/provider";
+import { useColorMode } from "../components/ui/color-mode";
 
 import type { LatestTermInfo, TermInfo } from "../lib/dates";
 import { Term, getClosestUrlName } from "../lib/dates";
@@ -20,24 +20,23 @@ import { Class } from "../lib/class";
 import type { HydrantState } from "../lib/schema";
 import { DEFAULT_STATE } from "../lib/schema";
 
-import { ActivityDescription } from "./ActivityDescription";
-import { Calendar } from "./Calendar";
-import { ClassTable } from "./ClassTable";
-import { LeftFooter } from "./Footers";
-import { Header, PreferencesDialog } from "./Header";
-import { ScheduleOption } from "./ScheduleOption";
-import { ScheduleSwitcher } from "./ScheduleSwitcher";
-import { SelectedActivities } from "./SelectedActivities";
-import { TermSwitcher } from "./TermSwitcher";
-import { FeedbackBanner } from "./FeedbackBanner";
+import { ActivityDescription } from "../components/ActivityDescription";
+import { Calendar } from "../components/Calendar";
+import { ClassTable } from "../components/ClassTable";
+import { LeftFooter } from "../components/Footers";
+import { Header, PreferencesDialog } from "../components/Header";
+import { ScheduleOption } from "../components/ScheduleOption";
+import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
+import { SelectedActivities } from "../components/SelectedActivities";
+import { TermSwitcher } from "../components/TermSwitcher";
+import { FeedbackBanner } from "../components/FeedbackBanner";
 
-import "@fontsource-variable/inter/index.css";
-import { MatrixLink } from "./MatrixLink";
-import { PreregLink } from "./PreregLink";
+import { MatrixLink } from "../components/MatrixLink";
+import { PreregLink } from "../components/PreregLink";
 import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
 
-import type { Route } from "./+types/App";
+import type { Route } from "./+types/Index";
 
 interface SemesterData {
   classes: Record<string, RawClass>;

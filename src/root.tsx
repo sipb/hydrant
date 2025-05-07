@@ -1,6 +1,9 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import type { Route } from "./+types/root";
 
+import "@fontsource-variable/inter/index.css";
+import "@fontsource/roboto/index.css";
+
 export const links: Route.LinksFunction = () => [
   { rel: "icon", type: "icon/png", href: "/hydrant.png" },
 ];

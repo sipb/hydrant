@@ -7,7 +7,6 @@ import {
   materialRenderers,
 } from "@jsonforms/material-renderers";
 
-import "@fontsource/roboto/index.css";
 import type { SelectChangeEvent } from "@mui/material";
 import {
   Button,
@@ -24,7 +23,7 @@ import {
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import { Link as RouterLink } from "react-router";
-import type { Route } from "./+types/OverridesApp";
+import type { Route } from "./+types/Overrides";
 
 import TOML from "smol-toml";
 
