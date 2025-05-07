@@ -366,25 +366,25 @@ export function Component() {
                 ),
               );
 
-              const subject = encodeURIComponent("Hydrant subject overrides");
-
-              const body = encodeURIComponent(
-                `\
-(Add an optional description.)
-
-Please do not modify anything below this line.
---------------------------------------------------\n` + contents,
+              const element = document.createElement("a");
+              element.href = URL.createObjectURL(
+                new Blob([contents], { type: "application/octet-stream" }),
               );
-
-              window.location.href = `mailto:sipb-hydrant@mit.edu?subject=${subject}&body=${body}`;
+              element.download = "overrides.toml";
+              document.body.appendChild(element);
+              element.click();
             }}
           >
-            Submit
+            Download
           </Button>
           <Typography variant="subtitle2">
-            Clicking "Submit" will populate an email in your mail client in
-            order to send your requested subject overrides to the Hydrant team,
-            where you will have an opportunity to add comments.
+            Clicking "Download" will download a file "overrides.toml" to your
+            computer; please attach this file to an email addressed to {}
+            <Link component={RouterLink} to="mailto:sipb-hydrant@mit.edu">
+              sipb-hydrant@mit.edu
+            </Link>
+            {} in order to send your requested subject overrides to the Hydrant
+            team.
           </Typography>
         </Stack>
       </Container>
