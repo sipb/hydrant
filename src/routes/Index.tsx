@@ -9,7 +9,6 @@ import {
 } from "@chakra-ui/react";
 
 import { Tooltip } from "../components/ui/tooltip";
-import { Provider } from "../components/ui/provider";
 import { useColorMode } from "../components/ui/color-mode";
 
 import type { LatestTermInfo, TermInfo } from "../lib/dates";
@@ -301,9 +300,5 @@ export const meta: Route.MetaFunction = () => [
 
 /** The main application. */
 export default function App() {
-  return (
-    <Provider>
-      <HydrantApp />
-    </Provider>
-  );
+  return <HydrantApp />;
 }

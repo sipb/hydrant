@@ -12,7 +12,6 @@ import { Provider } from "./components/ui/provider";
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
 import "@fontsource-variable/inter/index.css";
-import "@fontsource/roboto/index.css";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", type: "icon/png", href: "/hydrant.png" },
@@ -53,7 +52,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Root() {
-  return <Outlet />;
+  return (
+    <Provider>
+      <Outlet />
+    </Provider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
@@ -81,7 +84,14 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
           </Text>
           <Text fontSize="lg">{details}</Text>
           {stack && (
-            <pre style={{ width: "100%", textAlign: "left" }}>
+            <pre
+              style={{
+                width: "100%",
+                textAlign: "left",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <Code>{stack}</Code>
             </pre>
           )}
