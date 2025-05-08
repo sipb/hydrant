@@ -66,6 +66,16 @@ export function PreferencesDialog(props: {
     setVisible(false);
   };
 
+  const collection = createListCollection({
+    items: [
+      { label: "System Default", value: "" },
+      ...COLOR_SCHEME_PRESETS.map(({ name }) => ({
+        label: name,
+        value: name,
+      })),
+    ],
+  });
+
   return (
     <>
       <DialogRoot
@@ -90,14 +100,17 @@ export function PreferencesDialog(props: {
           <DialogBody>
             <Flex gap={4}>
               <SelectRoot
-                collection={createListCollection({
-                  items: COLOR_SCHEME_PRESETS.map(({ name }) => ({
-                    label: name,
-                    value: name,
-                  })),
-                })}
-                value={[preferences.colorScheme.name]}
+                collection={collection}
+                value={[preferences.colorScheme?.name ?? ""]}
                 onValueChange={(e) => {
+                  if (e.value[0] === "") {
+                    previewPreferences({
+                      ...preferences,
+                      colorScheme: null,
+                    });
+                    return;
+                  }
+
                   const colorScheme = COLOR_SCHEME_PRESETS.find(
                     ({ name }) => name === e.value[0],
                   );
@@ -110,9 +123,9 @@ export function PreferencesDialog(props: {
                   <SelectValueText />
                 </SelectTrigger>
                 <SelectContent portalled={false}>
-                  {COLOR_SCHEME_PRESETS.map(({ name }) => (
-                    <SelectItem item={name} key={name}>
-                      {name}
+                  {collection.items.map(({ label, value }) => (
+                    <SelectItem item={value} key={value}>
+                      {label}
                     </SelectItem>
                   ))}
                 </SelectContent>

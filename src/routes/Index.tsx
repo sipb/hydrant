@@ -106,15 +106,26 @@ function useHydrant(): {
     void fetchData();
   }, []);
 
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode, setColorMode, toggleColorMode } = useColorMode();
 
   useEffect(() => {
     if (loading || !hydrant) return;
     // if colorScheme changes, change colorMode to match
     hydrant.callback = (newState: HydrantState) => {
       setState(newState);
-      if (colorMode !== newState.preferences.colorScheme.colorMode) {
+      if (
+        newState.preferences.colorScheme &&
+        colorMode !== newState.preferences.colorScheme.colorMode
+      ) {
+        // if the color scheme is not null, set the color mode to match
         toggleColorMode();
+      } else if (newState.preferences.colorScheme === null) {
+        // if the color scheme is null, set the color mode to match the system
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          setColorMode("dark");
+        } else {
+          setColorMode("light");
+        }
       }
     };
     hydrant.updateState();
