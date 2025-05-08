@@ -1,5 +1,15 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+} from "react-router";
 import type { Route } from "./+types/root";
+
+import { Provider } from "./components/ui/provider";
+import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
 import "@fontsource-variable/inter/index.css";
 import "@fontsource/roboto/index.css";
@@ -9,7 +19,13 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function HydrateFallback() {
-  return <div></div>;
+  return (
+    <Provider>
+      <Flex w="100%" h="100vh" align="center" justify="center">
+        <Spinner />
+      </Flex>
+    </Provider>
+  );
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -38,4 +54,39 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function Root() {
   return <Outlet />;
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  let message = "Oops!";
+  let details = "An unexpected error occurred.";
+  let stack: string | undefined;
+
+  if (isRouteErrorResponse(error)) {
+    message = error.status === 404 ? "404" : "Error";
+    details =
+      error.status === 404
+        ? "The requested page could not be found."
+        : error.statusText || details;
+  } else if (import.meta.env.DEV && error && error instanceof Error) {
+    details = error.message;
+    stack = error.stack;
+  }
+
+  return (
+    <Provider>
+      <Flex as="main" w="100%" h="100vh" align="center" justify="center">
+        <Stack textAlign="center">
+          <Text fontSize="2xl" fontWeight="bold">
+            {message}
+          </Text>
+          <Text fontSize="lg">{details}</Text>
+          {stack && (
+            <pre style={{ width: "100%", textAlign: "left" }}>
+              <Code>{stack}</Code>
+            </pre>
+          )}
+        </Stack>
+      </Flex>
+    </Provider>
+  );
 }
