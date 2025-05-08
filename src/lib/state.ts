@@ -7,7 +7,12 @@ import type { Section, SectionLockOption, Sections } from "./class";
 import { Class } from "./class";
 import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
-import { chooseColors, COLOR_SCHEME_DARK, COLOR_SCHEME_LIGHT, fallbackColor } from "./colors";
+import {
+  chooseColors,
+  COLOR_SCHEME_DARK,
+  COLOR_SCHEME_LIGHT,
+  fallbackColor,
+} from "./colors";
 import type { RawClass, RawTimeslot } from "./rawClass";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
@@ -83,13 +88,12 @@ export class State {
 
   /** The color scheme. */
   get colorScheme(): ColorScheme {
-
     if (this.preferences.colorScheme) {
       return this.preferences.colorScheme;
     }
 
     // If no color scheme is set, use the default one
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       return COLOR_SCHEME_DARK;
     } else {
       return COLOR_SCHEME_LIGHT;
@@ -343,11 +347,11 @@ export class State {
   inflate(
     obj:
       | (
-        | number
-        | (string | number | string[])[][]
-        | (string | RawTimeslot[])[][]
-        | null
-      )[]
+          | number
+          | (string | number | string[])[][]
+          | (string | RawTimeslot[])[][]
+          | null
+        )[]
       | null,
   ): void {
     if (!obj) return;
