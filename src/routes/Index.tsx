@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   Center,
   Flex,
@@ -8,17 +8,9 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 
+import { useHydrant } from "../lib/hydrant";
+
 import { Tooltip } from "../components/ui/tooltip";
-import { useColorMode } from "../components/ui/color-mode";
-
-import type { LatestTermInfo, TermInfo } from "../lib/dates";
-import { Term, getClosestUrlName } from "../lib/dates";
-import { State } from "../lib/state";
-import type { RawClass } from "../lib/rawClass";
-import { Class } from "../lib/class";
-import type { HydrantState } from "../lib/schema";
-import { DEFAULT_STATE } from "../lib/schema";
-
 import { ActivityDescription } from "../components/ActivityDescription";
 import { Calendar } from "../components/Calendar";
 import { ClassTable } from "../components/ClassTable";
@@ -29,7 +21,6 @@ import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
 import { SelectedActivities } from "../components/SelectedActivities";
 import { TermSwitcher } from "../components/TermSwitcher";
 import { FeedbackBanner } from "../components/FeedbackBanner";
-
 import { MatrixLink } from "../components/MatrixLink";
 import { PreregLink } from "../components/PreregLink";
 import { useICSExport } from "../lib/gapi";
@@ -37,148 +28,9 @@ import { LuCalendar } from "react-icons/lu";
 
 import type { Route } from "./+types/Index";
 
-interface SemesterData {
-  classes: Record<string, RawClass>;
-  lastUpdated: string;
-  termInfo: TermInfo;
-}
-
-/** Hook to fetch data and initialize State object. */
-function useHydrant(): {
-  hydrant?: State;
-  state: HydrantState;
-} {
-  const [loading, setLoading] = useState(true);
-  const hydrantRef = useRef<State>(undefined);
-  const hydrant = hydrantRef.current;
-
-  const [state, setState] = useState<HydrantState>(DEFAULT_STATE);
-
-  /** Fetch from the url, which is JSON of type T. */
-  const fetchNoCache = async <T,>(url: string): Promise<T> => {
-    const res = await fetch(url, { cache: "no-cache" });
-    return (await res.json()) as T;
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const latestTerm = await fetchNoCache<LatestTermInfo>("latestTerm.json");
-      const params = new URLSearchParams(document.location.search);
-
-      const urlNameOrig = params.get("t");
-      const { urlName, shouldWarn } = getClosestUrlName(
-        urlNameOrig,
-        latestTerm.semester.urlName,
-      );
-
-      if (urlName === urlNameOrig || urlNameOrig === null) {
-        const term =
-          urlName === latestTerm.semester.urlName ? "latest" : urlName;
-        const { classes, lastUpdated, termInfo } =
-          await fetchNoCache<SemesterData>(`${term}.json`);
-        const classesMap = new Map(Object.entries(classes));
-        const hydrantObj = new State(
-          classesMap,
-          new Term(termInfo),
-          lastUpdated,
-          latestTerm.semester.urlName,
-        );
-        hydrantRef.current = hydrantObj;
-        setLoading(false);
-        window.hydrant = hydrantObj;
-      } else {
-        // Redirect to the indicated term, while storing the initially requested
-        // term in the "ti" parameter (if necessary) so that the user can be
-        // notified
-        if (urlName === latestTerm.semester.urlName) {
-          params.delete("t");
-        } else {
-          params.set("t", urlName);
-        }
-        if (shouldWarn) {
-          params.set("ti", urlNameOrig);
-        }
-        window.location.search = params.toString();
-      }
-    };
-
-    void fetchData();
-  }, []);
-
-  const { colorMode, setColorMode, toggleColorMode } = useColorMode();
-
-  useEffect(() => {
-    if (loading || !hydrant) return;
-    // if colorScheme changes, change colorMode to match
-    hydrant.callback = (newState: HydrantState) => {
-      setState(newState);
-      if (
-        newState.preferences.colorScheme &&
-        colorMode !== newState.preferences.colorScheme.colorMode
-      ) {
-        // if the color scheme is not null, set the color mode to match
-        toggleColorMode();
-      } else if (newState.preferences.colorScheme === null) {
-        // if the color scheme is null, set the color mode to match the system
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          setColorMode("dark");
-        } else {
-          setColorMode("light");
-        }
-      }
-    };
-    hydrant.updateState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorMode, hydrant, loading]);
-
-  return { hydrant, state };
-}
-
-/**
- * "Integration callbacks" allow other SIPB projects to integrate with Hydrant by redirecting to
- * https://hydrant.mit.edu/#/export with a `callback` as a query parameter.
- *
- * Currently, the only application that uses this is the Matrix class group chat picker,
- * but in the future, a prompt "[Application name] would like to access your Hydrant class list"
- * could be implemented.
- */
-const ALLOWED_INTEGRATION_CALLBACKS = [
-  "https://matrix.mit.edu/classes/hydrantCallback",
-  "https://uplink.mit.edu/classes/hydrantCallback",
-];
-
 /** The application entry. */
 function HydrantApp() {
   const { hydrant, state } = useHydrant();
-
-  // Integration callback URL
-  const EXPORT_URL_HASH = "#/export";
-  const hash = window.location.hash;
-  // Detect whether to load the Hydrant app or an integration callback instead
-  const hasIntegrationCallback = hash.startsWith(EXPORT_URL_HASH);
-
-  // Integration callback hook
-  useEffect(() => {
-    // only trigger this code if the URL asked for it
-    if (!hasIntegrationCallback) return;
-
-    // wait until Hydrant loads
-    if (!hydrant) return;
-
-    const params = new URLSearchParams(hash.substring(EXPORT_URL_HASH.length));
-    const callback = params.get("callback");
-    if (!callback || !ALLOWED_INTEGRATION_CALLBACKS.includes(callback)) {
-      console.warn("callback", callback, "not in allowed callbacks list!");
-      window.alert(`${callback ?? ""} is not allowed to read your class list!`);
-      return;
-    }
-    const encodedClasses = hydrant.selectedActivities
-      .filter((activity) => activity instanceof Class)
-      .map((cls) => `&class=${cls.number}`)
-      .join("");
-    const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
-    window.location.replace(filledCallback);
-  }, [hydrant, hasIntegrationCallback, hash]);
 
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
@@ -194,7 +46,7 @@ function HydrantApp() {
 
   return (
     <>
-      {!hydrant || hasIntegrationCallback ? (
+      {!hydrant ? (
         <Flex w="100%" h="100vh" align="center" justify="center">
           <Spinner />
         </Flex>
