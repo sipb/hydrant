@@ -105,4 +105,7 @@ export function useHydrant(): {
   return { hydrant, state };
 }
 
-export const HydrantContext = createContext<ReturnType<typeof useHydrant>>({ state: DEFAULT_STATE, hydrant: undefined });
+export const HydrantContext = createContext<ReturnType<typeof useHydrant>>({
+  state: DEFAULT_STATE,
+  hydrant: undefined,
+});
