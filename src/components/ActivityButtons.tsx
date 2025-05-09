@@ -344,14 +344,13 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
     );
   };
 
+  const timesCollection = createListCollection({
+    items: TIMESLOT_STRINGS,
+  });
+
   const renderTimeDropdown = (key: "start" | "end") => (
     <SelectRoot
-      collection={createListCollection({
-        items: TIMESLOT_STRINGS.map((time) => ({
-          label: time,
-          value: time,
-        })),
-      })}
+      collection={timesCollection}
       size="sm"
       width="8rem"
       value={[times[key]]}
@@ -363,7 +362,7 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
         <SelectValueText />
       </SelectTrigger>
       <SelectContent>
-        {TIMESLOT_STRINGS.map((time) => (
+        {timesCollection.items.map((time) => (
           <SelectItem item={time} key={time}>
             {time}
           </SelectItem>

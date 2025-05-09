@@ -71,18 +71,20 @@ function SelectWithWarn(props: {
     return id === defaultScheduleId ? `${name} (default)` : name;
   };
 
+  const scheduleCollection = createListCollection({
+    items: [
+      { label: "Not saved", value: "" },
+      ...saves.map(({ id, name }) => ({
+        label: formatScheduleName(id, name),
+        value: id,
+      })),
+    ],
+  });
+
   return (
     <>
       <SelectRoot
-        collection={createListCollection({
-          items: [
-            { label: "Not saved", value: "" },
-            ...saves.map(({ id, name }) => ({
-              label: formatScheduleName(id, name),
-              value: id,
-            })),
-          ],
-        })}
+        collection={scheduleCollection}
         size="sm"
         width="fit-content"
         minWidth="10em"
@@ -101,11 +103,13 @@ function SelectWithWarn(props: {
           <SelectValueText />
         </SelectTrigger>
         <SelectContent>
-          {saves.map(({ id, name }) => (
-            <SelectItem item={id} key={id}>
-              {formatScheduleName(id, name)}
-            </SelectItem>
-          ))}
+          {scheduleCollection.items.map(({ label, value }) =>
+            value != "" ? (
+              <SelectItem item={value} key={value}>
+                {label}
+              </SelectItem>
+            ) : null,
+          )}
         </SelectContent>
       </SelectRoot>
       <DialogRoot

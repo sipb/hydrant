@@ -22,17 +22,19 @@ export function TermSwitcher() {
   const toUrl = (urlName: string) => toFullUrl(urlName, state.latestUrlName);
   const defaultValue = toUrl(state.term.urlName);
 
+  const urlOptions = createListCollection({
+    items: getUrlNames(state.latestUrlName).map((urlName) => {
+      const { niceName } = new Term({ urlName });
+      return {
+        label: niceName,
+        value: toUrl(urlName),
+      };
+    }),
+  });
+
   return (
     <SelectRoot
-      collection={createListCollection({
-        items: getUrlNames(state.latestUrlName).map((urlName) => {
-          const { niceName } = new Term({ urlName });
-          return {
-            label: niceName,
-            value: toUrl(urlName),
-          };
-        }),
-      })}
+      collection={urlOptions}
       value={[defaultValue]}
       onValueChange={(e) => {
         window.location.href = e.value[0];
@@ -45,11 +47,10 @@ export function TermSwitcher() {
         <SelectValueText />
       </SelectTrigger>
       <SelectContent>
-        {getUrlNames(state.latestUrlName).map((urlName) => {
-          const { niceName } = new Term({ urlName });
+        {urlOptions.items.map(({ label, value }) => {
           return (
-            <SelectItem item={toUrl(urlName)} key={toUrl(urlName)}>
-              {niceName}
+            <SelectItem item={value} key={value}>
+              {label}
             </SelectItem>
           );
         })}

@@ -20,10 +20,17 @@ import {
   Stack,
   Text,
   Image,
-  Portal,
-  Select,
   createListCollection,
+  type Select as ChakraSelect,
 } from "@chakra-ui/react";
+import {
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "../components/ui/select";
 
 const schema: RJSFSchema = {
   title: "Overrides",
@@ -135,7 +142,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
     [overrideNames],
   );
 
-  const handleChange = (e: Select.ValueChangeDetails) => {
+  const handleChange = (e: ChakraSelect.ValueChangeDetails) => {
     const fileName = e.value[0];
 
     if (fileName === "") {
@@ -189,35 +196,23 @@ export default function App({ loaderData }: Route.ComponentProps) {
           </Link>
           {} with any questions or concerns!
         </Text>
-        <Select.Root
+        <SelectRoot
           collection={overridesCollection}
           value={selected}
           onValueChange={handleChange}
         >
-          <Select.HiddenSelect />
-          <Select.Label>Pre-fill data</Select.Label>
-          <Select.Control>
-            <Select.Trigger>
-              <Select.ValueText placeholder="Pre-fill data" />
-            </Select.Trigger>
-            <Select.IndicatorGroup>
-              <Select.ClearTrigger />
-              <Select.Indicator />
-            </Select.IndicatorGroup>
-          </Select.Control>
-          <Portal>
-            <Select.Positioner>
-              <Select.Content>
-                {overridesCollection.items.map((override) => (
-                  <Select.Item item={override} key={override.value}>
-                    {override.label}
-                    <Select.ItemIndicator />
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Positioner>
-          </Portal>
-        </Select.Root>
+          <SelectLabel>Pre-fill data</SelectLabel>
+          <SelectTrigger clearable>
+            <SelectValueText placeholder="Pre-fill data" />
+          </SelectTrigger>
+          <SelectContent>
+            {overridesCollection.items.map((override) => (
+              <SelectItem item={override} key={override.value}>
+                {override.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectRoot>
         <Form
           schema={schema}
           uiSchema={uischema}
