@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   Center,
   Flex,
@@ -8,7 +8,7 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 
-import { useHydrant } from "../lib/hydrant";
+import { useHydrant, HydrantContext } from "../lib/hydrant";
 
 import { Tooltip } from "../components/ui/tooltip";
 import { ActivityDescription } from "../components/ActivityDescription";
@@ -30,7 +30,7 @@ import type { Route } from "./+types/Index";
 
 /** The application entry. */
 function HydrantApp() {
-  const { hydrant, state } = useHydrant();
+  const { hydrant, state } = useContext(HydrantContext);
 
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
@@ -152,5 +152,11 @@ export const meta: Route.MetaFunction = () => [
 
 /** The main application. */
 export default function App() {
-  return <HydrantApp />;
+  const hydrantData = useHydrant();
+
+  return (
+    <HydrantContext value={hydrantData}>
+      <HydrantApp />
+    </HydrantContext>
+  );
 }
