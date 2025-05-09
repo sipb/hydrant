@@ -15,7 +15,7 @@ export interface SemesterData {
 }
 
 /** Fetch from the url, which is JSON of type T. */
-export const fetchNoCache = async <T,>(url: string): Promise<T> => {
+export const fetchNoCache = async <T>(url: string): Promise<T> => {
   const res = await fetch(url, { cache: "no-cache" });
   return (await res.json()) as T;
 };
