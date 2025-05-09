@@ -12,6 +12,7 @@ import {
 } from "ag-grid-community";
 import { Box, Flex, Image, Input, Button, ButtonGroup } from "@chakra-ui/react";
 import {
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -33,6 +34,7 @@ import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { State } from "../lib/state";
 import type { TSemester } from "../lib/dates";
 import "./ClassTable.scss";
+import { HydrantContext } from "../lib/hydrant";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -451,11 +453,13 @@ const StarButton = ({
 };
 
 /** The table of all classes, along with searching and filtering with flags. */
-export function ClassTable(props: {
-  classes: Map<string, Class>;
-  state: State;
-}) {
-  const { classes, state } = props;
+export function ClassTable() {
+  const { hydrant: state } = useContext(HydrantContext);
+  if (!state) {
+    throw new Error("Hydrant context is undefined");
+  }
+  const { classes } = state;
+
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns

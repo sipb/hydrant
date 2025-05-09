@@ -8,7 +8,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   DialogRoot,
@@ -21,9 +21,6 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
-
-import type { State } from "../lib/state";
-import type { Save } from "../lib/schema";
 import {
   SelectContent,
   SelectItem,
@@ -32,6 +29,10 @@ import {
   SelectValueText,
   SelectLabel,
 } from "./ui/select";
+
+import type { State } from "../lib/state";
+import type { Save } from "../lib/schema";
+import { HydrantContext } from "../lib/hydrant";
 
 import {
   LuCopy,
@@ -228,12 +229,13 @@ function ExportDialog(props: { state: State; children: ReactNode }) {
   );
 }
 
-export function ScheduleSwitcher(props: {
-  saveId: string;
-  saves: Save[];
-  state: State;
-}) {
-  const { saveId, saves, state } = props;
+export function ScheduleSwitcher() {
+  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+
+  if (!state) {
+    throw new Error("Hydrant context is undefined");
+  }
+  const { saves, saveId } = hydrantState;
 
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";
   const [isRenaming, setIsRenaming] = useState(false);

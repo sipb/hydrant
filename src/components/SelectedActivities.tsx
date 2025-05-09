@@ -1,10 +1,11 @@
 import { Flex, Text, Button, ButtonGroup } from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef } from "react";
+import { useContext, type ComponentPropsWithoutRef } from "react";
 
 import type { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
 import type { State } from "../lib/state";
+import { HydrantContext } from "../lib/hydrant";
 
 import { LuPlus } from "react-icons/lu";
 
@@ -47,14 +48,13 @@ function ActivityButton(props: { activity: Activity; state: State }) {
 }
 
 /** List of selected activities; one button for each activity. */
-export function SelectedActivities(props: {
-  selectedActivities: Activity[];
-  units: number;
-  hours: number;
-  warnings: string[];
-  state: State;
-}) {
-  const { selectedActivities, units, hours, warnings, state } = props;
+export function SelectedActivities() {
+  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+
+  if (!state) {
+    throw new Error("Hydrant context is undefined");
+  }
+  const { selectedActivities, units, hours, warnings } = hydrantState;
 
   return (
     <Flex direction="column" gap={2}>

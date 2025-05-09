@@ -1,14 +1,16 @@
-import { Flex, Heading, Image, Link, Text, Button } from "@chakra-ui/react";
+import { useContext } from "react";
 import { decode } from "html-entities";
 
+import { Flex, Heading, Image, Link, Text, Button } from "@chakra-ui/react";
 import { useColorMode } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
-import type { Activity, NonClass } from "../lib/activity";
+import type { NonClass } from "../lib/activity";
 import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import type { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";
+import { HydrantContext } from "../lib/hydrant";
 
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
 import { LuExternalLink } from "react-icons/lu";
@@ -248,11 +250,15 @@ function NonClassDescription(props: { activity: NonClass; state: State }) {
 }
 
 /** Activity description, whether class or non-class. */
-export function ActivityDescription(props: {
-  activity: Activity;
-  state: State;
-}) {
-  const { activity, state } = props;
+export function ActivityDescription() {
+  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+  if (!state) {
+    throw new Error("Hydrant context is undefined");
+  }
+  const { viewedActivity: activity } = hydrantState;
+  if (!activity) {
+    return null;
+  }
 
   return activity instanceof Class ? (
     <ClassDescription cls={activity} state={state} />

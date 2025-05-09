@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+
 import {
   Center,
   Flex,
@@ -7,9 +8,6 @@ import {
   Button,
   ButtonGroup,
 } from "@chakra-ui/react";
-
-import { useHydrant, HydrantContext } from "../lib/hydrant";
-
 import { Tooltip } from "../components/ui/tooltip";
 import { ActivityDescription } from "../components/ActivityDescription";
 import { Calendar } from "../components/Calendar";
@@ -23,14 +21,16 @@ import { TermSwitcher } from "../components/TermSwitcher";
 import { FeedbackBanner } from "../components/FeedbackBanner";
 import { MatrixLink } from "../components/MatrixLink";
 import { PreregLink } from "../components/PreregLink";
-import { useICSExport } from "../lib/gapi";
 import { LuCalendar } from "react-icons/lu";
+
+import { useICSExport } from "../lib/gapi";
+import { useHydrant, HydrantContext } from "../lib/hydrant";
 
 import type { Route } from "./+types/Index";
 
 /** The application entry. */
 function HydrantApp() {
-  const { hydrant, state } = useContext(HydrantContext);
+  const { hydrant } = useContext(HydrantContext);
 
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
@@ -52,12 +52,7 @@ function HydrantApp() {
         </Flex>
       ) : (
         <>
-          <FeedbackBanner
-            isOpen={hydrant.showFeedback}
-            setOpen={(setBool: boolean) => {
-              hydrant.showFeedback = setBool;
-            }}
-          />
+          <FeedbackBanner />
           <Flex
             w="100%"
             direction={{ base: "column", lg: "row" }}
@@ -65,34 +60,19 @@ function HydrantApp() {
             gap={8}
           >
             <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-              <Header state={hydrant} />
-              <ScheduleOption
-                selectedOption={state.selectedOption}
-                totalOptions={state.totalOptions}
-                state={hydrant}
-              />
-              <Calendar
-                selectedActivities={state.selectedActivities}
-                viewedActivity={state.viewedActivity}
-                state={hydrant}
-              />
-              <LeftFooter state={hydrant} />
+              <Header />
+              <ScheduleOption />
+              <Calendar />
+              <LeftFooter />
             </Flex>
             <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
               <Center>
                 <Group wrap="wrap" justifyContent="center" gap={4}>
-                  <TermSwitcher state={hydrant} />
+                  <TermSwitcher />
                   <Group gap={4}>
-                    <ScheduleSwitcher
-                      saveId={state.saveId}
-                      saves={state.saves}
-                      state={hydrant}
-                    />
+                    <ScheduleSwitcher />
                   </Group>
-                  <PreferencesDialog
-                    state={hydrant}
-                    preferences={state.preferences}
-                  />
+                  <PreferencesDialog />
                 </Group>
               </Center>
               <Center>
@@ -113,27 +93,13 @@ function HydrantApp() {
                       Export calendar
                     </Button>
                   </Tooltip>
-                  <PreregLink selectedActivities={state.selectedActivities} />
-                  <MatrixLink selectedActivities={state.selectedActivities} />
+                  <PreregLink />
+                  <MatrixLink />
                 </ButtonGroup>
               </Center>
-              <SelectedActivities
-                selectedActivities={state.selectedActivities}
-                units={state.units}
-                hours={state.hours}
-                warnings={state.warnings}
-                state={hydrant}
-              />
-              <ClassTable
-                classes={hydrant.classes} // this is a constant; no need to add to state
-                state={hydrant}
-              />
-              {state.viewedActivity ? (
-                <ActivityDescription
-                  activity={state.viewedActivity}
-                  state={hydrant}
-                />
-              ) : null}
+              <SelectedActivities />
+              <ClassTable />
+              <ActivityDescription />
             </Flex>
           </Flex>
         </>

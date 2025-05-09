@@ -1,3 +1,5 @@
+import { useContext } from "react";
+
 import {
   SelectContent,
   SelectItem,
@@ -6,14 +8,17 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "./ui/select";
-
 import { createListCollection } from "@chakra-ui/react";
 
-import type { State } from "../lib/state";
 import { Term, toFullUrl, getUrlNames } from "../lib/dates";
+import { HydrantContext } from "../lib/hydrant";
 
-export function TermSwitcher(props: { state: State }) {
-  const { state } = props;
+export function TermSwitcher() {
+  const { hydrant: state } = useContext(HydrantContext);
+
+  if (!state) {
+    throw new Error("Hydrant context is undefined");
+  }
   const toUrl = (urlName: string) => toFullUrl(urlName, state.latestUrlName);
   const defaultValue = toUrl(state.term.urlName);
 

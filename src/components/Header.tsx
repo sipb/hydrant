@@ -23,22 +23,25 @@ import {
 
 import { createListCollection } from "@chakra-ui/react";
 
-import type { State } from "../lib/state";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import type { Preferences } from "../lib/schema";
 import { DEFAULT_PREFERENCES } from "../lib/schema";
+import { HydrantContext } from "../lib/hydrant";
 
 import logo from "../assets/logo.svg";
 import logoDark from "../assets/logo-dark.svg";
 import hydraAnt from "../assets/hydraAnt.png";
 import { SIPBLogo } from "./SIPBLogo";
 
-export function PreferencesDialog(props: {
-  state: State;
-  preferences: Preferences;
-}) {
-  const { preferences: originalPreferences, state } = props;
+export function PreferencesDialog() {
+  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+
+  if (!state) {
+    throw new Error("Hydrant context is undefined");
+  }
+  const { preferences: originalPreferences } = hydrantState;
+
   const [visible, setVisible] = useState(false);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
   const initialPreferencesRef = useRef(DEFAULT_PREFERENCES);
@@ -145,8 +148,12 @@ export function PreferencesDialog(props: {
 }
 
 /** Header above the left column, with logo and semester selection. */
-export function Header(props: { state: State }) {
-  const { state } = props;
+export function Header() {
+  const { hydrant } = useContext(HydrantContext);
+  if (!hydrant) {
+    throw new Error("Hydrant context is undefined");
+  }
+  const state = hydrant;
   const logoSrc = useColorModeValue(logo, logoDark);
 
   const params = new URLSearchParams(document.location.search);
