@@ -1,4 +1,15 @@
-import { Card, IconButton, Flex, Image, Text, Button } from "@chakra-ui/react";
+import { useState, useRef, useContext } from "react";
+import { useSearchParams } from "react-router";
+
+import {
+  Card,
+  IconButton,
+  Flex,
+  Image,
+  Text,
+  Button,
+  createListCollection,
+} from "@chakra-ui/react";
 import { LuSettings, LuX } from "react-icons/lu";
 
 import {
@@ -21,9 +32,6 @@ import {
   SelectValueText,
 } from "./ui/select";
 
-import { createListCollection } from "@chakra-ui/react";
-
-import { useState, useRef, useContext } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import type { Preferences } from "../lib/schema";
 import { DEFAULT_PREFERENCES } from "../lib/schema";
@@ -155,17 +163,18 @@ export function Header() {
   }
   const state = hydrant;
   const logoSrc = useColorModeValue(logo, logoDark);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const params = new URLSearchParams(document.location.search);
-  const urlNameOrig = params.get("ti");
-  const urlName = params.get("t") ?? state.latestUrlName;
+  const urlNameOrig = searchParams.get("ti");
+  const urlName = searchParams.get("t") ?? state.latestUrlName;
 
   const [show, setShow] = useState(urlNameOrig !== null);
 
   const onClose = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete("ti");
-    window.history.pushState({}, "", url);
+    setSearchParams((searchParams) => {
+      searchParams.delete("ti");
+      return searchParams;
+    });
     setShow(false);
   };
 

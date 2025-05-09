@@ -24,9 +24,46 @@ import { PreregLink } from "../components/PreregLink";
 import { LuCalendar } from "react-icons/lu";
 
 import { useICSExport } from "../lib/gapi";
-import { useHydrant, HydrantContext } from "../lib/hydrant";
+import type { SemesterData } from "../lib/hydrant";
+import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
+import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 
 import type { Route } from "./+types/Index";
+
+export async function clientLoader({ request }: Route.ClientActionArgs) {
+  const searchParams = new URL(request.url).searchParams;
+  const urlNameOrig = searchParams.get("t");
+
+  const latestTerm = await fetchNoCache<LatestTermInfo>("/latestTerm.json");
+  const { urlName, shouldWarn } = getClosestUrlName(
+    urlNameOrig,
+    latestTerm.semester.urlName,
+  );
+
+  let termToFetch: string;
+  if (urlName === urlNameOrig || urlNameOrig === null) {
+    termToFetch = urlName === latestTerm.semester.urlName ? "latest" : urlName;
+  } else {
+    if (urlName === latestTerm.semester.urlName) {
+      searchParams.delete("t");
+      termToFetch = "latest";
+    } else {
+      searchParams.set("t", urlName);
+      termToFetch = urlName;
+    }
+    if (shouldWarn) {
+      searchParams.set("ti", urlNameOrig);
+    }
+    window.location.search = searchParams.toString();
+  }
+
+  const { classes, lastUpdated, termInfo } = await fetchNoCache<SemesterData>(
+    `/${termToFetch}.json`,
+  );
+  const classesMap = new Map(Object.entries(classes));
+
+  return { classesMap, lastUpdated, termInfo, latestTerm };
+}
 
 /** The application entry. */
 function HydrantApp() {
@@ -117,8 +154,14 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 /** The main application. */
-export default function App() {
-  const hydrantData = useHydrant();
+export default function App(props: Route.ComponentProps) {
+  const { classesMap, lastUpdated, termInfo, latestTerm } = props.loaderData;
+  const hydrantData = useHydrant({
+    classesMap,
+    lastUpdated,
+    termInfo,
+    latestTerm,
+  });
 
   return (
     <HydrantContext value={hydrantData}>
