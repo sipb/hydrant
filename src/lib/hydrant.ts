@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, createContext } from "react";
 import { useColorMode } from "../components/ui/color-mode";
 
 import type { LatestTermInfo, TermInfo } from "../lib/dates";
@@ -104,3 +104,5 @@ export function useHydrant(): {
 
   return { hydrant, state };
 }
+
+export const HydrantContext = createContext<ReturnType<typeof useHydrant>>({ state: DEFAULT_STATE, hydrant: undefined });
