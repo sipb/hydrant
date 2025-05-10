@@ -19,11 +19,9 @@ export const links: Route.LinksFunction = () => [
 
 export function HydrateFallback() {
   return (
-    <Provider>
-      <Flex w="100%" h="100vh" align="center" justify="center">
-        <Spinner />
-      </Flex>
-    </Provider>
+    <Flex w="100%" h="100vh" align="center" justify="center">
+      <Spinner />
+    </Flex>
   );
 }
 
@@ -43,20 +41,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         ></script>
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        <Provider>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </Provider>
       </body>
     </html>
   );
 }
 
 export default function Root() {
-  return (
-    <Provider>
-      <Outlet />
-    </Provider>
-  );
+  return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
@@ -76,27 +72,25 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <Provider>
-      <Flex as="main" w="100%" h="100vh" align="center" justify="center">
-        <Stack textAlign="center">
-          <Text fontSize="2xl" fontWeight="bold">
-            {message}
-          </Text>
-          <Text fontSize="lg">{details}</Text>
-          {stack && (
-            <pre
-              style={{
-                width: "100%",
-                textAlign: "left",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Code>{stack}</Code>
-            </pre>
-          )}
-        </Stack>
-      </Flex>
-    </Provider>
+    <Flex as="main" w="100%" h="100vh" align="center" justify="center">
+      <Stack textAlign="center">
+        <Text fontSize="2xl" fontWeight="bold">
+          {message}
+        </Text>
+        <Text fontSize="lg">{details}</Text>
+        {stack && (
+          <pre
+            style={{
+              width: "100%",
+              textAlign: "left",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Code>{stack}</Code>
+          </pre>
+        )}
+      </Stack>
+    </Flex>
   );
 }
