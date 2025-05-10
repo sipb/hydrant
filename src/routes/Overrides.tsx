@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import Form from "@rjsf/chakra-ui";
 import type { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
-import type { JSONSchema7, JSONSchema7Definition } from "json-schema";
+import type { JSONSchema7 } from "json-schema";
 
 import { Link as RouterLink } from "react-router";
 import type { Route } from "./+types/Overrides";
@@ -14,13 +14,13 @@ import logo from "../assets/logo.svg";
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
 
 import {
-  Button,
   Container,
   Link,
   Stack,
   Text,
   Image,
   createListCollection,
+  Code,
   type Select as ChakraSelect,
 } from "@chakra-ui/react";
 import {
@@ -32,18 +32,7 @@ import {
   SelectValueText,
 } from "../components/ui/select";
 
-const schema: RJSFSchema = {
-  title: "Overrides",
-  type: "array",
-  required: ["number"],
-  items: itemSchema as JSONSchema7,
-  $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
-};
-
-// TODO IN NEXT COMMIT: Make ui schema match what it did before :(
-const uischema: UiSchema = {
-  "ui:title": "Overrides",
-};
+const schema: RJSFSchema = itemSchema as JSONSchema7;
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
@@ -61,7 +50,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
     }),
   ) as typeof overrides;
 
-  let prefillData: Record<string, unknown>[] = [];
+  let prefillData: Record<string, unknown> = {};
   const prefillId = (
     params as Record<string, string | undefined>
   ).prefillId?.toUpperCase();
@@ -69,19 +58,10 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const getDataFromFile = async (fileName: string) => {
     try {
       const textToml = await (overrideNames[fileName]() as Promise<string>);
-      const mod = TOML.parse(textToml);
-
-      const newData = Object.entries(mod).map(([key, value_1]) => {
-        const { number: num, ...rest } = value_1 as Record<string, unknown>;
-        return {
-          number: key,
-          ...rest,
-        };
-      });
-      return newData;
+      return TOML.parse(textToml);
     } catch (err) {
       console.error("Error loading TOML file:", err);
-      return [];
+      return {};
     }
   };
 
@@ -90,7 +70,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
     if (fileName in overrideNames) {
       const newData = await getDataFromFile(fileName);
-      if (newData.length > 0) {
+      if (Object.keys(newData).length > 0) {
         prefillData = newData;
       } else {
         console.error("No data found for prefill ID:", fileName);
@@ -107,7 +87,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 export default function App({ loaderData }: Route.ComponentProps) {
   const { overrideNames, prefillData, prefillId } = loaderData;
 
-  const [data, setData] = useState<Record<string, unknown>[]>(prefillData);
+  const [data, setData] = useState<Record<string, unknown>>(prefillData);
   const [error, setError] = useState<boolean>(false);
   const [selected, setSelected] = useState<string[]>(
     prefillId && prefillId in overrideNames ? [prefillId] : [""],
@@ -120,23 +100,25 @@ export default function App({ loaderData }: Route.ComponentProps) {
     })),
   });
 
+  // TODO IN NEXT COMMIT: Make ui schema match what it did before :(
+  const uischema: UiSchema = {
+    "ui:title": "Overrides",
+    "ui:submitButtonOptions": {
+      props: {
+        disabled: data.length === 0 || error,
+      },
+      submitText: "Download",
+    },
+  };
+
   const getDataFromFile = useCallback(
     async (fileName: string) => {
       try {
         const textToml = await (overrideNames[fileName]() as Promise<string>);
-        const mod = TOML.parse(textToml);
-
-        const newData = Object.entries(mod).map(([key, value_1]) => {
-          const { number: num, ...rest } = value_1 as Record<string, unknown>;
-          return {
-            number: key,
-            ...rest,
-          };
-        });
-        return newData;
+        return TOML.parse(textToml);
       } catch (err) {
         console.error("Error loading TOML file:", err);
-        return [];
+        return {};
       }
     },
     [overrideNames],
@@ -146,7 +128,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
     const fileName = e.value[0];
 
     if (fileName === "") {
-      setData([]);
+      setData({});
       setSelected([""]);
       return;
     }
@@ -158,7 +140,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
       })
       .catch((err: unknown) => {
         console.error("Error loading TOML file:", err);
-        setData([]);
+        setData({});
         setSelected([""]);
       });
   };
@@ -203,7 +185,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         >
           <SelectLabel>Pre-fill data</SelectLabel>
           <SelectTrigger clearable>
-            <SelectValueText placeholder="Pre-fill data" />
+            <SelectValueText />
           </SelectTrigger>
           <SelectContent>
             {overridesCollection.items.map((override) => (
@@ -220,46 +202,38 @@ export default function App({ loaderData }: Route.ComponentProps) {
           formData={data}
           showErrorList={false}
           liveValidate={true}
+          experimental_defaultFormStateBehavior={{
+            arrayMinItems: { populate: "requiredOnly" },
+            emptyObjectFields: "populateRequiredDefaults",
+            mergeDefaultsIntoFormData: "useDefaultIfFormDataUndefined",
+          }}
+          liveOmit={true}
+          omitExtraData={true}
           onChange={({ formData, errors }) => {
-            setData(formData as Record<string, unknown>[]);
+            setData(formData as Record<string, unknown>);
             setError(errors.length > 0 ? true : false);
           }}
-        >
-          <Button
-            variant="solid"
-            disabled={data.length === 0 || error}
-            onClick={() => {
-              const contents = TOML.stringify(
-                Object.fromEntries(
-                  data.map((override) => {
-                    const { number: num, ...rest } = override;
-                    return [num, rest];
-                  }),
-                ),
-              );
+          onSubmit={() => {
+            const contents = TOML.stringify(data);
 
-              const element = document.createElement("a");
-              element.href = URL.createObjectURL(
-                new Blob([contents], { type: "application/octet-stream" }),
-              );
-              element.download = "overrides.toml";
-              document.body.appendChild(element);
-              element.click();
-            }}
-          >
-            Download
-          </Button>
-        </Form>
+            const element = document.createElement("a");
+            element.href = URL.createObjectURL(
+              new Blob([contents], { type: "application/octet-stream" }),
+            );
+            element.download = "overrides.toml";
+            document.body.appendChild(element);
+            element.click();
+          }}
+        />
         <Text textStyle="sm">
-          Clicking "Download" will download a file "overrides.toml" to your
-          computer; please attach this file to an email addressed to {}
+          Clicking "Download" will download a file <Code>overrides.toml</Code>{" "}
+          to your computer; please attach this file to an email addressed to{" "}
           <Link colorPalette="blue" asChild>
             <RouterLink to="mailto:sipb-hydrant@mit.edu">
               sipb-hydrant@mit.edu
             </RouterLink>
-          </Link>
-          {} in order to send your requested subject overrides to the Hydrant
-          team.
+          </Link>{" "}
+          in order to send your requested subject overrides to the Hydrant team.
         </Text>
       </Stack>
     </Container>
