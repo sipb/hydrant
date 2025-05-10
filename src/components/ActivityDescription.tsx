@@ -252,9 +252,6 @@ function NonClassDescription(props: { activity: NonClass; state: State }) {
 /** Activity description, whether class or non-class. */
 export function ActivityDescription() {
   const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
   const { viewedActivity: activity } = hydrantState;
   if (!activity) {
     return null;

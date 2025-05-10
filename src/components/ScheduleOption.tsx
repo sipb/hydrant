@@ -9,10 +9,6 @@ import { HydrantContext } from "../lib/hydrant";
 export function ScheduleOption() {
   const [tooManyOptions, setTooManyOptions] = useState(true);
   const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
-
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
   const { selectedOption, totalOptions } = hydrantState;
 
   return (

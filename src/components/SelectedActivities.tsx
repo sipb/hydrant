@@ -50,10 +50,6 @@ function ActivityButton(props: { activity: Activity; state: State }) {
 /** List of selected activities; one button for each activity. */
 export function SelectedActivities() {
   const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
-
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
   const { selectedActivities, units, hours, warnings } = hydrantState;
 
   return (

@@ -18,7 +18,7 @@ export const FeedbackBanner = () => {
 
   return (
     <Presence
-      present={hydrant?.showFeedback}
+      present={hydrant.showFeedback}
       animationName={{ _open: "fade-in", _closed: "fade-out" }}
       animationDuration="moderate"
     >
@@ -57,9 +57,7 @@ export const FeedbackBanner = () => {
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
               onClick={() => {
-                if (hydrant) {
-                  hydrant.showFeedback = false;
-                }
+                hydrant.showFeedback = false;
               }}
             />
           </Flex>
@@ -70,9 +68,7 @@ export const FeedbackBanner = () => {
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
             onClick={() => {
-              if (hydrant) {
-                hydrant.showFeedback = false;
-              }
+              hydrant.showFeedback = false;
             }}
           />
         </Float>

@@ -135,10 +135,6 @@ function PrivacyPolicyDialog() {
 export function LeftFooter() {
   const { hydrant: state } = useContext(HydrantContext);
 
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
-
   return (
     <Flex direction="row" align="center" justify="center" gap={5}>
       <Image

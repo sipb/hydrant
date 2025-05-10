@@ -1,13 +1,6 @@
 import { useState, useContext } from "react";
 
-import {
-  Center,
-  Flex,
-  Group,
-  Spinner,
-  Button,
-  ButtonGroup,
-} from "@chakra-ui/react";
+import { Center, Flex, Group, Button, ButtonGroup } from "@chakra-ui/react";
 import { Tooltip } from "../components/ui/tooltip";
 import { ActivityDescription } from "../components/ActivityDescription";
 import { Calendar } from "../components/Calendar";
@@ -23,6 +16,8 @@ import { MatrixLink } from "../components/MatrixLink";
 import { PreregLink } from "../components/PreregLink";
 import { LuCalendar } from "react-icons/lu";
 
+import { State } from "../lib/state";
+import { Term } from "../lib/dates";
 import { useICSExport } from "../lib/gapi";
 import type { SemesterData } from "../lib/hydrant";
 import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
@@ -62,7 +57,14 @@ export async function clientLoader({ request }: Route.ClientActionArgs) {
   );
   const classesMap = new Map(Object.entries(classes));
 
-  return { classesMap, lastUpdated, termInfo, latestTerm };
+  return {
+    hydrantState: new State(
+      classesMap,
+      new Term(termInfo),
+      lastUpdated,
+      latestTerm.semester.urlName,
+    ),
+  };
 }
 
 /** The application entry. */
@@ -83,64 +85,51 @@ function HydrantApp() {
 
   return (
     <>
-      {!hydrant ? (
-        <Flex w="100%" h="100vh" align="center" justify="center">
-          <Spinner />
+      <FeedbackBanner />
+      <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
+        <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
+          <Header />
+          <ScheduleOption />
+          <Calendar />
+          <LeftFooter />
         </Flex>
-      ) : (
-        <>
-          <FeedbackBanner />
-          <Flex
-            w="100%"
-            direction={{ base: "column", lg: "row" }}
-            p={4}
-            gap={8}
-          >
-            <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-              <Header />
-              <ScheduleOption />
-              <Calendar />
-              <LeftFooter />
-            </Flex>
-            <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-              <Center>
-                <Group wrap="wrap" justifyContent="center" gap={4}>
-                  <TermSwitcher />
-                  <Group gap={4}>
-                    <ScheduleSwitcher />
-                  </Group>
-                  <PreferencesDialog />
-                </Group>
-              </Center>
-              <Center>
-                <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
-                  <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
-                    <Button
-                      colorPalette="blue"
-                      variant="solid"
-                      size="sm"
-                      loading={isExporting}
-                      loadingText="Loading..."
-                      onClick={() => {
-                        setIsExporting(true);
-                        onICSExport();
-                      }}
-                    >
-                      <LuCalendar />
-                      Export calendar
-                    </Button>
-                  </Tooltip>
-                  <PreregLink />
-                  <MatrixLink />
-                </ButtonGroup>
-              </Center>
-              <SelectedActivities />
-              <ClassTable />
-              <ActivityDescription />
-            </Flex>
-          </Flex>
-        </>
-      )}
+        <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
+          <Center>
+            <Group wrap="wrap" justifyContent="center" gap={4}>
+              <TermSwitcher />
+              <Group gap={4}>
+                <ScheduleSwitcher />
+              </Group>
+              <PreferencesDialog />
+            </Group>
+          </Center>
+          <Center>
+            <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
+              <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
+                <Button
+                  colorPalette="blue"
+                  variant="solid"
+                  size="sm"
+                  loading={isExporting}
+                  loadingText="Loading..."
+                  onClick={() => {
+                    setIsExporting(true);
+                    onICSExport();
+                  }}
+                >
+                  <LuCalendar />
+                  Export calendar
+                </Button>
+              </Tooltip>
+              <PreregLink />
+              <MatrixLink />
+            </ButtonGroup>
+          </Center>
+          <SelectedActivities />
+          <ClassTable />
+          <ActivityDescription />
+        </Flex>
+      </Flex>
     </>
   );
 }
@@ -154,14 +143,9 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 /** The main application. */
-export default function App(props: Route.ComponentProps) {
-  const { classesMap, lastUpdated, termInfo, latestTerm } = props.loaderData;
-  const hydrantData = useHydrant({
-    classesMap,
-    lastUpdated,
-    termInfo,
-    latestTerm,
-  });
+export default function App({ loaderData }: Route.ComponentProps) {
+  const { hydrantState } = loaderData;
+  const hydrantData = useHydrant({ hydrantState });
 
   return (
     <HydrantContext value={hydrantData}>

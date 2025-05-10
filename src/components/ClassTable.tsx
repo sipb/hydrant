@@ -455,9 +455,6 @@ const StarButton = ({
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable() {
   const { hydrant: state } = useContext(HydrantContext);
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
   const { classes } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);

@@ -10,8 +10,6 @@ import {
   Button,
   createListCollection,
 } from "@chakra-ui/react";
-import { LuSettings, LuX } from "react-icons/lu";
-
 import {
   DialogRoot,
   DialogBody,
@@ -31,6 +29,7 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "./ui/select";
+import { LuSettings, LuX } from "react-icons/lu";
 
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import type { Preferences } from "../lib/schema";
@@ -44,10 +43,6 @@ import { SIPBLogo } from "./SIPBLogo";
 
 export function PreferencesDialog() {
   const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
-
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
   const { preferences: originalPreferences } = hydrantState;
 
   const [visible, setVisible] = useState(false);
@@ -157,11 +152,7 @@ export function PreferencesDialog() {
 
 /** Header above the left column, with logo and semester selection. */
 export function Header() {
-  const { hydrant } = useContext(HydrantContext);
-  if (!hydrant) {
-    throw new Error("Hydrant context is undefined");
-  }
-  const state = hydrant;
+  const { hydrant: state } = useContext(HydrantContext);
   const logoSrc = useColorModeValue(logo, logoDark);
   const [searchParams, setSearchParams] = useSearchParams();
 

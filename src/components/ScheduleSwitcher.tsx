@@ -235,10 +235,6 @@ function ExportDialog(props: { state: State; children: ReactNode }) {
 
 export function ScheduleSwitcher() {
   const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
-
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
   const { saves, saveId } = hydrantState;
 
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";

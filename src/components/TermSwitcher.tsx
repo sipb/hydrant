@@ -15,10 +15,6 @@ import { HydrantContext } from "../lib/hydrant";
 
 export function TermSwitcher() {
   const { hydrant: state } = useContext(HydrantContext);
-
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
   const toUrl = (urlName: string) => toFullUrl(urlName, state.latestUrlName);
   const defaultValue = toUrl(state.term.urlName);
 

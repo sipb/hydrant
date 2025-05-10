@@ -22,10 +22,6 @@ import "./Calendar.scss";
  */
 export function Calendar() {
   const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
-
-  if (!state) {
-    throw new Error("Hydrant context is undefined");
-  }
   const { selectedActivities, viewedActivity } = hydrantState;
 
   const renderEvent = ({ event }: EventContentArg) => {

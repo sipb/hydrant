@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState, createContext } from "react";
 import { useColorMode } from "../components/ui/color-mode";
 
-import type { LatestTermInfo, TermInfo } from "../lib/dates";
-import { Term } from "../lib/dates";
-import { State } from "../lib/state";
+import type { TermInfo } from "../lib/dates";
+import type { State } from "../lib/state";
 import type { RawClass } from "../lib/rawClass";
 import type { HydrantState } from "../lib/schema";
 import { DEFAULT_STATE } from "../lib/schema";
@@ -21,28 +20,11 @@ export const fetchNoCache = async <T>(url: string): Promise<T> => {
 };
 
 /** Hook to fetch data and initialize State object. */
-export function useHydrant({
-  classesMap,
-  lastUpdated,
-  termInfo,
-  latestTerm,
-}: {
-  classesMap: Map<string, RawClass>;
-  lastUpdated: string;
-  termInfo: TermInfo;
-  latestTerm: LatestTermInfo;
-}): {
-  hydrant?: State;
+export function useHydrant({ hydrantState }: { hydrantState: State }): {
+  hydrant: State;
   state: HydrantState;
 } {
-  const hydrantRef = useRef<State>(
-    new State(
-      classesMap,
-      new Term(termInfo),
-      lastUpdated,
-      latestTerm.semester.urlName,
-    ),
-  );
+  const hydrantRef = useRef<State>(hydrantState);
 
   const [state, setState] = useState<HydrantState>(DEFAULT_STATE);
   const { colorMode, setColorMode, toggleColorMode } = useColorMode();
@@ -77,5 +59,5 @@ export function useHydrant({
 
 export const HydrantContext = createContext<ReturnType<typeof useHydrant>>({
   state: DEFAULT_STATE,
-  hydrant: undefined,
+  hydrant: {} as State,
 });
