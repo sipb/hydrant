@@ -20,6 +20,7 @@ import {
   themeQuartz,
   type IRowNode,
   type ColDef,
+  type Module,
 } from "ag-grid-community";
 
 import { Box, Flex, Image, Input, Button, ButtonGroup } from "@chakra-ui/react";
@@ -48,7 +49,7 @@ const hydrantTheme = themeQuartz.withParams({
   wrapperBorderRadius: "var(--chakra-radii-md)",
 });
 
-const GRID_MODULES = [
+const GRID_MODULES: Module[] = [
   ClientSideRowModelModule,
   ExternalFilterModule,
   CellStyleModule,
@@ -539,21 +540,18 @@ export function ClassTable() {
   }, []);
 
   // Setup rows
-  const rowData = useMemo(() => {
-    const rows: ClassTableRow[] = [];
-    classes.forEach((cls) => {
-      const { number, evals, name, description } = cls;
-      rows.push({
-        number: number,
-        rating: evals.rating.slice(0, 3), // remove the "/7.0" if exists
-        hours: evals.hours,
-        name: name,
+  const rowData: ClassTableRow[] = useMemo(
+    () =>
+      Array.from(classes.values(), (cls) => ({
+        number: cls.number,
+        rating: cls.evals.rating.slice(0, 3), // remove the "/7.0" if exists
+        hours: cls.evals.hours,
+        name: cls.name,
         class: cls,
-        inCharge: description.inCharge,
-      });
-    });
-    return rows;
-  }, [classes]);
+        inCharge: cls.description.inCharge,
+      })),
+    [classes],
+  );
 
   const [inputFilter, setInputFilter] = useState<ClassFilter | null>(null);
   const [flagsFilter, setFlagsFilter] = useState<ClassFilter | null>(null);
