@@ -4,6 +4,8 @@
   "description": "Overrides for classes in the scraper",
   "type": "object",
   "additionalProperties": {
+    "title": "Raw class",
+    "description": "The raw class format produced by combiner_ws.py",
     "type": "object",
     "additionalProperties": false,
     "properties": {
@@ -355,6 +357,7 @@
             "properties": {
               "start": {
                 "type": "array",
+                "minItems": 2,
                 "items": [
                   {
                     "type": "number"
@@ -380,6 +383,7 @@
             "properties": {
               "end": {
                 "type": "array",
+                "minItems": 2,
                 "items": [
                   {
                     "type": "number"
@@ -406,6 +410,7 @@
             "properties": {
               "start": {
                 "type": "array",
+                "minItems": 2,
                 "items": [
                   {
                     "type": "number"
@@ -417,6 +422,7 @@
               },
               "end": {
                 "type": "array",
+                "minItems": 2,
                 "items": [
                   {
                     "type": "number"
@@ -459,7 +465,7 @@
     "rawSection": {
       "type": "array",
       "title": "Raw section",
-      "description": "Raw section format: [[[10, 2], [70, 2]], \"34-101\".",
+      "description": "Raw section format: [[[10, 2], [70, 2]], \"34-101\"].",
       "items": [
         {
           "type": "array",
