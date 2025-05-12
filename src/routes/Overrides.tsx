@@ -398,8 +398,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
               new Blob([contents], { type: "application/octet-stream" }),
             );
             element.download = "overrides.toml";
+
             document.body.appendChild(element);
             element.click();
+            document.body.removeChild(element);
           }}
         />
         <Text textStyle="sm">
