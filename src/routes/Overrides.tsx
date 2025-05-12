@@ -257,6 +257,20 @@ export default function App({ loaderData }: Route.ComponentProps) {
       level: {
         "ui:enumNames": ["Undergraduate", "Graduate"],
       },
+      ...Object.fromEntries(
+        Object.entries(itemSchema.additionalProperties.properties).map(
+          ([key, value]) => {
+            if ("description" in value) {
+              return [
+                key,
+                { "ui:help": value.description, "ui:description": " " },
+              ];
+            } else {
+              return [];
+            }
+          },
+        ),
+      ),
     },
   };
 
