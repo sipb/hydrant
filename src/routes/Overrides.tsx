@@ -36,9 +36,8 @@ const schema: RJSFSchema = {
   title: "Overrides",
   type: "array",
   items: {
-    type: "object",
+    ...itemSchema.additionalProperties,
     required: ["number"],
-    properties: itemSchema.additionalProperties.properties,
   } as JSONSchema7Definition,
   $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
 };
