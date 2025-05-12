@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import Form from "@rjsf/chakra-ui";
 import type { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
-import type { JSONSchema7 } from "json-schema";
+import type { JSONSchema7Definition } from "json-schema";
 
 import { Link as RouterLink } from "react-router";
 import type { Route } from "./+types/Overrides";
@@ -32,7 +32,16 @@ import {
   SelectValueText,
 } from "../components/ui/select";
 
-const schema: RJSFSchema = itemSchema as JSONSchema7;
+const schema: RJSFSchema = {
+  title: "Overrides",
+  type: "array",
+  items: {
+    type: "object",
+    required: ["number"],
+    properties: itemSchema.additionalProperties.properties,
+  } as JSONSchema7Definition,
+  $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
+};
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
@@ -50,7 +59,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
     }),
   ) as typeof overrides;
 
-  let prefillData: Record<string, unknown> = {};
+  let prefillData: Record<string, unknown>[] = [];
   const prefillId = (
     params as Record<string, string | undefined>
   ).prefillId?.toUpperCase();
@@ -58,10 +67,19 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const getDataFromFile = async (fileName: string) => {
     try {
       const textToml = await (overrideNames[fileName]() as Promise<string>);
-      return TOML.parse(textToml);
+      const mod = TOML.parse(textToml);
+
+      const newData = Object.entries(mod).map(([key, value_1]) => {
+        const { number: num, ...rest } = value_1 as Record<string, unknown>;
+        return {
+          number: key,
+          ...rest,
+        };
+      });
+      return newData;
     } catch (err) {
       console.error("Error loading TOML file:", err);
-      return {};
+      return [];
     }
   };
 
@@ -70,7 +88,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
     if (fileName in overrideNames) {
       const newData = await getDataFromFile(fileName);
-      if (Object.keys(newData).length > 0) {
+      if (newData.length > 0) {
         prefillData = newData;
       } else {
         console.error("No data found for prefill ID:", fileName);
@@ -87,7 +105,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 export default function App({ loaderData }: Route.ComponentProps) {
   const { overrideNames, prefillData, prefillId } = loaderData;
 
-  const [data, setData] = useState<Record<string, unknown>>(prefillData);
+  const [data, setData] = useState<Record<string, unknown>[]>(prefillData);
   const [error, setError] = useState<boolean>(false);
   const [selected, setSelected] = useState<string[]>(
     prefillId && prefillId in overrideNames ? [prefillId] : [""],
@@ -109,16 +127,157 @@ export default function App({ loaderData }: Route.ComponentProps) {
       },
       submitText: "Download",
     },
+    items: {
+      "ui:title": "Class Override",
+      "ui:field": "LayoutGridField",
+      "ui:layoutGrid": {
+        "ui:row": {
+          gap: 2,
+          children: [
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(1, 1fr)",
+                children: [
+                  {
+                    "ui:col": ["title"],
+                  },
+                ],
+              },
+            },
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(2, 1fr)",
+                children: [
+                  {
+                    "ui:columns": ["number", "name"],
+                  },
+                ],
+              },
+            },
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(3, 1fr)",
+                children: [
+                  {
+                    "ui:columns": ["oldNumber", "same", "meets"],
+                  },
+                ],
+              },
+            },
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(1, 1fr)",
+                children: [
+                  {
+                    "ui:columns": ["prereqs"],
+                  },
+                ],
+              },
+            },
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(5, 1fr)",
+                children: [
+                  {
+                    "ui:columns": [
+                      "level",
+                      "lectureUnits",
+                      "labUnits",
+                      "preparationUnits",
+                      "isVariableUnits",
+                    ],
+                  },
+                ],
+              },
+            },
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(1, 1fr)",
+                children: [
+                  {
+                    "ui:columns": ["description"],
+                  },
+                ],
+              },
+            },
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(6, 1fr)",
+                children: [
+                  {
+                    "ui:columns": [
+                      "hassH",
+                      "hassA",
+                      "hassS",
+                      "hassE",
+                      "cih",
+                      "cihw",
+                    ],
+                  },
+                ],
+              },
+            },
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(1, 1fr)",
+                children: [
+                  {
+                    "ui:columns": ["inCharge"],
+                  },
+                ],
+              },
+            },
+            {
+              "ui:row": {
+                gap: 2,
+                templateColumns: "repeat(1, 1fr)",
+                children: [
+                  {
+                    "ui:columns": ["url"],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      title: {
+        "ui:field": "LayoutHeaderField",
+      },
+      description: {
+        "ui:widget": "textarea",
+      },
+      level: {
+        "ui:enumNames": ["Undergraduate", "Graduate"],
+      },
+    },
   };
 
   const getDataFromFile = useCallback(
     async (fileName: string) => {
       try {
         const textToml = await (overrideNames[fileName]() as Promise<string>);
-        return TOML.parse(textToml);
+        const mod = TOML.parse(textToml);
+
+        const newData = Object.entries(mod).map(([key, value_1]) => {
+          const { number: num, ...rest } = value_1 as Record<string, unknown>;
+          return {
+            number: key,
+            ...rest,
+          };
+        });
+        return newData;
       } catch (err) {
         console.error("Error loading TOML file:", err);
-        return {};
+        return [];
       }
     },
     [overrideNames],
@@ -128,7 +287,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
     const fileName = e.value[0];
 
     if (fileName === "") {
-      setData({});
+      setData([]);
       setSelected([""]);
       return;
     }
@@ -140,7 +299,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
       })
       .catch((err: unknown) => {
         console.error("Error loading TOML file:", err);
-        setData({});
+        setData([]);
         setSelected([""]);
       });
   };
@@ -148,17 +307,15 @@ export default function App({ loaderData }: Route.ComponentProps) {
   return (
     <Container maxWidth="4xl" paddingX={4} paddingY={8}>
       <Stack gap={4} paddingY={4}>
-        <Stack>
-          <RouterLink
-            to="/"
-            style={{
-              position: "relative",
-              top: 2,
-            }}
-          >
-            <Image src={logo} alt="Hydrant logo" height="40px" />
-          </RouterLink>
-        </Stack>
+        <RouterLink
+          to="/"
+          style={{
+            position: "relative",
+            top: 2,
+          }}
+        >
+          <Image src={logo} alt="Hydrant logo" height="40px" />
+        </RouterLink>
         <Text textStyle="3xl">Submit Overrides</Text>
         <Text>
           This page is for department academic administrators to submit requests
@@ -210,11 +367,18 @@ export default function App({ loaderData }: Route.ComponentProps) {
           liveOmit={true}
           omitExtraData={true}
           onChange={({ formData, errors }) => {
-            setData(formData as Record<string, unknown>);
+            setData(formData as Record<string, unknown>[]);
             setError(errors.length > 0 ? true : false);
           }}
           onSubmit={() => {
-            const contents = TOML.stringify(data);
+            const contents = TOML.stringify(
+              Object.fromEntries(
+                data.map((override) => {
+                  const { number: num, ...rest } = override;
+                  return [num, rest];
+                }),
+              ),
+            );
 
             const element = document.createElement("a");
             element.href = URL.createObjectURL(

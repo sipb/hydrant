@@ -215,7 +215,7 @@ function ClassInput(props: {
       >
         <InputGroup startElement={<LuSearch />} width="fill-available">
           <Input
-            type="text"
+            type="search"
             aria-label="Search for a class"
             id="class-search"
             placeholder="Class number, name, or instructor"
