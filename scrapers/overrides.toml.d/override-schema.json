@@ -5,7 +5,7 @@
   "type": "object",
   "additionalProperties": {
     "title": "Raw class",
-    "description": "The raw class format produced by combiner_ws.py",
+    "description": "The raw class format produced by the scraper.",
     "type": "object",
     "additionalProperties": false,
     "properties": {
@@ -460,7 +460,8 @@
         {
           "type": "number"
         }
-      ]
+      ],
+      "minItems": 2
     },
     "rawSection": {
       "type": "array",
@@ -476,7 +477,8 @@
         {
           "type": "string"
         }
-      ]
+      ],
+      "minItems": 2
     }
   }
 }
