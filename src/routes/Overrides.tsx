@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import Form from "@rjsf/chakra-ui";
 import type { RJSFSchema, UiSchema } from "@rjsf/utils";
@@ -118,161 +118,168 @@ export default function App({ loaderData }: Route.ComponentProps) {
   });
 
   // TODO IN NEXT COMMIT: Make ui schema match what it did before :(
-  const uischema: UiSchema = {
-    "ui:title": "Overrides",
-    "ui:submitButtonOptions": {
-      props: {
-        disabled: data.length === 0 || error,
-      },
-      submitText: "Download",
-    },
-    items: {
-      "ui:title": "Class Override",
-      "ui:field": "LayoutGridField",
-      "ui:layoutGrid": {
-        "ui:row": {
-          gap: 2,
-          children: [
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(1, 1fr)",
-                children: [
-                  {
-                    "ui:col": ["title"],
-                  },
-                ],
-              },
-            },
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(2, 1fr)",
-                children: [
-                  {
-                    "ui:columns": ["number", "name"],
-                  },
-                ],
-              },
-            },
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(3, 1fr)",
-                children: [
-                  {
-                    "ui:columns": ["oldNumber", "same", "meets"],
-                  },
-                ],
-              },
-            },
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(1, 1fr)",
-                children: [
-                  {
-                    "ui:columns": ["prereqs"],
-                  },
-                ],
-              },
-            },
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(5, 1fr)",
-                children: [
-                  {
-                    "ui:columns": [
-                      "level",
-                      "lectureUnits",
-                      "labUnits",
-                      "preparationUnits",
-                      "isVariableUnits",
-                    ],
-                  },
-                ],
-              },
-            },
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(1, 1fr)",
-                children: [
-                  {
-                    "ui:columns": ["description"],
-                  },
-                ],
-              },
-            },
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(6, 1fr)",
-                children: [
-                  {
-                    "ui:columns": [
-                      "hassH",
-                      "hassA",
-                      "hassS",
-                      "hassE",
-                      "cih",
-                      "cihw",
-                    ],
-                  },
-                ],
-              },
-            },
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(1, 1fr)",
-                children: [
-                  {
-                    "ui:columns": ["inCharge"],
-                  },
-                ],
-              },
-            },
-            {
-              "ui:row": {
-                gap: 2,
-                templateColumns: "repeat(1, 1fr)",
-                children: [
-                  {
-                    "ui:columns": ["url"],
-                  },
-                ],
-              },
-            },
-          ],
+  const uischema = useMemo<UiSchema>(() => {
+    const uiSchema = {
+      "ui:title": "Overrides",
+      "ui:submitButtonOptions": {
+        props: {
+          disabled: data.length === 0 || error,
         },
+        submitText: "Download",
       },
-      title: {
-        "ui:field": "LayoutHeaderField",
-      },
-      description: {
-        "ui:widget": "textarea",
-      },
-      level: {
-        "ui:enumNames": ["Undergraduate", "Graduate"],
-      },
-      ...Object.fromEntries(
-        Object.entries(itemSchema.additionalProperties.properties).map(
-          ([key, value]) => {
-            if ("description" in value) {
-              return [
-                key,
-                { "ui:help": value.description, "ui:description": " " },
-              ];
-            } else {
-              return [];
-            }
+      items: {
+        "ui:title": "Class Override",
+        "ui:field": "LayoutGridField",
+        "ui:layoutGrid": {
+          "ui:row": {
+            gap: 2,
+            children: [
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(1, 1fr)",
+                  children: [
+                    {
+                      "ui:col": ["title"],
+                    },
+                  ],
+                },
+              },
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(2, 1fr)",
+                  children: [
+                    {
+                      "ui:columns": ["number", "name"],
+                    },
+                  ],
+                },
+              },
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(3, 1fr)",
+                  children: [
+                    {
+                      "ui:columns": ["oldNumber", "same", "meets"],
+                    },
+                  ],
+                },
+              },
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(1, 1fr)",
+                  children: [
+                    {
+                      "ui:columns": ["prereqs"],
+                    },
+                  ],
+                },
+              },
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(5, 1fr)",
+                  children: [
+                    {
+                      "ui:columns": [
+                        "level",
+                        "lectureUnits",
+                        "labUnits",
+                        "preparationUnits",
+                        "isVariableUnits",
+                      ],
+                    },
+                  ],
+                },
+              },
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(1, 1fr)",
+                  children: [
+                    {
+                      "ui:columns": ["description"],
+                    },
+                  ],
+                },
+              },
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(6, 1fr)",
+                  children: [
+                    {
+                      "ui:columns": [
+                        "hassH",
+                        "hassA",
+                        "hassS",
+                        "hassE",
+                        "cih",
+                        "cihw",
+                      ],
+                    },
+                  ],
+                },
+              },
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(1, 1fr)",
+                  children: [
+                    {
+                      "ui:columns": ["inCharge"],
+                    },
+                  ],
+                },
+              },
+              {
+                "ui:row": {
+                  gap: 2,
+                  templateColumns: "repeat(1, 1fr)",
+                  children: [
+                    {
+                      "ui:columns": ["url"],
+                    },
+                  ],
+                },
+              },
+            ],
           },
+        },
+        title: {
+          "ui:field": "LayoutHeaderField",
+        },
+        ...Object.fromEntries(
+          Object.entries(itemSchema.additionalProperties.properties).map(
+            ([key, value]) => {
+              if ("description" in value) {
+                return [
+                  key,
+                  {
+                    ...value,
+                    "ui:help": value.description,
+                    "ui:description": " ",
+                  },
+                ];
+              } else {
+                return [key, value];
+              }
+            },
+          ),
         ),
-      ),
-    },
-  };
+      },
+    } satisfies UiSchema;
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    uiSchema.items.description["ui:widget"] = "textarea";
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    uiSchema.items.level["ui:enumNames"] = ["Undergraduate", "Graduate"];
+
+    return uiSchema;
+  }, [data.length, error]);
 
   const getDataFromFile = useCallback(
     async (fileName: string) => {

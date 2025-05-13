@@ -54,11 +54,8 @@ const GRID_MODULES: Module[] = [
   ExternalFilterModule,
   CellStyleModule,
   RenderApiModule,
+  ...(import.meta.env.DEV ? [ValidationModule] : []),
 ];
-
-if (import.meta.env.DEV) {
-  GRID_MODULES.push(ValidationModule);
-}
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
