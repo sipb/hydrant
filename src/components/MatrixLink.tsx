@@ -1,13 +1,17 @@
-import type { Activity } from "../lib/activity";
-import { Class } from "../lib/class";
-import { LuMessageSquare } from "react-icons/lu";
+import { useContext } from "react";
 
+import { Class } from "../lib/class";
+import { HydrantContext } from "../lib/hydrant";
+
+import { LuMessageSquare } from "react-icons/lu";
 import { Tooltip } from "./ui/tooltip";
 import { LinkButton } from "./ui/link-button";
 
 /** A link to SIPB Matrix's class group chat importer UI */
-export function MatrixLink(props: { selectedActivities: Activity[] }) {
-  const { selectedActivities } = props;
+export function MatrixLink() {
+  const {
+    state: { selectedActivities },
+  } = useContext(HydrantContext);
 
   // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
   const matrixLink = `https://matrix.mit.edu/classes/import?via=Hydrant${selectedActivities
