@@ -80,6 +80,9 @@ export const COLOR_SCHEME_PRESETS: ColorScheme[] = [
   highContrastDark,
 ];
 
+export const COLOR_SCHEME_DARK = classicDark;
+export const COLOR_SCHEME_LIGHT = classic;
+
 /** The default background color for a color scheme. */
 export function fallbackColor(colorScheme: ColorScheme): string {
   return colorScheme.colorMode === "light" ? "#4A5568" : "#CBD5E0";

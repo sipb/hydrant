@@ -8,7 +8,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   DialogRoot,
@@ -21,9 +21,6 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
-
-import type { State } from "../lib/state";
-import type { Save } from "../lib/schema";
 import {
   SelectContent,
   SelectItem,
@@ -32,6 +29,10 @@ import {
   SelectValueText,
   SelectLabel,
 } from "./ui/select";
+
+import type { State } from "../lib/state";
+import type { Save } from "../lib/schema";
+import { HydrantContext } from "../lib/hydrant";
 
 import {
   LuCopy,
@@ -70,18 +71,20 @@ function SelectWithWarn(props: {
     return id === defaultScheduleId ? `${name} (default)` : name;
   };
 
+  const scheduleCollection = createListCollection({
+    items: [
+      { label: "Not saved", value: "" },
+      ...saves.map(({ id, name }) => ({
+        label: formatScheduleName(id, name),
+        value: id,
+      })),
+    ],
+  });
+
   return (
     <>
       <SelectRoot
-        collection={createListCollection({
-          items: [
-            { label: "Not saved", value: "" },
-            ...saves.map(({ id, name }) => ({
-              label: formatScheduleName(id, name),
-              value: id,
-            })),
-          ],
-        })}
+        collection={scheduleCollection}
         size="sm"
         width="fit-content"
         minWidth="10em"
@@ -100,11 +103,13 @@ function SelectWithWarn(props: {
           <SelectValueText />
         </SelectTrigger>
         <SelectContent>
-          {saves.map(({ id, name }) => (
-            <SelectItem item={id} key={id}>
-              {formatScheduleName(id, name)}
-            </SelectItem>
-          ))}
+          {scheduleCollection.items.map(({ label, value }) =>
+            value != "" ? (
+              <SelectItem item={value} key={value}>
+                {label}
+              </SelectItem>
+            ) : null,
+          )}
         </SelectContent>
       </SelectRoot>
       <DialogRoot
@@ -228,12 +233,9 @@ function ExportDialog(props: { state: State; children: ReactNode }) {
   );
 }
 
-export function ScheduleSwitcher(props: {
-  saveId: string;
-  saves: Save[];
-  state: State;
-}) {
-  const { saveId, saves, state } = props;
+export function ScheduleSwitcher() {
+  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+  const { saves, saveId } = hydrantState;
 
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";
   const [isRenaming, setIsRenaming] = useState(false);
