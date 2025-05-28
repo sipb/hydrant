@@ -41,7 +41,6 @@ import dept_logo_HST from "../assets/dept_logo/HST.svg"
 import dept_logo_IDS from "../assets/dept_logo/IDS.png"
 import dept_logo_MAS from "../assets/dept_logo/MAS.png"
 import dept_logo_SCM from "../assets/dept_logo/SCM.png"
-import dept_logo_SP from "../assets/dept_logo/SP.png"
 import dept_logo_WGS from "../assets/dept_logo/WGS.png"
 
 /** A small image indicating a flag, like Spring or CI-H. */
@@ -264,7 +263,6 @@ function ClassDescription(props: { cls: Class; state: State }) {
     "IDS": dept_logo_IDS,
     "MAS": dept_logo_MAS,
     "SCM": dept_logo_SCM,
-    "SP": dept_logo_SP,
     "WGS": dept_logo_WGS,
   }[cls.course])
   const className = {
