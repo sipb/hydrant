@@ -13,35 +13,35 @@ import { linkClasses } from "../lib/utils";
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
 import { LuExternalLink } from "react-icons/lu";
 
-import styles from "./ActivityDescription.module.scss"
+import styles from "./ActivityDescription.module.scss";
 import type { CSSProperties } from "react";
 
-import dept_logo_1 from "../assets/dept_logo/1.png"
-import dept_logo_2 from "../assets/dept_logo/2.svg"
-import dept_logo_3 from "../assets/dept_logo/3.svg"
-import dept_logo_5 from "../assets/dept_logo/5.png"
-import dept_logo_6 from "../assets/dept_logo/6.svg"
-import dept_logo_8 from "../assets/dept_logo/8.svg"
-import dept_logo_9 from "../assets/dept_logo/9.png"
-import dept_logo_10 from "../assets/dept_logo/10.svg"
-import dept_logo_11 from "../assets/dept_logo/11.svg"
-import dept_logo_12 from "../assets/dept_logo/12.webp"
-import dept_logo_14 from "../assets/dept_logo/14.png"
-import dept_logo_16 from "../assets/dept_logo/16.svg"
-import dept_logo_18 from "../assets/dept_logo/18.png"
-import dept_logo_20 from "../assets/dept_logo/20.png"
-import dept_logo_21A_21H_STS from "../assets/dept_logo/21A+21H+STS.png"
-import dept_logo_21L from "../assets/dept_logo/21L.png"
-import dept_logo_CC from "../assets/dept_logo/CC.png"
-import dept_logo_CMS_21W from "../assets/dept_logo/CMS+21W.png"
-import dept_logo_CSB from "../assets/dept_logo/CSB.png"
-import dept_logo_CSE from "../assets/dept_logo/CSE.png"
-import dept_logo_EC from "../assets/dept_logo/EC.svg"
-import dept_logo_HST from "../assets/dept_logo/HST.svg"
-import dept_logo_IDS from "../assets/dept_logo/IDS.png"
-import dept_logo_MAS from "../assets/dept_logo/MAS.png"
-import dept_logo_SCM from "../assets/dept_logo/SCM.png"
-import dept_logo_WGS from "../assets/dept_logo/WGS.png"
+import dept_logo_1 from "../assets/dept_logo/1.png";
+import dept_logo_2 from "../assets/dept_logo/2.svg";
+import dept_logo_3 from "../assets/dept_logo/3.svg";
+import dept_logo_5 from "../assets/dept_logo/5.png";
+import dept_logo_6 from "../assets/dept_logo/6.svg";
+import dept_logo_8 from "../assets/dept_logo/8.svg";
+import dept_logo_9 from "../assets/dept_logo/9.png";
+import dept_logo_10 from "../assets/dept_logo/10.svg";
+import dept_logo_11 from "../assets/dept_logo/11.svg";
+import dept_logo_12 from "../assets/dept_logo/12.webp";
+import dept_logo_14 from "../assets/dept_logo/14.png";
+import dept_logo_16 from "../assets/dept_logo/16.svg";
+import dept_logo_18 from "../assets/dept_logo/18.png";
+import dept_logo_20 from "../assets/dept_logo/20.png";
+import dept_logo_21A_21H_STS from "../assets/dept_logo/21A+21H+STS.png";
+import dept_logo_21L from "../assets/dept_logo/21L.png";
+import dept_logo_CC from "../assets/dept_logo/CC.png";
+import dept_logo_CMS_21W from "../assets/dept_logo/CMS+21W.png";
+import dept_logo_CSB from "../assets/dept_logo/CSB.png";
+import dept_logo_CSE from "../assets/dept_logo/CSE.png";
+import dept_logo_EC from "../assets/dept_logo/EC.svg";
+import dept_logo_HST from "../assets/dept_logo/HST.svg";
+import dept_logo_IDS from "../assets/dept_logo/IDS.png";
+import dept_logo_MAS from "../assets/dept_logo/MAS.png";
+import dept_logo_SCM from "../assets/dept_logo/SCM.png";
+import dept_logo_WGS from "../assets/dept_logo/WGS.png";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function TypeSpan(props: { flag?: keyof Flags; title: string }) {
@@ -234,42 +234,44 @@ function ClassBody(props: { cls: Class; state: State }) {
 function ClassDescription(props: { cls: Class; state: State }) {
   const { cls, state } = props;
 
-  const departmentLogo = (file => file == null ? "none" : `url("${file}")`)({
-    "1": dept_logo_1,
-    "2": dept_logo_2,
-    "3": dept_logo_3,
-    "5": dept_logo_5,
-    "6": dept_logo_6,
-    "8": dept_logo_8,
-    "9": dept_logo_9,
-    "10": dept_logo_10,
-    "11": dept_logo_11,
-    "12": dept_logo_12,
-    "14": dept_logo_14,
-    "16": dept_logo_16,
-    "18": dept_logo_18,
-    "20": dept_logo_20,
-    "21A": dept_logo_21A_21H_STS,
-    "21H": dept_logo_21A_21H_STS,
-    "STS": dept_logo_21A_21H_STS,
-    "21L": dept_logo_21L,
-    "CC": dept_logo_CC,
-    "CMS": dept_logo_CMS_21W,
-    "21W": dept_logo_CMS_21W,
-    "CSB": dept_logo_CSB,
-    "CSE": dept_logo_CSE,
-    "EC": dept_logo_EC,
-    "HST": dept_logo_HST,
-    "IDS": dept_logo_IDS,
-    "MAS": dept_logo_MAS,
-    "SCM": dept_logo_SCM,
-    "WGS": dept_logo_WGS,
-  }[cls.course])
+  const departmentLogo = ((file) => (file == null ? "none" : `url("${file}")`))(
+    {
+      "1": dept_logo_1,
+      "2": dept_logo_2,
+      "3": dept_logo_3,
+      "5": dept_logo_5,
+      "6": dept_logo_6,
+      "8": dept_logo_8,
+      "9": dept_logo_9,
+      "10": dept_logo_10,
+      "11": dept_logo_11,
+      "12": dept_logo_12,
+      "14": dept_logo_14,
+      "16": dept_logo_16,
+      "18": dept_logo_18,
+      "20": dept_logo_20,
+      "21A": dept_logo_21A_21H_STS,
+      "21H": dept_logo_21A_21H_STS,
+      STS: dept_logo_21A_21H_STS,
+      "21L": dept_logo_21L,
+      CC: dept_logo_CC,
+      CMS: dept_logo_CMS_21W,
+      "21W": dept_logo_CMS_21W,
+      CSB: dept_logo_CSB,
+      CSE: dept_logo_CSE,
+      EC: dept_logo_EC,
+      HST: dept_logo_HST,
+      IDS: dept_logo_IDS,
+      MAS: dept_logo_MAS,
+      SCM: dept_logo_SCM,
+      WGS: dept_logo_WGS,
+    }[cls.course],
+  );
   const className = {
     "18": styles.sharpen,
     "5": styles.lighten,
     "11": styles.lighten,
-  }[cls.course]
+  }[cls.course];
 
   return (
     <Flex
