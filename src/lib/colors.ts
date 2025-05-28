@@ -124,13 +124,33 @@ export function chooseColors(
   }
 }
 
+export function parseColor(color: string): { r: number, g: number, b: number } {
+  if (color.startsWith("#")) {
+    const r = parseInt(color.substring(1, 3), 16);
+    const g = parseInt(color.substring(3, 5), 16);
+    const b = parseInt(color.substring(5, 7), 16);
+    return { r, g, b }
+  }
+  if (color.startsWith("rgb")) {
+    const [_, r_str, g_str, b_str] = /rgb\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)/.exec(color) ?? []
+    const [r, g, b] = [parseInt(r_str), parseInt(g_str), parseInt(b_str)]
+    return { r, g, b }
+  }
+  console.warn("invalid color:", color)
+  return { r: 0, g: 0, b: 0 }
+}
+
 /** Choose a text color for a background given by hex code color. */
 export function textColor(color: string): string {
-  const r = parseInt(color.substring(1, 3), 16);
-  const g = parseInt(color.substring(3, 5), 16);
-  const b = parseInt(color.substring(5, 7), 16);
+  const { r, g, b } = parseColor(color)
   const brightness = (r * 299 + g * 587 + b * 114) / 1000;
   return brightness > 128 ? "#000000" : "#ffffff";
+}
+/** Multiply a given hex code color by a 0-1 factor. */
+export function multiplyColor(color: string, multiplier: number): string {
+  const { r, g, b } = parseColor(color)
+  const to_hex = (v: number) => Math.max(0, Math.min(255, Math.floor(v))).toString(16).padStart(2, "0")
+  return "#" + to_hex(r * multiplier) + to_hex(g * multiplier) + to_hex(b * multiplier)
 }
 
 /** Return a standard #AABBCC representation from an input color */

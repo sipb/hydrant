@@ -2,7 +2,7 @@ import { Flex, Text, Button, ButtonGroup } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef } from "react";
 
 import type { Activity } from "../lib/activity";
-import { textColor } from "../lib/colors";
+import { multiplyColor, textColor } from "../lib/colors";
 import { Class } from "../lib/class";
 import type { State } from "../lib/state";
 
@@ -18,6 +18,10 @@ export function ColorButton(
       backgroundColor={color}
       borderColor={color}
       color={textColor(color)}
+      _hover={{
+        backgroundColor: multiplyColor(color, 1.1),
+        color: textColor(multiplyColor(color, 1.1)),
+      }}
       style={{
         ...style,
       }}
