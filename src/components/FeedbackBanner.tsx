@@ -19,7 +19,10 @@ export const FeedbackBanner = () => {
   return (
     <Presence
       present={hydrant.showFeedback}
-      animationName={{ _open: "fade-in", _closed: "fade-out" }}
+      animationName={{
+        _open: "slide-from-top-full",
+        _closed: "slide-to-top-full",
+      }}
       animationDuration="moderate"
     >
       <Box position="relative">
