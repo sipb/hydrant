@@ -42,6 +42,7 @@ const schema: RJSFSchema = {
   $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
     "../../scrapers/overrides.toml.d/*.toml",
@@ -426,6 +427,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant - Overrides Form" },
   {

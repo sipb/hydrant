@@ -25,6 +25,7 @@ import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 
 import type { Route } from "./+types/Index";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ request }: Route.ClientActionArgs) {
   const searchParams = new URL(request.url).searchParams;
   const urlNameOrig = searchParams.get("t");
@@ -134,6 +135,7 @@ function HydrantApp() {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant" },
   {
