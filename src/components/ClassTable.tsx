@@ -32,7 +32,6 @@ import { useColorMode } from "./ui/color-mode";
 import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import type { State } from "../lib/state";
 import type { TSemester } from "../lib/dates";
 import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
@@ -135,9 +134,9 @@ function ClassInput(props: {
   rowData: ClassTableRow[];
   /** Callback for updating the class filter. */
   setInputFilter: SetClassFilter;
-  state: State;
 }) {
-  const { rowData, setInputFilter, state } = props;
+  const { rowData, setInputFilter } = props;
+  const { hydrant: state } = useContext(HydrantContext);
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
@@ -276,11 +275,11 @@ const CLASS_FLAGS = [
 function ClassFlags(props: {
   /** Callback for updating the class filter. */
   setFlagsFilter: SetClassFilter;
-  state: State;
   /** Callback for updating the grid filter manually. */
   updateFilter: () => void;
 }) {
-  const { setFlagsFilter, state, updateFilter } = props;
+  const { setFlagsFilter, updateFilter } = props;
+  const { hydrant: state } = useContext(HydrantContext);
 
   // Map from flag to whether it's on.
   const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
@@ -426,14 +425,14 @@ function ClassFlags(props: {
 
 const StarButton = ({
   cls,
-  state,
   onStarToggle,
 }: {
   cls: Class;
-  state: State;
   onStarToggle?: () => void;
 }) => {
+  const { hydrant: state } = useContext(HydrantContext);
   const isStarred = state.isClassStarred(cls);
+
   return (
     <Button
       onClick={(e) => {
@@ -487,7 +486,6 @@ export function ClassTable() {
         cellRenderer: (params: { value: string; data: ClassTableRow }) => (
           <StarButton
             cls={params.data.class}
-            state={state}
             onStarToggle={() => {
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               gridRef.current?.api?.refreshCells({
@@ -569,14 +567,9 @@ export function ClassTable() {
 
   return (
     <Flex direction="column" gap={4}>
-      <ClassInput
-        rowData={rowData}
-        setInputFilter={setInputFilter}
-        state={state}
-      />
+      <ClassInput rowData={rowData} setInputFilter={setInputFilter} />
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
-        state={state}
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />

@@ -8,7 +8,6 @@ import { Tooltip } from "./ui/tooltip";
 import type { NonClass } from "../lib/activity";
 import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
-import type { State } from "../lib/state";
 import { linkClasses } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 
@@ -38,8 +37,9 @@ function TypeSpan(props: { flag?: keyof Flags; title: string }) {
 }
 
 /** Header for class description; contains flags and related classes. */
-function ClassTypes(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassTypes(props: { cls: Class }) {
+  const { cls } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const { flags, totalUnits, units } = cls;
 
   /**
@@ -121,8 +121,9 @@ function ClassTypes(props: { cls: Class; state: State }) {
 }
 
 /** List of related classes, appears after flags and before description. */
-function ClassRelated(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassRelated(props: { cls: Class }) {
+  const { cls } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const { prereq, same, meets } = cls.related;
 
   return (
@@ -172,8 +173,9 @@ function ClassEval(props: { cls: Class }) {
 }
 
 /** Class description, person in-charge, and any URLs afterward. */
-function ClassBody(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassBody(props: { cls: Class }) {
+  const { cls } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const { description, inCharge, extraUrls } = cls.description;
 
   return (
@@ -203,8 +205,8 @@ function ClassBody(props: { cls: Class; state: State }) {
 }
 
 /** Full class description, from title to URLs at the end. */
-function ClassDescription(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassDescription(props: { cls: Class }) {
+  const { cls } = props;
 
   return (
     <Flex direction="column" gap={4}>
@@ -212,24 +214,25 @@ function ClassDescription(props: { cls: Class; state: State }) {
         {cls.number}: {cls.name}
       </Heading>
       <Flex direction="column" gap={0.5}>
-        <ClassTypes cls={cls} state={state} />
-        <ClassRelated cls={cls} state={state} />
+        <ClassTypes cls={cls} />
+        <ClassRelated cls={cls} />
         <ClassCIM cls={cls} />
         <ClassEval cls={cls} />
       </Flex>
-      <ClassButtons cls={cls} state={state} />
-      <ClassBody cls={cls} state={state} />
+      <ClassButtons cls={cls} />
+      <ClassBody cls={cls} />
     </Flex>
   );
 }
 
 /** Full non-class activity description, from title to timeslots. */
-function NonClassDescription(props: { activity: NonClass; state: State }) {
-  const { activity, state } = props;
+function NonClassDescription(props: { activity: NonClass }) {
+  const { activity } = props;
+  const { hydrant: state } = useContext(HydrantContext);
 
   return (
     <Flex direction="column" gap={4}>
-      <NonClassButtons activity={activity} state={state} />
+      <NonClassButtons activity={activity} />
       <Flex direction="column" gap={2}>
         {activity.timeslots.map((t) => (
           <Flex key={t.toString()} align="center" gap={2}>
@@ -251,15 +254,15 @@ function NonClassDescription(props: { activity: NonClass; state: State }) {
 
 /** Activity description, whether class or non-class. */
 export function ActivityDescription() {
-  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+  const { state: hydrantState } = useContext(HydrantContext);
   const { viewedActivity: activity } = hydrantState;
   if (!activity) {
     return null;
   }
 
   return activity instanceof Class ? (
-    <ClassDescription cls={activity} state={state} />
+    <ClassDescription cls={activity} />
   ) : (
-    <NonClassDescription activity={activity} state={state} />
+    <NonClassDescription activity={activity} />
   );
 }

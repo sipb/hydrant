@@ -30,7 +30,6 @@ import {
   SelectLabel,
 } from "./ui/select";
 
-import type { State } from "../lib/state";
 import type { Save } from "../lib/schema";
 import { HydrantContext } from "../lib/hydrant";
 
@@ -57,12 +56,9 @@ function SmallButton(props: ComponentPropsWithoutRef<"button">) {
   );
 }
 
-function SelectWithWarn(props: {
-  state: State;
-  saveId: string;
-  saves: Save[];
-}) {
-  const { state, saveId, saves } = props;
+function SelectWithWarn(props: { saveId: string; saves: Save[] }) {
+  const { saveId, saves } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const [confirmSave, setConfirmSave] = useState("");
   const confirmName = saves.find((save) => save.id === confirmSave)?.name;
   const defaultScheduleId = state.defaultSchedule;
@@ -149,12 +145,12 @@ function SelectWithWarn(props: {
 }
 
 function DeleteDialog(props: {
-  state: State;
   saveId: string;
   name: string;
   children: ReactNode;
 }) {
-  const { state, saveId, name, children } = props;
+  const { saveId, name, children } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
 
   return (
@@ -191,8 +187,9 @@ function DeleteDialog(props: {
   );
 }
 
-function ExportDialog(props: { state: State; children: ReactNode }) {
-  const { state, children } = props;
+function ExportDialog(props: { children: ReactNode }) {
+  const { children } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
   const link = state.urlify();
   const [clipboardState, copyToClipboard] = useCopyToClipboard();
@@ -285,7 +282,7 @@ export function ScheduleSwitcher() {
     }
 
     const renderHeading = () => (
-      <SelectWithWarn state={state} saveId={saveId} saves={saves} />
+      <SelectWithWarn saveId={saveId} saves={saves} />
     );
     const onRename = () => {
       setIsRenaming(true);
@@ -316,7 +313,6 @@ export function ScheduleSwitcher() {
           </MenuItem>
           {saveId && (
             <DeleteDialog
-              state={state}
               saveId={saveId}
               name={saves.find((save) => save.id === saveId)?.name ?? ""}
             >
@@ -364,7 +360,7 @@ export function ScheduleSwitcher() {
               )}
             </MenuItem>
           )}
-          <ExportDialog state={state}>
+          <ExportDialog>
             <MenuItem value="share">
               <LuShare2 />
               <Box flex="1">Share</Box>

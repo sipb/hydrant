@@ -12,7 +12,7 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, FormEvent } from "react";
-import { useLayoutEffect, useState } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 
 import { Radio, RadioGroup } from "./ui/radio";
 import {
@@ -34,14 +34,14 @@ import {
   ColorPickerRoot,
   ColorPickerTrigger,
 } from "./ui/color-picker";
+import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 
 import type { Activity, NonClass } from "../lib/activity";
 import { Timeslot } from "../lib/activity";
 import type { Class, SectionLockOption, Sections } from "../lib/class";
 import { LockOption } from "../lib/class";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
-import type { State } from "../lib/state";
-import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
+import { HydrantContext } from "../lib/hydrant";
 
 /**
  * A button that toggles the active value, and is outlined if active, solid
@@ -65,9 +65,10 @@ function ToggleButton(
   );
 }
 
-function OverrideLocations(props: { state: State; secs: Sections }) {
+function OverrideLocations(props: { secs: Sections }) {
+  const { secs } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const [isOverriding, setIsOverriding] = useState(false);
-  const { state, secs } = props;
   const [room, setRoom] = useState(secs.roomOverride);
   const onRelocate = () => {
     setIsOverriding(true);
@@ -114,8 +115,9 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
 }
 
 /** Div containing section manual selection interface. */
-function ClassManualSections(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassManualSections(props: { cls: Class }) {
+  const { cls } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const genSelected = (cls: Class) =>
     cls.sections.map((sections) =>
       sections.locked
@@ -182,7 +184,7 @@ function ClassManualSections(props: { cls: Class; state: State }) {
                   ))}
                 </Stack>
               </RadioGroup>
-              <OverrideLocations secs={secs} state={state} />
+              <OverrideLocations secs={secs} />
             </Field>
           );
         })}
@@ -198,12 +200,9 @@ function ClassManualSections(props: { cls: Class; state: State }) {
 }
 
 /** Div containing color selection interface. */
-function ActivityColor(props: {
-  activity: Activity;
-  state: State;
-  onHide: () => void;
-}) {
-  const { activity, state, onHide } = props;
+function ActivityColor(props: { activity: Activity; onHide: () => void }) {
+  const { activity, onHide } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const initColor = parseColor(activity.backgroundColor);
   const [color, setColor] = useState(initColor);
 
@@ -249,8 +248,9 @@ function ActivityColor(props: {
 }
 
 /** Buttons in class description to add/remove class, and lock sections. */
-export function ClassButtons(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+export function ClassButtons(props: { cls: Class }) {
+  const { cls } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -288,13 +288,10 @@ export function ClassButtons(props: { cls: Class; state: State }) {
           </ToggleButton>
         )}
       </ButtonGroup>
-      {isSelected && showManual && (
-        <ClassManualSections cls={cls} state={state} />
-      )}
+      {isSelected && showManual && <ClassManualSections cls={cls} />}
       {isSelected && showColors && (
         <ActivityColor
           activity={cls}
-          state={state}
           onHide={() => {
             setShowColors(false);
           }}
@@ -305,8 +302,9 @@ export function ClassButtons(props: { cls: Class; state: State }) {
 }
 
 /** Form to add a timeslot to a non-class. */
-function NonClassAddTime(props: { activity: NonClass; state: State }) {
-  const { activity, state } = props;
+function NonClassAddTime(props: { activity: NonClass }) {
+  const { activity } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const [days, setDays] = useState(
     Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false])),
   );
@@ -391,8 +389,9 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
 /**
  * Buttons in non-class description to rename it, or add/edit/remove timeslots.
  */
-export function NonClassButtons(props: { activity: NonClass; state: State }) {
-  const { activity, state } = props;
+export function NonClassButtons(props: { activity: NonClass }) {
+  const { activity } = props;
+  const { hydrant: state } = useContext(HydrantContext);
 
   const isSelected = state.isSelectedActivity(activity);
   const [isRenaming, setIsRenaming] = useState(false);
@@ -518,7 +517,6 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       {isSelected && showColors && (
         <ActivityColor
           activity={activity}
-          state={state}
           onHide={() => {
             setShowColors(false);
           }}
@@ -528,7 +526,7 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
         Click and drag on an empty time in the calendar to add the times for
         your activity. Or add one manually:
       </Text>
-      <NonClassAddTime activity={activity} state={state} />
+      <NonClassAddTime activity={activity} />
     </Flex>
   );
 }

@@ -4,7 +4,6 @@ import { useContext, type ComponentPropsWithoutRef } from "react";
 import type { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
-import type { State } from "../lib/state";
 import { HydrantContext } from "../lib/hydrant";
 
 import { LuPlus } from "react-icons/lu";
@@ -29,8 +28,9 @@ export function ColorButton(
 }
 
 /** A button representing a single, selected activity. */
-function ActivityButton(props: { activity: Activity; state: State }) {
-  const { activity, state } = props;
+function ActivityButton(props: { activity: Activity }) {
+  const { activity } = props;
+  const { hydrant: state } = useContext(HydrantContext);
   const color = activity.backgroundColor;
   return (
     <ColorButton
@@ -63,7 +63,6 @@ export function SelectedActivities() {
           <ActivityButton
             key={activity instanceof Class ? activity.number : activity.id}
             activity={activity}
-            state={state}
           />
         ))}
         <Button
