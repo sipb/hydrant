@@ -20,21 +20,21 @@ export const fetchNoCache = async <T>(url: string): Promise<T> => {
 };
 
 /** Hook to fetch data and initialize State object. */
-export function useHydrant({ hydrantState }: { hydrantState: State }): {
-  hydrant: State;
-  state: HydrantState;
+export function useHydrant({ globalState }: { globalState: State }): {
+  state: State;
+  hydrantState: HydrantState;
 } {
-  const hydrantRef = useRef<State>(hydrantState);
+  const stateRef = useRef<State>(globalState);
 
-  const [state, setState] = useState<HydrantState>(DEFAULT_STATE);
+  const [hydrantState, setHydrantState] = useState<HydrantState>(DEFAULT_STATE);
   const { colorMode, setColorMode, toggleColorMode } = useColorMode();
 
-  const hydrant = hydrantRef.current;
+  const state = stateRef.current;
 
   useEffect(() => {
     // if colorScheme changes, change colorMode to match
-    hydrant.callback = (newState: HydrantState) => {
-      setState(newState);
+    state.callback = (newState: HydrantState) => {
+      setHydrantState(newState);
       if (
         newState.preferences.colorScheme &&
         colorMode !== newState.preferences.colorScheme.colorMode
@@ -50,14 +50,14 @@ export function useHydrant({ hydrantState }: { hydrantState: State }): {
         }
       }
     };
-    hydrant.updateState();
+    state.updateState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorMode, hydrant]);
+  }, [colorMode, state]);
 
-  return { hydrant, state };
+  return { state, hydrantState };
 }
 
 export const HydrantContext = createContext<ReturnType<typeof useHydrant>>({
-  state: DEFAULT_STATE,
-  hydrant: {} as State,
+  hydrantState: DEFAULT_STATE,
+  state: {} as State,
 });

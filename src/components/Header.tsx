@@ -42,7 +42,7 @@ import hydraAnt from "../assets/hydraAnt.png";
 import { SIPBLogo } from "./SIPBLogo";
 
 export function PreferencesDialog() {
-  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useContext(HydrantContext);
   const { preferences: originalPreferences } = hydrantState;
 
   const [visible, setVisible] = useState(false);
@@ -152,7 +152,7 @@ export function PreferencesDialog() {
 
 /** Header above the left column, with logo and semester selection. */
 export function Header() {
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const logoSrc = useColorModeValue(logo, logoDark);
   const [searchParams, setSearchParams] = useSearchParams();
 

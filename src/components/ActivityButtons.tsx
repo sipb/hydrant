@@ -67,7 +67,7 @@ function ToggleButton(
 
 function OverrideLocations(props: { secs: Sections }) {
   const { secs } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const [isOverriding, setIsOverriding] = useState(false);
   const [room, setRoom] = useState(secs.roomOverride);
   const onRelocate = () => {
@@ -117,7 +117,7 @@ function OverrideLocations(props: { secs: Sections }) {
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class }) {
   const { cls } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const genSelected = (cls: Class) =>
     cls.sections.map((sections) =>
       sections.locked
@@ -202,7 +202,7 @@ function ClassManualSections(props: { cls: Class }) {
 /** Div containing color selection interface. */
 function ActivityColor(props: { activity: Activity; onHide: () => void }) {
   const { activity, onHide } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const initColor = parseColor(activity.backgroundColor);
   const [color, setColor] = useState(initColor);
 
@@ -250,7 +250,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class }) {
   const { cls } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -304,7 +304,7 @@ export function ClassButtons(props: { cls: Class }) {
 /** Form to add a timeslot to a non-class. */
 function NonClassAddTime(props: { activity: NonClass }) {
   const { activity } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const [days, setDays] = useState(
     Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false])),
   );
@@ -391,7 +391,7 @@ function NonClassAddTime(props: { activity: NonClass }) {
  */
 export function NonClassButtons(props: { activity: NonClass }) {
   const { activity } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
 
   const isSelected = state.isSelectedActivity(activity);
   const [isRenaming, setIsRenaming] = useState(false);

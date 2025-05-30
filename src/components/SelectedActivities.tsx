@@ -30,7 +30,7 @@ export function ColorButton(
 /** A button representing a single, selected activity. */
 function ActivityButton(props: { activity: Activity }) {
   const { activity } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const color = activity.backgroundColor;
   return (
     <ColorButton
@@ -49,7 +49,7 @@ function ActivityButton(props: { activity: Activity }) {
 
 /** List of selected activities; one button for each activity. */
 export function SelectedActivities() {
-  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useContext(HydrantContext);
   const { selectedActivities, units, hours, warnings } = hydrantState;
 
   return (

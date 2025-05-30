@@ -58,7 +58,7 @@ export async function clientLoader({ request }: Route.ClientActionArgs) {
   const classesMap = new Map(Object.entries(classes));
 
   return {
-    hydrantState: new State(
+    globalState: new State(
       classesMap,
       new Term(termInfo),
       lastUpdated,
@@ -69,12 +69,12 @@ export async function clientLoader({ request }: Route.ClientActionArgs) {
 
 /** The application entry. */
 function HydrantApp() {
-  const { hydrant } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
 
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
-    hydrant,
+    state,
     () => {
       setIsExporting(false);
     },
@@ -144,8 +144,8 @@ export const meta: Route.MetaFunction = () => [
 
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
-  const { hydrantState } = loaderData;
-  const hydrantData = useHydrant({ hydrantState });
+  const { globalState } = loaderData;
+  const hydrantData = useHydrant({ globalState });
 
   return (
     <HydrantContext value={hydrantData}>

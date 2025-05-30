@@ -58,7 +58,7 @@ function SmallButton(props: ComponentPropsWithoutRef<"button">) {
 
 function SelectWithWarn(props: { saveId: string; saves: Save[] }) {
   const { saveId, saves } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const [confirmSave, setConfirmSave] = useState("");
   const confirmName = saves.find((save) => save.id === confirmSave)?.name;
   const defaultScheduleId = state.defaultSchedule;
@@ -150,7 +150,7 @@ function DeleteDialog(props: {
   children: ReactNode;
 }) {
   const { saveId, name, children } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
 
   return (
@@ -189,7 +189,7 @@ function DeleteDialog(props: {
 
 function ExportDialog(props: { children: ReactNode }) {
   const { children } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
   const link = state.urlify();
   const [clipboardState, copyToClipboard] = useCopyToClipboard();
@@ -231,7 +231,7 @@ function ExportDialog(props: { children: ReactNode }) {
 }
 
 export function ScheduleSwitcher() {
-  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useContext(HydrantContext);
   const { saves, saveId } = hydrantState;
 
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";

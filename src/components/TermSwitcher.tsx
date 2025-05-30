@@ -14,7 +14,7 @@ import { Term, toFullUrl, getUrlNames } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
 export function TermSwitcher() {
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const toUrl = (urlName: string) => toFullUrl(urlName, state.latestUrlName);
   const defaultValue = toUrl(state.term.urlName);
 

@@ -14,11 +14,11 @@ import { LinkButton } from "./ui/link-button";
 import { HydrantContext } from "../lib/hydrant";
 
 export const FeedbackBanner = () => {
-  const { hydrant } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
 
   return (
     <Presence
-      present={hydrant.showFeedback}
+      present={state.showFeedback}
       animationName={{
         _open: "slide-from-top-full",
         _closed: "slide-to-top-full",
@@ -60,7 +60,7 @@ export const FeedbackBanner = () => {
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
               onClick={() => {
-                hydrant.showFeedback = false;
+                state.showFeedback = false;
               }}
             />
           </Flex>
@@ -71,7 +71,7 @@ export const FeedbackBanner = () => {
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
             onClick={() => {
-              hydrant.showFeedback = false;
+              state.showFeedback = false;
             }}
           />
         </Float>

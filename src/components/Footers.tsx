@@ -133,7 +133,7 @@ function PrivacyPolicyDialog() {
 
 /** The footer on the bottom of the calendar. */
 export function LeftFooter() {
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
 
   return (
     <Flex direction="row" align="center" justify="center" gap={5}>

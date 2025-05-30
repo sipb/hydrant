@@ -39,7 +39,7 @@ function TypeSpan(props: { flag?: keyof Flags; title: string }) {
 /** Header for class description; contains flags and related classes. */
 function ClassTypes(props: { cls: Class }) {
   const { cls } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const { flags, totalUnits, units } = cls;
 
   /**
@@ -123,7 +123,7 @@ function ClassTypes(props: { cls: Class }) {
 /** List of related classes, appears after flags and before description. */
 function ClassRelated(props: { cls: Class }) {
   const { cls } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const { prereq, same, meets } = cls.related;
 
   return (
@@ -175,7 +175,7 @@ function ClassEval(props: { cls: Class }) {
 /** Class description, person in-charge, and any URLs afterward. */
 function ClassBody(props: { cls: Class }) {
   const { cls } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
   const { description, inCharge, extraUrls } = cls.description;
 
   return (
@@ -228,7 +228,7 @@ function ClassDescription(props: { cls: Class }) {
 /** Full non-class activity description, from title to timeslots. */
 function NonClassDescription(props: { activity: NonClass }) {
   const { activity } = props;
-  const { hydrant: state } = useContext(HydrantContext);
+  const { state } = useContext(HydrantContext);
 
   return (
     <Flex direction="column" gap={4}>
@@ -254,7 +254,7 @@ function NonClassDescription(props: { activity: NonClass }) {
 
 /** Activity description, whether class or non-class. */
 export function ActivityDescription() {
-  const { state: hydrantState } = useContext(HydrantContext);
+  const { hydrantState } = useContext(HydrantContext);
   const { viewedActivity: activity } = hydrantState;
   if (!activity) {
     return null;

@@ -21,7 +21,7 @@ import "./Calendar.scss";
  * change the schedule option selected.
  */
 export function Calendar() {
-  const { hydrant: state, state: hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useContext(HydrantContext);
   const { selectedActivities, viewedActivity } = hydrantState;
 
   const renderEvent = ({ event }: EventContentArg) => {
