@@ -1,18 +1,15 @@
 import { IconButton, Flex, Text } from "@chakra-ui/react";
 
 import { CloseButton } from "./ui/close-button";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
-import type { State } from "../lib/state";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
+import { HydrantContext } from "../lib/hydrant";
 
-export function ScheduleOption(props: {
-  selectedOption: number;
-  totalOptions: number;
-  state: State;
-}) {
-  const { selectedOption, totalOptions, state } = props;
+export function ScheduleOption() {
   const [tooManyOptions, setTooManyOptions] = useState(true);
+  const { state, hydrantState } = useContext(HydrantContext);
+  const { selectedOption, totalOptions } = hydrantState;
 
   return (
     <Flex direction="column" align="end" gap={2} mt={-5}>

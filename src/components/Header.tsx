@@ -1,6 +1,15 @@
-import { Card, IconButton, Flex, Image, Text, Button } from "@chakra-ui/react";
-import { LuSettings, LuX } from "react-icons/lu";
+import { useState, useRef, useContext } from "react";
+import { useSearchParams } from "react-router";
 
+import {
+  Card,
+  IconButton,
+  Flex,
+  Image,
+  Text,
+  Button,
+  createListCollection,
+} from "@chakra-ui/react";
 import {
   DialogRoot,
   DialogBody,
@@ -20,25 +29,22 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "./ui/select";
+import { LuSettings, LuX } from "react-icons/lu";
 
-import { createListCollection } from "@chakra-ui/react";
-
-import type { State } from "../lib/state";
-import { useState, useRef } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import type { Preferences } from "../lib/schema";
 import { DEFAULT_PREFERENCES } from "../lib/schema";
+import { HydrantContext } from "../lib/hydrant";
 
 import logo from "../assets/logo.svg";
 import logoDark from "../assets/logo-dark.svg";
 import hydraAnt from "../assets/hydraAnt.png";
 import { SIPBLogo } from "./SIPBLogo";
 
-export function PreferencesDialog(props: {
-  state: State;
-  preferences: Preferences;
-}) {
-  const { preferences: originalPreferences, state } = props;
+export function PreferencesDialog() {
+  const { state, hydrantState } = useContext(HydrantContext);
+  const { preferences: originalPreferences } = hydrantState;
+
   const [visible, setVisible] = useState(false);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
   const initialPreferencesRef = useRef(DEFAULT_PREFERENCES);
@@ -66,6 +72,16 @@ export function PreferencesDialog(props: {
     setVisible(false);
   };
 
+  const collection = createListCollection({
+    items: [
+      { label: "System Default", value: "" },
+      ...COLOR_SCHEME_PRESETS.map(({ name }) => ({
+        label: name,
+        value: name,
+      })),
+    ],
+  });
+
   return (
     <>
       <DialogRoot
@@ -90,14 +106,17 @@ export function PreferencesDialog(props: {
           <DialogBody>
             <Flex gap={4}>
               <SelectRoot
-                collection={createListCollection({
-                  items: COLOR_SCHEME_PRESETS.map(({ name }) => ({
-                    label: name,
-                    value: name,
-                  })),
-                })}
-                value={[preferences.colorScheme.name]}
+                collection={collection}
+                value={[preferences.colorScheme?.name ?? ""]}
                 onValueChange={(e) => {
+                  if (e.value[0] === "") {
+                    previewPreferences({
+                      ...preferences,
+                      colorScheme: null,
+                    });
+                    return;
+                  }
+
                   const colorScheme = COLOR_SCHEME_PRESETS.find(
                     ({ name }) => name === e.value[0],
                   );
@@ -110,9 +129,9 @@ export function PreferencesDialog(props: {
                   <SelectValueText />
                 </SelectTrigger>
                 <SelectContent portalled={false}>
-                  {COLOR_SCHEME_PRESETS.map(({ name }) => (
-                    <SelectItem item={name} key={name}>
-                      {name}
+                  {collection.items.map(({ label, value }) => (
+                    <SelectItem item={value} key={value}>
+                      {label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -132,20 +151,21 @@ export function PreferencesDialog(props: {
 }
 
 /** Header above the left column, with logo and semester selection. */
-export function Header(props: { state: State }) {
-  const { state } = props;
+export function Header() {
+  const { state } = useContext(HydrantContext);
   const logoSrc = useColorModeValue(logo, logoDark);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const params = new URLSearchParams(document.location.search);
-  const urlNameOrig = params.get("ti");
-  const urlName = params.get("t") ?? state.latestUrlName;
+  const urlNameOrig = searchParams.get("ti");
+  const urlName = searchParams.get("t") ?? state.latestUrlName;
 
   const [show, setShow] = useState(urlNameOrig !== null);
 
   const onClose = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete("ti");
-    window.history.pushState({}, "", url);
+    setSearchParams((searchParams) => {
+      searchParams.delete("ti");
+      return searchParams;
+    });
     setShow(false);
   };
 

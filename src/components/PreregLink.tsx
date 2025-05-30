@@ -1,13 +1,16 @@
-import type { Activity } from "../lib/activity";
 import { Class } from "../lib/class";
 import { LuClipboardList } from "react-icons/lu";
 
 import { LinkButton } from "./ui/link-button";
 import { Tooltip } from "./ui/tooltip";
+import { useContext } from "react";
+import { HydrantContext } from "../lib/hydrant";
 
 /** A link to SIPB Matrix's class group chat importer UI */
-export function PreregLink(props: { selectedActivities: Activity[] }) {
-  const { selectedActivities } = props;
+export function PreregLink() {
+  const {
+    state: { selectedActivities },
+  } = useContext(HydrantContext);
 
   // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
   const preregLink = `https://student.mit.edu/cgi-bin/sfprwtrm.sh?${selectedActivities

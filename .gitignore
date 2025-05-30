@@ -40,3 +40,7 @@ deploy.sh
 
 #virtual env
 hydrant-venv
+
+# router
+.react-router
+build

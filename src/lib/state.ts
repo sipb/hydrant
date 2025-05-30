@@ -7,7 +7,7 @@ import type { Section, SectionLockOption, Sections } from "./class";
 import { Class } from "./class";
 import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
-import { chooseColors, fallbackColor } from "./colors";
+import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
 import type { RawClass, RawTimeslot } from "./rawClass";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
@@ -83,7 +83,12 @@ export class State {
 
   /** The color scheme. */
   get colorScheme(): ColorScheme {
-    return this.preferences.colorScheme;
+    if (this.preferences.colorScheme) {
+      return this.preferences.colorScheme;
+    }
+
+    // If no color scheme is set, use the default one
+    return getDefaultColorScheme();
   }
 
   //========================================================================

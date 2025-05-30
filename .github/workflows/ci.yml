@@ -49,8 +49,8 @@ jobs:
         run: npm install
       - name: Run Prettier
         run: npm run ci-prettier
-  build:
-    name: Build
+  lint:
+    name: Lint + Typecheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
           cache: "npm"
       - name: Install node dependencies
         run: npm install
+      - name: Check types
+        run: npm run typecheck
       - name: Run ESLint
         run: npm run ci-eslint
-      - name: Run build
-        run: npm run build

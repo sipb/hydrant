@@ -1,10 +1,10 @@
 import { Flex, Text, Button, ButtonGroup } from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef } from "react";
+import { useContext, type ComponentPropsWithoutRef } from "react";
 
 import type { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
-import type { State } from "../lib/state";
+import { HydrantContext } from "../lib/hydrant";
 
 import { LuPlus } from "react-icons/lu";
 
@@ -28,8 +28,9 @@ export function ColorButton(
 }
 
 /** A button representing a single, selected activity. */
-function ActivityButton(props: { activity: Activity; state: State }) {
-  const { activity, state } = props;
+function ActivityButton(props: { activity: Activity }) {
+  const { activity } = props;
+  const { state } = useContext(HydrantContext);
   const color = activity.backgroundColor;
   return (
     <ColorButton
@@ -47,14 +48,9 @@ function ActivityButton(props: { activity: Activity; state: State }) {
 }
 
 /** List of selected activities; one button for each activity. */
-export function SelectedActivities(props: {
-  selectedActivities: Activity[];
-  units: number;
-  hours: number;
-  warnings: string[];
-  state: State;
-}) {
-  const { selectedActivities, units, hours, warnings, state } = props;
+export function SelectedActivities() {
+  const { state, hydrantState } = useContext(HydrantContext);
+  const { selectedActivities, units, hours, warnings } = hydrantState;
 
   return (
     <Flex direction="column" gap={2}>
@@ -67,7 +63,6 @@ export function SelectedActivities(props: {
           <ActivityButton
             key={activity instanceof Class ? activity.number : activity.id}
             activity={activity}
-            state={state}
           />
         ))}
         <Button
