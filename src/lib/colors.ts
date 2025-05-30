@@ -82,6 +82,8 @@ export const COLOR_SCHEME_PRESETS: ColorScheme[] = [
 
 export const COLOR_SCHEME_DARK = classicDark;
 export const COLOR_SCHEME_LIGHT = classic;
+export const COLOR_SCHEME_DARK_CONTRAST = highContrastDark;
+export const COLOR_SCHEME_LIGHT_CONTRAST = highContrast;
 
 /** The default background color for a color scheme. */
 export function fallbackColor(colorScheme: ColorScheme): string {
@@ -101,6 +103,27 @@ function murmur3(str: string): () => number {
     return (hash ^= hash >>> 16) >>> 0;
   };
 }
+
+export const getDefaultColorScheme = (): ColorScheme => {
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const prefersConstrast = window.matchMedia(
+    "(prefers-constrast: more)",
+  ).matches;
+
+  if (prefersConstrast) {
+    if (prefersDark) {
+      return COLOR_SCHEME_DARK_CONTRAST;
+    } else {
+      return COLOR_SCHEME_LIGHT_CONTRAST;
+    }
+  } else {
+    if (prefersDark) {
+      return COLOR_SCHEME_DARK;
+    } else {
+      return COLOR_SCHEME_LIGHT;
+    }
+  }
+};
 
 /**
  * Assign background colors to a list of activities. Mutates each activity

@@ -7,12 +7,7 @@ import type { Section, SectionLockOption, Sections } from "./class";
 import { Class } from "./class";
 import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
-import {
-  chooseColors,
-  COLOR_SCHEME_DARK,
-  COLOR_SCHEME_LIGHT,
-  fallbackColor,
-} from "./colors";
+import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
 import type { RawClass, RawTimeslot } from "./rawClass";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
@@ -93,11 +88,7 @@ export class State {
     }
 
     // If no color scheme is set, use the default one
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      return COLOR_SCHEME_DARK;
-    } else {
-      return COLOR_SCHEME_LIGHT;
-    }
+    return getDefaultColorScheme();
   }
 
   //========================================================================
