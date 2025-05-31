@@ -25,7 +25,7 @@ import { createListCollection } from "@chakra-ui/react";
 
 import type { State } from "../lib/state";
 import { useState, useRef } from "react";
-import { COLOR_SCHEME_PRESETS } from "../lib/colors";
+import { COLOR_SCHEME_PRESETS, DECORATION_SCHEME_PRESETS } from "../lib/colors";
 import type { Preferences } from "../lib/schema";
 import { DEFAULT_PREFERENCES } from "../lib/schema";
 
@@ -111,6 +111,34 @@ export function PreferencesDialog(props: {
                 </SelectTrigger>
                 <SelectContent portalled={false}>
                   {COLOR_SCHEME_PRESETS.map(({ name }) => (
+                    <SelectItem item={name} key={name}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
+              <SelectRoot
+                collection={createListCollection({
+                  items: DECORATION_SCHEME_PRESETS.map(({ name }) => ({
+                    label: name,
+                    value: name,
+                  })),
+                })}
+                value={[preferences.decoScheme.name]}
+                onValueChange={(e) => {
+                  const decoScheme = DECORATION_SCHEME_PRESETS.find(
+                    ({ name }) => name === e.value[0],
+                  );
+                  if (!decoScheme) return;
+                  previewPreferences({ ...preferences, decoScheme });
+                }}
+              >
+                <SelectLabel>Decorations:</SelectLabel>
+                <SelectTrigger>
+                  <SelectValueText />
+                </SelectTrigger>
+                <SelectContent portalled={false}>
+                  {DECORATION_SCHEME_PRESETS.map(({ name }) => (
                     <SelectItem item={name} key={name}>
                       {name}
                     </SelectItem>

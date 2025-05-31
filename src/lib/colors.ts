@@ -3,12 +3,14 @@ import type { Activity } from "./activity";
 
 /** The type of color schemes. */
 export interface ColorScheme {
+  id: string;
   name: string;
   colorMode: ColorMode;
   backgroundColors: string[];
 }
 
 const classic: ColorScheme = {
+  id: "light",
   name: "Classic",
   colorMode: "light",
   backgroundColors: [
@@ -26,6 +28,7 @@ const classic: ColorScheme = {
 };
 
 const classicDark: ColorScheme = {
+  id: "dark",
   name: "Classic (Dark)",
   colorMode: "dark",
   backgroundColors: [
@@ -43,6 +46,7 @@ const classicDark: ColorScheme = {
 };
 
 const highContrast: ColorScheme = {
+  id: "light_hc",
   name: "High Contrast",
   colorMode: "light",
   backgroundColors: [
@@ -58,6 +62,7 @@ const highContrast: ColorScheme = {
 };
 
 const highContrastDark: ColorScheme = {
+  id: "dark_hc",
   name: "High Contrast (Dark)",
   colorMode: "dark",
   backgroundColors: [
@@ -78,6 +83,41 @@ export const COLOR_SCHEME_PRESETS: ColorScheme[] = [
   classicDark,
   highContrast,
   highContrastDark,
+];
+
+/** The type of decoration scheme */
+export interface DecorationScheme {
+  id: string;
+  name: string;
+  showDepartmentLogo: boolean | Record<string, boolean>;
+}
+
+const decoEnabled: DecorationScheme = {
+  id: "deco_enable",
+  name: "Enabled",
+  showDepartmentLogo: true,
+};
+const decoDisabled: DecorationScheme = {
+  id: "deco_disable",
+  name: "Disabled",
+  showDepartmentLogo: false,
+};
+const decoDefault: DecorationScheme = {
+  id: "deco_default",
+  name: "Auto",
+  showDepartmentLogo: {
+    light: true,
+    dark: true,
+    light_hc: false,
+    dark_hc: false,
+  },
+};
+
+/** The default decoration schemes. */
+export const DECORATION_SCHEME_PRESETS: DecorationScheme[] = [
+  decoDefault,
+  decoEnabled,
+  decoDisabled,
 ];
 
 /** The default background color for a color scheme. */

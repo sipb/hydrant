@@ -59,7 +59,7 @@ html:global(.light) #class_description::before {
 
 
 html:global(.dark) #class_description:not(.sharpen):not(.lighten)::before {
-    opacity: 0.05;
+    opacity: 0.10;
     filter: blur(0.5em);
 }
 

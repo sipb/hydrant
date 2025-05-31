@@ -234,7 +234,12 @@ function ClassBody(props: { cls: Class; state: State }) {
 function ClassDescription(props: { cls: Class; state: State }) {
   const { cls, state } = props;
 
-  const departmentLogo = ((file) => (file == null ? "none" : `url("${file}")`))(
+  const showLogo =
+    typeof state.decoScheme.showDepartmentLogo === "boolean"
+      ? state.decoScheme.showDepartmentLogo
+      : state.decoScheme.showDepartmentLogo[state.colorScheme.id];
+  const departmentLogo = ((file) =>
+    file == null || !showLogo ? "none" : `url("${file}")`)(
     {
       "1": dept_logo_1,
       "2": dept_logo_2,
