@@ -1,0 +1,73 @@
+#class_description {
+    position: relative;
+
+    &::before {
+        content: "";
+        background-image: var(--dept_logo_src);
+        height: 60vh;
+        display: block;
+
+        z-index: -100000;
+        background-repeat: no-repeat;
+        background-size: min(60vw, 70vh);
+        background-position: center;
+
+        @media (min-width: 1024px) {
+            position: fixed;
+            width: max(60vw, 60vh);
+            bottom: -5em;
+            right: -5em;
+        }
+
+        @media (max-width: 1023px) {
+            position: absolute;
+            top: -5em;
+            left: 0;
+            right: 0;
+        }
+    }
+
+    &.sharpen::before {
+        @media (max-width: 1023px) {
+            background-size: 100vw;
+            height: unset;
+            bottom: -10em;
+        }
+
+        @media (min-width: 1024px) {
+            background-size: 110%;
+            background-position: top;
+            position: absolute;
+            left: -2em;
+            right: 0;
+            top: -5em;
+            width: unset;
+        }
+    }
+
+    p {
+        width: fit-content;
+        backdrop-filter: blur(2em);
+    }
+}
+
+
+html:global(.light) #class_description::before {
+    opacity: 0.05;
+    filter: saturate(5) brightness(0.5);
+}
+
+
+html:global(.dark) #class_description:not(.sharpen):not(.lighten)::before {
+    opacity: 0.10;
+    filter: blur(0.5em);
+}
+
+html:global(.dark) #class_description.sharpen::before {
+    opacity: 0.15;
+}
+
+html:global(.dark) #class_description.lighten::before {
+    opacity: 0.15;
+    filter: blur(0.5em) invert(1) brightness(0.8) invert(1);
+}

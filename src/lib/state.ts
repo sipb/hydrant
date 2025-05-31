@@ -6,13 +6,13 @@ import { scheduleSlots } from "./calendarSlots";
 import type { Section, SectionLockOption, Sections } from "./class";
 import { Class } from "./class";
 import type { Term } from "./dates";
-import type { ColorScheme } from "./colors";
+import type { ColorScheme, DecorationScheme } from "./colors";
 import { chooseColors, fallbackColor } from "./colors";
 import type { RawClass, RawTimeslot } from "./rawClass";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
-import { DEFAULT_PREFERENCES } from "./schema";
+import { DEFAULT_PREFERENCES, ensurePreferencesValid } from "./schema";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -84,6 +84,10 @@ export class State {
   /** The color scheme. */
   get colorScheme(): ColorScheme {
     return this.preferences.colorScheme;
+  }
+  /** The color scheme. */
+  get decoScheme(): DecorationScheme {
+    return this.preferences.decoScheme;
   }
 
   //========================================================================
@@ -453,7 +457,7 @@ export class State {
   initState(): void {
     const preferences = this.store.globalGet("preferences");
     if (preferences) {
-      this.preferences = preferences;
+      this.preferences = ensurePreferencesValid(preferences);
     }
     const url = new URL(window.location.href);
     const save = url.searchParams.get("s");
