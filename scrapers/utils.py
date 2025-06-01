@@ -171,7 +171,8 @@ def grouper(
         group_size (int): The size of the groups
 
     Returns:
-        Generator[Tuple[Any, ...], Any, None]: The result of the grouping, which you can iterate over.
+        Generator[Tuple[Any, ...], Any, None]:
+            The result of the grouping, which you can iterate over.
     """
     args = [iter(iterable)] * group_size
     return zip_strict(*args)
