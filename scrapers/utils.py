@@ -16,6 +16,7 @@ Functions:
     get_term_info()
 """
 
+from itertools import zip_longest
 import json
 import os.path
 from enum import Enum
@@ -140,13 +141,16 @@ def zip_strict(*iterables: Iterable[Any]) -> Iterable[Tuple[Any, ...]]:
     Helper function for grouper.
     Groups values of the iterator on the same iteration together.
 
-    Args:
-        iterables (tuple[Iterable[any]]): a list of iterables.
+    Raises:
+        ValueError: If iterables have different lengths.
 
     Yields:
-        tuple: A generator, which you can iterate over.
+        Tuple[Any, ...]: A generator, which you can iterate over.
     """
-    for group in zip(*iterables, strict=True):
+    sentinel = object()
+    for group in zip_longest(*iterables, fillvalue=sentinel):
+        if any(sentinel is t for t in group):
+            raise ValueError("Iterables have different lengths")
         yield group
 
 
