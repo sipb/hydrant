@@ -23,7 +23,7 @@ Functions:
 
 import json
 import os.path
-from typing import Any, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import requests
 from .utils import (
@@ -39,7 +39,7 @@ from .utils import (
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
-def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> list[int]:
+def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> List[int]:
     """Parses a timeslot. Example: parse_timeslot("M", "10-11.30", False) -> [4, 3]
 
     Args:
@@ -77,7 +77,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> list[int]:
     return [start_slot, end_slot - start_slot]
 
 
-def parse_section(section: str) -> tuple[list[list[int]], str]:
+def parse_section(section: str) -> Tuple[List[List[int]], str]:
     """Parses a section string.
     Example: "32-123/TR/0/11/F/0/2" -> [[[36, 2], [96, 2], [132, 2]], '32-123']
 
@@ -99,7 +99,7 @@ def parse_section(section: str) -> tuple[list[list[int]], str]:
     return slots, place
 
 
-def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
+def parse_schedule(schedule: str) -> Dict[str, Union[List[str], bool]]:
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
@@ -111,7 +111,7 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
         dict[str, union[list, bool]: The parsed schedule
     """
     section_tba = False
-    result: dict[str, Union[list[str], bool]] = {}
+    result = dict[str, Union[list[str], bool]]()
 
     # Kinds of sections that exist.
     result["sectionKinds"] = []
@@ -145,7 +145,7 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
     return result
 
 
-def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
+def decode_quarter_date(date: str) -> Union[Tuple[int, int], None]:
     """
     Decodes a quarter date into a month and day.
 
@@ -166,8 +166,8 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
 
 
 def parse_quarter_info(
-    course: dict[str, Union[bool, float, int, list[str], str]],
-) -> dict[str, dict[str, tuple[int, int]]]:
+    course: Dict[str, Union[bool, float, int, List[str], str]],
+) -> Dict[str, Dict[str, Tuple[int, int]]]:
     """
     Parses quarter info from the course.
     If quarter information key is present, returns either start date, end date, or both.
@@ -212,8 +212,8 @@ def parse_quarter_info(
 
 
 def parse_attributes(
-    course: dict[str, Union[bool, float, int, list[str], str]],
-) -> dict[str, bool]:
+    course: Dict[str, Union[bool, float, int, List[str], str]],
+) -> Dict[str, bool]:
     """
     Parses attributes of the course.
 
@@ -241,8 +241,8 @@ def parse_attributes(
 
 
 def parse_terms(
-    course: dict[str, Union[bool, float, int, list[str], str]],
-) -> dict[str, list[str]]:
+    course: Dict[str, Union[bool, float, int, List[str], str]],
+) -> Dict[str, List[str]]:
     """
     Parses the terms of the course.
 
@@ -266,8 +266,8 @@ def parse_terms(
 
 
 def parse_prereqs(
-    course: dict[str, Union[bool, float, int, list[str], str]],
-) -> dict[str, str]:
+    course: dict[str, Union[bool, float, int, List[str], str]],
+) -> Dict[str, str]:
     """
     Parses prerequisites from the course.
 
@@ -286,8 +286,8 @@ def parse_prereqs(
 
 
 def get_course_data(
-    courses: dict[str, dict[str, Union[bool, float, int, list[str], str]]],
-    course: dict[str, Union[bool, float, int, list[str], str]],
+    courses: Dict[str, Dict[str, Union[bool, float, int, List[str], str]]],
+    course: Dict[str, Union[bool, float, int, List[str], str]],
     term: Term,
 ) -> bool:
     """
@@ -455,7 +455,7 @@ def run(is_semester_term: bool) -> None:
             or the pre-semester term.
     """
     data = get_raw_data()
-    courses: dict[str, dict[str, Union[bool, float, int, list[str], str]]] = {}
+    courses = dict[str, dict[str, Union[bool, float, int, list[str], str]]]()
     term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
     fname = os.path.join(os.path.dirname(__file__), fname)

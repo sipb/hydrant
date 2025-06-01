@@ -45,7 +45,7 @@ Dependencies:
 import json
 import os.path
 import re
-from typing import Union
+from typing import Dict, Union, Sequence, List
 
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -186,7 +186,7 @@ def is_limited(html: BeautifulSoup) -> bool:
     return False
 
 
-def get_course_data(filtered_html: BeautifulSoup) -> dict[str, Union[bool, int, str]]:
+def get_course_data(filtered_html: BeautifulSoup) -> Dict[str, Union[bool, int, str]]:
     """
     Gets the metadata about a class from the filtered HTML.
 
@@ -206,7 +206,7 @@ def get_course_data(filtered_html: BeautifulSoup) -> dict[str, Union[bool, int, 
     }
 
 
-def get_home_catalog_links() -> list[str]:
+def get_home_catalog_links() -> List[str]:
     """
     Scrapes the home page of the catalog to get the
     links to the major-specific subpages.
@@ -220,7 +220,7 @@ def get_home_catalog_links() -> list[str]:
     return [a["href"] for a in home_list.find_all("a", href=True)]  # type: ignore
 
 
-def get_all_catalog_links(initial_hrefs: list[str]) -> list[str]:
+def get_all_catalog_links(initial_hrefs: Sequence[str]) -> List[str]:
     """
     Find all links from the headers before the subject listings
 
@@ -230,7 +230,7 @@ def get_all_catalog_links(initial_hrefs: list[str]) -> list[str]:
     Returns:
         list[str]: A more complete list of relative links to subpages to scrape
     """
-    hrefs: list[str] = []
+    hrefs = list[str]()
     for initial_href in initial_hrefs:
         href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
         html = BeautifulSoup(href_req.content, "html.parser")
@@ -246,7 +246,7 @@ def get_all_catalog_links(initial_hrefs: list[str]) -> list[str]:
     return hrefs
 
 
-def get_anchors_with_classname(element: Tag) -> Union[list[Tag], None]:
+def get_anchors_with_classname(element: Tag) -> Union[List[Tag], None]:
     """
     Returns the anchors with the class name if the element itself is one or
     anchors are inside of the element. Otherwise, returns None.
@@ -275,7 +275,7 @@ def get_anchors_with_classname(element: Tag) -> Union[list[Tag], None]:
 
 
 def scrape_courses_from_page(
-    courses: dict[str, dict[str, Union[bool, int, str]]], href: str
+    courses: Dict[str, Dict[str, Union[bool, int, str]]], href: str
 ) -> None:
     """
     Fills courses with course data from the href
@@ -299,8 +299,8 @@ def scrape_courses_from_page(
     # For index idx, contents[idx] corresponds to the html content for the courses in
     # course_nums_list[i]. The reason course_nums_list is a list of lists is because
     # there are courses that are ranges but have the same content
-    course_nums_list: list[list[str]] = []
-    contents: list[list[Tag]] = []
+    course_nums_list = list[list[str]]()
+    contents = list[list[Tag]]()
     for ele in classes_content.contents:
         anchors = get_anchors_with_classname(ele)  # type: ignore
         if anchors:
@@ -333,7 +333,7 @@ def run() -> None:
     """
     home_hrefs = get_home_catalog_links()
     all_hrefs = get_all_catalog_links(home_hrefs)
-    courses: dict[str, dict[str, bool | int | str]] = {}
+    courses = dict[str, dict[str, Union[bool, int, str]]]()
     for href in all_hrefs:
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)

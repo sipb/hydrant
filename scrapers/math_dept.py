@@ -15,7 +15,7 @@ Functions:
 """
 
 from pprint import pprint
-from typing import Any, Union
+from typing import Any, Dict, List, Union
 from bs4 import BeautifulSoup, ResultSet, Tag
 import requests
 from .fireroad import parse_timeslot, parse_section
@@ -55,7 +55,7 @@ def test_parse_when() -> None:
     assert parse_when("MWF11") == ("MWF", "11")
 
 
-def parse_many_timeslots(days: str, times: str) -> list[list[int]]:
+def parse_many_timeslots(days: str, times: str) -> List[List[int]]:
     """
     Parses many timeslots
 
@@ -86,8 +86,8 @@ def make_raw_sections(days: str, times: str, room: str) -> str:
 
 
 def make_section_override(
-    timeslots: list[list[int]], room: str
-) -> list[list[Union[list[list[int]], str]]]:
+    timeslots: List[List[int]], room: str
+) -> List[List[Union[List[List[int]], str]]]:
     """
     Makes a section override
 
@@ -117,7 +117,7 @@ def get_rows() -> ResultSet[Any]:
     return rows
 
 
-def parse_subject(subject: str) -> list[str]:
+def parse_subject(subject: str) -> List[str]:
     """
     Parses the subject
 
@@ -144,7 +144,7 @@ def parse_subject(subject: str) -> list[str]:
 
 def parse_row(
     row: Tag,
-) -> dict[str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]]:
+) -> Dict[str, Dict[str, Union[str, List[list[Union[List[List[int]], str]]]]]]:
     """
     Parses the provided row
 
@@ -155,8 +155,8 @@ def parse_row(
         dict[str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]]:
             The parsed row
     """
-    result: dict[
-        str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]
+    result: Dict[
+        str, Dict[str, Union[str, List[List[Union[List[List[int]], str]]]]]
     ] = {}
 
     subject: str = row.find("div", {"class": "subject"}).text  # type: ignore
@@ -183,7 +183,7 @@ def parse_row(
     return result
 
 
-def run() -> dict[str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]]:
+def run() -> Dict[str, Dict[str, Union[str, List[List[Union[List[List[int]], str]]]]]]:
     """
     The main entry point
 

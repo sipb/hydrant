@@ -19,7 +19,7 @@ Functions:
 import json
 import os.path
 from enum import Enum
-from typing import Any, Iterable
+from typing import Any, Dict, Iterable, Tuple
 
 GIR_REWRITE = {
     "GIR:CAL1": "Calculus I (GIR)",
@@ -135,7 +135,7 @@ def find_timeslot(day: str, slot: str, is_slot_pm: bool) -> int:
     return DAYS[day] + time_dict[slot]
 
 
-def zip_strict(*iterables: Iterable[Any]) -> Iterable[tuple[Any, ...]]:
+def zip_strict(*iterables: Iterable[Any]) -> Iterable[Tuple[Any, ...]]:
     """
     Helper function for grouper.
     Groups values of the iterator on the same iteration together.
@@ -150,7 +150,7 @@ def zip_strict(*iterables: Iterable[Any]) -> Iterable[tuple[Any, ...]]:
         yield group
 
 
-def grouper(iterable: Iterable[Any], group_size: int) -> Iterable[tuple[Any, ...]]:
+def grouper(iterable: Iterable[Any], group_size: int) -> Iterable[Tuple[Any, ...]]:
     """
     Groups items of the iterable in equally spaced blocks of group_size items.
     If the iterable's length ISN'T a multiple of group_size, you'll get a
@@ -171,7 +171,7 @@ def grouper(iterable: Iterable[Any], group_size: int) -> Iterable[tuple[Any, ...
     return zip_strict(*args)
 
 
-def get_term_info(is_semester_term: bool) -> dict[str, Any]:
+def get_term_info(is_semester_term: bool) -> Dict[str, Any]:
     """
     Gets the latest term info from "../public/latestTerm.json" as a dictionary.
     If is_semester_term = True, looks at semester term (fall/spring).

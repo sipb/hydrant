@@ -16,6 +16,7 @@ Constants:
 """
 
 import json
+from typing import Dict, List
 from nltk.tokenize import word_tokenize, sent_tokenize  # type: ignore
 
 KEYWORDS = ["limited", "restricted", "enrollment", "preference", "priority"]
@@ -59,7 +60,7 @@ def find_key_sentences(sometext: str) -> list[str]:
     return result
 
 
-def get_description_list(dataset: dict[str, dict[str, dict[str, str]]]) -> list[str]:
+def get_description_list(dataset: Dict[str, Dict[str, Dict[str, str]]]) -> List[str]:
     """
     Obtains a list of descriptions from the dataset
 
@@ -74,14 +75,14 @@ def get_description_list(dataset: dict[str, dict[str, dict[str, str]]]) -> list[
     return [record["description"] for record in classlist]
 
 
-def get_my_data() -> list[str]:
+def get_my_data() -> List[str]:
     """
     obtains the data
 
     Returns:
         list[str]: A list of descriptions from all the JSON files
     """
-    descriptions: list[str] = []
+    descriptions = list[str]()
     for filepath in FILEPATHS:
         full_path = FOLDER + filepath
         with open(full_path, "r", encoding="utf-8") as file:
@@ -90,7 +91,7 @@ def get_my_data() -> list[str]:
     return descriptions
 
 
-def find_matching_records(descriptions: list[str]) -> list[str]:
+def find_matching_records(descriptions: List[str]) -> List[str]:
     """
     find sentences from record descriptions that contain a keyword
 
@@ -100,7 +101,7 @@ def find_matching_records(descriptions: list[str]) -> list[str]:
     Returns:
         list[str]: A sorted list of unique sentences that contain a keyword
     """
-    result: list[str] = []
+    result = list[str]()
     for description in descriptions:
         result.extend(find_key_sentences(description))
     return list(sorted(set(result)))

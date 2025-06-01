@@ -19,6 +19,7 @@ run() scrapes this data and writes it to cim.json, in the format:
 import json
 import os.path
 from collections import OrderedDict
+from typing import List, OrderedDict as OrderedDictType, Set
 
 import requests
 from bs4 import BeautifulSoup, Tag
@@ -27,7 +28,7 @@ from bs4 import BeautifulSoup, Tag
 CIM_URL = "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject"
 
 
-def get_sections() -> list[Tag]:
+def get_sections() -> List[Tag]:
     """
     Scrapes accordion sections from Registrar page that contains lists of CI-M
 
@@ -48,7 +49,7 @@ def get_sections() -> list[Tag]:
     ]
 
 
-def get_courses(section: Tag) -> OrderedDict[str, set[str]]:
+def get_courses(section: Tag) -> OrderedDictType[str, Set[str]]:
     """
     Extracts the courses contained in a section and their corresponding CI-M
     subjects.
@@ -92,7 +93,7 @@ def run() -> None:
         courses.update(new_courses)
 
     # This maps each subject to a list of courses for which it is a CI-M
-    subjects: dict[str, dict[str, list[str]]] = {}
+    subjects = dict[str, dict[str, list[str]]]()
     for course in courses:
         for subj in courses[course]:
             for number in subj.replace("J", "").split("/"):

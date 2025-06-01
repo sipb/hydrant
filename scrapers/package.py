@@ -18,7 +18,7 @@ import json
 import os
 import os.path
 import sys
-from typing import Any, Iterable, Union
+from typing import Any, Dict, Iterable, Union
 
 from .utils import get_term_info
 
@@ -46,7 +46,7 @@ def load_json_data(json_path: str) -> Any:
         return json.load(json_file)
 
 
-def load_toml_data(toml_dir: str) -> dict[str, Any]:
+def load_toml_data(toml_dir: str) -> Dict[str, Any]:
     """
     Loads data from the provided directory that consists exclusively of TOML files
 
@@ -66,8 +66,8 @@ def load_toml_data(toml_dir: str) -> dict[str, Any]:
 
 
 def merge_data(
-    datasets: Iterable[dict[Any, dict[str, Any]]], keys_to_keep: Iterable[str]
-) -> dict[Any, dict[str, Any]]:
+    datasets: Iterable[Dict[Any, Dict[str, Any]]], keys_to_keep: Iterable[str]
+) -> dict[Any, Dict[str, Any]]:
     """
     Combines the provided datasets, retaining only keys from keys_to_keep.
     NOTE: Later datasets will override earlier ones
