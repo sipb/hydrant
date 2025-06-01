@@ -208,7 +208,8 @@ def get_course_data(filtered_html: BeautifulSoup) -> dict[str, Union[bool, int, 
 
 def get_home_catalog_links() -> list[str]:
     """
-    Scrapes the home page of the catalog to get the links to the major-specific subpages.
+    Scrapes the home page of the catalog to get the
+    links to the major-specific subpages.
 
     Returns:
         list[str]: relative links to major-specific subpages to scrape
@@ -234,10 +235,14 @@ def get_all_catalog_links(initial_hrefs: list[str]) -> list[str]:
         href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
         html = BeautifulSoup(href_req.content, "html.parser")
         # Links should be in the only table in the #contentmini div
-        tables: Tag = html.find("div", id="contentmini").find_all("table")  # type: ignore
+        tables: Tag = html.find("div", id="contentmini").find_all(  # type: ignore
+            "table"
+        )
         hrefs.append(initial_href)
         for table in tables:
-            hrefs.extend([ele["href"] for ele in table.findAll("a", href=True)])  # type: ignore
+            hrefs.extend(
+                [ele["href"] for ele in table.findAll("a", href=True)]  # type: ignore
+            )
     return hrefs
 
 
@@ -264,7 +269,9 @@ def get_anchors_with_classname(element: Tag) -> Union[list[Tag], None]:
         return None
 
     # We need this because apparently there are anchors with names such as "PIP"
-    return list(filter(lambda a: re.match(r"\w+\.\w+", a["name"]), anchors))  # type: ignore
+    return list(
+        filter(lambda a: re.match(r"\w+\.\w+", a["name"]), anchors)  # type: ignore
+    )
 
 
 def scrape_courses_from_page(
@@ -276,13 +283,18 @@ def scrape_courses_from_page(
     This function does NOT return a value. Instead, it modifies the `courses` variable.
 
     Args:
-        courses (dict[str, dict[str, Union[bool, int, str]]]): a dictionary to fill with course data
+        courses (dict[str, dict[str, Union[bool, int, str]]]):
+            a dictionary to fill with course data
         href (str): the relative link to the page to scrape
     """
     href_req = requests.get(f"{BASE_URL}/{href}", timeout=3)
     # The "html.parser" parses pretty badly
     html = BeautifulSoup(href_req.content, "lxml")
-    classes_content: Tag = html.find("table", width="100%", border="0").find("td")  # type: ignore
+    classes_content: Tag = html.find(
+        "table", width="100%", border="0"
+    ).find(  # type: ignore
+        "td"
+    )
 
     # For index idx, contents[idx] corresponds to the html content for the courses in
     # course_nums_list[i]. The reason course_nums_list is a list of lists is because

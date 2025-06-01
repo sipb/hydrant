@@ -64,7 +64,8 @@ def get_description_list(dataset: dict[str, dict[str, dict[str, str]]]) -> list[
     Obtains a list of descriptions from the dataset
 
     Args:
-        dataset (dict[str, dict[str, dict[str, str]]]): The dataset containing class information
+        dataset (dict[str, dict[str, dict[str, str]]]):
+            The dataset containing class information
 
     Returns:
         list[str]: A list of descriptions from the dataset

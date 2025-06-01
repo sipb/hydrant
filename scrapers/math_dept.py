@@ -152,7 +152,8 @@ def parse_row(
         row (bs4.element.Tag): The row that needs to be parsed.
 
     Returns:
-        dict[str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]]: The parsed row
+        dict[str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]]:
+            The parsed row
     """
     result: dict[
         str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]
@@ -187,7 +188,8 @@ def run() -> dict[str, dict[str, Union[str, list[list[Union[list[list[int]], str
     The main entry point
 
     Returns:
-        dict[str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]]: All the schedules
+        dict[str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]]:
+            All the schedules
     """
     rows = get_rows()
     overrides: dict[

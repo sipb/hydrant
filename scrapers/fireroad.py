@@ -340,11 +340,15 @@ def get_course_data(
     if has_schedule:
         try:
             if term == Term.FA and "schedule_fall" in course:
-                raw_class.update(parse_schedule(course["schedule_fall"]))  # type: ignore
+                raw_class.update(
+                    parse_schedule(course["schedule_fall"])  # type: ignore
+                )
             elif term == Term.JA and "schedule_IAP" in course:
                 raw_class.update(parse_schedule(course["schedule_IAP"]))  # type: ignore
             elif term == Term.SP and "schedule_spring" in course:
-                raw_class.update(parse_schedule(course["schedule_spring"]))  # type: ignore
+                raw_class.update(
+                    parse_schedule(course["schedule_spring"])  # type: ignore
+                )
             else:
                 raw_class.update(parse_schedule(course["schedule"]))  # type: ignore
         except ValueError as val_err:
@@ -379,7 +383,9 @@ def get_course_data(
                 "level": course["level"],
                 "isVariableUnits": course["is_variable_units"],
                 "same": ", ".join(course.get("joint_subjects", [])),  # type: ignore
-                "meets": ", ".join(course.get("meets_with_subjects", [])),  # type: ignore
+                "meets": ", ".join(
+                    course.get("meets_with_subjects", [])  # type: ignore
+                ),
             }
         )
     except KeyError as key_err:
@@ -445,7 +451,8 @@ def run(is_semester_term: bool) -> None:
     If is_semester_term = False, looks at pre-semester term (summer/IAP)
 
     Args:
-        is_semester_term (bool): whether to look at the semester or the pre-semester term.
+        is_semester_term (bool): whether to look at the semester
+            or the pre-semester term.
     """
     data = get_raw_data()
     courses: dict[str, dict[str, Union[bool, float, int, list[str], str]]] = {}

@@ -178,7 +178,8 @@ def get_term_info(is_semester_term: bool) -> dict[str, Any]:
     If is_semester_term = False, looks at pre-semester term (summer/IAP)
 
     Args:
-        is_semester_term (bool): whether to look at the semester or the pre-semester term.
+        is_semester_term (bool): whether to look at the semester
+            or the pre-semester term.
 
     Returns:
         dict[str, Any]: the term info for the selected term from latestTerm.json.
