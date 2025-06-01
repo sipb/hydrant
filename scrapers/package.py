@@ -57,7 +57,7 @@ def load_toml_data(toml_dir: str) -> Dict[str, Any]:
     * dict: The data contained within the directory
     """
     toml_dir = os.path.join(package_dir, toml_dir)
-    out: dict[str, Any] = {}
+    out: Dict[str, Any] = {}
     for fname in os.listdir(toml_dir):
         if fname.endswith(".toml"):
             with open(os.path.join(toml_dir, fname), "rb") as toml_file:
@@ -79,7 +79,7 @@ def merge_data(
     Returns:
     * dict[any, dict]: The combined data
     """
-    result: dict[str, dict[str, Any]] = {k: {} for k in keys_to_keep}
+    result: Dict[str, dict[str, Any]] = {k: {} for k in keys_to_keep}
     for key in keys_to_keep:
         for dataset in datasets:
             if key in dataset:
@@ -118,12 +118,12 @@ def run() -> None:
     url_name_sem = term_info_sem["urlName"]
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    obj_presem: dict[str, Union[dict[str, Any], str, dict[Any, dict[str, Any]]]] = {
+    obj_presem: Dict[str, Union[Dict[str, Any], str, Dict[Any, Dict[str, Any]]]] = {
         "termInfo": term_info_presem,
         "lastUpdated": now,
         "classes": courses_presem,
     }
-    obj_sem: dict[str, Union[dict[str, Any], str, dict[Any, dict[str, Any]]]] = {
+    obj_sem: Dict[str, Union[Dict[str, Any], str, Dict[Any, Dict[str, Any]]]] = {
         "termInfo": term_info_sem,
         "lastUpdated": now,
         "classes": courses_sem,

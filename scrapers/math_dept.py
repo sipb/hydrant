@@ -15,13 +15,13 @@ Functions:
 """
 
 from pprint import pprint
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Tuple, Union
 from bs4 import BeautifulSoup, ResultSet, Tag
 import requests
 from .fireroad import parse_timeslot, parse_section
 
 
-def parse_when(when: str) -> tuple[str, str]:
+def parse_when(when: str) -> Tuple[str, str]:
     """
     Parses when the class happens.
 
@@ -192,8 +192,8 @@ def run() -> Dict[str, Dict[str, Union[str, List[List[Union[List[List[int]], str
             All the schedules
     """
     rows = get_rows()
-    overrides: dict[
-        str, dict[str, Union[str, list[list[Union[list[list[int]], str]]]]]
+    overrides: Dict[
+        str, Dict[str, Union[str, List[List[Union[List[List[int]], str]]]]]
     ] = {}
 
     for row in rows:

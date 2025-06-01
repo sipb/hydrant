@@ -19,7 +19,7 @@ run() scrapes this data and writes it to cim.json, in the format:
 import json
 import os.path
 from collections import OrderedDict
-from typing import List, OrderedDict as OrderedDictType, Set
+from typing import Dict, List, OrderedDict as OrderedDictType, Set
 
 import requests
 from bs4 import BeautifulSoup, Tag
@@ -68,7 +68,7 @@ def get_courses(section: Tag) -> OrderedDictType[str, Set[str]]:
 
         # If no title, add to the previous subsection
         if title:
-            subjects = set[str]()
+            subjects: Set[str] = set()
         else:
             title, subjects = courses.popitem()
 
@@ -86,14 +86,14 @@ def run() -> None:
     sections = get_sections()
 
     # This maps each course number to a set of CI-M subjects for that course
-    courses = OrderedDict[str, set[str]]()
+    courses: OrderedDict[str, Set[str]] = OrderedDict()
     for section in sections:
         new_courses = get_courses(section)
         assert new_courses.keys().isdisjoint(courses.keys())
         courses.update(new_courses)
 
     # This maps each subject to a list of courses for which it is a CI-M
-    subjects = dict[str, dict[str, list[str]]]()
+    subjects: Dict[str, Dict[str, List[str]]] = {}
     for course in courses:
         for subj in courses[course]:
             for number in subj.replace("J", "").split("/"):

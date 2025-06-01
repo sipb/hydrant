@@ -42,7 +42,7 @@ def has_keyword(sometext: str) -> bool:
     return False
 
 
-def find_key_sentences(sometext: str) -> list[str]:
+def find_key_sentences(sometext: str) -> List[str]:
     """
     Returns a list of all sentences that contain a keyword
 
@@ -53,7 +53,7 @@ def find_key_sentences(sometext: str) -> list[str]:
         list[str]: A list of sentences that contain a keyword
     """
     my_sentences = sent_tokenize(sometext)  # sent_tokenize is much better than .split()
-    result: list[str] = []
+    result: List[str] = []
     for sentence in my_sentences:
         if has_keyword(sentence):
             result.append(sentence)
@@ -82,7 +82,7 @@ def get_my_data() -> List[str]:
     Returns:
         list[str]: A list of descriptions from all the JSON files
     """
-    descriptions = list[str]()
+    descriptions: List[str] = []
     for filepath in FILEPATHS:
         full_path = FOLDER + filepath
         with open(full_path, "r", encoding="utf-8") as file:
@@ -101,7 +101,7 @@ def find_matching_records(descriptions: List[str]) -> List[str]:
     Returns:
         list[str]: A sorted list of unique sentences that contain a keyword
     """
-    result = list[str]()
+    result: List[str] = []
     for description in descriptions:
         result.extend(find_key_sentences(description))
     return list(sorted(set(result)))

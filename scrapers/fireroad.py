@@ -88,7 +88,7 @@ def parse_section(section: str) -> Tuple[List[List[int]], str]:
         list[Union[list[str], str]]: The parsed section.
     """
     place, *infos = section.split("/")
-    slots: list[list[int]] = []
+    slots: List[List[int]] = []
 
     for weekdays, is_pm_int, slot in grouper(infos, 3):
         for day in weekdays:
@@ -111,7 +111,7 @@ def parse_schedule(schedule: str) -> Dict[str, Union[List[str], bool]]:
         dict[str, union[list, bool]: The parsed schedule
     """
     section_tba = False
-    result = dict[str, Union[list[str], bool]]()
+    result: Dict[str, Union[List[str], bool]] = {}
 
     # Kinds of sections that exist.
     result["sectionKinds"] = []
@@ -455,7 +455,7 @@ def run(is_semester_term: bool) -> None:
             or the pre-semester term.
     """
     data = get_raw_data()
-    courses = dict[str, dict[str, Union[bool, float, int, list[str], str]]]()
+    courses: Dict[str, Dict[str, Union[bool, float, int, List[str], str]]] = {}
     term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
     fname = os.path.join(os.path.dirname(__file__), fname)

@@ -230,7 +230,7 @@ def get_all_catalog_links(initial_hrefs: Sequence[str]) -> List[str]:
     Returns:
         list[str]: A more complete list of relative links to subpages to scrape
     """
-    hrefs = list[str]()
+    hrefs: List[str] = []
     for initial_href in initial_hrefs:
         href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
         html = BeautifulSoup(href_req.content, "html.parser")
@@ -299,8 +299,8 @@ def scrape_courses_from_page(
     # For index idx, contents[idx] corresponds to the html content for the courses in
     # course_nums_list[i]. The reason course_nums_list is a list of lists is because
     # there are courses that are ranges but have the same content
-    course_nums_list = list[list[str]]()
-    contents = list[list[Tag]]()
+    course_nums_list: List[List[str]] = []
+    contents: List[List[Tag]] = []
     for ele in classes_content.contents:
         anchors = get_anchors_with_classname(ele)  # type: ignore
         if anchors:
@@ -333,7 +333,7 @@ def run() -> None:
     """
     home_hrefs = get_home_catalog_links()
     all_hrefs = get_all_catalog_links(home_hrefs)
-    courses = dict[str, dict[str, Union[bool, int, str]]]()
+    courses: Dict[str, Dict[str, Union[bool, int, str]]] = {}
     for href in all_hrefs:
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)
