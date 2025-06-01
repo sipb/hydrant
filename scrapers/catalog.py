@@ -45,7 +45,7 @@ Dependencies:
 import json
 import os.path
 import re
-from typing import Dict, Iterable, Literal, Mapping, MutableMapping, Union, List
+from typing import Dict, Iterable, Mapping, MutableMapping, Union, List
 
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -154,7 +154,7 @@ def has_final(html: BeautifulSoup) -> bool:
     return False
 
 
-def get_half(html: BeautifulSoup) -> Literal[1, 2, False]:
+def get_half(html: BeautifulSoup) -> Union[int, bool]:
     """
     Checks if the class is a half-semester course.
 
@@ -162,7 +162,7 @@ def get_half(html: BeautifulSoup) -> Literal[1, 2, False]:
         html (BeautifulSoup): the input webpage
 
     Returns:
-        Literal[1, 2, False]: 1 if the class is in the first half of the term,
+        Union[int, bool]: 1 if the class is in the first half of the term,
             2 if the class is in the second half of the term, False if it is not a half
             semester course
     """
