@@ -23,7 +23,7 @@ Functions:
 
 import json
 import os.path
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Mapping, MutableMapping, Sequence, Tuple, Union
 
 import requests
 from .utils import (
@@ -39,7 +39,7 @@ from .utils import (
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
-def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> List[int]:
+def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> Tuple[int, int]:
     """Parses a timeslot. Example: parse_timeslot("M", "10-11.30", False) -> [4, 3]
 
     Args:
@@ -74,10 +74,10 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> List[int]:
 
     assert end_slot > start_slot
 
-    return [start_slot, end_slot - start_slot]
+    return start_slot, end_slot - start_slot
 
 
-def parse_section(section: str) -> Tuple[List[List[int]], str]:
+def parse_section(section: str) -> Tuple[List[Tuple[int, int]], str]:
     """Parses a section string.
     Example: "32-123/TR/0/11/F/0/2" -> [[[36, 2], [96, 2], [132, 2]], '32-123']
 
@@ -88,7 +88,7 @@ def parse_section(section: str) -> Tuple[List[List[int]], str]:
         list[Union[list[str], str]]: The parsed section.
     """
     place, *infos = section.split("/")
-    slots: List[List[int]] = []
+    slots: List[Tuple[int, int]] = []
 
     for weekdays, is_pm_int, slot in grouper(infos, 3):
         for day in weekdays:
@@ -166,7 +166,7 @@ def decode_quarter_date(date: str) -> Union[Tuple[int, int], None]:
 
 
 def parse_quarter_info(
-    course: Dict[str, Union[bool, float, int, List[str], str]],
+    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
 ) -> Dict[str, Dict[str, Tuple[int, int]]]:
     """
     Parses quarter info from the course.
@@ -212,16 +212,17 @@ def parse_quarter_info(
 
 
 def parse_attributes(
-    course: Dict[str, Union[bool, float, int, List[str], str]],
+    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
 ) -> Dict[str, bool]:
     """
     Parses attributes of the course.
 
     Args:
-        course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+        course (Mapping[str, Union[bool, float, int, List[str], str]]):
+            The course object.
 
     Returns:
-        dict[str, bool]: The attributes of the course.
+        Dict[str, bool]: The attributes of the course.
     """
     hass_code: str = course.get("hass_attribute", "X")[-1]  # type: ignore
     comms_code: str = course.get("communication_requirement", "")  # type: ignore
@@ -241,13 +242,14 @@ def parse_attributes(
 
 
 def parse_terms(
-    course: Dict[str, Union[bool, float, int, List[str], str]],
+    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
 ) -> Dict[str, List[str]]:
     """
     Parses the terms of the course.
 
     Args:
-        course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+        course (Mapping[str, Union[bool, float, int, Sequence[str], str]]):
+            The course object.
 
     Returns:
         dict[str, list[str]]: The parsed terms, stored in the key "terms".
@@ -266,7 +268,7 @@ def parse_terms(
 
 
 def parse_prereqs(
-    course: Dict[str, Union[bool, float, int, List[str], str]],
+    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
 ) -> Dict[str, str]:
     """
     Parses prerequisites from the course.
@@ -286,8 +288,10 @@ def parse_prereqs(
 
 
 def get_course_data(
-    courses: Dict[str, Dict[str, Union[bool, float, int, List[str], str]]],
-    course: Dict[str, Union[bool, float, int, List[str], str]],
+    courses: MutableMapping[
+        str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
+    ],
+    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
     term: Term,
 ) -> bool:
     """
@@ -314,9 +318,9 @@ def get_course_data(
             bool,
             float,
             int,
-            Dict[str, Tuple[int, int]],
-            List[str],
-            Dict[str, Union[List[str], bool]],
+            Mapping[str, Tuple[int, int]],
+            Sequence[str],
+            Mapping[str, Union[Sequence[str], bool]],
             bool,
         ],
     ] = {
@@ -455,7 +459,9 @@ def run(is_semester_term: bool) -> None:
             or the pre-semester term.
     """
     data = get_raw_data()
-    courses: Dict[str, Dict[str, Union[bool, float, int, List[str], str]]] = {}
+    courses: MutableMapping[
+        str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
+    ] = {}
     term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
     fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
     fname = os.path.join(os.path.dirname(__file__), fname)

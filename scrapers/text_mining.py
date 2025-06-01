@@ -16,7 +16,7 @@ Constants:
 """
 
 import json
-from typing import Dict, List
+from typing import Iterable, List, Mapping
 from nltk.tokenize import word_tokenize, sent_tokenize  # type: ignore
 
 KEYWORDS = ["limited", "restricted", "enrollment", "preference", "priority"]
@@ -50,26 +50,24 @@ def find_key_sentences(sometext: str) -> List[str]:
         sometext (str): The text to search for keywords
 
     Returns:
-        list[str]: A list of sentences that contain a keyword
+        List[str]: A list of sentences that contain a keyword
     """
     my_sentences = sent_tokenize(sometext)  # sent_tokenize is much better than .split()
-    result: List[str] = []
-    for sentence in my_sentences:
-        if has_keyword(sentence):
-            result.append(sentence)
-    return result
+    return [sentence for sentence in my_sentences if has_keyword(sentence)]
 
 
-def get_description_list(dataset: Dict[str, Dict[str, Dict[str, str]]]) -> List[str]:
+def get_description_list(
+    dataset: Mapping[str, Mapping[str, Mapping[str, str]]],
+) -> List[str]:
     """
     Obtains a list of descriptions from the dataset
 
     Args:
-        dataset (dict[str, dict[str, dict[str, str]]]):
+        dataset (Mapping[str, Mapping[str, Mapping[str, str]]]):
             The dataset containing class information
 
     Returns:
-        list[str]: A list of descriptions from the dataset
+        List[str]: A list of descriptions from the dataset
     """
     classlist = dataset["classes"].values()
     return [record["description"] for record in classlist]
@@ -80,7 +78,7 @@ def get_my_data() -> List[str]:
     obtains the data
 
     Returns:
-        list[str]: A list of descriptions from all the JSON files
+        List[str]: A list of descriptions from all the JSON files
     """
     descriptions: List[str] = []
     for filepath in FILEPATHS:
@@ -91,15 +89,15 @@ def get_my_data() -> List[str]:
     return descriptions
 
 
-def find_matching_records(descriptions: List[str]) -> List[str]:
+def find_matching_records(descriptions: Iterable[str]) -> List[str]:
     """
     find sentences from record descriptions that contain a keyword
 
     Args:
-        descriptions (list[str]): A list of descriptions to search for keywords
+        descriptions (Iterable[str]): A list of descriptions to search for keywords
 
     Returns:
-        list[str]: A sorted list of unique sentences that contain a keyword
+        List[str]: A sorted list of unique sentences that contain a keyword
     """
     result: List[str] = []
     for description in descriptions:

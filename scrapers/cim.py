@@ -19,7 +19,8 @@ run() scrapes this data and writes it to cim.json, in the format:
 import json
 import os.path
 from collections import OrderedDict
-from typing import Dict, List, OrderedDict as OrderedDictType, Set
+from typing import Dict, Iterable, List, OrderedDict as OrderedDictType, Set
+
 
 import requests
 from bs4 import BeautifulSoup, Tag
@@ -28,12 +29,12 @@ from bs4 import BeautifulSoup, Tag
 CIM_URL = "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject"
 
 
-def get_sections() -> List[Tag]:
+def get_sections() -> Iterable[Tag]:
     """
     Scrapes accordion sections from Registrar page that contains lists of CI-M
 
     Returns:
-        list[bs4.element.Tag]: The accordion sections that contain lists of CI-M
+        Iterable[bs4.element.Tag]: The accordion sections that contain lists of CI-M
             subjects
     """
     cim_req = requests.get(
@@ -42,11 +43,11 @@ def get_sections() -> List[Tag]:
     )
     soup = BeautifulSoup(cim_req.text, "html.parser")
 
-    return [
+    return (
         item
         for item in soup.select("[data-accordion-item]")
         if item.select(".ci-m__section")
-    ]
+    )
 
 
 def get_courses(section: Tag) -> OrderedDictType[str, Set[str]]:

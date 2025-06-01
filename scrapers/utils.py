@@ -20,7 +20,7 @@ from itertools import zip_longest
 import json
 import os.path
 from enum import Enum
-from typing import Any, Dict, Iterable, Tuple
+from typing import Any, Dict, Generator, Iterable, Tuple
 
 GIR_REWRITE = {
     "GIR:CAL1": "Calculus I (GIR)",
@@ -136,7 +136,7 @@ def find_timeslot(day: str, slot: str, is_slot_pm: bool) -> int:
     return DAYS[day] + time_dict[slot]
 
 
-def zip_strict(*iterables: Iterable[Any]) -> Iterable[Tuple[Any, ...]]:
+def zip_strict(*iterables: Iterable[Any]) -> Generator[Tuple[Any, ...], Any, None]:
     """
     Helper function for grouper.
     Groups values of the iterator on the same iteration together.
@@ -154,7 +154,9 @@ def zip_strict(*iterables: Iterable[Any]) -> Iterable[Tuple[Any, ...]]:
         yield group
 
 
-def grouper(iterable: Iterable[Any], group_size: int) -> Iterable[Tuple[Any, ...]]:
+def grouper(
+    iterable: Iterable[Any], group_size: int
+) -> Generator[Tuple[Any, ...], Any, None]:
     """
     Groups items of the iterable in equally spaced blocks of group_size items.
     If the iterable's length ISN'T a multiple of group_size, you'll get a
@@ -169,7 +171,7 @@ def grouper(iterable: Iterable[Any], group_size: int) -> Iterable[Tuple[Any, ...
         group_size (int): The size of the groups
 
     Returns:
-        Iterable[tuple]: The result of the grouping, which you can iterate over.
+        Generator[Tuple[Any, ...], Any, None]: The result of the grouping, which you can iterate over.
     """
     args = [iter(iterable)] * group_size
     return zip_strict(*args)
@@ -186,7 +188,7 @@ def get_term_info(is_semester_term: bool) -> Dict[str, Any]:
             or the pre-semester term.
 
     Returns:
-        dict[str, Any]: the term info for the selected term from latestTerm.json.
+        Dict[str, Any]: the term info for the selected term from latestTerm.json.
     """
     fname = os.path.join(os.path.dirname(__file__), "../public/latestTerm.json")
     with open(fname, encoding="utf-8") as latest_term_file:

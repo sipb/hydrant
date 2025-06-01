@@ -45,7 +45,7 @@ Dependencies:
 import json
 import os.path
 import re
-from typing import Dict, Union, Sequence, List
+from typing import Dict, Iterable, Literal, Mapping, MutableMapping, Union, List
 
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -154,15 +154,17 @@ def has_final(html: BeautifulSoup) -> bool:
     return False
 
 
-def get_half(html: BeautifulSoup) -> Union[int, bool]:
+def get_half(html: BeautifulSoup) -> Literal[1, 2, False]:
     """
-    Returns 1 for 1st half, 2 for 2nd half, False if not a half semester course
+    Checks if the class is a half-semester course.
 
     Args:
         html (BeautifulSoup): the input webpage
 
     Returns:
-        Union[int, bool]
+        Literal[1, 2, False]: 1 if the class is in the first half of the term,
+            2 if the class is in the second half of the term, False if it is not a half
+            semester course
     """
     if html.find(text=re.compile("first half of term")):
         return 1
@@ -194,7 +196,7 @@ def get_course_data(filtered_html: BeautifulSoup) -> Dict[str, Union[bool, int, 
         filtered_html (BeautifulSoup): the input webpage
 
     Returns:
-        dict[str, Union[bool, int, str]]: metadata about that particular class
+        Dict[str, Union[bool, int, str]]: metadata about that particular class
     """
     return {
         "nonext": is_not_offered_next_year(filtered_html),
@@ -206,29 +208,29 @@ def get_course_data(filtered_html: BeautifulSoup) -> Dict[str, Union[bool, int, 
     }
 
 
-def get_home_catalog_links() -> List[str]:
+def get_home_catalog_links() -> Iterable[str]:
     """
     Scrapes the home page of the catalog to get the
     links to the major-specific subpages.
 
     Returns:
-        list[str]: relative links to major-specific subpages to scrape
+        Iterable[str]: relative links to major-specific subpages to scrape
     """
     catalog_req = requests.get(BASE_URL + "/index.cgi", timeout=3)
     html = BeautifulSoup(catalog_req.content, "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
-    return [a["href"] for a in home_list.find_all("a", href=True)]  # type: ignore
+    return (a["href"] for a in home_list.find_all("a", href=True))  # type: ignore
 
 
-def get_all_catalog_links(initial_hrefs: Sequence[str]) -> List[str]:
+def get_all_catalog_links(initial_hrefs: Iterable[str]) -> List[str]:
     """
     Find all links from the headers before the subject listings
 
     Args:
-        initial_hrefs (list[str]): initial list of relative links to subpages
+        initial_hrefs (Iterable[str]): initial list of relative links to subpages
 
     Returns:
-        list[str]: A more complete list of relative links to subpages to scrape
+        List[str]: A more complete list of relative links to subpages to scrape
     """
     hrefs: List[str] = []
     for initial_href in initial_hrefs:
@@ -255,7 +257,7 @@ def get_anchors_with_classname(element: Tag) -> Union[List[Tag], None]:
         element (Tag): the input HTML tag
 
     Returns:
-        Union[list[Tag], None]: a list of links, or None
+        Union[List[Tag], None]: a list of links, or None
     """
     anchors = None
     # This is the usualy case, where it's one element
@@ -275,7 +277,7 @@ def get_anchors_with_classname(element: Tag) -> Union[List[Tag], None]:
 
 
 def scrape_courses_from_page(
-    courses: Dict[str, Dict[str, Union[bool, int, str]]], href: str
+    courses: MutableMapping[str, Mapping[str, Union[bool, int, str]]], href: str
 ) -> None:
     """
     Fills courses with course data from the href
@@ -283,7 +285,7 @@ def scrape_courses_from_page(
     This function does NOT return a value. Instead, it modifies the `courses` variable.
 
     Args:
-        courses (dict[str, dict[str, Union[bool, int, str]]]):
+        courses (MutableMapping[str, Mapping[str, Union[bool, int, str]]]):
             a dictionary to fill with course data
         href (str): the relative link to the page to scrape
     """
@@ -333,7 +335,7 @@ def run() -> None:
     """
     home_hrefs = get_home_catalog_links()
     all_hrefs = get_all_catalog_links(home_hrefs)
-    courses: Dict[str, Dict[str, Union[bool, int, str]]] = {}
+    courses: MutableMapping[str, Mapping[str, Union[bool, int, str]]] = {}
     for href in all_hrefs:
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)
