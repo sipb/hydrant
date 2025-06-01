@@ -266,7 +266,7 @@ def parse_terms(
 
 
 def parse_prereqs(
-    course: dict[str, Union[bool, float, int, List[str], str]],
+    course: Dict[str, Union[bool, float, int, List[str], str]],
 ) -> Dict[str, str]:
     """
     Parses prerequisites from the course.
@@ -307,16 +307,16 @@ def get_course_data(
     """
     course_code: str = course["subject_id"]  # type: ignore
     course_num, course_class = course_code.split(".")
-    raw_class: dict[
+    raw_class: Dict[
         str,
         Union[
             str,
             bool,
             float,
             int,
-            dict[str, tuple[int, int]],
-            list[str],
-            dict[str, Union[list[str], bool]],
+            Dict[str, Tuple[int, int]],
+            List[str],
+            Dict[str, Union[List[str], bool]],
             bool,
         ],
     ] = {

@@ -62,7 +62,7 @@ def get_courses(section: Tag) -> OrderedDictType[str, Set[str]]:
             within the given section to the set of subject numbers (classes) that may
             satisfy the CI-M requirement for that course number.
     """
-    courses = OrderedDict[str, set[str]]()
+    courses: OrderedDictType[str, Set[str]] = OrderedDict()
     for subsec in section.select(".ci-m__section"):
         title = subsec.select_one(".ci-m__section-title").text.strip().replace("*", "")  # type: ignore
 
@@ -86,7 +86,7 @@ def run() -> None:
     sections = get_sections()
 
     # This maps each course number to a set of CI-M subjects for that course
-    courses: OrderedDict[str, Set[str]] = OrderedDict()
+    courses: OrderedDictType[str, Set[str]] = OrderedDict()
     for section in sections:
         new_courses = get_courses(section)
         assert new_courses.keys().isdisjoint(courses.keys())

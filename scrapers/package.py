@@ -67,7 +67,7 @@ def load_toml_data(toml_dir: str) -> Dict[str, Any]:
 
 def merge_data(
     datasets: Iterable[Dict[Any, Dict[str, Any]]], keys_to_keep: Iterable[str]
-) -> dict[Any, Dict[str, Any]]:
+) -> Dict[Any, Dict[str, Any]]:
     """
     Combines the provided datasets, retaining only keys from keys_to_keep.
     NOTE: Later datasets will override earlier ones
@@ -79,7 +79,7 @@ def merge_data(
     Returns:
     * dict[any, dict]: The combined data
     """
-    result: Dict[str, dict[str, Any]] = {k: {} for k in keys_to_keep}
+    result: Dict[str, Dict[str, Any]] = {k: {} for k in keys_to_keep}
     for key in keys_to_keep:
         for dataset in datasets:
             if key in dataset:

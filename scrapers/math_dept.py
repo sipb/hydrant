@@ -15,8 +15,8 @@ Functions:
 """
 
 from pprint import pprint
-from typing import Any, Dict, List, Tuple, Union
-from bs4 import BeautifulSoup, ResultSet, Tag
+from typing import Dict, List, Tuple, Union
+from bs4 import BeautifulSoup, Tag
 import requests
 from .fireroad import parse_timeslot, parse_section
 
@@ -103,7 +103,7 @@ def make_section_override(
     # return [[section, room] for section in timeslots]
 
 
-def get_rows() -> ResultSet[Any]:
+def get_rows():
     """
     Scrapes rows from https://math.mit.edu/academics/classes.html
 
@@ -144,7 +144,7 @@ def parse_subject(subject: str) -> List[str]:
 
 def parse_row(
     row: Tag,
-) -> Dict[str, Dict[str, Union[str, List[list[Union[List[List[int]], str]]]]]]:
+) -> Dict[str, Dict[str, Union[str, List[List[Union[List[List[int]], str]]]]]]:
     """
     Parses the provided row
 
