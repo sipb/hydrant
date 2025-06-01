@@ -3,14 +3,14 @@ We combine the data from the Fireroad API and the data we scrape from the
 catalog, into the format specified by src/lib/rawClass.ts.
 
 Functions:
-* load_json_data(jsonfile): Loads data from the provided JSON file
-* merge_data(datasets, keys_to_keep): Combines the datasets.
-* run(): The main entry point.
+    load_json_data(jsonfile): Loads data from the provided JSON file
+    merge_data(datasets, keys_to_keep): Combines the datasets.
+    run(): The main entry point.
 
 Dependencies:
-* datetime
-* json
-* utils (within this folder)
+    datetime
+    json
+    utils (within this folder)
 """
 
 import datetime
@@ -18,6 +18,7 @@ import json
 import os
 import os.path
 import sys
+from typing import Any, Iterable, Union
 
 from .utils import get_term_info
 
@@ -30,7 +31,7 @@ else:
 package_dir = os.path.dirname(__file__)
 
 
-def load_json_data(json_path):
+def load_json_data(json_path: str) -> Any:
     """
     Loads data from the provided file
 
@@ -45,7 +46,7 @@ def load_json_data(json_path):
         return json.load(json_file)
 
 
-def load_toml_data(toml_dir):
+def load_toml_data(toml_dir: str) -> dict[str, Any]:
     """
     Loads data from the provided directory that consists exclusively of TOML files
 
@@ -56,7 +57,7 @@ def load_toml_data(toml_dir):
     * dict: The data contained within the directory
     """
     toml_dir = os.path.join(package_dir, toml_dir)
-    out = {}
+    out: dict[str, Any] = {}
     for fname in os.listdir(toml_dir):
         if fname.endswith(".toml"):
             with open(os.path.join(toml_dir, fname), "rb") as toml_file:
@@ -64,7 +65,9 @@ def load_toml_data(toml_dir):
     return out
 
 
-def merge_data(datasets, keys_to_keep):
+def merge_data(
+    datasets: Iterable[dict[Any, dict[str, Any]]], keys_to_keep: Iterable[str]
+) -> dict[Any, dict[str, Any]]:
     """
     Combines the provided datasets, retaining only keys from keys_to_keep.
     NOTE: Later datasets will override earlier ones
@@ -76,7 +79,7 @@ def merge_data(datasets, keys_to_keep):
     Returns:
     * dict[any, dict]: The combined data
     """
-    result = {k: {} for k in keys_to_keep}
+    result: dict[str, dict[str, Any]] = {k: {} for k in keys_to_keep}
     for key in keys_to_keep:
         for dataset in datasets:
             if key in dataset:
@@ -85,7 +88,7 @@ def merge_data(datasets, keys_to_keep):
 
 
 # pylint: disable=too-many-locals
-def run():
+def run() -> None:
     """
     The main entry point.
     Takes data from fireroad.json and catalog.json; outputs latest.json.
@@ -115,12 +118,12 @@ def run():
     url_name_sem = term_info_sem["urlName"]
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    obj_presem = {
+    obj_presem: dict[str, Union[dict[str, Any], str, dict[Any, dict[str, Any]]]] = {
         "termInfo": term_info_presem,
         "lastUpdated": now,
         "classes": courses_presem,
     }
-    obj_sem = {
+    obj_sem: dict[str, Union[dict[str, Any], str, dict[Any, dict[str, Any]]]] = {
         "termInfo": term_info_sem,
         "lastUpdated": now,
         "classes": courses_sem,
