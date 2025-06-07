@@ -17,6 +17,8 @@ jobs:
           node-version: 20
       - name: Install node dependencies
         run: npm install
+      - name: Checks types
+        run: npm run typecheck
       - name: Run build
         run: npm run build
       - name: Archive build artifacts
