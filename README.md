@@ -5,7 +5,7 @@
 Install:
 
 - Python 3, at least Python 3.7.
-- Node.js, at least Node.js 18.
+- Node.js, at least Node.js 20.
   - One way to manage Node versions is using [nvm](https://github.com/nvm-sh/nvm).
 - [Black](https://black.readthedocs.io/en/stable/index.html), if you plan on contributing changes to the Python backend.
 
@@ -60,14 +60,17 @@ _I want to change..._
 
 - _...the data available to Hydrant._
   - The entry point is `scrapers/update.py`.
-  - This goes through `src/components/App.tsx`, which looks for the data.
+  - This goes through the client loader in `src/routes/Index.tsx`, which looks for the data.
   - The exit point is through the constructor of `State` in `src/lib/state.ts`.
 - _...the way Hydrant behaves._
   - The entry point is `src/lib/state.ts`.
-  - The exit point is through `src/components/App.tsx`, which constructs `hydrant` and passes it down.
+  - The exit point is through `src/routes/Index.tsx`, which constructs `hydrant` and adds it to a reusable context.
 - _...the way Hydrant looks._
-  - The entry point is `src/components/App.tsx`.
+  - The entry point is `src/routes/Index.tsx`.
   - We use [Chakra UI](https://chakra-ui.com/) as our component library. Avoid writing CSS.
+- _...routes available in Hydrant._
+  - Routes are stored in `src/routes.ts` and can be modified there.
+  - Run `npm run typecheck` to make sure route types are still ok once you're done
 
 ### Technologies
 
