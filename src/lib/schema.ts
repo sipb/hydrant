@@ -1,6 +1,5 @@
 import type { Activity } from "./activity";
 import type { ColorScheme } from "./colors";
-import { COLOR_SCHEME_PRESETS } from "./colors";
 
 /** A save has an ID and a name. */
 export interface Save {
@@ -10,7 +9,7 @@ export interface Save {
 
 /** Browser-specific user preferences. */
 export interface Preferences {
-  colorScheme: ColorScheme;
+  colorScheme: ColorScheme | null;
   roundedCorners: boolean;
   showEventTimes: boolean;
   defaultScheduleId: string | null;
@@ -19,7 +18,7 @@ export interface Preferences {
 
 /** The default user preferences. */
 export const DEFAULT_PREFERENCES: Preferences = {
-  colorScheme: COLOR_SCHEME_PRESETS[0],
+  colorScheme: null,
   roundedCorners: false,
   showEventTimes: false,
   defaultScheduleId: null,

@@ -1,3 +1,5 @@
+import { useContext } from "react";
+
 import {
   Center,
   Flex,
@@ -9,16 +11,18 @@ import {
 } from "@chakra-ui/react";
 import { LinkButton } from "./ui/link-button";
 
-export const FeedbackBanner = (props: {
-  isOpen: boolean;
-  setOpen: (setBool: boolean) => void;
-}) => {
-  const { isOpen, setOpen } = props;
+import { HydrantContext } from "../lib/hydrant";
+
+export const FeedbackBanner = () => {
+  const { state } = useContext(HydrantContext);
 
   return (
     <Presence
-      present={isOpen}
-      animationName={{ _open: "fade-in", _closed: "fade-out" }}
+      present={state.showFeedback}
+      animationName={{
+        _open: "slide-from-top-full",
+        _closed: "slide-to-top-full",
+      }}
       animationDuration="moderate"
     >
       <Box position="relative">
@@ -56,7 +60,7 @@ export const FeedbackBanner = (props: {
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
               onClick={() => {
-                setOpen(false);
+                state.showFeedback = false;
               }}
             />
           </Flex>
@@ -67,7 +71,7 @@ export const FeedbackBanner = (props: {
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
             onClick={() => {
-              setOpen(false);
+              state.showFeedback = false;
             }}
           />
         </Float>

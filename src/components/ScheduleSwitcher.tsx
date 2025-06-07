@@ -8,7 +8,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   DialogRoot,
@@ -21,9 +21,6 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
-
-import type { State } from "../lib/state";
-import type { Save } from "../lib/schema";
 import {
   SelectContent,
   SelectItem,
@@ -32,6 +29,9 @@ import {
   SelectValueText,
   SelectLabel,
 } from "./ui/select";
+
+import type { Save } from "../lib/schema";
+import { HydrantContext } from "../lib/hydrant";
 
 import {
   LuCopy,
@@ -56,12 +56,9 @@ function SmallButton(props: ComponentPropsWithoutRef<"button">) {
   );
 }
 
-function SelectWithWarn(props: {
-  state: State;
-  saveId: string;
-  saves: Save[];
-}) {
-  const { state, saveId, saves } = props;
+function SelectWithWarn(props: { saveId: string; saves: Save[] }) {
+  const { saveId, saves } = props;
+  const { state } = useContext(HydrantContext);
   const [confirmSave, setConfirmSave] = useState("");
   const confirmName = saves.find((save) => save.id === confirmSave)?.name;
   const defaultScheduleId = state.defaultSchedule;
@@ -70,18 +67,20 @@ function SelectWithWarn(props: {
     return id === defaultScheduleId ? `${name} (default)` : name;
   };
 
+  const scheduleCollection = createListCollection({
+    items: [
+      { label: "Not saved", value: "" },
+      ...saves.map(({ id, name }) => ({
+        label: formatScheduleName(id, name),
+        value: id,
+      })),
+    ],
+  });
+
   return (
     <>
       <SelectRoot
-        collection={createListCollection({
-          items: [
-            { label: "Not saved", value: "" },
-            ...saves.map(({ id, name }) => ({
-              label: formatScheduleName(id, name),
-              value: id,
-            })),
-          ],
-        })}
+        collection={scheduleCollection}
         size="sm"
         width="fit-content"
         minWidth="10em"
@@ -100,11 +99,13 @@ function SelectWithWarn(props: {
           <SelectValueText />
         </SelectTrigger>
         <SelectContent>
-          {saves.map(({ id, name }) => (
-            <SelectItem item={id} key={id}>
-              {formatScheduleName(id, name)}
-            </SelectItem>
-          ))}
+          {scheduleCollection.items.map(({ label, value }) =>
+            value != "" ? (
+              <SelectItem item={value} key={value}>
+                {label}
+              </SelectItem>
+            ) : null,
+          )}
         </SelectContent>
       </SelectRoot>
       <DialogRoot
@@ -144,12 +145,12 @@ function SelectWithWarn(props: {
 }
 
 function DeleteDialog(props: {
-  state: State;
   saveId: string;
   name: string;
   children: ReactNode;
 }) {
-  const { state, saveId, name, children } = props;
+  const { saveId, name, children } = props;
+  const { state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
 
   return (
@@ -186,8 +187,9 @@ function DeleteDialog(props: {
   );
 }
 
-function ExportDialog(props: { state: State; children: ReactNode }) {
-  const { state, children } = props;
+function ExportDialog(props: { children: ReactNode }) {
+  const { children } = props;
+  const { state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
   const link = state.urlify();
   const [clipboardState, copyToClipboard] = useCopyToClipboard();
@@ -228,12 +230,9 @@ function ExportDialog(props: { state: State; children: ReactNode }) {
   );
 }
 
-export function ScheduleSwitcher(props: {
-  saveId: string;
-  saves: Save[];
-  state: State;
-}) {
-  const { saveId, saves, state } = props;
+export function ScheduleSwitcher() {
+  const { state, hydrantState } = useContext(HydrantContext);
+  const { saves, saveId } = hydrantState;
 
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";
   const [isRenaming, setIsRenaming] = useState(false);
@@ -283,7 +282,7 @@ export function ScheduleSwitcher(props: {
     }
 
     const renderHeading = () => (
-      <SelectWithWarn state={state} saveId={saveId} saves={saves} />
+      <SelectWithWarn saveId={saveId} saves={saves} />
     );
     const onRename = () => {
       setIsRenaming(true);
@@ -314,7 +313,6 @@ export function ScheduleSwitcher(props: {
           </MenuItem>
           {saveId && (
             <DeleteDialog
-              state={state}
               saveId={saveId}
               name={saves.find((save) => save.id === saveId)?.name ?? ""}
             >
@@ -362,7 +360,7 @@ export function ScheduleSwitcher(props: {
               )}
             </MenuItem>
           )}
-          <ExportDialog state={state}>
+          <ExportDialog>
             <MenuItem value="share">
               <LuShare2 />
               <Box flex="1">Share</Box>
