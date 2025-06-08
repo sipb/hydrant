@@ -8,7 +8,7 @@ import { SessionContext } from "../lib/auth";
 
 export function AuthButton() {
   const session = useContext(SessionContext);
-  const username = session?.get("username");
+  const username = session?.get("academic_id");
 
   return (
     <Tooltip

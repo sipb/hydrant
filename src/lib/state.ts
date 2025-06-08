@@ -13,6 +13,7 @@ import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { DEFAULT_PREFERENCES } from "./schema";
+import { getFavoriteCourses } from "./auth";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -53,6 +54,8 @@ export class State {
   private preferences: Preferences = DEFAULT_PREFERENCES;
   /** Set of starred class numbers */
   private starredClasses = new Set<string>();
+  /** Current access token */
+  private accessToken?: string = undefined;
 
   /** React callback to update state. */
   callback: ((state: HydrantState) => void) | undefined;
@@ -505,5 +508,36 @@ export class State {
     }
 
     this.starredClasses = new Set(storedStarred);
+  }
+
+  loadAccessToken(token?: string): void {
+    if (token === this.accessToken) {
+      return; // no need to update anything
+    }
+
+    // token has changed!
+    if (token) {
+      // user signed in
+      getFavoriteCourses(token)
+        .then((favoriteCourses) => {
+          favoriteCourses.forEach((cls) => {
+            if (!this.starredClasses.has(cls)) {
+              this.starredClasses.add(cls);
+            }
+          });
+
+          this.store.globalSet(
+            "starredClasses",
+            Array.from(this.starredClasses),
+          );
+        })
+        .catch((err: unknown) => {
+          console.error("Failed to fetch favorite courses:", err);
+        });
+    } else {
+      // TODO: user signed out
+    }
+
+    this.accessToken = token;
   }
 }

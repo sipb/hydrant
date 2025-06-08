@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useMemo } from "react";
 
 import { Center, Flex, Group, Button, ButtonGroup } from "@chakra-ui/react";
 import { Tooltip } from "../components/ui/tooltip";
@@ -23,6 +23,7 @@ import { useICSExport } from "../lib/gapi";
 import type { SemesterData } from "../lib/hydrant";
 import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
+import { SessionContext } from "../lib/auth";
 
 import type { Route } from "./+types/Index";
 
@@ -151,7 +152,12 @@ export const meta: Route.MetaFunction = () => [
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
   const { globalState } = loaderData;
+  const session = useContext(SessionContext);
   const hydrantData = useHydrant({ globalState });
+
+  useMemo(() => {
+    hydrantData.state.loadAccessToken(session?.get("access_token"));
+  }, [session, hydrantData.state]);
 
   return (
     <HydrantContext value={hydrantData}>

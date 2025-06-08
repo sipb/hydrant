@@ -41,7 +41,7 @@ export const SessionContext = createContext<Awaited<
 // API FUNCTION CALLS
 
 export const getFavoriteCourses = async (authToken: string) => {
-  const response = await fetch(`${FIREROAD_URL}/prefs/favorites`, {
+  const response = await fetch(`${FIREROAD_URL}/prefs/favorites/`, {
     headers: {
       Authorization: `Bearer ${authToken}`,
     },
@@ -69,7 +69,7 @@ export const setFavoriteCourses = async (
   authToken: string,
   favorites: string[],
 ) => {
-  const response = await fetch(`${FIREROAD_URL}/prefs/favorites`, {
+  const response = await fetch(`${FIREROAD_URL}/prefs/favorites/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
