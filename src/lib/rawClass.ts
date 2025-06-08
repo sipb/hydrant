@@ -1,10 +1,10 @@
 /** Raw timeslot format: [start slot, length of timeslot]. */
 export type RawTimeslot = [number, number];
 
-/** Raw section format: [[[10, 2], [70, 2]], "34-101". */
+/** Raw section format: [[[10, 2], [70, 2]], "34-101"]. */
 export type RawSection = [RawTimeslot[], string];
 
-/** The raw class format produced by combiner_ws.py. */
+/** The raw class format produced by the scraper. */
 export interface RawClass {
   /** Class number, e.g. "6.3900" */
   number: string;

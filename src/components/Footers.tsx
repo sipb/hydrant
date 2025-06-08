@@ -1,5 +1,4 @@
-import { Flex, Link, Text, Button, Image } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import {
   DialogRoot,
@@ -10,10 +9,10 @@ import {
   DialogTitle,
   DialogActionTrigger,
 } from "./ui/dialog";
-
-import type { State } from "../lib/state";
+import { Flex, Link, Text, Button, Image } from "@chakra-ui/react";
 
 import fuzzAndAnt from "../assets/fuzzAndAnt.png";
+import { HydrantContext } from "../lib/hydrant";
 
 function AboutDialog() {
   const [visible, setVisible] = useState(false);
@@ -133,8 +132,8 @@ function PrivacyPolicyDialog() {
 }
 
 /** The footer on the bottom of the calendar. */
-export function LeftFooter(props: { state: State }) {
-  const { state } = props;
+export function LeftFooter() {
+  const { state } = useContext(HydrantContext);
 
   return (
     <Flex direction="row" align="center" justify="center" gap={5}>

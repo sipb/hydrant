@@ -1,3 +1,14 @@
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from "react";
+
 import { AgGridReact } from "ag-grid-react";
 import {
   ModuleRegistry,
@@ -9,20 +20,11 @@ import {
   themeQuartz,
   type IRowNode,
   type ColDef,
+  type Module,
 } from "ag-grid-community";
+
 import { Box, Flex, Image, Input, Button, ButtonGroup } from "@chakra-ui/react";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-} from "react";
-
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
-
 import { InputGroup } from "./ui/input-group";
 import { LabelledButton } from "./ui/button";
 import { useColorMode } from "./ui/color-mode";
@@ -30,9 +32,9 @@ import { useColorMode } from "./ui/color-mode";
 import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import type { State } from "../lib/state";
 import type { TSemester } from "../lib/dates";
 import "./ClassTable.scss";
+import { HydrantContext } from "../lib/hydrant";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -46,16 +48,13 @@ const hydrantTheme = themeQuartz.withParams({
   wrapperBorderRadius: "var(--chakra-radii-md)",
 });
 
-const GRID_MODULES = [
+const GRID_MODULES: Module[] = [
   ClientSideRowModelModule,
   ExternalFilterModule,
   CellStyleModule,
   RenderApiModule,
+  ...(import.meta.env.DEV ? [ValidationModule] : []),
 ];
-
-if (import.meta.env.DEV) {
-  GRID_MODULES.push(ValidationModule);
-}
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
@@ -135,9 +134,9 @@ function ClassInput(props: {
   rowData: ClassTableRow[];
   /** Callback for updating the class filter. */
   setInputFilter: SetClassFilter;
-  state: State;
 }) {
-  const { rowData, setInputFilter, state } = props;
+  const { rowData, setInputFilter } = props;
+  const { state } = useContext(HydrantContext);
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
@@ -212,7 +211,7 @@ function ClassInput(props: {
       >
         <InputGroup startElement={<LuSearch />} width="fill-available">
           <Input
-            type="text"
+            type="search"
             aria-label="Search for a class"
             id="class-search"
             placeholder="Class number, name, or instructor"
@@ -276,11 +275,11 @@ const CLASS_FLAGS = [
 function ClassFlags(props: {
   /** Callback for updating the class filter. */
   setFlagsFilter: SetClassFilter;
-  state: State;
   /** Callback for updating the grid filter manually. */
   updateFilter: () => void;
 }) {
-  const { setFlagsFilter, state, updateFilter } = props;
+  const { setFlagsFilter, updateFilter } = props;
+  const { state } = useContext(HydrantContext);
 
   // Map from flag to whether it's on.
   const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
@@ -426,14 +425,14 @@ function ClassFlags(props: {
 
 const StarButton = ({
   cls,
-  state,
   onStarToggle,
 }: {
   cls: Class;
-  state: State;
   onStarToggle?: () => void;
 }) => {
+  const { state } = useContext(HydrantContext);
   const isStarred = state.isClassStarred(cls);
+
   return (
     <Button
       onClick={(e) => {
@@ -451,11 +450,10 @@ const StarButton = ({
 };
 
 /** The table of all classes, along with searching and filtering with flags. */
-export function ClassTable(props: {
-  classes: Map<string, Class>;
-  state: State;
-}) {
-  const { classes, state } = props;
+export function ClassTable() {
+  const { state } = useContext(HydrantContext);
+  const { classes } = state;
+
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns
@@ -488,7 +486,6 @@ export function ClassTable(props: {
         cellRenderer: (params: { value: string; data: ClassTableRow }) => (
           <StarButton
             cls={params.data.class}
-            state={state}
             onStarToggle={() => {
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               gridRef.current?.api?.refreshCells({
@@ -538,21 +535,18 @@ export function ClassTable(props: {
   }, []);
 
   // Setup rows
-  const rowData = useMemo(() => {
-    const rows: ClassTableRow[] = [];
-    classes.forEach((cls) => {
-      const { number, evals, name, description } = cls;
-      rows.push({
-        number: number,
-        rating: evals.rating.slice(0, 3), // remove the "/7.0" if exists
-        hours: evals.hours,
-        name: name,
+  const rowData: ClassTableRow[] = useMemo(
+    () =>
+      Array.from(classes.values(), (cls) => ({
+        number: cls.number,
+        rating: cls.evals.rating.slice(0, 3), // remove the "/7.0" if exists
+        hours: cls.evals.hours,
+        name: cls.name,
         class: cls,
-        inCharge: description.inCharge,
-      });
-    });
-    return rows;
-  }, [classes]);
+        inCharge: cls.description.inCharge,
+      })),
+    [classes],
+  );
 
   const [inputFilter, setInputFilter] = useState<ClassFilter | null>(null);
   const [flagsFilter, setFlagsFilter] = useState<ClassFilter | null>(null);
@@ -573,14 +567,9 @@ export function ClassTable(props: {
 
   return (
     <Flex direction="column" gap={4}>
-      <ClassInput
-        rowData={rowData}
-        setInputFilter={setInputFilter}
-        state={state}
-      />
+      <ClassInput rowData={rowData} setInputFilter={setInputFilter} />
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
-        state={state}
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />

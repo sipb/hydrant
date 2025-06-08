@@ -1,4 +1,8 @@
+import { useContext } from "react";
+
 import { Box, Text } from "@chakra-ui/react";
+import { Tooltip } from "./ui/tooltip";
+
 import FullCalendar from "@fullcalendar/react";
 import type { EventContentArg } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -7,22 +11,18 @@ import interactionPlugin from "@fullcalendar/interaction";
 import type { Activity } from "../lib/activity";
 import { NonClass, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
-import type { State } from "../lib/state";
 import { Class } from "../lib/class";
+import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.scss";
-import { Tooltip } from "./ui/tooltip";
 
 /**
  * Calendar showing all the activities, including the buttons on top that
  * change the schedule option selected.
  */
-export function Calendar(props: {
-  selectedActivities: Activity[];
-  viewedActivity: Activity | undefined;
-  state: State;
-}) {
-  const { selectedActivities, viewedActivity, state } = props;
+export function Calendar() {
+  const { state, hydrantState } = useContext(HydrantContext);
+  const { selectedActivities, viewedActivity } = hydrantState;
 
   const renderEvent = ({ event }: EventContentArg) => {
     const TitleText = () => (
