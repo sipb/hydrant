@@ -47,7 +47,7 @@ from __future__ import annotations
 import json
 import os.path
 import re
-from typing import Union
+from typing import Union, Literal
 from collections.abc import MutableMapping, Mapping, Iterable
 
 import requests
@@ -157,7 +157,7 @@ def has_final(html: BeautifulSoup) -> bool:
     return False
 
 
-def get_half(html: BeautifulSoup) -> Union[int, bool]:
+def get_half(html: BeautifulSoup) -> Literal[1, 2, False]:
     """
     Checks if the class is a half-semester course.
 
@@ -165,7 +165,7 @@ def get_half(html: BeautifulSoup) -> Union[int, bool]:
         html (BeautifulSoup): the input webpage
 
     Returns:
-        Union[int, bool]: 1 if the class is in the first half of the term,
+        Literal[1, 2, False]: 1 if the class is in the first half of the term,
             2 if the class is in the second half of the term, False if it is not a half
             semester course
     """
