@@ -20,7 +20,7 @@ cd "$REPO_DIR"
 git checkout -f deploy -q
 git pull -q
 
-# The scripts machine we use has Python 3.7, so use that.
+# The scripts machine we use has Python 3.8, so use that.
 # This updates $OUT_FILE.
 python3.8 -m scrapers
 OUT_FILE="$REPO_DIR/public/*.json"
