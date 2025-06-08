@@ -93,3 +93,111 @@ export const setFavoriteCourses = async (
     throw new Error("Failed to set favorite courses: " + result.error);
   }
 };
+
+interface ScheduleContents {
+  selectedSubjects: {
+    units: string;
+    subject_id: string;
+    title: string;
+    allowedSections: {
+      Lecture?: number[];
+      Recitation?: number[];
+      Lab?: number[];
+      Design?: number[];
+    };
+    selectedSections: {
+      Lecture?: number;
+      Recitation?: number;
+      Lab?: number;
+      Design?: number;
+    };
+  }[];
+}
+
+export const getSchedules = async (authToken: string, id?: string) => {
+  const response = await fetch(
+    `${FIREROAD_URL}/sync/schedules/${id ? `?id=${id}` : ""}`,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch schedules");
+  }
+
+  if (typeof id == "string") {
+    // id specified, return single schedule
+    const result = (await response.json()) as
+      | {
+          success: false;
+          error: string;
+        }
+      | {
+          success: true;
+          file: {
+            name: string;
+            id: string;
+            changed: string;
+            downloaded: string;
+            agent: string;
+            contents: ScheduleContents;
+          };
+        };
+
+    if (!result.success) {
+      throw new Error("Failed to fetch schedule: " + result.error);
+    }
+
+    return result.file;
+  } else {
+    // no id specified, return all schedules
+    const result = (await response.json()) as
+      | {
+          success: false;
+          error: string;
+        }
+      | {
+          success: true;
+          files: Record<
+            string,
+            { name: string; changed: string; agent: string }
+          >;
+        };
+
+    if (!result.success) {
+      throw new Error("Failed to fetch schedules: " + result.error);
+    }
+
+    return result.files;
+  }
+};
+
+export const deleteSchedule = async (authToken: string, id: string) => {
+  const response = await fetch(`${FIREROAD_URL}/delete_schedule/`, {
+    method: "POST",
+    body: JSON.stringify({ id }),
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete schedule");
+  }
+
+  const result = (await response.json()) as
+    | {
+        success: false;
+        error: string;
+      }
+    | { success: true };
+
+  if (!result.success) {
+    throw new Error("Failed to delete schedule: " + result.error);
+  }
+};
+
+// export const syncSchedule = () => { };
