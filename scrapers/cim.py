@@ -16,10 +16,12 @@ run() scrapes this data and writes it to cim.json, in the format:
     }
 """
 
+from __future__ import annotations
+
 import json
 import os.path
 from collections import OrderedDict
-from typing import Dict, Iterable, List, OrderedDict as OrderedDictType, Set
+from collections.abc import Iterable
 
 
 import requests
@@ -50,7 +52,7 @@ def get_sections() -> Iterable[Tag]:
     )
 
 
-def get_courses(section: Tag) -> OrderedDictType[str, Set[str]]:
+def get_courses(section: Tag) -> OrderedDict[str, set[str]]:
     """
     Extracts the courses contained in a section and their corresponding CI-M
     subjects.
@@ -63,13 +65,13 @@ def get_courses(section: Tag) -> OrderedDictType[str, Set[str]]:
             within the given section to the set of subject numbers (classes) that may
             satisfy the CI-M requirement for that course number.
     """
-    courses: OrderedDictType[str, Set[str]] = OrderedDict()
+    courses: OrderedDict[str, set[str]] = OrderedDict()
     for subsec in section.select(".ci-m__section"):
         title = subsec.select_one(".ci-m__section-title").text.strip().replace("*", "")  # type: ignore
 
         # If no title, add to the previous subsection
         if title:
-            subjects: Set[str] = set()
+            subjects: set[str] = set()
         else:
             title, subjects = courses.popitem()
 
@@ -87,14 +89,14 @@ def run() -> None:
     sections = get_sections()
 
     # This maps each course number to a set of CI-M subjects for that course
-    courses: OrderedDictType[str, Set[str]] = OrderedDict()
+    courses: OrderedDict[str, set[str]] = OrderedDict()
     for section in sections:
         new_courses = get_courses(section)
         assert new_courses.keys().isdisjoint(courses.keys())
         courses.update(new_courses)
 
     # This maps each subject to a list of courses for which it is a CI-M
-    subjects: Dict[str, Dict[str, List[str]]] = {}
+    subjects: dict[str, dict[str, list[str]]] = {}
     for course in courses:
         for subj in courses[course]:
             for number in subj.replace("J", "").split("/"):

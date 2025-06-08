@@ -21,9 +21,12 @@ Functions:
     run(is_semester_term)
 """
 
+from __future__ import annotations
+
 import json
 import os.path
-from typing import Any, Dict, List, Mapping, MutableMapping, Sequence, Tuple, Union
+from collections.abc import Mapping, MutableMapping, Sequence
+from typing import Any, Union
 
 import requests
 from .utils import (
@@ -39,7 +42,7 @@ from .utils import (
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
-def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> Tuple[int, int]:
+def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
     """Parses a timeslot. Example: parse_timeslot("M", "10-11.30", False) -> [4, 3]
 
     Args:
@@ -77,7 +80,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> Tuple[int, int]:
     return start_slot, end_slot - start_slot
 
 
-def parse_section(section: str) -> Tuple[List[Tuple[int, int]], str]:
+def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
     """Parses a section string.
     Example: "32-123/TR/0/11/F/0/2" -> [[[36, 2], [96, 2], [132, 2]], '32-123']
 
@@ -88,7 +91,7 @@ def parse_section(section: str) -> Tuple[List[Tuple[int, int]], str]:
         list[Union[list[str], str]]: The parsed section.
     """
     place, *infos = section.split("/")
-    slots: List[Tuple[int, int]] = []
+    slots: list[tuple[int, int]] = []
 
     for weekdays, is_pm_int, slot in grouper(infos, 3):
         for day in weekdays:
@@ -99,7 +102,7 @@ def parse_section(section: str) -> Tuple[List[Tuple[int, int]], str]:
     return slots, place
 
 
-def parse_schedule(schedule: str) -> Dict[str, Union[List[str], bool]]:
+def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
@@ -111,7 +114,7 @@ def parse_schedule(schedule: str) -> Dict[str, Union[List[str], bool]]:
         dict[str, union[list, bool]: The parsed schedule
     """
     section_tba = False
-    result: Dict[str, Union[List[str], bool]] = {}
+    result: dict[str, Union[list[str], bool]] = {}
 
     # Kinds of sections that exist.
     result["sectionKinds"] = []
@@ -145,7 +148,7 @@ def parse_schedule(schedule: str) -> Dict[str, Union[List[str], bool]]:
     return result
 
 
-def decode_quarter_date(date: str) -> Union[Tuple[int, int], None]:
+def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
     """
     Decodes a quarter date into a month and day.
 
@@ -167,7 +170,7 @@ def decode_quarter_date(date: str) -> Union[Tuple[int, int], None]:
 
 def parse_quarter_info(
     course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> Dict[str, Dict[str, Tuple[int, int]]]:
+) -> dict[str, dict[str, tuple[int, int]]]:
     """
     Parses quarter info from the course.
     If quarter information key is present, returns either start date, end date, or both.
@@ -213,16 +216,16 @@ def parse_quarter_info(
 
 def parse_attributes(
     course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> Dict[str, bool]:
+) -> dict[str, bool]:
     """
     Parses attributes of the course.
 
     Args:
-        course (Mapping[str, Union[bool, float, int, List[str], str]]):
+        course (Mapping[str, Union[bool, float, int, list[str], str]]):
             The course object.
 
     Returns:
-        Dict[str, bool]: The attributes of the course.
+        dict[str, bool]: The attributes of the course.
     """
     hass_code: str = course.get("hass_attribute", "X")[-1]  # type: ignore
     comms_code: str = course.get("communication_requirement", "")  # type: ignore
@@ -243,7 +246,7 @@ def parse_attributes(
 
 def parse_terms(
     course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> Dict[str, List[str]]:
+) -> dict[str, list[str]]:
     """
     Parses the terms of the course.
 
@@ -269,7 +272,7 @@ def parse_terms(
 
 def parse_prereqs(
     course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """
     Parses prerequisites from the course.
 
@@ -311,14 +314,14 @@ def get_course_data(
     """
     course_code: str = course["subject_id"]  # type: ignore
     course_num, course_class = course_code.split(".")
-    raw_class: Dict[
+    raw_class: dict[
         str,
         Union[
             str,
             bool,
             float,
             int,
-            Mapping[str, Tuple[int, int]],
+            Mapping[str, tuple[int, int]],
             Sequence[str],
             Mapping[str, Union[Sequence[str], bool]],
             bool,

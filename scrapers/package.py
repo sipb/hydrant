@@ -13,12 +13,15 @@ Dependencies:
     utils (within this folder)
 """
 
+from __future__ import annotations
+
 import datetime
 import json
 import os
 import os.path
 import sys
-from typing import Any, Dict, Iterable, Union
+from typing import Any, Union
+from collections.abc import Iterable
 
 from .utils import get_term_info
 
@@ -46,7 +49,7 @@ def load_json_data(json_path: str) -> Any:
         return json.load(json_file)
 
 
-def load_toml_data(toml_dir: str) -> Dict[str, Any]:
+def load_toml_data(toml_dir: str) -> dict[str, Any]:
     """
     Loads data from the provided directory that consists exclusively of TOML files
 
@@ -57,7 +60,7 @@ def load_toml_data(toml_dir: str) -> Dict[str, Any]:
     * dict: The data contained within the directory
     """
     toml_dir = os.path.join(package_dir, toml_dir)
-    out: Dict[str, Any] = {}
+    out: dict[str, Any] = {}
     for fname in os.listdir(toml_dir):
         if fname.endswith(".toml"):
             with open(os.path.join(toml_dir, fname), "rb") as toml_file:
@@ -66,8 +69,8 @@ def load_toml_data(toml_dir: str) -> Dict[str, Any]:
 
 
 def merge_data(
-    datasets: Iterable[Dict[Any, Dict[str, Any]]], keys_to_keep: Iterable[str]
-) -> Dict[Any, Dict[str, Any]]:
+    datasets: Iterable[dict[Any, dict[str, Any]]], keys_to_keep: Iterable[str]
+) -> dict[Any, dict[str, Any]]:
     """
     Combines the provided datasets, retaining only keys from keys_to_keep.
     NOTE: Later datasets will override earlier ones
@@ -79,7 +82,7 @@ def merge_data(
     Returns:
     * dict[any, dict]: The combined data
     """
-    result: Dict[str, Dict[str, Any]] = {k: {} for k in keys_to_keep}
+    result: dict[str, dict[str, Any]] = {k: {} for k in keys_to_keep}
     for key in keys_to_keep:
         for dataset in datasets:
             if key in dataset:
@@ -118,12 +121,12 @@ def run() -> None:
     url_name_sem = term_info_sem["urlName"]
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    obj_presem: Dict[str, Union[Dict[str, Any], str, Dict[Any, Dict[str, Any]]]] = {
+    obj_presem: dict[str, Union[dict[str, Any], str, dict[Any, dict[str, Any]]]] = {
         "termInfo": term_info_presem,
         "lastUpdated": now,
         "classes": courses_presem,
     }
-    obj_sem: Dict[str, Union[Dict[str, Any], str, Dict[Any, Dict[str, Any]]]] = {
+    obj_sem: dict[str, Union[dict[str, Any], str, dict[Any, dict[str, Any]]]] = {
         "termInfo": term_info_sem,
         "lastUpdated": now,
         "classes": courses_sem,

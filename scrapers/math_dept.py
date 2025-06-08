@@ -14,14 +14,17 @@ Functions:
     run()
 """
 
+from __future__ import annotations
+
 from pprint import pprint
-from typing import Dict, Iterable, List, Sequence, Tuple, Union
+from collections.abc import Iterable, Sequence
+from typing import Union
 from bs4 import BeautifulSoup, Tag
 import requests
 from .fireroad import parse_timeslot, parse_section
 
 
-def parse_when(when: str) -> Tuple[str, str]:
+def parse_when(when: str) -> tuple[str, str]:
     """
     Parses when the class happens.
 
@@ -29,7 +32,7 @@ def parse_when(when: str) -> Tuple[str, str]:
         when (str): A string describing when the class happens.
 
     Returns:
-        Tuple[str, str]: A parsed version of this string.
+        tuple[str, str]: A parsed version of this string.
     """
     # special casing is good enough (otherwise this could be a for loop)
     if when[1].isdigit():
@@ -55,7 +58,7 @@ def test_parse_when() -> None:
     assert parse_when("MWF11") == ("MWF", "11")
 
 
-def parse_many_timeslots(days: str, times: str) -> Iterable[Tuple[int, int]]:
+def parse_many_timeslots(days: str, times: str) -> Iterable[tuple[int, int]]:
     """
     Parses many timeslots
 
@@ -64,7 +67,7 @@ def parse_many_timeslots(days: str, times: str) -> Iterable[Tuple[int, int]]:
         times (str): The timeslot
 
     Returns:
-        Iterable[Tuple[int, int]]: All of the parsed timeslots, as a list
+        Iterable[tuple[int, int]]: All of the parsed timeslots, as a list
     """
     # parse timeslot wants only one letter
     return (parse_timeslot(day, times, False) for day in days)
@@ -87,7 +90,7 @@ def make_raw_sections(days: str, times: str, room: str) -> str:
 
 def make_section_override(
     timeslots: Sequence[Sequence[int]], room: str
-) -> Tuple[Tuple[Sequence[Sequence[int]], str]]:
+) -> tuple[tuple[Sequence[Sequence[int]], str]]:
     """
     Makes a section override
 
@@ -96,7 +99,7 @@ def make_section_override(
         room (str): The room
 
     Returns:
-        Tuple[Tuple[Sequence[Sequence[int]], str]]: The section override
+        tuple[tuple[Sequence[Sequence[int]], str]]: The section override
     """
     return ((timeslots, room),)
     # lol this is wrong
@@ -117,7 +120,7 @@ def get_rows():
     return rows
 
 
-def parse_subject(subject: str) -> List[str]:
+def parse_subject(subject: str) -> list[str]:
     """
     Parses the subject
 
@@ -125,7 +128,7 @@ def parse_subject(subject: str) -> List[str]:
         subject (str): The subject name to parse
 
     Returns:
-        List[str]: A clean list of subjects corresponding to that subject.
+        list[str]: A clean list of subjects corresponding to that subject.
     """
     # remove "J" from joint subjects
     subject = subject.replace("J", "")
@@ -144,7 +147,7 @@ def parse_subject(subject: str) -> List[str]:
 
 def parse_row(
     row: Tag,
-) -> Dict[str, Dict[str, Union[str, Tuple[Tuple[Sequence[Sequence[int]], str]]]]]:
+) -> dict[str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]]:
     """
     Parses the provided row
 
@@ -152,11 +155,11 @@ def parse_row(
         row (bs4.element.Tag): The row that needs to be parsed.
 
     Returns:
-        Dict[str, Dict[str, Union[str, Tuple[Tuple[Sequence[Sequence[int]], str]]]]]:
+        dict[str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]]:
             The parsed row
     """
-    result: Dict[
-        str, Dict[str, Union[str, Tuple[Tuple[Sequence[Sequence[int]], str]]]]
+    result: dict[
+        str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]
     ] = {}
 
     subject: str = row.find("div", {"class": "subject"}).text  # type: ignore
@@ -184,18 +187,18 @@ def parse_row(
 
 
 def run() -> (
-    Dict[str, Dict[str, Union[str, Tuple[Tuple[Sequence[Sequence[int]], str]]]]]
+    dict[str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]]
 ):
     """
     The main entry point
 
     Returns:
-        Dict[str, Dict[str, Union[str, Tuple[Tuple[Sequence[Sequence[int]], str]]]]]:
+        dict[str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]]:
             All the schedules
     """
     rows = get_rows()
-    overrides: Dict[
-        str, Dict[str, Union[str, Tuple[Tuple[Sequence[Sequence[int]], str]]]]
+    overrides: dict[
+        str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]
     ] = {}
 
     for row in rows:

@@ -15,8 +15,11 @@ Constants:
     FILEPATHS
 """
 
+from __future__ import annotations
+
 import json
-from typing import Iterable, List, Mapping
+from typing import Iterable
+from collections.abc import Mapping
 from nltk.tokenize import word_tokenize, sent_tokenize  # type: ignore
 
 KEYWORDS = ["limited", "restricted", "enrollment", "preference", "priority"]
@@ -42,7 +45,7 @@ def has_keyword(sometext: str) -> bool:
     return False
 
 
-def find_key_sentences(sometext: str) -> List[str]:
+def find_key_sentences(sometext: str) -> list[str]:
     """
     Returns a list of all sentences that contain a keyword
 
@@ -50,7 +53,7 @@ def find_key_sentences(sometext: str) -> List[str]:
         sometext (str): The text to search for keywords
 
     Returns:
-        List[str]: A list of sentences that contain a keyword
+        list[str]: A list of sentences that contain a keyword
     """
     my_sentences = sent_tokenize(sometext)  # sent_tokenize is much better than .split()
     return [sentence for sentence in my_sentences if has_keyword(sentence)]
@@ -58,7 +61,7 @@ def find_key_sentences(sometext: str) -> List[str]:
 
 def get_description_list(
     dataset: Mapping[str, Mapping[str, Mapping[str, str]]],
-) -> List[str]:
+) -> list[str]:
     """
     Obtains a list of descriptions from the dataset
 
@@ -67,20 +70,20 @@ def get_description_list(
             The dataset containing class information
 
     Returns:
-        List[str]: A list of descriptions from the dataset
+        list[str]: A list of descriptions from the dataset
     """
     classlist = dataset["classes"].values()
     return [record["description"] for record in classlist]
 
 
-def get_my_data() -> List[str]:
+def get_my_data() -> list[str]:
     """
     obtains the data
 
     Returns:
-        List[str]: A list of descriptions from all the JSON files
+        list[str]: A list of descriptions from all the JSON files
     """
-    descriptions: List[str] = []
+    descriptions: list[str] = []
     for filepath in FILEPATHS:
         full_path = FOLDER + filepath
         with open(full_path, "r", encoding="utf-8") as file:
@@ -89,7 +92,7 @@ def get_my_data() -> List[str]:
     return descriptions
 
 
-def find_matching_records(descriptions: Iterable[str]) -> List[str]:
+def find_matching_records(descriptions: Iterable[str]) -> list[str]:
     """
     find sentences from record descriptions that contain a keyword
 
@@ -97,9 +100,9 @@ def find_matching_records(descriptions: Iterable[str]) -> List[str]:
         descriptions (Iterable[str]): A list of descriptions to search for keywords
 
     Returns:
-        List[str]: A sorted list of unique sentences that contain a keyword
+        list[str]: A sorted list of unique sentences that contain a keyword
     """
-    result: List[str] = []
+    result: list[str] = []
     for description in descriptions:
         result.extend(find_key_sentences(description))
     return list(sorted(set(result)))
