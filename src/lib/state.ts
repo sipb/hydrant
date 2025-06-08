@@ -288,7 +288,7 @@ export class State {
     } else {
       this.starredClasses.add(cls.number);
     }
-    this.store.set("starredClasses", Array.from(this.starredClasses));
+    this.store.globalSet("starredClasses", Array.from(this.starredClasses));
     this.updateState();
   }
 
@@ -485,9 +485,25 @@ export class State {
       }
     }
     // Load starred classes from storage
-    const storedStarred = this.store.get("starredClasses");
-    if (storedStarred) {
-      this.starredClasses = new Set(storedStarred);
+    const storedStarred = this.store.globalGet("starredClasses") ?? [];
+
+    // backwards compatibility, change from term store to global store
+    const storedStarredTerm = this.store.get("starredClasses") as
+      | string[]
+      | null;
+    if (storedStarredTerm) {
+      const totalStarred = storedStarred.concat(storedStarredTerm);
+      this.store.globalSet("starredClasses", totalStarred);
+
+      storedStarredTerm.forEach((cls) => {
+        if (!(cls in storedStarred)) {
+          storedStarred.push(cls);
+        }
+      });
+
+      this.store.delete("starredClasses");
     }
+
+    this.starredClasses = new Set(storedStarred);
   }
 }
