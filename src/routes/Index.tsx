@@ -25,12 +25,9 @@ import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 
 import type { Route } from "./+types/Index";
-import { getSession } from "../lib/auth";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ request }: Route.ClientActionArgs) {
-  const session = await getSession(document.cookie);
-
   const searchParams = new URL(request.url).searchParams;
   const urlNameOrig = searchParams.get("t");
 
@@ -69,12 +66,11 @@ export async function clientLoader({ request }: Route.ClientActionArgs) {
       lastUpdated,
       latestTerm.semester.urlName,
     ),
-    username: session.get("academic_id") ?? null,
   };
 }
 
 /** The application entry. */
-function HydrantApp({ username }: { username: string | null }) {
+function HydrantApp() {
   const { state } = useContext(HydrantContext);
 
   const [isExporting, setIsExporting] = useState(false);
@@ -108,7 +104,7 @@ function HydrantApp({ username }: { username: string | null }) {
               </Group>
               <Group>
                 <PreferencesDialog />
-                <AuthButton username={username} />
+                <AuthButton />
               </Group>
             </Group>
           </Center>
@@ -154,12 +150,12 @@ export const meta: Route.MetaFunction = () => [
 
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
-  const { globalState, username } = loaderData;
+  const { globalState } = loaderData;
   const hydrantData = useHydrant({ globalState });
 
   return (
     <HydrantContext value={hydrantData}>
-      <HydrantApp username={username} />
+      <HydrantApp />
     </HydrantContext>
   );
 }

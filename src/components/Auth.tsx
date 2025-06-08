@@ -3,8 +3,13 @@ import { Tooltip } from "./ui/tooltip";
 
 import { LuUser } from "react-icons/lu";
 import { Link } from "react-router";
+import { useContext } from "react";
+import { SessionContext } from "../lib/auth";
 
-export function AuthButton({ username }: { username: string | null }) {
+export function AuthButton() {
+  const session = useContext(SessionContext);
+  const username = session?.get("username");
+
   return (
     <Tooltip
       content={

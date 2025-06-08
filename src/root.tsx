@@ -1,5 +1,4 @@
 import {
-  data,
   isRouteErrorResponse,
   Links,
   Meta,
@@ -13,7 +12,12 @@ import { Provider } from "./components/ui/provider";
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
 import "@fontsource-variable/inter/index.css";
-import { destroySession, FIREROAD_VERIFY_URL, getSession } from "./lib/auth";
+import {
+  destroySession,
+  FIREROAD_VERIFY_URL,
+  getSession,
+  SessionContext,
+} from "./lib/auth";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
@@ -70,13 +74,19 @@ export async function clientLoader() {
       // token expired
       console.log("Token expired!");
       document.cookie = await destroySession(session);
-      return data(null);
+      return { session: null };
     }
   }
+
+  return { session };
 }
 
-export default function Root() {
-  return <Outlet />;
+export default function Root({ loaderData }: Route.ComponentProps) {
+  return (
+    <SessionContext value={loaderData.session}>
+      <Outlet />
+    </SessionContext>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

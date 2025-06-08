@@ -1,3 +1,4 @@
+import { createContext } from "react";
 import { createCookieSessionStorage } from "react-router";
 
 // https://pilcrowonpaper.com/blog/oauth-guide/
@@ -32,3 +33,7 @@ export const { getSession, commitSession, destroySession } =
       secrets: ["secret:3"],
     },
   });
+
+export const SessionContext = createContext<Awaited<
+  ReturnType<typeof getSession>
+> | null>(null);
