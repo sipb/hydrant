@@ -2,7 +2,11 @@
 import { data, replace } from "react-router";
 
 import type { SessionData } from "../lib/auth";
-import { commitSession, FIREROAD_FETCH_TOKEN_URL, getSession } from "../lib/auth";
+import {
+  commitSession,
+  FIREROAD_FETCH_TOKEN_URL,
+  getSession,
+} from "../lib/auth";
 import type { Route } from "./+types/callback";
 
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
@@ -10,7 +14,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const code = url.searchParams.get("code");
 
   if (!code) {
-    throw data(null, 400)
+    throw data(null, 400);
   }
 
   const fetch_token_url = new URL(FIREROAD_FETCH_TOKEN_URL);
@@ -21,11 +25,11 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
     if (!response.ok) {
       // error fetching token
-      throw data(null, 400)
+      throw data(null, 400);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const access_info = (await response.json()).access_info as SessionData;;
+    const access_info = (await response.json()).access_info as SessionData;
 
     const session = await getSession(document.cookie);
 
@@ -39,8 +43,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
     document.cookie = await commitSession(session);
 
     return replace("/");
-
   } catch {
-    throw data(null, 500)
+    throw data(null, 500);
   }
 }
