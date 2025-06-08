@@ -14,6 +14,7 @@ import { TermSwitcher } from "../components/TermSwitcher";
 import { FeedbackBanner } from "../components/FeedbackBanner";
 import { MatrixLink } from "../components/MatrixLink";
 import { PreregLink } from "../components/PreregLink";
+import { AuthButton } from "../components/Auth";
 import { LuCalendar } from "react-icons/lu";
 
 import { State } from "../lib/state";
@@ -24,9 +25,12 @@ import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 
 import type { Route } from "./+types/Index";
+import { getSession } from "../lib/auth";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ request }: Route.ClientActionArgs) {
+  const session = await getSession(document.cookie);
+
   const searchParams = new URL(request.url).searchParams;
   const urlNameOrig = searchParams.get("t");
 
@@ -65,11 +69,12 @@ export async function clientLoader({ request }: Route.ClientActionArgs) {
       lastUpdated,
       latestTerm.semester.urlName,
     ),
+    username: session.get("academic_id") ?? null,
   };
 }
 
 /** The application entry. */
-function HydrantApp() {
+function HydrantApp({ username }: { username: string | null }) {
   const { state } = useContext(HydrantContext);
 
   const [isExporting, setIsExporting] = useState(false);
@@ -98,10 +103,13 @@ function HydrantApp() {
           <Center>
             <Group wrap="wrap" justifyContent="center" gap={4}>
               <TermSwitcher />
-              <Group gap={4}>
+              <Group>
                 <ScheduleSwitcher />
               </Group>
-              <PreferencesDialog />
+              <Group>
+                <PreferencesDialog />
+                <AuthButton username={username} />
+              </Group>
             </Group>
           </Center>
           <Center>
@@ -146,12 +154,12 @@ export const meta: Route.MetaFunction = () => [
 
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
-  const { globalState } = loaderData;
+  const { globalState, username } = loaderData;
   const hydrantData = useHydrant({ globalState });
 
   return (
     <HydrantContext value={hydrantData}>
-      <HydrantApp />
+      <HydrantApp username={username} />
     </HydrantContext>
   );
 }

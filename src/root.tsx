@@ -1,4 +1,5 @@
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
@@ -12,6 +13,7 @@ import { Provider } from "./components/ui/provider";
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
 import "@fontsource-variable/inter/index.css";
+import { destroySession, FIREROAD_VERIFY_URL, getSession } from "./lib/auth";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
@@ -50,6 +52,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </body>
     </html>
   );
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export async function clientLoader() {
+  const session = await getSession(document.cookie);
+
+  if (session.has("access_token")) {
+    const response = await fetch(FIREROAD_VERIFY_URL, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session.get("access_token") ?? ""}`,
+      },
+    });
+
+    if (!response.ok) {
+      // token expired
+      console.log("Token expired!");
+      document.cookie = await destroySession(session);
+      return data(null);
+    }
+  }
 }
 
 export default function Root() {
