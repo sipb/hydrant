@@ -69,7 +69,7 @@ export const setFavoriteCourses = async (
   authToken: string,
   favorites: string[],
 ) => {
-  const response = await fetch(`${FIREROAD_URL}/prefs/favorites/`, {
+  const response = await fetch(`${FIREROAD_URL}/prefs/set_favorites/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

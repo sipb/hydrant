@@ -13,7 +13,7 @@ import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { DEFAULT_PREFERENCES } from "./schema";
-import { getFavoriteCourses } from "./auth";
+import { getFavoriteCourses, setFavoriteCourses } from "./auth";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -291,7 +291,11 @@ export class State {
     } else {
       this.starredClasses.add(cls.number);
     }
-    this.store.globalSet("starredClasses", Array.from(this.starredClasses));
+    const starredArray = Array.from(this.starredClasses);
+
+    this.store.globalSet("starredClasses", starredArray);
+    if (this.accessToken)
+      void setFavoriteCourses(this.accessToken, starredArray);
     this.updateState();
   }
 
