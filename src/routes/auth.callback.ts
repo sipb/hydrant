@@ -12,6 +12,7 @@ import type { Route } from "./+types/auth.callback";
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
+  const next = url.searchParams.get("next");
 
   if (!code) {
     throw data(null, 400);
@@ -42,7 +43,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
     document.cookie = await commitSession(session);
 
-    return replace("/");
+    return replace(next ?? "/");
   } catch {
     throw data(null, 500);
   }

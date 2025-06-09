@@ -7,7 +7,7 @@ export function clientLoader({ request }: Route.ClientLoaderArgs) {
   const authorizationURL = new URL(FIREROAD_LOGIN_URL);
 
   const currentUrl = new URL(request.url);
-  const callbackUrl = new URL(currentUrl.origin + "/auth/callback");
+  const callbackUrl = new URL(currentUrl.origin + "/auth/callback" + currentUrl.search);
 
   authorizationURL.searchParams.set("redirect", callbackUrl.toString());
 
