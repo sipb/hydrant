@@ -28,7 +28,7 @@ import { SessionContext } from "../lib/auth";
 import type { Route } from "./+types/Index";
 
 // eslint-disable-next-line react-refresh/only-export-components
-export async function clientLoader({ request }: Route.ClientActionArgs) {
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
   const urlNameOrig = searchParams.get("t");
 
