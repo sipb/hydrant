@@ -22,7 +22,9 @@ export function AuthButton() {
         aria-label="Login"
         size="sm"
         variant="outline"
-        as={(props) => <Link to={username ? "/logout" : "/login"} {...props} />}
+        as={(props) => (
+          <Link to={"/auth/" + (username ? "logout" : "login")} {...props} />
+        )}
       >
         <LuUser />
       </IconButton>

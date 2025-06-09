@@ -25,7 +25,7 @@ import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 import { SessionContext } from "../lib/auth";
 
-import type { Route } from "./+types/Index";
+import type { Route } from "./+types/_index";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {

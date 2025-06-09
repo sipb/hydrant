@@ -7,7 +7,7 @@ import {
   FIREROAD_FETCH_TOKEN_URL,
   getSession,
 } from "../lib/auth";
-import type { Route } from "./+types/callback";
+import type { Route } from "./+types/auth.callback";
 
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const url = new URL(request.url);
