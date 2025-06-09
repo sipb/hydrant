@@ -8,7 +8,8 @@ export function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   const currentUrl = new URL(request.url);
   const callbackUrl = new URL(
-    currentUrl.origin + "/auth/callback" + currentUrl.search,
+    "/auth/callback" + currentUrl.search,
+    currentUrl.origin,
   );
 
   authorizationURL.searchParams.set("redirect", callbackUrl.toString());
