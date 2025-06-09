@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.8
 
 """Accept a web-hook from GitHub telling us about a new built version of Hydrant."""
 

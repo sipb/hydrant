@@ -4,7 +4,7 @@
 
 Install:
 
-- Python 3, at least Python 3.7.
+- Python 3, at least Python 3.8.
 - Node.js, at least Node.js 20.
   - One way to manage Node versions is using [nvm](https://github.com/nvm-sh/nvm).
 - [Black](https://black.readthedocs.io/en/stable/index.html), if you plan on contributing changes to the Python backend.

@@ -3,50 +3,55 @@ We get some of our data from scraping the catalog site.
 
 run() scrapes this data and writes it to catalog.json, in the format:
 
-{
-    "6.3900": {
-        "nonext": true | false,
-        "repeat": true | false,
-        "url": "https://introml.mit.edu",
-        "final": true | false,
-        "half": false | 1 | 2,
-        "limited": true | false,
+.. code-block:: json
+    {
+        "6.3900": {
+            "nonext": true | false,
+            "repeat": true | false,
+            "url": "https://introml.mit.edu",
+            "final": true | false,
+            "half": false | 1 | 2,
+            "limited": true | false,
+        }
     }
-}
 
 Functions:
-* is_not_offered_this_year(html)
-* is_not_offered_next_year(html)
-* is_repeat_allowed(html)
-* get_url(html)
-* has_final(html)
-* get_half(html)
-* is_limited(html)
-* get_course_data(filtered_html)
-* get_home_catalog_links()
-* get_all_catalog_links(initial_hrefs)
-* get_anchors_with_classname(element)
-* scrape_courses_from_page(courses, href)
-* run()
+    is_not_offered_this_year(html)
+    is_not_offered_next_year(html)
+    is_repeat_allowed(html)
+    get_url(html)
+    has_final(html)
+    get_half(html)
+    is_limited(html)
+    get_course_data(filtered_html)
+    get_home_catalog_links()
+    get_all_catalog_links(initial_hrefs)
+    get_anchors_with_classname(element)
+    scrape_courses_from_page(courses, href)
+    run()
 
 Constants:
-* BASE_URL
-* LIMITED_REGEX
+    BASE_URL
+    LIMITED_REGEX
 
 Dependencies:
-* json
-* os.path
-* re
-* requests
-* bs4
+    json
+    os.path
+    re
+    requests
+    bs4
 """
+
+from __future__ import annotations
 
 import json
 import os.path
 import re
+from typing import Union, Literal
+from collections.abc import MutableMapping, Mapping, Iterable
 
 import requests
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag
 
 BASE_URL = "http://student.mit.edu/catalog"
 
@@ -72,13 +77,15 @@ LIMITED_REGEX = re.compile(
 )
 
 
-def is_not_offered_this_year(html):
+def is_not_offered_this_year(html: BeautifulSoup) -> bool:
     """
+    Checks if the class is not offered this year.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: True if the class is not offered this year
+        bool: True if the class is not offered this year
     """
     if html.find(attrs={"src": "/icns/nooffer.gif"}):
         return True
@@ -89,68 +96,78 @@ def is_not_offered_this_year(html):
     return False
 
 
-def is_not_offered_next_year(html):
+def is_not_offered_next_year(html: BeautifulSoup) -> bool:
     """
+    Checks if the class is not offered next year.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: True if the class is not offered next year
+        bool: True if the class is not offered next year
     """
     if html.find(attrs={"src": "/icns/nonext.gif"}):
         return True
     return False
 
 
-def is_repeat_allowed(html):
+def is_repeat_allowed(html: BeautifulSoup):
     """
+    Checks if you're allowed to retake the class for credit.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: Whether you're allowed to retake the class for credit
+        bool: Whether you're allowed to retake the class for credit
     """
     if html.find(attrs={"src": "/icns/repeat.gif"}):
         return True
     return False
 
 
-def get_url(html):
+def get_url(html: BeautifulSoup) -> Union[NavigableString, str]:
     """
+    Finds a URL on the webpage, if it exists.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * str: Some URL on the webpage, or an empty string if there isn't one
+        str: Some URL on the webpage, or an empty string if there isn't one
     """
     url = html.find(text=re.compile("https?://(?!whereis)"))
     if url:
-        return url
+        return url  # type: ignore
     return ""
 
 
-def has_final(html):
+def has_final(html: BeautifulSoup) -> bool:
     """
+    Checks if the class has a final
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: Whether the class has a final
+        bool: Whether the class has a final
     """
     if html.find(text="+final"):
         return True
     return False
 
 
-def get_half(html):
+def get_half(html: BeautifulSoup) -> Literal[1, 2, False]:
     """
-    Returns 1 for 1st half, 2 for 2nd half, False if not a half semester course
+    Checks if the class is a half-semester course.
 
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * Union[int, bool]
+        Literal[1, 2, False]: 1 if the class is in the first half of the term,
+            2 if the class is in the second half of the term, False if it is not a half
+            semester course
     """
     if html.find(text=re.compile("first half of term")):
         return 1
@@ -159,26 +176,30 @@ def get_half(html):
     return False
 
 
-def is_limited(html):
+def is_limited(html: BeautifulSoup) -> bool:
     """
+    Checks if enrollment in the class is limited.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: True if enrollment in the class is limited
+        bool: True if enrollment in the class is limited
     """
     if html.find(text=LIMITED_REGEX):
         return True
     return False
 
 
-def get_course_data(filtered_html):
+def get_course_data(filtered_html: BeautifulSoup) -> dict[str, Union[bool, int, str]]:
     """
+    Gets the metadata about a class from the filtered HTML.
+
     Args:
-    * filtered_html (BeautifulSoup): the input webpage
+        filtered_html (BeautifulSoup): the input webpage
 
     Returns:
-    * dict[str, Union[bool, int, str]]: metadata about that particular class
+        dict[str, Union[bool, int, str]]: metadata about that particular class
     """
     return {
         "nonext": is_not_offered_next_year(filtered_html),
@@ -190,51 +211,56 @@ def get_course_data(filtered_html):
     }
 
 
-def get_home_catalog_links():
+def get_home_catalog_links() -> Iterable[str]:
     """
-    Args: none
+    Scrapes the home page of the catalog to get the
+    links to the major-specific subpages.
 
     Returns:
-    * list[str]: relative links to major-specific subpages to scrape
+        Iterable[str]: relative links to major-specific subpages to scrape
     """
     catalog_req = requests.get(BASE_URL + "/index.cgi", timeout=3)
     html = BeautifulSoup(catalog_req.content, "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
-    return [a["href"] for a in home_list.find_all("a", href=True)]
+    return (a["href"] for a in home_list.find_all("a", href=True))  # type: ignore
 
 
-def get_all_catalog_links(initial_hrefs):
+def get_all_catalog_links(initial_hrefs: Iterable[str]) -> list[str]:
     """
     Find all links from the headers before the subject listings
 
     Args:
-    * initial_hrefs (list[str]): initial list of relative links to subpages
+        initial_hrefs (Iterable[str]): initial list of relative links to subpages
 
     Returns:
-    * list[str]: A more complete list of relative links to subpages to scrape
+        list[str]: A more complete list of relative links to subpages to scrape
     """
-    hrefs = []
+    hrefs: list[str] = []
     for initial_href in initial_hrefs:
         href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
         html = BeautifulSoup(href_req.content, "html.parser")
         # Links should be in the only table in the #contentmini div
-        tables = html.find("div", id="contentmini").find_all("table")
+        tables: Tag = html.find("div", id="contentmini").find_all(  # type: ignore
+            "table"
+        )
         hrefs.append(initial_href)
         for table in tables:
-            hrefs.extend([ele["href"] for ele in table.findAll("a", href=True)])
+            hrefs.extend(
+                [ele["href"] for ele in table.findAll("a", href=True)]  # type: ignore
+            )
     return hrefs
 
 
-def get_anchors_with_classname(element):
+def get_anchors_with_classname(element: Tag) -> Union[list[Tag], None]:
     """
     Returns the anchors with the class name if the element itself is one or
     anchors are inside of the element. Otherwise, returns None.
 
     Args:
-    * element (Tag): the input HTML tag
+        element (Tag): the input HTML tag
 
     Returns:
-    * Union[list[Tag], NoneType]: a list of links, or None
+        Union[list[Tag], None]: a list of links, or None
     """
     anchors = None
     # This is the usualy case, where it's one element
@@ -242,52 +268,59 @@ def get_anchors_with_classname(element):
         anchors = [element]
     # This is the weird case where the <a> is inside a tag
     # And sometimes the tag has multiple <a> e.g. HST.010 and HST.011
-    elif isinstance(element, Tag):
+    elif isinstance(element, Tag):  # type: ignore
         anchors = element.find_all("a", href=False)
     if not anchors:
         return None
 
     # We need this because apparently there are anchors with names such as "PIP"
-    return list(filter(lambda a: re.match(r"\w+\.\w+", a["name"]), anchors))
+    return list(
+        filter(lambda a: re.match(r"\w+\.\w+", a["name"]), anchors)  # type: ignore
+    )
 
 
-def scrape_courses_from_page(courses, href):
+def scrape_courses_from_page(
+    courses: MutableMapping[str, Mapping[str, Union[bool, int, str]]], href: str
+) -> None:
     """
     Fills courses with course data from the href
 
     This function does NOT return a value. Instead, it modifies the `courses` variable.
 
     Args:
-    * courses
-    * href
-
-    Returns: none
+        courses (MutableMapping[str, Mapping[str, Union[bool, int, str]]]):
+            a dictionary to fill with course data
+        href (str): the relative link to the page to scrape
     """
     href_req = requests.get(f"{BASE_URL}/{href}", timeout=3)
     # The "html.parser" parses pretty badly
     html = BeautifulSoup(href_req.content, "lxml")
-    classes_content = html.find("table", width="100%", border="0").find("td")
+    classes_content: Tag = html.find(
+        "table", width="100%", border="0"
+    ).find(  # type: ignore
+        "td"
+    )
 
     # For index idx, contents[idx] corresponds to the html content for the courses in
     # course_nums_list[i]. The reason course_nums_list is a list of lists is because
     # there are courses that are ranges but have the same content
-    course_nums_list = []
-    contents = []
+    course_nums_list: list[list[str]] = []
+    contents: list[list[Tag]] = []
     for ele in classes_content.contents:
-        anchors = get_anchors_with_classname(ele)
+        anchors = get_anchors_with_classname(ele)  # type: ignore
         if anchors:
             new_course_nums = [anchor["name"] for anchor in anchors]
             # This means the course listed is a class range (e.g. 11.S196-11.S199)
             # Thus, we continue looking for content but also add an extra course_num
             if contents and not contents[-1]:
-                course_nums_list[-1].extend(new_course_nums)
+                course_nums_list[-1].extend(new_course_nums)  # type: ignore
                 continue
-            course_nums_list.append(new_course_nums)
+            course_nums_list.append(new_course_nums)  # type: ignore
             contents.append([])
         else:
             if not course_nums_list:
                 continue
-            contents[-1].append(ele)
+            contents[-1].append(ele)  # type: ignore
 
     assert len(course_nums_list) == len(contents)
     for course_nums, content in zip(course_nums_list, contents):
@@ -299,17 +332,13 @@ def scrape_courses_from_page(courses, href):
                 courses[course_num] = course_data
 
 
-def run():
+def run() -> None:
     """
     The main function! This calls all the other functions in this file.
-
-    Args: none
-
-    Returns: none
     """
     home_hrefs = get_home_catalog_links()
     all_hrefs = get_all_catalog_links(home_hrefs)
-    courses = {}
+    courses: MutableMapping[str, Mapping[str, Union[bool, int, str]]] = {}
     for href in all_hrefs:
         print(f"Scraping page: {href}")
         scrape_courses_from_page(courses, href)
