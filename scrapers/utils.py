@@ -162,7 +162,8 @@ def grouper(
     If the iterable's length ISN'T a multiple of group_size, you'll get a
     ValueError on the last iteration.
 
-    Example: grouper("ABCDEFGHI", 3) -> ABC DEF GHI
+    >>> list(grouper("ABCDEFGHI", 3))
+    [('A', 'B', 'C'), ('D', 'E', 'F'), ('G', 'H', 'I')]
 
     From https://docs.python.org/3/library/itertools.html#itertools-recipes.
 

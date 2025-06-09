@@ -43,7 +43,10 @@ URL = "https://fireroad.mit.edu/courses/all?full=true"
 
 
 def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
-    """Parses a timeslot. Example: parse_timeslot("M", "10-11.30", False) -> [4, 3]
+    """Parses a timeslot.
+
+    >>> parse_timeslot("M", "10-11.30", False)
+    (4, 3)
 
     Args:
         day (str): The day as a string
@@ -82,7 +85,9 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
 
 def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
     """Parses a section string.
-    Example: "32-123/TR/0/11/F/0/2" -> [[[36, 2], [96, 2], [132, 2]], '32-123']
+
+    >>> parse_section("32-123/TR/0/11/F/0/2")
+    ([[36, 2], [96, 2], [132, 2]], '32-123')
 
     Args:
         section (str): The section given as a string

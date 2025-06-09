@@ -73,7 +73,9 @@ def merge_data(
 ) -> dict[Any, dict[str, Any]]:
     """
     Combines the provided datasets, retaining only keys from keys_to_keep.
-    NOTE: Later datasets will override earlier ones
+
+    .. note::
+        Later datasets will override earlier ones
 
     Args:
     * datasets (iterable[dict[any, dict]]):
