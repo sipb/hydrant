@@ -1,5 +1,5 @@
 #:schema ../override-schema.json
-# Course 3 special subjects (spring 2025)
+# Course 3 special subjects (summer 2025)
 
 ['3.371']
 lectureSections = [[[[1, 2], [91, 2]], '4-145']]
