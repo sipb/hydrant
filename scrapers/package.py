@@ -39,10 +39,10 @@ def load_json_data(json_path: str) -> Any:
     Loads data from the provided file
 
     Args:
-    * json_path (str): The file to load from
+        json_path (str): The file to load from
 
     Returns:
-    * any: The data contained within the file
+        Any: The data contained within the file
     """
     json_path = os.path.join(package_dir, json_path)
     with open(json_path, mode="r", encoding="utf-8") as json_file:
@@ -54,10 +54,10 @@ def load_toml_data(toml_dir: str) -> dict[str, Any]:
     Loads data from the provided directory that consists exclusively of TOML files
 
     Args:
-    * tomldir (str): The directory to load from
+        tomldir (str): The directory to load from
 
     Returns:
-    * dict: The data contained within the directory
+        dict[str, Any]: The data contained within the directory
     """
     toml_dir = os.path.join(package_dir, toml_dir)
     out: dict[str, Any] = {}
@@ -78,11 +78,11 @@ def merge_data(
         Later datasets will override earlier ones
 
     Args:
-    * datasets (iterable[dict[any, dict]]):
-    * keys_to_keep (iterable): The keys to retain in the output
+        datasets (Iterable[dict[Any, dict[str, Any]]]):
+        keys_to_keep (Iterable[str]): The keys to retain in the output
 
     Returns:
-    * dict[any, dict]: The combined data
+        dict[Any, dict[str, Any]]: The combined data
     """
     result: dict[str, dict[str, Any]] = {k: {} for k in keys_to_keep}
     for key in keys_to_keep:
