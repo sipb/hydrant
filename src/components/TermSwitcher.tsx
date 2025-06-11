@@ -36,7 +36,7 @@ export function TermSwitcher() {
         window.location.href = e.value[0];
       }}
       size="sm"
-      w="8rem"
+      w="9rem"
     >
       <SelectLabel hidden>Select semester</SelectLabel>
       <SelectTrigger>

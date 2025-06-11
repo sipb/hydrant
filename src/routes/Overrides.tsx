@@ -45,7 +45,7 @@ const schema: RJSFSchema = {
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
-    "../../scrapers/overrides.toml.d/*.toml",
+    "../../scrapers/overrides.toml.d/**/*.toml",
     {
       query: "raw",
       import: "default",

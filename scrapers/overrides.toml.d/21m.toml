@@ -1,3 +1,6 @@
+#:schema ./override-schema.json
+# Course 21M special subjects (fall 2025)
+
 ["21M.139"]
 name = "Introduction to Arranging"
 oldNumber = "Moments in Music: Composition B"
