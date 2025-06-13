@@ -12,3 +12,5 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   return replace(next ?? "/");
 }
+
+clientLoader.hydrate = true as const;

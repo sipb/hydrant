@@ -99,6 +99,8 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   return { overrideNames, prefillData, prefillId };
 }
 
+clientLoader.hydrate = true as const;
+
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
   const { overrideNames, prefillData, prefillId } = loaderData;

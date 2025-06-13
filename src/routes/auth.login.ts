@@ -16,3 +16,5 @@ export function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   return redirect(authorizationURL.toString());
 }
+
+clientLoader.hydrate = true as const;

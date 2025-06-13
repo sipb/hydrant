@@ -70,6 +70,8 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   };
 }
 
+clientLoader.hydrate = true as const;
+
 /** The application entry. */
 function HydrantApp() {
   const { state } = useContext(HydrantContext);

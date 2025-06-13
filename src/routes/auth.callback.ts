@@ -48,3 +48,5 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
     throw data(null, 500);
   }
 }
+
+clientLoader.hydrate = true as const;
