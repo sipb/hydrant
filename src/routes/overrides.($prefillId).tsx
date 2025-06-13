@@ -383,7 +383,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           experimental_defaultFormStateBehavior={{
             arrayMinItems: { populate: "requiredOnly" },
             emptyObjectFields: "populateRequiredDefaults",
-            mergeDefaultsIntoFormData: "useDefaultIfFormDataUndefined",
+            mergeDefaultsIntoFormData: "useFormDataIfPresent",
           }}
           liveOmit={true}
           omitExtraData={true}
