@@ -39,32 +39,41 @@ def load_json_data(json_path: str) -> Any:
     Loads data from the provided file
 
     Args:
-    * json_path (str): The file to load from
+        json_path (str): The file to load from
 
     Returns:
-    * any: The data contained within the file
+        Any: The data contained within the file
     """
     json_path = os.path.join(package_dir, json_path)
     with open(json_path, mode="r", encoding="utf-8") as json_file:
         return json.load(json_file)
 
 
-def load_toml_data(toml_dir: str) -> dict[str, Any]:
+def load_toml_data(overrides_dir: str, subpath=".") -> dict[str, Any]:
     """
     Loads data from the provided directory that consists exclusively of TOML files
 
     Args:
-    * tomldir (str): The directory to load from
+        overrides_dir (str): The directory to load from
+        subpath (str, optional): Load from a subdirectory. Defaults to ".".
 
     Returns:
-    * dict: The data contained within the directory
+        dict[str, Any]: The data contained within the directory
     """
-    toml_dir = os.path.join(package_dir, toml_dir)
+    overrides_path = os.path.join(package_dir, overrides_dir)
     out: dict[str, Any] = {}
+
+    if not os.path.isdir(os.path.join(overrides_path, subpath)):
+        # directory doesn't exist, so we return an empty dict
+        return out
+
+    # If the path is a directory, we load all TOML files in it
+    toml_dir = os.path.join(overrides_path, subpath)
     for fname in os.listdir(toml_dir):
         if fname.endswith(".toml"):
             with open(os.path.join(toml_dir, fname), "rb") as toml_file:
                 out.update(tomllib.load(toml_file))
+
     return out
 
 
@@ -78,11 +87,11 @@ def merge_data(
         Later datasets will override earlier ones
 
     Args:
-    * datasets (iterable[dict[any, dict]]):
-    * keys_to_keep (iterable): The keys to retain in the output
+        datasets (Iterable[dict[Any, dict[str, Any]]]):
+        keys_to_keep (Iterable[str]): The keys to retain in the output
 
     Returns:
-    * dict[any, dict]: The combined data
+        dict[Any, dict[str, Any]]: The combined data
     """
     result: dict[str, dict[str, Any]] = {k: {} for k in keys_to_keep}
     for key in keys_to_keep:
@@ -103,17 +112,20 @@ def run() -> None:
     fireroad_sem = load_json_data("fireroad-sem.json")
     catalog = load_json_data("catalog.json")
     cim = load_json_data("cim.json")
-    overrides = load_toml_data("overrides.toml.d")
+
+    overrides_all = load_toml_data("overrides.toml.d")
+    overrides_presem = load_toml_data("overrides.toml.d", "presemester")
+    overrides_semester = load_toml_data("overrides.toml.d", "semester")
 
     # The key needs to be in BOTH fireroad and catalog to make it:
     # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
     # If it's not in catalog, it's not offered this year.
     courses_presem = merge_data(
-        datasets=[fireroad_presem, catalog, cim, overrides],
+        datasets=[fireroad_presem, catalog, cim, overrides_all, overrides_presem],
         keys_to_keep=set(fireroad_presem) & set(catalog),
     )
     courses_sem = merge_data(
-        datasets=[fireroad_sem, catalog, cim, overrides],
+        datasets=[fireroad_sem, catalog, cim, overrides_all, overrides_semester],
         keys_to_keep=set(fireroad_sem) & set(catalog),
     )
 
