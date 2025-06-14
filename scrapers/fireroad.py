@@ -46,7 +46,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
     """Parses a timeslot.
 
     >>> parse_timeslot("M", "10-11.30", False)
-    (4, 3)
+    (8, 3)
 
     Args:
         day (str): The day as a string
