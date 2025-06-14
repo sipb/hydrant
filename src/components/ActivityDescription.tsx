@@ -1,13 +1,15 @@
-import { Flex, Heading, Image, Link, Text, Button } from "@chakra-ui/react";
+import { useContext } from "react";
 import { decode } from "html-entities";
 
+import { Flex, Heading, Image, Link, Text, Button } from "@chakra-ui/react";
 import { useColorMode } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
-import { Activity, NonClass } from "../lib/activity";
-import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
-import { State } from "../lib/state";
+import type { NonClass } from "../lib/activity";
+import type { Flags } from "../lib/class";
+import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
+import { HydrantContext } from "../lib/hydrant";
 
 import { ClassButtons, NonClassButtons } from "./ActivityButtons";
 import { LuExternalLink } from "react-icons/lu";
@@ -35,8 +37,9 @@ function TypeSpan(props: { flag?: keyof Flags; title: string }) {
 }
 
 /** Header for class description; contains flags and related classes. */
-function ClassTypes(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassTypes(props: { cls: Class }) {
+  const { cls } = props;
+  const { state } = useContext(HydrantContext);
   const { flags, totalUnits, units } = cls;
 
   /**
@@ -44,7 +47,7 @@ function ClassTypes(props: { cls: Class; state: State }) {
    *
    * @param arr - Arrays with [flag name, alt text].
    */
-  const makeFlags = (arr: Array<[keyof Flags, string]>) =>
+  const makeFlags = (arr: [keyof Flags, string][]) =>
     arr
       .filter(([flag, _]) => flags[flag])
       .map(([flag, title]) => (
@@ -57,7 +60,10 @@ function ClassTypes(props: { cls: Class; state: State }) {
   const nextAcademicYearEnd = nextAcademicYearStart + 1;
 
   const types1 = makeFlags([
-    ["nonext", `Not offered ${nextAcademicYearStart}-${nextAcademicYearEnd}`],
+    [
+      "nonext",
+      `Not offered ${nextAcademicYearStart.toString()}-${nextAcademicYearEnd.toString()}`,
+    ],
     ["under", "Undergrad"],
     ["grad", "Graduate"],
   ]);
@@ -96,7 +102,7 @@ function ClassTypes(props: { cls: Class; state: State }) {
 
   const unitsDescription = cls.isVariableUnits
     ? "Units arranged"
-    : `${totalUnits} units: ${units.join("-")}`;
+    : `${totalUnits.toString()} units: ${units.join("-")}`;
 
   return (
     <Flex gap={4} align="center">
@@ -115,8 +121,9 @@ function ClassTypes(props: { cls: Class; state: State }) {
 }
 
 /** List of related classes, appears after flags and before description. */
-function ClassRelated(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassRelated(props: { cls: Class }) {
+  const { cls } = props;
+  const { state } = useContext(HydrantContext);
   const { prereq, same, meets } = cls.related;
 
   return (
@@ -166,8 +173,9 @@ function ClassEval(props: { cls: Class }) {
 }
 
 /** Class description, person in-charge, and any URLs afterward. */
-function ClassBody(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassBody(props: { cls: Class }) {
+  const { cls } = props;
+  const { state } = useContext(HydrantContext);
   const { description, inCharge, extraUrls } = cls.description;
 
   return (
@@ -197,8 +205,8 @@ function ClassBody(props: { cls: Class; state: State }) {
 }
 
 /** Full class description, from title to URLs at the end. */
-function ClassDescription(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+function ClassDescription(props: { cls: Class }) {
+  const { cls } = props;
 
   return (
     <Flex direction="column" gap={4}>
@@ -206,28 +214,34 @@ function ClassDescription(props: { cls: Class; state: State }) {
         {cls.number}: {cls.name}
       </Heading>
       <Flex direction="column" gap={0.5}>
-        <ClassTypes cls={cls} state={state} />
-        <ClassRelated cls={cls} state={state} />
+        <ClassTypes cls={cls} />
+        <ClassRelated cls={cls} />
         <ClassCIM cls={cls} />
         <ClassEval cls={cls} />
       </Flex>
-      <ClassButtons cls={cls} state={state} />
-      <ClassBody cls={cls} state={state} />
+      <ClassButtons cls={cls} />
+      <ClassBody cls={cls} />
     </Flex>
   );
 }
 
 /** Full non-class activity description, from title to timeslots. */
-function NonClassDescription(props: { activity: NonClass; state: State }) {
-  const { activity, state } = props;
+function NonClassDescription(props: { activity: NonClass }) {
+  const { activity } = props;
+  const { state } = useContext(HydrantContext);
 
   return (
     <Flex direction="column" gap={4}>
-      <NonClassButtons activity={activity} state={state} />
+      <NonClassButtons activity={activity} />
       <Flex direction="column" gap={2}>
-        {activity.timeslots?.map((t) => (
+        {activity.timeslots.map((t) => (
           <Flex key={t.toString()} align="center" gap={2}>
-            <Button size="sm" onClick={() => state.removeTimeslot(activity, t)}>
+            <Button
+              size="sm"
+              onClick={() => {
+                state.removeTimeslot(activity, t);
+              }}
+            >
               Remove
             </Button>
             <Text>{t.toString()}</Text>
@@ -239,15 +253,16 @@ function NonClassDescription(props: { activity: NonClass; state: State }) {
 }
 
 /** Activity description, whether class or non-class. */
-export function ActivityDescription(props: {
-  activity: Activity;
-  state: State;
-}) {
-  const { activity, state } = props;
+export function ActivityDescription() {
+  const { hydrantState } = useContext(HydrantContext);
+  const { viewedActivity: activity } = hydrantState;
+  if (!activity) {
+    return null;
+  }
 
   return activity instanceof Class ? (
-    <ClassDescription cls={activity} state={state} />
+    <ClassDescription cls={activity} />
   ) : (
-    <NonClassDescription activity={activity} state={state} />
+    <NonClassDescription activity={activity} />
   );
 }

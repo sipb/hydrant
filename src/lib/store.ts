@@ -1,15 +1,15 @@
-import { Preferences, Save } from "./schema";
+import type { Preferences, Save } from "./schema";
 
-export type TermStore = {
+export interface TermStore {
   saves: Save[];
   /** Array of class numbers that are starred */
   starredClasses: string[];
   [saveId: string]: unknown[];
-};
+}
 
-export type GlobalStore = {
+export interface GlobalStore {
   preferences: Preferences;
-};
+}
 
 /** Generic storage. */
 export class Store {
@@ -22,7 +22,7 @@ export class Store {
 
   /** Convert a key to a local storage key. */
   toKey(key: string, global: boolean): string {
-    return global ? `${key}` : `${this.term}-${key}`;
+    return global ? key : `${this.term}-${key}`;
   }
 
   /** Return the corresponding, term-specific saved value. */

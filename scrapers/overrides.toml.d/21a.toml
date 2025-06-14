@@ -1,0 +1,9 @@
+#:schema ./override-schema.json
+# Course 21A special subjects (fall 2025)
+
+['21A.S01']
+name = "Special Topic: Reimagining Indigeneity — Pathways of Identity, Cultural Expression, and Continuity in a Changing World"
+hassS = true
+lectureRawSections = ['4-163/W/0/11-2']
+lectureSections = [[[[66, 6]], '4-163']]
+inCharge = "J. Knox-Hayes, L. Jonas"

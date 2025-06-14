@@ -1,5 +1,4 @@
-import { Flex, Link, Text, Button } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import {
   DialogRoot,
@@ -10,21 +9,29 @@ import {
   DialogTitle,
   DialogActionTrigger,
 } from "./ui/dialog";
+import { Flex, Link, Text, Button, Image } from "@chakra-ui/react";
 
-import { State } from "../lib/state";
+import fuzzAndAnt from "../assets/fuzzAndAnt.png";
+import { HydrantContext } from "../lib/hydrant";
 
 function AboutDialog() {
   const [visible, setVisible] = useState(false);
 
   return (
     <>
-      <Link onClick={() => setVisible(true)} colorPalette="blue">
+      <Link
+        onClick={() => {
+          setVisible(true);
+        }}
+        colorPalette="blue"
+      >
         About
       </Link>
       <DialogRoot
-        lazyMount
         open={visible}
-        onOpenChange={() => setVisible(false)}
+        onOpenChange={() => {
+          setVisible(false);
+        }}
       >
         <DialogContent>
           <DialogHeader>
@@ -80,13 +87,19 @@ function PrivacyPolicyDialog() {
 
   return (
     <>
-      <Link onClick={() => setVisible(true)} colorPalette="blue">
+      <Link
+        onClick={() => {
+          setVisible(true);
+        }}
+        colorPalette="blue"
+      >
         Privacy Policy
       </Link>
       <DialogRoot
-        lazyMount
         open={visible}
-        onOpenChange={() => setVisible(false)}
+        onOpenChange={() => {
+          setVisible(false);
+        }}
       >
         <DialogContent>
           <DialogHeader>
@@ -119,18 +132,30 @@ function PrivacyPolicyDialog() {
 }
 
 /** The footer on the bottom of the calendar. */
-export function LeftFooter(props: { state: State }) {
-  const { state } = props;
+export function LeftFooter() {
+  const { state } = useContext(HydrantContext);
 
   return (
-    <Flex direction="column" align="center" gap={2}>
-      <Text>Last updated: {state.lastUpdated}.</Text>
-      <Flex gap={4}>
-        <AboutDialog />
-        <Link href="mailto:sipb-hydrant@mit.edu" colorPalette="blue">
-          Contact
-        </Link>
-        <PrivacyPolicyDialog />
+    <Flex direction="row" align="center" justify="center" gap={5}>
+      <Image
+        src={fuzzAndAnt}
+        alt="Hydra ant and fuzzball stare at a calendar"
+        h="70px"
+        pos="relative"
+        top={-1.5}
+      />
+      <Flex direction="column" align="center" gap={2}>
+        <Text>Last updated: {state.lastUpdated}.</Text>
+        <Flex gap={4} wrap="wrap">
+          <AboutDialog />
+          <Link href="mailto:sipb-hydrant@mit.edu" colorPalette="blue">
+            Contact
+          </Link>
+          <PrivacyPolicyDialog />
+          <Link href="https://accessibility.mit.edu/" colorPalette="blue">
+            Accessibility
+          </Link>
+        </Flex>
       </Flex>
     </Flex>
   );

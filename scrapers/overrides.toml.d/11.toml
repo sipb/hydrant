@@ -1,123 +1,114 @@
 #:schema ./override-schema.json
-# Course 11 special subjects (spring + iap 2025)
-# https://dusp.mit.edu/subjects
+# Course 11 special subjects (fall 2025)
 
-['11.S187']
-name = '(Un)Dead Geographies: The Afterlife of Urban Plans'
-level = 'U'
+["11.S187"]
+name = "Social Carbon Economy"
+meets = "11.S955"
+level = "U"
 lectureUnits = 3
-labUnits = 0
-preparationUnits = 9
-isVariableUnits = false
-meets = '11.S945'
-description = '''
-Every landscape represents an incomplete or interrupted plan that tells time and intention. Physical landscapes provide evidence of successful, failed and emergent development plans, but only the learned eye sees beyond the material culture of the street. “Death” offers a way to conceptualize the unseen, underground, the underneath, the liminal space between what we know, what is actual and what is yet to be. Linking social theory, geography, public policy and planning history, this course asks: How can planners and critical observers of the built environment begin to access the collection of meanings that script the movement, stasis and location of everyday users? In other words, how do we move beyond official maps, plans and histories to consider contested meanings of place as they are lived, exchanged and created. Through weekly examinations of first person documentary accounts including ethnography, historical fiction, autobiography, film and novels, students will analyze the social, political and geographic impact of various land development strategies in the U.S. and beyond. Displacement defines a major theme of this course -- students will examine: 1) How does this happen? 2) What have been subsequent local responses? And, 3) What are the lasting consequences of population dispersals?
+labUnits = 1
+preparationUnits = 8
+description = "The course explores the emerging basis of a social carbon economy and focuses on the understanding of how to integrate technology and social considerations into carbon management and emissions reduction strategies within urban areas. Urban areas are significant contributors to carbon emissions due to factors like transportation, industry, and energy consumption. Therefore, addressing carbon emissions in cities is crucial for global efforts to combat climate change. In an urban social carbon economy, the course will focus on efforts to reduce carbon emissions and will explore methodologies to design solutions with a focus on social equity, community well-being, and inclusive development within urban contexts. \n\nThe course examines the intersections that enable individuals, communities, institutions, and corporations to take action by actively measuring, monitoring, and reducing their carbon emissions. By deepening in the understanding of the power of Artificial Intelligence and behavior change, which has the potential to reduce carbon emissions by one-third globally, the new carbon economy will create opportunities to accelerate the net-zero goals across all industries. Students will deepen their understanding of carbon avoidance and reduction products and infrastructure that leverage existing and new technologies like AI, sensor fusion, gamification, blockchain, and incentive systems that will power the new economy."
+inCharge = "Ramiro Almeida, Ryan Chin"
 
-Informed by ethnographic method and archival immersion, this course will provide students with an interdisciplinary framework for identifying and describing the social impact of place-based change and capital movement. Students will develop a critical understanding of urban planning informed by resident-authored analysis across time and space.'''
-terms = ["SP"]
-sectionKinds = ['lecture']
-lectureRawSections = ['9-451/TR/0/9.30-11']
-lectureSections = [[[[63, 3], [93, 3]], '9-451']]
-repeat = false
-url = 'https://dusp.mit.edu/subjects'
-
-['11.S938']
-name = 'Landscape + Infrastructure for the Anthropocene'
-level = 'G'
+["11.S955"]
+name = "Social Carbon Economy"
+meets = "11.S187"
+level = "G"
 lectureUnits = 3
-labUnits = 0
-preparationUnits = 9
-isVariableUnits = false
-description = '''This seminar investigates the need for new ways to think about landscape + infrastructure as the impacts of climate change alters the way we design and live in urbanized areas. We will focus on the planning, design, and implementation of real physical infrastructures (versus policies and other soft infrastructure levers). This class begins by acknowledging that humanity has entered into a new geologic epoch termed the Anthropocene, defined by anthropogenic impacts on the planet. Important questions about landscape + infrastructure for the Anthropocene will be explored: Where do planners/designers have agency to mitigate with newly imagined infrastructures for our changing cities and planetary health? At what scale is infrastructure an appropriate response to an environmental problem? How does one evaluate effectiveness and other trade-offs / costs / benefits of resiliency? Can one build consensus among key players / constituents around what is happening and how the designed response addresses needs? How do designers or planners gain political, financial, and social support to guarantee that build out and maintenance are implemented as envisioned?'''
-terms = ['SP']
-repeat = false
-url = 'https://dusp.mit.edu/subjects'
+labUnits = 1
+preparationUnits = 8
+description = "The course explores the emerging basis of a social carbon economy and focuses on the understanding of how to integrate technology and social considerations into carbon management and emissions reduction strategies within urban areas. Urban areas are significant contributors to carbon emissions due to factors like transportation, industry, and energy consumption. Therefore, addressing carbon emissions in cities is crucial for global efforts to combat climate change. In an urban social carbon economy, the course will focus on efforts to reduce carbon emissions and will explore methodologies to design solutions with a focus on social equity, community well-being, and inclusive development within urban contexts. \n\nThe course examines the intersections that enable individuals, communities, institutions, and corporations to take action by actively measuring, monitoring, and reducing their carbon emissions. By deepening in the understanding of the power of Artificial Intelligence and behavior change, which has the potential to reduce carbon emissions by one-third globally, the new carbon economy will create opportunities to accelerate the net-zero goals across all industries. Students will deepen their understanding of carbon avoidance and reduction products and infrastructure that leverage existing and new technologies like AI, sensor fusion, gamification, blockchain, and incentive systems that will power the new economy."
+inCharge = "Ramiro Almeida, Ryan Chin"
 
-['11.S939']
-name = 'Making Good on Baltimore as a Just City: Building Solutions For A Vacant Housing Crisis'
-lectureUnits = 8
-labUnits = 0
-preparationUnits = 4
-isVariableUnits = false
-description = '''
-Making Good on Baltimore as a Just City: Building Solutions For A Vacant Housing Crisis, as a practicum will have students immersed in two related projects: Develop a complex revitalization plan for a neglected city neighborhood using the case scenario, The Urban Plan (UP) and complete deliverables for a real client, Flight Blight Baltimore. The UP case scenario activities examine the nexus between development and urban planning. Students will go through an eight-stage development process model, and the material will cover idea conception, feasibility, planning, financing, market analysis, contract negotiation, construction, and asset management. Other topics discussed include but are not limited to market analysis, site acquisition, due diligence, zoning, entitlements, approvals, site planning, building design, construction, financing, leasing, and ongoing management and disposition.
-
-Working on a project for a client will allow students to solve a community challenge in real-time, pushing students to rethink the concept of stakeholder engagement in vacant housing underutilized infrastructure in Baltimore. Students will engage the idea of using citizen engineers to explore how the current demolish vacant building initiative by the City of Baltimore can integrate resident perspective in the city’s neighborhood stabilization initiatives. Part of this course will also explore how emerging vacant building assessment digital technology certification in the job market is linked to just banking and economies. The primary deliverables will center on data collection and analysis, and mapping. During the practicum experience, students will create their personal theory of practice, develop reflective practice strategies, and learn and deploy community engagement strategies.'''
-terms = ['SP']
-repeat = false
-url = 'https://dusp.mit.edu/subjects'
-
-['11.S940']
-name = 'Urban Economics Research Design'
-level = 'G'
+["11.S188"]
+name = "Indigenous Water and Energy Planning: Emergent Futures in Scaling Traditional Ecological Knowledge"
+meets = "11.S953"
+description = "This under/graduate-level reading seminar focuses on the critical intersections between Indigenous knowledge systems, water resources management, and environmental justice. The course centers readings in genres of Indigenous futurisms to cover the basics of Indigenous water and energy planning. Through the lens of these genres, guest lectures, discussions, and case studies, students will understand the emergent trends in the development of traditional ecological knowledge. At the end of the course, students will propose speculative projects to scale community-based water planning interventions and initiatives towards utility scale to support the sovereignty and self-determination of Indigenous governments."
+level = "U"
 lectureUnits = 2
 labUnits = 0
+preparationUnits = 10
+inCharge = "Janelle Knox-Hayes, Jean-Luc Pierite"
+
+["11.S953"]
+inCharge = "Janelle Knox-Hayes, Jean-Luc Pierite"
+description = "This under/graduate-level reading seminar focuses on the critical intersections between Indigenous knowledge systems, water resources management, and environmental justice. The course centers readings in genres of Indigenous futurisms to cover the basics of Indigenous water and energy planning. Through the lens of these genres, guest lectures, discussions, and case studies, students will understand the emergent trends in the development of traditional ecological knowledge. At the end of the course, students will propose speculative projects to scale community-based water planning interventions and initiatives towards utility scale to support the sovereignty and self-determination of Indigenous governments."
+name = "Indigenous Water and Energy Planning: Emergent Futures in Scaling Traditional Ecological Knowledge"
+meets = "11.S188"
+level = "G"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 10
+
+["11.S189"]
+name = "Topics in Urban Health Policy"
+meets = "11.S939"
+level = "U"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+description = "Introduces the fundamental components of urban health systems, including emergency medical services, community health centers and primary and specialty care facilities, hospitals and hospital networks, and health insurance providers. Explores the role of public policy, and state, local, and provider variation in these structures on access to care, health care costs, and health equity. This is a Half One class."
+inCharge = "Justin Steil"
+
+["11.S939"]
+description = "Introduces the fundamental components of urban health systems, including emergency medical services, community health centers and primary and specialty care facilities, hospitals and hospital networks, and health insurance providers. Explores the role of public policy, and state, local, and provider variation in these structures on access to care, health care costs, and health equity. This is a Half One class."
+name = "Topics in Urban Health Policy"
+meets = "11.S189"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+
+["11.S197"]
+name = "Renewing the Great Society: A New Era of Progressive National Policies"
+meets = "11.S947"
+description = "President Johnson's short five-year tenure ushered in some of the most essential midcentury rights policies that touched all Americans. Starting in 1964, Johnson ushered in the Civil Rights Act, and then in 1965, he pushed through the Voting Rights Act of 1965. Policy programs included the creation of Medicare, Medicaid, and Head Start, and he made critical early steps toward environmental policy reform. Understanding how these monumental programs emerged and were designed and implemented provides lessons for planners and prospective policymakers practicing in a new era of radical reform. Mondays 2-5."
+level = "U"
+inCharge = "Amy Glasmeier"
+
+["11.S947"]
+name = "Renewing the Great Society: A New Era of Progressive National Policie"
+meets = "11.S197"
+description = "President Johnson's short five-year tenure ushered in some of the most essential midcentury rights policies that touched all Americans. Starting in 1964, Johnson ushered in the Civil Rights Act, and then in 1965, he pushed through the Voting Rights Act of 1965. Policy programs included the creation of Medicare, Medicaid, and Head Start, and he made critical early steps toward environmental policy reform. Understanding how these monumental programs emerged and were designed and implemented provides lessons for planners and prospective policymakers practicing in a new era of radical reform. Mondays 2-5."
+level = "G"
+inCharge = "Amy Glasmeier"
+
+["11.S940"]
+name = "Hacking the Archive: A Field Guide to Co-Designing Alternative Urban Futures"
+description = "This course offers a cross-disciplinary introduction to the archive as a site of contestation, erasure and possibility for students, planning practitioners and local communities seeking innovative models for city justice and reconciliation. Combining academic theory with client-engaged practice, this course gives students a hands-on learning opportunity to tackle ground level issues with real stakeholders in real time. Co-taught by a textile artist-historian and archival educator, students will be presented with a set of woven documents highlighting the major themes of the course: collective agency, social activism and diverse histories of resistance and disruption. Students will learn how to analyze these woven documents in order to become more nuanced readers of a variety of cultural objects including landscapes, urban plans and social histories spanning Toronto, Boston and Rochester (New York). This course will ultimately provide students with a research and action framework intent on destabilizing colonial modes of data extraction by re-centering community-driven design and use."
+level = "G"
+lectureUnits = 3
+labUnits = 2
 preparationUnits = 7
-isVariableUnits = false
-description = '''This seminar provides an in-depth exploration of urban economics, examining six pivotal studies to reveal the nuances of research design in this domain. It delves into the genesis, development, analysis, substantiation, composition, presentation, expansion, publication, and application of research ideas in urban settings. Specifically designed for graduate students, particularly PhD candidates, in the Department of Urban Studies and Planning (DUSP) at MIT, the course maintains a limited enrollment of 20 students to foster a concentrated and interactive learning environment.'''
-terms = ['SP']
-repeat = false
-url = 'https://dusp.mit.edu/subjects'
+inCharge = "Karilyn Crockett"
 
-['11.S943']
-name = 'Bills and Billions: Policymaking and Planning in an New Era of Transformation in US Cities and States'
-level = 'G'
+["11.S941"]
+name = "Designing urban energy intersections: An integrated, multi-scale approach in NYC"
+level = "G"
+description = "How can integrated inter-scale design – from the systems level (e.g., energy systems, workforce systems, mobility systems) to the neighborhood level (e.g., street design, building design), the community level (e.g., engagement systems), and the “device” level (e.g., energy storage) – be used to co-create (with communities) green-economy based local economic development strategies? This workshop class aims to answer this question (taught in parallel with an Architecture Urban Design Studio) in collaboration with local government (NYC Economic Development Corporation, EDC) and a local community organization. The subject is driven by the theory of change that just urban transitions require work at the intersection of a range of needs and opportunities driven by the climate crisis, including designing: for waterfront resilience, systems for energy transitions (e.g., battery storage, vehicle electrification), and approaches to maximize community benefits (e.g., workforce training for “green jobs”, entrepreneurial development, cooperative ownership models).  "
+inCharge = "J. Phillip Thompson"
+
+["11.S945"]
+name = "Land Banks for Affordable Housing Production in New Mexico"
+description = "The New Mexico Housing Finance Authority is New Mexico's statewide housing finance agency. They wish to bring on a team from DUSP to study available land and a potential land banking program for affordable housing in New Mexico. The class will include a site visit and exploration of recent state legislation to develop a proposed land bank program. The course will focus on sites in the Santa Fe and Los Alamos areas."
+level = "G"
 lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
-isVariableUnits = false
-description = '''This course will engage with the theory and practice of planning and public policy making, examining how these two fields intersect and are evolving in the context of current national and global priorities including challenges to the dominant paradigms of neoliberalism and globalization as well as the passage of historic legislation in the U.S. in the past year. Classic literature in these fields will be augmented with readings and discussions around themes relevant to the current context such as race, ethnicity and equity, sustainability, labor, industrial strategy and inclusive growth, innovation and equity and geographic diversity.  The course will bring in speakers across these topics in the form of policymakers and planners from cities and states across the US as well as in the federal government to learn how they are planning and implementing new policies, how this has changed if at all compared to the past, and how they are positioned to potentially access and invest the unprecedented new federal funding that will be coming to cities and states in the next 5-10 years. Students will write multiple policy memos on relevant topics throughout the course as well as be paired with partner cities/states to develop in-depth briefs for policymakers and community leaders on ‘ideas and issues to consider’ when applying for and implementing new federal programs and policies.'''
-terms = ['SP']
-repeat = false
-url = 'https://dusp.mit.edu/subjects'
+inCharge = "Jeff Levine"
 
-['11.S944']
-name = 'Green Finance: Mobilizing Capital to Transition to a Net-zero Economy'
-level = 'G'
-lectureUnits = 3
-labUnits = 0
-preparationUnits = 9
-isVariableUnits = false
-description = '''Addressing climate change and the transition to a net zero economy will require large scale financing across multiple sectors and for a diverse set of projects. This course will provide graduate students with knowledge and skills specific to financing projects and creating financial institutions, polices and tools to accelerate the transition to a net zero economy while also advancing racial and economic equity. Topics covered will include:  1) the varied financing tools, products and services used in green finance; 2) how mission-driven financial intermediaries work and different intermediary models applicable to green finance;  3) the financing needs and issues of different economic/energy use sectors and the role of green finance in addressing them;  and 4) explore how to address systemic racism in the finance system and advance racial and economic justice through green finance.  Students will work on a client project to gain experience in designing proposals/solutions to address a green financing need or problem.'''
-terms = ['SP']
-sectionKinds = ['lecture']
-lectureRawSections = ['9-451/TR/0/9.30-11']
-lectureSections = [[[[63, 3], [93, 3]], '9-451']]
-repeat = false
-url = 'https://dusp.mit.edu/subjects'
+["11.S950"]
+name = "Rebuilding the American Region: Urban Design at Large Scale"
+description = "The role of the region is changing. With limited resources, there is an urgency to address urban design and planning challenges that transcend local municipalities. Contemporary imperatives dictate new design strategies to advance contemporary urbanism with aging infrastructure, climate change, migration and an increasingly polarized social, racial and economic environment in the U.S."
+level = "G"
+inCharge = "David Gamble"
 
-['11.S945']
-name = '(Un)Dead Geographies: The Afterlife of Urban Plans'
-level = 'G'
-lectureUnits = 3
-labUnits = 0
-preparationUnits = 9
-isVariableUnits = false
-meets = '11.S187'
-description = '''
-Every landscape represents an incomplete or interrupted plan that tells time and intention. Physical landscapes provide evidence of successful, failed and emergent development plans, but only the learned eye sees beyond the material culture of the street. “Death” offers a way to conceptualize the unseen, underground, the underneath, the liminal space between what we know, what is actual and what is yet to be. Linking social theory, geography, public policy and planning history, this course asks: How can planners and critical observers of the built environment begin to access the collection of meanings that script the movement, stasis and location of everyday users? In other words, how do we move beyond official maps, plans and histories to consider contested meanings of place as they are lived, exchanged and created. Through weekly examinations of first person documentary accounts including ethnography, historical fiction, autobiography, film and novels, students will analyze the social, political and geographic impact of various land development strategies in the U.S. and beyond. Displacement defines a major theme of this course -- students will examine: 1) How does this happen? 2) What have been subsequent local responses? And, 3) What are the lasting consequences of population dispersals?
-
-Informed by ethnographic method and archival immersion, this course will provide students with an interdisciplinary framework for identifying and describing the social impact of place-based change and capital movement. Students will develop a critical understanding of urban planning informed by resident-authored analysis across time and space.'''
-terms = ['SP']
-sectionKinds = ['lecture']
-lectureRawSections = ['9-451/TR/0/9.30-11']
-lectureSections = [[[[63, 3], [93, 3]], '9-451']]
-repeat = false
-url = 'https://dusp.mit.edu/subjects'
-
-['11.S950']
-name = 'Transportation Data & Applications'
-level = 'G'
+["11.S957"]
+name = "Advanced Doctoral Workshop: Political Economy of the Climate Crisis"
+level = "G"
 lectureUnits = 2
-labUnits = 0
-preparationUnits = 1
-isVariableUnits = false
-description = '''
-The objective of this IAP course is to address the question: how in overall terms can we improve transportation systems – not just the technology, but the underlying human systems – using data? Subsidiary questions include: what can data do, and what can’t it do? What do practitioners need to know about the data now available: where does it come from? How is it generated? Who owns it? How can it be used for decision-making? What skills are needed? What do different segments of society – the public sector, the private sector, individual travelers – need to do? What are the challenges? What can be learned from history, and from other disciplines?
-
-This course is designed to slot in between existing course offerings that cover technical topics (like data analysis, modeling, visualization, and optimization) and equity/social-justice issues, providing students an opportunity to develop their own understanding of transportation data and its applications, so that they can give full consideration to the technical and social approaches covered in other classes.
-
-A single focus question will be presented as the basis for the course’s primary case study: how many transportation fatalities occurred in the U.S. in 2022? This will require not simple data crunching, but thoughtful “human” analysis using questions such as those above, since the point of the course is to demonstrate that there is no single, authoritative answer, and that students’ critical application of understanding the entire data lifecycle is key to approaching professional challenges.'''
-terms = ['JA']
-repeat = false
-url = 'https://dusp.mit.edu/subjects'
+labUnits = 1
+preparationUnits = 9
+description = "This course is an advanced doctoral workshop on the political economy of climate change. The workshop aims to provide Ph.D. students working on climate change, across sectors and disciplines, with a foundation in the theoretical and methodological approaches of polit-ical economy to conceptualize and conduct independent research. Substantively, the work-shop takes a critical political economy approach to the climate crisis and examines three in-terrelated dimensions: (1) the political governance challenge of mobilizing climate action, given the need to design new institutional mechanisms to address the global and intergener-ational distributional aspects of climate change; (2) the economic challenge of devising new institutional approaches to equitably finance climate action in ways that go beyond the cur-rently dominant economic rationale; and (3) the cultural challenge – and opportunity – of empowering an adaptive socio-cultural ecology through traditional knowledge and local-level social networks to achieve climate resilience."
+inCharge = "Jason Jackson"

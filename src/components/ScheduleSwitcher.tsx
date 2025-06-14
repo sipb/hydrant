@@ -7,7 +7,8 @@ import {
   createListCollection,
   Button,
 } from "@chakra-ui/react";
-import { ComponentPropsWithoutRef, useEffect, useState } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   DialogRoot,
@@ -20,9 +21,6 @@ import {
   DialogActionTrigger,
 } from "./ui/dialog";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
-
-import { State } from "../lib/state";
-import { Save } from "../lib/schema";
 import {
   SelectContent,
   SelectItem,
@@ -32,17 +30,22 @@ import {
   SelectLabel,
 } from "./ui/select";
 
+import type { Save } from "../lib/schema";
+import { HydrantContext } from "../lib/hydrant";
+
 import {
   LuCopy,
   LuEllipsis,
   LuFilePlus2,
   LuPencilLine,
+  LuPin,
+  LuPinOff,
   LuSave,
   LuShare2,
   LuTrash2,
 } from "react-icons/lu";
 
-import { useCopyToClipboard } from "react-use";
+import useCopyToClipboard from "react-use/lib/useCopyToClipboard.js";
 
 function SmallButton(props: ComponentPropsWithoutRef<"button">) {
   const { children, ...otherProps } = props;
@@ -53,23 +56,31 @@ function SmallButton(props: ComponentPropsWithoutRef<"button">) {
   );
 }
 
-function SelectWithWarn(props: {
-  state: State;
-  saveId: string;
-  saves: Array<Save>;
-}) {
-  const { state, saveId, saves } = props;
+function SelectWithWarn(props: { saveId: string; saves: Save[] }) {
+  const { saveId, saves } = props;
+  const { state } = useContext(HydrantContext);
   const [confirmSave, setConfirmSave] = useState("");
   const confirmName = saves.find((save) => save.id === confirmSave)?.name;
+  const defaultScheduleId = state.defaultSchedule;
+
+  const formatScheduleName = (id: string, name: string) => {
+    return id === defaultScheduleId ? `${name} (default)` : name;
+  };
+
+  const scheduleCollection = createListCollection({
+    items: [
+      { label: "Not saved", value: "" },
+      ...saves.map(({ id, name }) => ({
+        label: formatScheduleName(id, name),
+        value: id,
+      })),
+    ],
+  });
+
   return (
     <>
       <SelectRoot
-        collection={createListCollection({
-          items: [
-            { label: "Not saved", value: "" },
-            ...saves.map(({ id, name }) => ({ label: name, value: id })),
-          ],
-        })}
+        collection={scheduleCollection}
         size="sm"
         width="fit-content"
         minWidth="10em"
@@ -88,17 +99,22 @@ function SelectWithWarn(props: {
           <SelectValueText />
         </SelectTrigger>
         <SelectContent>
-          {saves.map(({ id, name }) => (
-            <SelectItem item={id} key={id}>
-              {name}
-            </SelectItem>
-          ))}
+          {scheduleCollection.items.map(({ label, value }) =>
+            value != "" ? (
+              <SelectItem item={value} key={value}>
+                {label}
+              </SelectItem>
+            ) : null,
+          )}
         </SelectContent>
       </SelectRoot>
       <DialogRoot
-        lazyMount
         open={Boolean(confirmSave)}
-        onOpenChange={(e) => (!e.open ? setConfirmSave("") : null)}
+        onOpenChange={(e) => {
+          if (!e.open) {
+            setConfirmSave("");
+          }
+        }}
       >
         <DialogContent>
           <DialogHeader>
@@ -129,19 +145,20 @@ function SelectWithWarn(props: {
 }
 
 function DeleteDialog(props: {
-  state: State;
   saveId: string;
   name: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const { state, saveId, name, children } = props;
+  const { saveId, name, children } = props;
+  const { state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
 
   return (
     <DialogRoot
-      lazyMount
       open={show}
-      onOpenChange={(e) => setShow(e.open)}
+      onOpenChange={(e) => {
+        setShow(e.open);
+      }}
       role="alertdialog"
     >
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -170,14 +187,20 @@ function DeleteDialog(props: {
   );
 }
 
-function ExportDialog(props: { state: State; children: React.ReactNode }) {
-  const { state, children } = props;
+function ExportDialog(props: { children: ReactNode }) {
+  const { children } = props;
+  const { state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
   const link = state.urlify();
   const [clipboardState, copyToClipboard] = useCopyToClipboard();
 
   return (
-    <DialogRoot lazyMount open={show} onOpenChange={(e) => setShow(e.open)}>
+    <DialogRoot
+      open={show}
+      onOpenChange={(e) => {
+        setShow(e.open);
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -194,7 +217,11 @@ function ExportDialog(props: { state: State; children: React.ReactNode }) {
           <DialogActionTrigger asChild>
             <Button>Close</Button>
           </DialogActionTrigger>
-          <Button onClick={() => copyToClipboard(link)}>
+          <Button
+            onClick={() => {
+              copyToClipboard(link);
+            }}
+          >
             {clipboardState.value === link ? "Copied!" : "Copy"}
           </Button>
         </DialogFooter>
@@ -203,16 +230,14 @@ function ExportDialog(props: { state: State; children: React.ReactNode }) {
   );
 }
 
-export function ScheduleSwitcher(props: {
-  saveId: string;
-  saves: Array<Save>;
-  state: State;
-}) {
-  const { saveId, saves, state } = props;
+export function ScheduleSwitcher() {
+  const { state, hydrantState } = useContext(HydrantContext);
+  const { saves, saveId } = hydrantState;
 
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";
   const [isRenaming, setIsRenaming] = useState(false);
   const [name, setName] = useState(currentName);
+  const defaultScheduleId = state.defaultSchedule;
 
   useEffect(() => {
     setName(saves.find((save) => save.id === saveId)?.name ?? "");
@@ -223,7 +248,9 @@ export function ScheduleSwitcher(props: {
       const renderHeading = () => (
         <Input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
           autoFocus
           onKeyUp={(e) => {
             if (e.key === "Enter") {
@@ -255,13 +282,19 @@ export function ScheduleSwitcher(props: {
     }
 
     const renderHeading = () => (
-      <SelectWithWarn state={state} saveId={saveId} saves={saves} />
+      <SelectWithWarn saveId={saveId} saves={saves} />
     );
-    const onRename = () => setIsRenaming(true);
-    const onSave = () => state.addSave(Boolean(saveId));
-    const onCopy = () => state.addSave(false, `${currentName} copy`);
+    const onRename = () => {
+      setIsRenaming(true);
+    };
+    const onSave = () => {
+      state.addSave(Boolean(saveId));
+    };
+    const onCopy = () => {
+      state.addSave(false, `${currentName} copy`);
+    };
     const renderButtons = () => (
-      <MenuRoot>
+      <MenuRoot unmountOnExit={false}>
         <MenuTrigger asChild>
           <IconButton variant="outline" size="sm" aria-label="Schedule options">
             <LuEllipsis />
@@ -280,9 +313,8 @@ export function ScheduleSwitcher(props: {
           </MenuItem>
           {saveId && (
             <DeleteDialog
-              state={state}
               saveId={saveId}
-              name={saves.find((save) => save.id === saveId)!.name}
+              name={saves.find((save) => save.id === saveId)?.name ?? ""}
             >
               <MenuItem
                 value="delete"
@@ -307,7 +339,28 @@ export function ScheduleSwitcher(props: {
               </>
             )}
           </MenuItem>
-          <ExportDialog state={state}>
+          {saveId && (
+            <MenuItem
+              value="toggleDefault"
+              onClick={() => {
+                state.defaultSchedule =
+                  defaultScheduleId === saveId ? null : saveId;
+              }}
+            >
+              {defaultScheduleId === saveId ? (
+                <>
+                  <LuPinOff />
+                  <Box flex="1">Unset as default</Box>
+                </>
+              ) : (
+                <>
+                  <LuPin />
+                  <Box flex="1">Set as default</Box>
+                </>
+              )}
+            </MenuItem>
+          )}
+          <ExportDialog>
             <MenuItem value="share">
               <LuShare2 />
               <Box flex="1">Share</Box>

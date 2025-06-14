@@ -1,34 +1,54 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema",
+  "$schema": "http://json-schema.org/draft-07/schema",
   "title": "Class Override",
   "description": "Overrides for classes in the scraper",
   "type": "object",
   "additionalProperties": {
+    "title": "Raw class",
+    "description": "The raw class format produced by the scraper.",
     "type": "object",
     "additionalProperties": false,
     "properties": {
       "number": {
         "type": "string",
-        "description": "Class number, e.g. \"6.3900\""
+        "title": "Number",
+        "description": "Class number",
+        "examples": [
+          "6.3900"
+        ]
       },
       "oldNumber": {
         "type": "string",
-        "description": "Old class number, e.g. \"6.036\""
+        "title": "Formerly known as",
+        "description": "Old class number",
+        "examples": [
+          "6.036"
+        ]
       },
       "course": {
         "type": "string",
-        "description": "Course number, e.g. \"6\""
+        "title": "Course",
+        "description": "Course number",
+        "examples": [
+          "6"
+        ]
       },
       "subject": {
         "type": "string",
-        "description": "Subject number without course, e.g. \"3900\""
+        "title": "Subject",
+        "description": "Subject number without course",
+        "examples": [
+          "3900"
+        ]
       },
       "tba": {
         "type": "boolean",
+        "title": "TBA",
         "description": "True if some section is not scheduled yet"
       },
       "sectionKinds": {
         "type": "array",
+        "title": "Section Kinds",
         "uniqueItems": true,
         "description": "Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist",
         "items": {
@@ -43,6 +63,7 @@
       },
       "lectureSections": {
         "type": "array",
+        "title": "Lecture sections",
         "description": "Lecture timeslots and rooms",
         "items": {
           "$ref": "#/$defs/rawSection"
@@ -50,6 +71,7 @@
       },
       "recitationSections": {
         "type": "array",
+        "title": "Recitation sections",
         "description": "Recitation timeslots and rooms",
         "items": {
           "$ref": "#/$defs/rawSection"
@@ -57,6 +79,7 @@
       },
       "labSections": {
         "type": "array",
+        "title": "Lab sections",
         "description": "Lab timeslots and rooms",
         "items": {
           "$ref": "#/$defs/rawSection"
@@ -64,6 +87,7 @@
       },
       "designSections": {
         "type": "array",
+        "title": "Design sections",
         "description": "Design timeslots and rooms",
         "items": {
           "$ref": "#/$defs/rawSection"
@@ -71,70 +95,100 @@
       },
       "lectureRawSections": {
         "type": "array",
-        "description": "Raw lecture times, e.g. T9.301-11 or TR1,F2",
+        "title": "Lecture sections (raw)",
+        "description": "Raw lecture times",
+        "examples": [
+          "T9.301-11",
+          "TR1,F2"
+        ],
         "items": {
           "type": "string"
         }
       },
       "recitationRawSections": {
         "type": "array",
-        "description": "Raw recitation times, e.g. T9.301-11 or TR1,F2 ",
+        "title": "Recitation sections (raw)",
+        "description": "Raw recitation times",
+        "examples": [
+          "T9.301-11",
+          "TR1,F2"
+        ],
         "items": {
           "type": "string"
         }
       },
       "labRawSections": {
         "type": "array",
-        "description": "Raw lab times, e.g. T9.301-11 or TR1,F2",
+        "title": "Lab sections (raw)",
+        "description": "Raw lab times",
+        "examples": [
+          "T9.301-11",
+          "TR1,F2"
+        ],
         "items": {
           "type": "string"
         }
       },
       "designRawSections": {
         "type": "array",
-        "description": "Raw design times, e.g. T9.301-11 or TR1,F2",
+        "title": "Design sections (raw)",
+        "description": "Raw design times",
+        "examples": [
+          "T9.301-11",
+          "TR1,F2"
+        ],
         "items": {
           "type": "string"
         }
       },
       "hassH": {
         "type": "boolean",
+        "title": "HASS-H",
         "description": "True if HASS-H"
       },
       "hassA": {
         "type": "boolean",
+        "title": "HASS-A",
         "description": "True if HASS-A"
       },
       "hassS": {
         "type": "boolean",
+        "title": "HASS-S",
         "description": "True if HASS-S"
       },
       "hassE": {
         "type": "boolean",
+        "title": "HASS-E",
         "description": "True if HASS-E"
       },
       "cih": {
         "type": "boolean",
+        "title": "CI-H",
         "description": "True if CI-H"
       },
       "cihw": {
         "type": "boolean",
+        "title": "CI-HW",
         "description": "True if CI-HW"
       },
       "rest": {
         "type": "boolean",
+        "title": "REST",
         "description": "True if REST"
       },
       "lab": {
         "type": "boolean",
+        "title": "Lab",
         "description": "True if institute lab"
       },
       "partLab": {
         "type": "boolean",
+        "title": "Partial Lab",
         "description": "True if partial institute lab"
       },
       "cim": {
         "type": "array",
+        "title": "CI-M",
         "description": "Array of programs (free text) for which this class is a CI-M",
         "items": {
           "type": "string"
@@ -142,23 +196,28 @@
       },
       "lectureUnits": {
         "type": "number",
+        "title": "Lecture units",
         "description": "Lecture or recitation units"
       },
       "labUnits": {
         "type": "number",
+        "title": "Lab units",
         "description": "Lab or field work units"
       },
       "preparationUnits": {
         "type": "number",
+        "title": "Preparation units",
         "description": "Outside class units"
       },
       "isVariableUnits": {
         "type": "boolean",
+        "title": "Units arranged",
         "description": "Does this class have an arranged number of units?\nIf true, lectureUnits, labUnits, preparationUnits are set to zero."
       },
       "level": {
         "type": "string",
-        "description": "Level: \"U\" undergrad, \"G\" grad",
+        "title": "Level",
+        "description": "Subject level (\"U\" or \"G\")",
         "enum": [
           "U",
           "G"
@@ -166,14 +225,20 @@
       },
       "same": {
         "type": "string",
-        "description": "Comma-separated list of classes with same number, e.g. \"21A.103, WGS.225\""
+        "title": "Same as",
+        "description": "Comma-separated list of classes with same number",
+        "examples": [
+          "21A.103, WGS.225"
+        ]
       },
       "meets": {
         "type": "string",
+        "title": "Meets with",
         "description": "Comma-separated list of classes it meets with"
       },
       "terms": {
         "type": "array",
+        "title": "Terms",
         "description": "Terms class is offered",
         "items": {
           "type": "string",
@@ -187,41 +252,58 @@
       },
       "prereqs": {
         "type": "string",
+        "title": "Prerequisites",
         "description": "Prereqs, no specific format (but usually contains class numbers)"
       },
       "description": {
         "type": "string",
+        "title": "Description",
         "description": "Description (~paragraph that appears in catalog)"
       },
       "name": {
         "type": "string",
-        "description": "Name of class e.g. \"Algebra I\""
+        "title": "Name",
+        "description": "Name of class",
+        "examples": [
+          "Algebra I"
+        ]
       },
       "inCharge": {
         "type": "string",
-        "description": "(Person) in-charge, e.g. \"Alyssa Hacker\""
+        "title": "Instructors",
+        "description": "(Person) in-charge",
+        "examples": [
+          "Alyssa Hacker"
+        ]
       },
       "virtualStatus": {
         "type": "boolean",
+        "title": "Virtual",
         "description": "True if meeting virtually"
       },
       "nonext": {
         "type": "boolean",
+        "title": "Not offered next year",
         "description": "True if NOT offered next year"
       },
       "repeat": {
         "type": "boolean",
+        "title": "Repeatable",
         "description": "True if class can be repeated for credit"
       },
       "url": {
         "type": "string",
+        "title": "URL",
+        "format": "uri",
         "description": "Class website"
       },
       "final": {
         "type": "boolean",
+        "title": "Final",
         "description": "True if has final"
       },
       "half": {
+        "title": "Half Semester",
         "description": "1 or 2 if first / second half",
         "oneOf": [
           {
@@ -241,53 +323,135 @@
       },
       "limited": {
         "type": "boolean",
+        "title": "Limited enrollment",
         "description": "True if limited enrollment"
       },
       "rating": {
         "type": "number",
+        "title": "Rating",
         "description": "Rating (out of 7.0) from evals"
       },
       "hours": {
         "type": "number",
+        "title": "Hours",
         "description": "Hours per week from evals"
       },
       "size": {
         "type": "number",
+        "title": "Size",
         "description": "Class size from evals"
       },
       "quarterInfo": {
+        "title": "Quarter Info",
         "type": "object",
-        "properties": {
-          "start": {
-            "type": "array",
-            "items": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "number"
-              }
-            ]
+        "anyOf": [
+          {
+            "additionalProperties": false,
+            "properties": {}
           },
-          "end": {
-            "type": "array",
-            "items": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "number"
+          {
+            "required": [
+              "start"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "start": {
+                "type": "array",
+                "minItems": 2,
+                "items": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
               }
-            ]
+            },
+            "default": {
+              "start": [
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "required": [
+              "end"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "end": {
+                "type": "array",
+                "minItems": 2,
+                "items": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "default": {
+              "end": [
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "required": [
+              "start",
+              "end"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "start": {
+                "type": "array",
+                "minItems": 2,
+                "items": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "end": {
+                "type": "array",
+                "minItems": 2,
+                "items": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "default": {
+              "start": [
+                0,
+                0
+              ],
+              "end": [
+                0,
+                0
+              ]
+            }
           }
-        },
-        "additionalProperties": false
+        ]
       }
     }
   },
   "$defs": {
     "rawTimeSlot": {
       "type": "array",
+      "title": "Raw timeslot",
       "description": "Raw timeslot format: [start slot, length of timeslot].",
       "items": [
         {
@@ -296,11 +460,13 @@
         {
           "type": "number"
         }
-      ]
+      ],
+      "minItems": 2
     },
     "rawSection": {
       "type": "array",
-      "description": "Raw section format: [[[10, 2], [70, 2]], \"34-101\".",
+      "title": "Raw section",
+      "description": "Raw section format: [[[10, 2], [70, 2]], \"34-101\"].",
       "items": [
         {
           "type": "array",
@@ -311,7 +477,8 @@
         {
           "type": "string"
         }
-      ]
+      ],
+      "minItems": 2
     }
   }
 }
