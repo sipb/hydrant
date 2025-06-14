@@ -41,8 +41,6 @@ import { Timeslot } from "../lib/activity";
 import type { Class, SectionLockOption, Sections } from "../lib/class";
 import { LockOption } from "../lib/class";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
-import { State } from "../lib/state";
-import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 import { StarButton } from "./ClassTable";
 import { HydrantContext } from "../lib/hydrant";
 
