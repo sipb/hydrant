@@ -521,8 +521,8 @@ def fix_old_data() -> None:
             os.path.join(os.path.dirname(__file__), "../public", file),
             "r",
             encoding="utf-8",
-        ) as f:
-            data = json.load(f)
+        ) as in_file:
+            data = json.load(in_file)
 
         for course_name, course in data["classes"].items():
             for field in fields:
@@ -543,5 +543,5 @@ def fix_old_data() -> None:
             os.path.join(os.path.dirname(__file__), "../public", file),
             "w",
             encoding="utf-8",
-        ) as f:
-            json.dump(data, f)
+        ) as out_file:
+            json.dump(data, out_file)
