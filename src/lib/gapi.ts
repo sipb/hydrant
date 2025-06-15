@@ -1,11 +1,14 @@
 import type { ICalEventData } from "ical-generator";
 import { ICalCalendar } from "ical-generator";
-import { RRule, RRuleSet } from "rrule";
+import * as rrule from "rrule";
+
 import { tzlib_get_ical_block } from "timezones-ical-library";
 
 import type { Activity } from "./activity";
 import type { Term } from "./dates";
 import type { State } from "./state";
+
+const { RRule, RRuleSet } = rrule;
 
 /** Timezone string. */
 const TIMEZONE = "America/New_York";
