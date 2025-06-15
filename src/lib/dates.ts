@@ -101,7 +101,7 @@ export class Slot {
    */
   onDate(date: Date): Date {
     const hour = Math.floor((this.slot % TIMESLOTS) / 2) + 6;
-    const minute = (this.slot % 2) * TIMESLOTS;
+    const minute = (this.slot % 2) * 30;
     return new Date(
       date.getFullYear(),
       date.getMonth(),
