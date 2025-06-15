@@ -46,7 +46,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
     """Parses a timeslot.
 
     >>> parse_timeslot("M", "10-11.30", False)
-    (4, 3)
+    (8, 3)
 
     Args:
         day (str): The day as a string
@@ -489,3 +489,59 @@ def run(is_semester_term: bool) -> None:
 if __name__ == "__main__":
     run(False)
     run(True)
+
+
+def fix_old_data() -> None:
+    """
+    Fixes old data in the Fireroad JSON files.
+    Changes from using 30 timeslots per day to 34.
+
+    Can be deleted before merging, this is more just to
+    show how the data was fixed (in case anyone sees an issue).
+    """
+    files = [
+        "f22.json",
+        "f23.json",
+        "f24.json",
+        "i25.json",
+        "s23.json",
+        "s24.json",
+        "s25.json",
+    ]
+
+    fields = [
+        "lectureSections",
+        "recitationSections",
+        "labSections",
+        "designSections",
+    ]
+
+    for file in files:
+        with open(
+            os.path.join(os.path.dirname(__file__), "../public", file),
+            "r",
+            encoding="utf-8",
+        ) as in_file:
+            data = json.load(in_file)
+
+        for course_name, course in data["classes"].items():
+            for field in fields:
+                if not course.get(field):
+                    continue
+
+                for i, section_data in enumerate(data["classes"][course_name][field]):
+                    times = section_data[0]
+
+                    for j, time in enumerate(times):
+                        slot_time = time[0]
+
+                        data["classes"][course_name][field][i][0][j][0] = 34 * (
+                            slot_time // 30
+                        ) + (slot_time % 30 + 4)
+
+        with open(
+            os.path.join(os.path.dirname(__file__), "../public", file),
+            "w",
+            encoding="utf-8",
+        ) as out_file:
+            json.dump(data, out_file)

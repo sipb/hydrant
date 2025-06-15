@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 
 import { Box, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
@@ -60,6 +60,12 @@ export function Calendar() {
     );
   };
 
+  const events = useMemo(() => {
+    return selectedActivities
+      .flatMap((act) => act.events)
+      .flatMap((event) => event.eventInputs);
+  }, [selectedActivities]);
+
   return (
     <FullCalendar
       plugins={[timeGridPlugin, interactionPlugin]}
@@ -67,9 +73,7 @@ export function Calendar() {
       allDaySlot={false}
       dayHeaderFormat={{ weekday: "short" }}
       editable={false}
-      events={selectedActivities
-        .flatMap((act) => act.events)
-        .flatMap((event) => event.eventInputs)}
+      events={events}
       eventContent={renderEvent}
       eventClick={(e) => {
         // extendedProps: non-standard props of {@link Event.eventInputs}
@@ -88,7 +92,11 @@ export function Calendar() {
             ? `${hour.toString()} AM`
             : `${(hour - 12).toString()} PM`;
       }}
-      slotMinTime="08:00:00"
+      slotMinTime={
+        events.some((e) => (e.start as Date).getHours() < 8)
+          ? "06:00:00"
+          : "08:00:00"
+      }
       slotMaxTime="22:00:00"
       weekends={false}
       selectable={viewedActivity instanceof NonClass}

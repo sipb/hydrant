@@ -22,6 +22,8 @@ const SEMESTER_NAMES = {
   },
 } as const;
 
+const TIMESLOTS = 34;
+
 /** Type of semester abbreviations. */
 export type TSemester = keyof typeof SEMESTER_NAMES;
 
@@ -31,7 +33,7 @@ export const WEEKDAY_STRINGS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 /** See {@link TIMESLOT_STRINGS}. */
 function generateTimeslotStrings(): string[] {
   const res = [];
-  for (let i = 8; i <= 11; i++) {
+  for (let i = 6; i <= 11; i++) {
     res.push(`${i.toString()}:00 AM`);
     res.push(`${i.toString()}:30 AM`);
   }
@@ -52,13 +54,13 @@ export const TIMESLOT_STRINGS = generateTimeslotStrings();
 const SLOT_OBJECTS: Record<number, Slot> = {};
 
 /**
- * A thirty-minute slot. Each day has 30 slots from 8 AM to 11 PM, times five
+ * A thirty-minute slot. Each day has 34 slots from 6 AM to 11 PM, times five
  * days a week. When treated as an instant, a slot represents its start time.
  *
- * Each slot is assigned a slot number. Monday slots are 0 to 29, Tuesday are
- * 30 to 59, etc., slot number 0 is Monday 8 AM to 8:30 AM, etc.
+ * Each slot is assigned a slot number. Monday slots are 0 to 33, Tuesday are
+ * 34 to 67, etc., slot number 0 is Monday 6 AM to 6:30 AM, etc.
  *
- * The interface ends at 9 PM, so we don't need to worry about the fencepost
+ * The interface ends at 11 PM, so we don't need to worry about the fencepost
  * problem with respect to ending slots.
  */
 export class Slot {
@@ -72,11 +74,11 @@ export class Slot {
     return SLOT_OBJECTS[slot];
   }
 
-  /** Converts a date, within 8 AM to 11 PM, to a slot. */
+  /** Converts a date, within 6 AM to 11 PM, to a slot. */
   static fromStartDate(date: Date): Slot {
     return new Slot(
-      30 * (date.getDay() - 1) +
-        2 * (date.getHours() - 8) +
+      TIMESLOTS * (date.getDay() - 1) +
+        2 * (date.getHours() - 6) +
         Math.floor(date.getMinutes() / 30),
     );
   }
@@ -84,7 +86,7 @@ export class Slot {
   /** Convert from WEEKDAY_STRINGS and TIMESLOT_STRINGS to slot. */
   static fromDayString(day: string, time: string): Slot {
     return Slot.fromSlotNumber(
-      30 * WEEKDAY_STRINGS.indexOf(day) + TIMESLOT_STRINGS.indexOf(time),
+      TIMESLOTS * WEEKDAY_STRINGS.indexOf(day) + TIMESLOT_STRINGS.indexOf(time),
     );
   }
 
@@ -98,7 +100,7 @@ export class Slot {
    * that date is the right day of the week.
    */
   onDate(date: Date): Date {
-    const hour = Math.floor((this.slot % 30) / 2) + 8;
+    const hour = Math.floor((this.slot % TIMESLOTS) / 2) + 6;
     const minute = (this.slot % 2) * 30;
     return new Date(
       date.getFullYear(),
@@ -122,7 +124,7 @@ export class Slot {
 
   /** The day of the week this slot falls in, as a number from 1 to 5. */
   get weekday(): number {
-    return Math.floor(this.slot / 30) + 1;
+    return Math.floor(this.slot / TIMESLOTS) + 1;
   }
 
   /** Convert a slot number to a day string. */
@@ -132,7 +134,7 @@ export class Slot {
 
   /** Convert a slot number to a time string. */
   get timeString(): string {
-    return TIMESLOT_STRINGS[this.slot % 30];
+    return TIMESLOT_STRINGS[this.slot % TIMESLOTS];
   }
 }
 
