@@ -94,7 +94,7 @@ def run() -> None:
     except (requests.ConnectTimeout, requests.ReadTimeout):
         # unable to scrape Registrar page, reuse file if present
         # if not, make empty cim.json file
-        if not os.path.exists(fname):        
+        if not os.path.exists(fname):
             with open(fname, "w", encoding="utf-8") as cim_file:
                 json.dump({}, cim_file)
 
