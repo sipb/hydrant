@@ -86,7 +86,19 @@ def run() -> None:
     """
     The main entry point.
     """
-    sections = get_sections()
+
+    fname = os.path.join(os.path.dirname(__file__), "cim.json")
+
+    try:
+        sections = get_sections()
+    except (requests.ConnectTimeout, requests.ReadTimeout):
+        # unable to scrape Registrar page, reuse file if present
+        # if not, make empty cim.json file
+        if not os.path.exists(fname):
+            with open(fname, "w", encoding="utf-8") as cim_file:
+                json.dump({}, cim_file)
+
+        return
 
     # This maps each course number to a set of CI-M subjects for that course
     courses: OrderedDict[str, set[str]] = OrderedDict()
@@ -102,7 +114,6 @@ def run() -> None:
             for number in subj.replace("J", "").split("/"):
                 subjects.setdefault(number, {"cim": []})["cim"].append(course)
 
-    fname = os.path.join(os.path.dirname(__file__), "cim.json")
     with open(fname, "w", encoding="utf-8") as cim_file:
         json.dump(subjects, cim_file)
 
