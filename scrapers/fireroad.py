@@ -27,16 +27,16 @@ import json
 import os.path
 from collections.abc import Mapping, MutableMapping, Sequence
 from typing import Any, Union
+from urllib.request import urlopen
 
-import requests
 from .utils import (
+    GIR_REWRITE,
+    MONTHS,
     Term,
     find_timeslot,
-    grouper,
-    MONTHS,
-    GIR_REWRITE,
-    url_name_to_term,
     get_term_info,
+    grouper,
+    url_name_to_term,
 )
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
@@ -448,10 +448,8 @@ def get_raw_data() -> Any:
     Returns:
         Any: The raw data from the Fireroad API.
     """
-    raw_data_req = requests.get(
-        URL, timeout=10
-    )  # more generous here; empirically usually ~1-1.5 seconds
-    text = raw_data_req.text
+    with urlopen(URL, timeout=10) as response:
+        text = response.read().decode("utf-8")
     data = json.loads(text)
     return data
 

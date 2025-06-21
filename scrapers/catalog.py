@@ -47,10 +47,10 @@ from __future__ import annotations
 import json
 import os.path
 import re
+from collections.abc import Iterable, Mapping, MutableMapping
 from typing import Union
-from collections.abc import MutableMapping, Mapping, Iterable
+from urllib.request import urlopen
 
-import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
 
 BASE_URL = "http://student.mit.edu/catalog"
@@ -219,8 +219,9 @@ def get_home_catalog_links() -> Iterable[str]:
     Returns:
         Iterable[str]: relative links to major-specific subpages to scrape
     """
-    catalog_req = requests.get(BASE_URL + "/index.cgi", timeout=3)
-    html = BeautifulSoup(catalog_req.content, "html.parser")
+    with urlopen(BASE_URL + "/index.cgi", timeout=3) as response:
+        catalog_req = response.read()
+    html = BeautifulSoup(catalog_req, "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
     return (a["href"] for a in home_list.find_all("a", href=True))  # type: ignore
 
@@ -237,8 +238,9 @@ def get_all_catalog_links(initial_hrefs: Iterable[str]) -> list[str]:
     """
     hrefs: list[str] = []
     for initial_href in initial_hrefs:
-        href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
-        html = BeautifulSoup(href_req.content, "html.parser")
+        with urlopen(f"{BASE_URL}/{initial_href}", timeout=3) as response:
+            href_req = response.read()
+        html = BeautifulSoup(href_req, "html.parser")
         # Links should be in the only table in the #contentmini div
         tables: Tag = html.find("div", id="contentmini").find_all(  # type: ignore
             "table"
@@ -292,9 +294,10 @@ def scrape_courses_from_page(
             a dictionary to fill with course data
         href (str): the relative link to the page to scrape
     """
-    href_req = requests.get(f"{BASE_URL}/{href}", timeout=3)
+    with urlopen(f"{BASE_URL}/{href}", timeout=3) as response:
+        href_req = response.read()
     # The "html.parser" parses pretty badly
-    html = BeautifulSoup(href_req.content, "lxml")
+    html = BeautifulSoup(href_req, "lxml")
     classes_content: Tag = html.find(
         "table", width="100%", border="0"
     ).find(  # type: ignore
