@@ -20,6 +20,8 @@ description = "Did you know that celebrating a friend’s success is more import
 ['6.S061']
 name = "Humane User Experience Design"
 inCharge = "A. Satyanarayan"
+same = "21A.S02"
+meets = "21A.S10"
 prereqs = "6.1010"
 description = "Teaches an end-to-end user-centric design process focusing on developing humane (usable, joyful, whimsical) frontend user experiences for generative AI, grounded in anthropology. Topics include understanding human context (e.g., through observation, interviews, and user testing), qualitative data analysis, principles of effective and expressive visual and interaction design, frontend web application implementation, and user testing and ethical audits. Enrollment limited."
 

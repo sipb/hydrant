@@ -7,3 +7,35 @@ hassS = true
 lectureRawSections = ['4-163/W/0/11-2']
 lectureSections = [[[[66, 6]], '4-163']]
 inCharge = "J. Knox-Hayes, L. Jonas"
+description = "We'll take an immersive journey through the living cultures of the Eastern Woodlands Nations, looking beyond land acknowledgements to better understand the Indigenous worldviews of this region.  We will implement an experiential learning model to nurture deeper engagement through direct experiences with the Northeastern Woodlands Indigenous peoples. By bringing a living cultural expression into the classroom through an Indigenous speaker series of historians, artists, spiritual, medicine leaders, language speakers, scientists, land / water conservationists, culture and song keepers, clan leaders and elders, crafts makers/keepers, food/seed keepers, and storytellers, students will be engaged into the living expression of oral tradition and NE Indigenous culture today.\n\nWe'll study an inside view taught by Wampanoag scholar, Leslie Jonas, who brings to light the critical role of the Eastern Woodlands coastal perspective in preserving and protecting our natural kinships to land, water, and all of creation. Through our exploration, this class creates a space for critical thinking and a dismantling of earlier academic learning that likely included biases, misinterpretations, and false narratives. Students will be expected to self-reflect on images, imprints, pre-conceived notions taught to them over their developmental years in school and the false histories some, if not many learned from colonized views of our history, lived experiences, culture, language, relationships and world views to the natural world.  Students will develop a precursor of knowledge and practice experience for further studies in Anthropology and Indigenous Environmental Planning."
+url = "https://anthropology.mit.edu/F2025_21A.S01_Reimagining_Indigeneity"
+
+["21A.S02"]
+lectureSections = [[[[7, 3], [75, 3]], '36-155']]
+lectureRawSections = [ "36-155/MW/0/9.30-11" ]
+meets = "21A.S10"
+same = "6.S061"
+hassS = false
+lectureUnits = 3
+labUnits = 1
+preparationUnits = 8
+level = "U"
+prereqs = "6.101 (as a co-requisite à la 6.4500)"
+description = "Teaches an end-to-end user-centric design process focusing on developing humane (usable, joyful, whimsical) frontend user experiences for generative AI, grounded in anthropology. Topics include understanding human context (e.g., through observation, interviews, and user testing), qualitative data analysis, principles of effective and expressive visual and interaction design, front-end web application implementation, and user testing and ethical audits."
+name = "Special Topic: Humane User Experience Design"
+inCharge = "G. Jones, A. Satyanarayan"
+url = "https://anthropology.mit.edu/21A.S02_21A.S10_Humane_User_Experience_Design"
+
+["21A.S10"]
+lectureSections = [[[[7, 3], [75, 3]], '36-155']]
+lectureRawSections = [ "36-155/MW/0/9.30-11" ]
+meets = "21A.S02, 6.S061"
+lectureUnits = 3
+labUnits = 1
+preparationUnits = 8
+level = "G"
+prereqs = "6.101 (as a co-requisite à la 6.4500)"
+description = "Teaches an end-to-end user-centric design process focusing on developing humane (usable, joyful, whimsical) frontend user experiences for generative AI, grounded in anthropology. Topics include understanding human context (e.g., through observation, interviews, and user testing), qualitative data analysis, principles of effective and expressive visual and interaction design, frontend web application implementation, and user testing and ethical audits."
+name = "Special Topic: Humane User Experience Design"
+inCharge = "G. Jones, A. Satyanarayan"
+url = "https://anthropology.mit.edu/21A.S02_21A.S10_Humane_User_Experience_Design"
