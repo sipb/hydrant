@@ -6,7 +6,7 @@ import validator from "@rjsf/validator-ajv8";
 import type { JSONSchema7Definition } from "json-schema";
 
 import { Link as RouterLink } from "react-router";
-import type { Route } from "./+types/Overrides";
+import type { Route } from "./+types/overrides.($prefillId)";
 
 import TOML from "smol-toml";
 
@@ -60,9 +60,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   ) as typeof overrides;
 
   let prefillData: Record<string, unknown>[] = [];
-  const prefillId = (
-    params as Record<string, string | undefined>
-  ).prefillId?.toUpperCase();
+  const prefillId = params.prefillId?.toUpperCase();
 
   const getDataFromFile = async (fileName: string) => {
     try {
@@ -100,6 +98,8 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
   return { overrideNames, prefillData, prefillId };
 }
+
+clientLoader.hydrate = true as const;
 
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
@@ -383,7 +383,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           experimental_defaultFormStateBehavior={{
             arrayMinItems: { populate: "requiredOnly" },
             emptyObjectFields: "populateRequiredDefaults",
-            mergeDefaultsIntoFormData: "useDefaultIfFormDataUndefined",
+            mergeDefaultsIntoFormData: "useFormDataIfPresent",
           }}
           liveOmit={true}
           omitExtraData={true}

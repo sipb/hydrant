@@ -13,6 +13,7 @@ import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { DEFAULT_PREFERENCES } from "./schema";
+import { getFavoriteCourses, setFavoriteCourses } from "./auth";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -53,6 +54,8 @@ export class State {
   private preferences: Preferences = DEFAULT_PREFERENCES;
   /** Set of starred class numbers */
   private starredClasses = new Set<string>();
+  /** Current access token */
+  private accessToken?: string = undefined;
 
   /** React callback to update state. */
   callback: ((state: HydrantState) => void) | undefined;
@@ -288,7 +291,11 @@ export class State {
     } else {
       this.starredClasses.add(cls.number);
     }
-    this.store.set("starredClasses", Array.from(this.starredClasses));
+    const starredArray = Array.from(this.starredClasses);
+
+    this.store.globalSet("starredClasses", starredArray);
+    if (this.accessToken)
+      void setFavoriteCourses(this.accessToken, starredArray);
     this.updateState();
   }
 
@@ -485,9 +492,56 @@ export class State {
       }
     }
     // Load starred classes from storage
-    const storedStarred = this.store.get("starredClasses");
-    if (storedStarred) {
-      this.starredClasses = new Set(storedStarred);
+    const storedStarred = this.store.globalGet("starredClasses") ?? [];
+
+    // backwards compatibility, change from term store to global store
+    const storedStarredTerm = this.store.get("starredClasses") as
+      | string[]
+      | null;
+    if (storedStarredTerm) {
+      const totalStarred = storedStarred.concat(storedStarredTerm);
+      this.store.globalSet("starredClasses", totalStarred);
+
+      storedStarredTerm.forEach((cls) => {
+        if (!(cls in storedStarred)) {
+          storedStarred.push(cls);
+        }
+      });
+
+      this.store.delete("starredClasses");
     }
+
+    this.starredClasses = new Set(storedStarred);
+  }
+
+  loadAccessToken(token?: string): void {
+    if (token === this.accessToken) {
+      return; // no need to update anything
+    }
+
+    // token has changed!
+    if (token) {
+      // user signed in
+      getFavoriteCourses(token)
+        .then((favoriteCourses) => {
+          favoriteCourses.forEach((cls) => {
+            if (!this.starredClasses.has(cls)) {
+              this.starredClasses.add(cls);
+            }
+          });
+
+          this.store.globalSet(
+            "starredClasses",
+            Array.from(this.starredClasses),
+          );
+        })
+        .catch((err: unknown) => {
+          console.error("Failed to fetch favorite courses:", err);
+        });
+    } else {
+      // TODO: user signed out
+    }
+
+    this.accessToken = token;
   }
 }
