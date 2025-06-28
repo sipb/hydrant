@@ -237,7 +237,7 @@ def get_all_catalog_links(initial_hrefs: Iterable[str]) -> list[str]:
     """
     hrefs: list[str] = []
     for initial_href in initial_hrefs:
-        with urlopen(f"{BASE_URL}/{initial_href}", timeout=3) as response:
+        with urlopen(f"{BASE_URL}/{initial_href}", timeout=10) as response:
             html = BeautifulSoup(response.read(), "html.parser")
         # Links should be in the only table in the #contentmini div
         tables: Tag = html.find("div", id="contentmini").find_all(  # type: ignore
