@@ -50,12 +50,10 @@ def main():
     with urlopen(
         f"https://api.github.com/repos/sipb/hydrant/actions/runs/{job_id}/artifacts",
         timeout=3,
-    ) as artifact_response:
-        if artifact_response.getcode() != 200:
-            raise ValueError(
-                "bad artifact fetch response: " + str(artifact_response.getcode())
-            )
-        artifact_info = json.loads(artifact_response.read().decode("utf-8"))
+    ) as response:
+        if response.getcode() != 200:
+            raise ValueError("bad artifact fetch response: " + str(response.getcode()))
+        artifact_info = json.loads(response.read().decode("utf-8"))
 
     # For each known artifact:
     success = False
@@ -68,15 +66,13 @@ def main():
         if not url:
             continue
         # then fetch it.
-        job_request = Request(
+        request = Request(
             method="GET", url=url, headers={"Authorization": ("Bearer " + token)}
         )
         fname = path.join(LOCKER_DIR, "build_artifact.zip")
-        with open(fname, "wb") as file_buffer, urlopen(
-            job_request, timeout=3
-        ) as job_response:
+        with open(fname, "wb") as file_buffer, urlopen(request, timeout=3) as response:
             while True:
-                chunk = job_response.read(4096)
+                chunk = response.read(4096)
                 if not chunk:
                     break
                 file_buffer.write(chunk)

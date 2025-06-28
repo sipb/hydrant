@@ -219,8 +219,8 @@ def get_home_catalog_links() -> Iterable[str]:
     Returns:
         Iterable[str]: relative links to major-specific subpages to scrape
     """
-    with urlopen(BASE_URL + "/index.cgi", timeout=3) as response:
-        html = BeautifulSoup(response.read(), "html.parser")
+    with urlopen(BASE_URL + "/index.cgi", timeout=3) as catalog_req:
+        html = BeautifulSoup(catalog_req.read(), "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
     return (a["href"] for a in home_list.find_all("a", href=True))  # type: ignore
 
@@ -237,8 +237,8 @@ def get_all_catalog_links(initial_hrefs: Iterable[str]) -> list[str]:
     """
     hrefs: list[str] = []
     for initial_href in initial_hrefs:
-        with urlopen(f"{BASE_URL}/{initial_href}", timeout=10) as response:
-            html = BeautifulSoup(response.read(), "html.parser")
+        with urlopen(f"{BASE_URL}/{initial_href}", timeout=10) as href_req:
+            html = BeautifulSoup(href_req.read(), "html.parser")
         # Links should be in the only table in the #contentmini div
         tables: Tag = html.find("div", id="contentmini").find_all(  # type: ignore
             "table"
@@ -292,9 +292,9 @@ def scrape_courses_from_page(
             a dictionary to fill with course data
         href (str): the relative link to the page to scrape
     """
-    with urlopen(f"{BASE_URL}/{href}", timeout=3) as response:
+    with urlopen(f"{BASE_URL}/{href}", timeout=3) as href_req:
         # The "html.parser" parses pretty badly
-        html = BeautifulSoup(response.read(), "lxml")
+        html = BeautifulSoup(href_req.read(), "lxml")
     classes_content: Tag = html.find(
         "table", width="100%", border="0"
     ).find(  # type: ignore

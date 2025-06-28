@@ -448,8 +448,8 @@ def get_raw_data() -> Any:
     Returns:
         Any: The raw data from the Fireroad API.
     """
-    with urlopen(URL, timeout=15) as response:
-        text = response.read().decode("utf-8")
+    with urlopen(URL, timeout=15) as raw_data_req:
+        text = raw_data_req.read().decode("utf-8")
     data = json.loads(text)
     return data
 
