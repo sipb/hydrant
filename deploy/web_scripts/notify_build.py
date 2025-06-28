@@ -72,13 +72,14 @@ def main():
             method="GET", url=url, headers={"Authorization": ("Bearer " + token)}
         )
         fname = path.join(LOCKER_DIR, "build_artifact.zip")
-        with open(fname, "wb") as file_buffer:
-            with urlopen(job_request, timeout=3) as job_response:
-                while True:
-                    chunk = job_response.read(4096)
-                    if not chunk:
-                        break
-                    file_buffer.write(chunk)
+        with open(fname, "wb") as file_buffer, urlopen(
+            job_request, timeout=3
+        ) as job_response:
+            while True:
+                chunk = job_response.read(4096)
+                if not chunk:
+                    break
+                file_buffer.write(chunk)
         # Extract into the output directory.
         with ZipFile(fname, "r") as zfh:
             zfh.extractall(OUTPUT_DIR)
