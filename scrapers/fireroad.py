@@ -28,6 +28,7 @@ import os.path
 from collections.abc import Mapping, MutableMapping, Sequence
 from functools import lru_cache
 from typing import Any, Union
+from urllib.error import URLError
 from urllib.request import urlopen
 
 from .utils import (
@@ -466,13 +467,22 @@ def run(is_semester_term: bool) -> None:
         is_semester_term (bool): whether to look at the semester
             or the pre-semester term.
     """
-    data = get_raw_data()
+    fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
+    fname = os.path.join(os.path.dirname(__file__), fname)
+
+    try:
+        data = get_raw_data()
+    except URLError:
+        print("Unable to scrape FireRoad data.")
+        if not os.path.exists(fname):
+            with open(fname, "w", encoding="utf-8") as fireroad_file:
+                json.dump({}, fireroad_file)
+        return
+
     courses: MutableMapping[
         str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
     ] = {}
     term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
-    fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
-    fname = os.path.join(os.path.dirname(__file__), fname)
     missing = 0
 
     for course in data:

@@ -49,6 +49,7 @@ import os.path
 import re
 from collections.abc import Iterable, Mapping, MutableMapping
 from typing import Union
+from urllib.error import URLError
 from urllib.request import urlopen
 
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -336,15 +337,24 @@ def run() -> None:
     """
     The main function! This calls all the other functions in this file.
     """
-    home_hrefs = get_home_catalog_links()
-    all_hrefs = get_all_catalog_links(home_hrefs)
-    courses: MutableMapping[str, Mapping[str, Union[bool, int, str]]] = {}
-    for href in all_hrefs:
-        print(f"Scraping page: {href}")
-        scrape_courses_from_page(courses, href)
+    fname = os.path.join(os.path.dirname(__file__), "catalog.json")
+
+    try:
+        home_hrefs = get_home_catalog_links()
+        all_hrefs = get_all_catalog_links(home_hrefs)
+        courses: MutableMapping[str, Mapping[str, Union[bool, int, str]]] = {}
+        for href in all_hrefs:
+            print(f"Scraping page: {href}")
+            scrape_courses_from_page(courses, href)
+    except URLError:
+        print("Unable to scrape course catalog data.")
+        if not os.path.exists(fname):
+            with open(fname, "w", encoding="utf-8") as catalog_file:
+                json.dump({}, catalog_file)
+        return
+
     print(f"Got {len(courses)} courses")
 
-    fname = os.path.join(os.path.dirname(__file__), "catalog.json")
     with open(fname, "w", encoding="utf-8") as catalog_file:
         json.dump(courses, catalog_file)
 
