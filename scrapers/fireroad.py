@@ -26,17 +26,19 @@ from __future__ import annotations
 import json
 import os.path
 from collections.abc import Mapping, MutableMapping, Sequence
+from functools import lru_cache
 from typing import Any, Union
+from urllib.error import URLError
+from urllib.request import urlopen
 
-import requests
 from .utils import (
+    GIR_REWRITE,
+    MONTHS,
     Term,
     find_timeslot,
-    grouper,
-    MONTHS,
-    GIR_REWRITE,
-    url_name_to_term,
     get_term_info,
+    grouper,
+    url_name_to_term,
 )
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
@@ -440,6 +442,7 @@ def get_course_data(
     return True
 
 
+@lru_cache(maxsize=None)
 def get_raw_data() -> Any:
     """
     Obtains raw data directly from the Fireroad API.
@@ -448,10 +451,8 @@ def get_raw_data() -> Any:
     Returns:
         Any: The raw data from the Fireroad API.
     """
-    raw_data_req = requests.get(
-        URL, timeout=10
-    )  # more generous here; empirically usually ~1-1.5 seconds
-    text = raw_data_req.text
+    with urlopen(URL, timeout=15) as raw_data_req:
+        text = raw_data_req.read().decode("utf-8")
     data = json.loads(text)
     return data
 
@@ -466,13 +467,22 @@ def run(is_semester_term: bool) -> None:
         is_semester_term (bool): whether to look at the semester
             or the pre-semester term.
     """
-    data = get_raw_data()
+    fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
+    fname = os.path.join(os.path.dirname(__file__), fname)
+
+    try:
+        data = get_raw_data()
+    except URLError:
+        print("Unable to scrape FireRoad data.")
+        if not os.path.exists(fname):
+            with open(fname, "w", encoding="utf-8") as fireroad_file:
+                json.dump({}, fireroad_file)
+        return
+
     courses: MutableMapping[
         str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
     ] = {}
     term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
-    fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
-    fname = os.path.join(os.path.dirname(__file__), fname)
     missing = 0
 
     for course in data:
