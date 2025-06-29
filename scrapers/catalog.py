@@ -293,7 +293,7 @@ def scrape_courses_from_page(
             a dictionary to fill with course data
         href (str): the relative link to the page to scrape
     """
-    with urlopen(f"{BASE_URL}/{href}", timeout=3) as href_req:
+    with urlopen(f"{BASE_URL}/{href}", timeout=10) as href_req:
         # The "html.parser" parses pretty badly
         html = BeautifulSoup(href_req.read(), "lxml")
     classes_content: Tag = html.find(
