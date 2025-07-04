@@ -16,12 +16,14 @@ Functions:
 
 from __future__ import annotations
 
-from pprint import pprint
 from collections.abc import Iterable, Sequence
+from pprint import pprint
 from typing import Union
+from urllib.request import urlopen
+
 from bs4 import BeautifulSoup, Tag
-import requests
-from .fireroad import parse_timeslot, parse_section
+
+from .fireroad import parse_section, parse_timeslot
 
 
 def parse_when(when: str) -> tuple[str, str]:
@@ -113,8 +115,8 @@ def get_rows():
     Returns:
         bs4.element.ResultSet: The rows of the table listing classes
     """
-    response = requests.get("https://math.mit.edu/academics/classes.html", timeout=1)
-    soup = BeautifulSoup(response.text, features="lxml")
+    with urlopen("https://math.mit.edu/academics/classes.html", timeout=1) as response:
+        soup = BeautifulSoup(response.read().decode("utf-8"), features="lxml")
     course_list: Tag = soup.find("ul", {"class": "course-list"})  # type: ignore
     rows = course_list.findAll("li", recursive=False)
     return rows
@@ -173,10 +175,10 @@ def parse_row(
         # Don't want to handle special case - calculus, already right
         return {}
     days, times = parse_when(when)
-    timeslots = parse_many_timeslots(days, times)
+    timeslots = list(parse_many_timeslots(days, times))
     for subject in subjects:
         lecture_raw_sections = make_raw_sections(days, times, where)
-        lecture_sections = make_section_override(list(timeslots), where)
+        lecture_sections = make_section_override(timeslots, where)
         result[subject] = {
             "lectureRawSections": lecture_raw_sections,
             "lectureSections": lecture_sections,

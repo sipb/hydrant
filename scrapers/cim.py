@@ -22,9 +22,9 @@ import json
 import os.path
 from collections import OrderedDict
 from collections.abc import Iterable
+from urllib.error import URLError
+from urllib.request import urlopen
 
-
-import requests
 from bs4 import BeautifulSoup, Tag
 
 # pylint: disable=line-too-long
@@ -39,11 +39,8 @@ def get_sections() -> Iterable[Tag]:
         Iterable[bs4.element.Tag]: The accordion sections that contain lists of CI-M
             subjects
     """
-    cim_req = requests.get(
-        CIM_URL,
-        timeout=5,
-    )
-    soup = BeautifulSoup(cim_req.text, "html.parser")
+    with urlopen(CIM_URL, timeout=5) as cim_req:
+        soup = BeautifulSoup(cim_req.read().decode("utf-8"), "html.parser")
 
     return (
         item
@@ -91,13 +88,11 @@ def run() -> None:
 
     try:
         sections = get_sections()
-    except (requests.ConnectTimeout, requests.ReadTimeout):
-        # unable to scrape Registrar page, reuse file if present
-        # if not, make empty cim.json file
+    except URLError:
+        print("Unable to scrape Registrar page for CI-M subjects.")
         if not os.path.exists(fname):
             with open(fname, "w", encoding="utf-8") as cim_file:
                 json.dump({}, cim_file)
-
         return
 
     # This maps each course number to a set of CI-M subjects for that course
@@ -116,6 +111,8 @@ def run() -> None:
 
     with open(fname, "w", encoding="utf-8") as cim_file:
         json.dump(subjects, cim_file)
+
+    print(f"Found {len(subjects)} CI-M subjects")
 
 
 if __name__ == "__main__":
