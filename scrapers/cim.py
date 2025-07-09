@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import os.path
+import socket
 from collections import OrderedDict
 from collections.abc import Iterable
 from urllib.error import URLError
@@ -88,7 +89,7 @@ def run() -> None:
 
     try:
         sections = get_sections()
-    except URLError:
+    except (URLError, socket.timeout):
         print("Unable to scrape Registrar page for CI-M subjects.")
         if not os.path.exists(fname):
             with open(fname, "w", encoding="utf-8") as cim_file:

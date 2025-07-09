@@ -25,21 +25,15 @@ from __future__ import annotations
 
 import json
 import os.path
+import socket
 from collections.abc import Mapping, MutableMapping, Sequence
 from functools import lru_cache
 from typing import Any, Union
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from .utils import (
-    GIR_REWRITE,
-    MONTHS,
-    Term,
-    find_timeslot,
-    get_term_info,
-    grouper,
-    url_name_to_term,
-)
+from .utils import (GIR_REWRITE, MONTHS, Term, find_timeslot, get_term_info, grouper,
+                    url_name_to_term)
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
@@ -472,7 +466,7 @@ def run(is_semester_term: bool) -> None:
 
     try:
         data = get_raw_data()
-    except URLError:
+    except (URLError, socket.timeout):
         print("Unable to scrape FireRoad data.")
         if not os.path.exists(fname):
             with open(fname, "w", encoding="utf-8") as fireroad_file:

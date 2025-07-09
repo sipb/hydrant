@@ -47,6 +47,7 @@ from __future__ import annotations
 import json
 import os.path
 import re
+import socket
 from collections.abc import Iterable, Mapping, MutableMapping
 from typing import Union
 from urllib.error import URLError
@@ -346,7 +347,7 @@ def run() -> None:
         for href in all_hrefs:
             print(f"Scraping page: {href}")
             scrape_courses_from_page(courses, href)
-    except URLError:
+    except (URLError, socket.timeout):
         print("Unable to scrape course catalog data.")
         if not os.path.exists(fname):
             with open(fname, "w", encoding="utf-8") as catalog_file:
