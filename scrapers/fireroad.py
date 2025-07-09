@@ -32,8 +32,15 @@ from typing import Any, Union
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from .utils import (GIR_REWRITE, MONTHS, Term, find_timeslot, get_term_info, grouper,
-                    url_name_to_term)
+from .utils import (
+    GIR_REWRITE,
+    MONTHS,
+    Term,
+    find_timeslot,
+    get_term_info,
+    grouper,
+    url_name_to_term,
+)
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
