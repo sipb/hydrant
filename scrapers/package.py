@@ -20,8 +20,8 @@ import json
 import os
 import os.path
 import sys
-from typing import Any, Union
 from collections.abc import Iterable
+from typing import Any, Union
 
 from .utils import get_term_info
 

@@ -16,10 +16,10 @@ Functions:
     get_term_info()
 """
 
-from itertools import zip_longest
 import json
 import os.path
 from enum import Enum
+from itertools import zip_longest
 from typing import Any, Dict, Generator, Iterable, Tuple
 
 GIR_REWRITE = {

@@ -7,9 +7,9 @@ Functions:
 * run()
 """
 
-from .fireroad import run as fireroad_run
 from .catalog import run as catalog_run
 from .cim import run as cim_run
+from .fireroad import run as fireroad_run
 from .package import run as package_run
 
 
