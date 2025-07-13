@@ -32,7 +32,8 @@
     "react-use": "^17.6.0",
     "rrule": "^2.8.1",
     "smol-toml": "^1.4.1",
-    "timezones-ical-library": "^1.10.0"
+    "timezones-ical-library": "^1.10.0",
+    "tsx": "^4.20.3"
   },
   "scripts": {
     "dev": "react-router dev",
