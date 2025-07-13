@@ -42,7 +42,8 @@
     "preview": "vite preview",
     "format": "prettier --write '**/*.{ts,tsx}'",
     "ci-prettier": "prettier --check '**/*.{ts,tsx,js}'",
-    "ci-eslint": "eslint ."
+    "ci-eslint": "eslint .",
+    "test": "tsx --test"
   },
   "engines": {
     "node": ">=20.0"
