@@ -33,3 +33,8 @@ name = "On Love: Studies in Film"
 
 ['21L.707']
 name = "The Art of War and Peace: Problems in Cultural Interpretation"
+
+# TEMPORARY UNTIL REGISTRAR UPDATES
+['21L.487']
+lectureRawSections = ["4-253/M/0/2-5"]
+lectureSections = [[[[16, 6]], "4-253"]]
