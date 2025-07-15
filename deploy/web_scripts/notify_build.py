@@ -66,9 +66,8 @@ def main():
         if not url:
             continue
         # then fetch it.
-        request = Request(
-            method="GET", url=url, headers={"Authorization": ("Bearer " + token)}
-        )
+        request = Request(url)
+        request.add_unredirected_header("Authorization", f"Bearer {token}")
         fname = path.join(LOCKER_DIR, "build_artifact.zip")
         with open(fname, "wb") as file_buffer, urlopen(request, timeout=3) as response:
             while True:
