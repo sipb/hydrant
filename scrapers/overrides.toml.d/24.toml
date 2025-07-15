@@ -1,0 +1,8 @@
+#:schema ./override-schema.json
+# Course 24 special subjects (fall 2025)
+
+["24.S00"]
+name = "AI and Rationality"
+same = "6.S044"
+inCharge = "B. Hedden, L. Kaelbling"
+description = "How can we design artificial systems to be rational agents, capable of learning about the world and pursuing goals in sensible ways? And what can AI research, where computational and memory limitations are front and center, tell us about human rationality? This course presents theories of “ideal” rationality while observing the ways in which they demand things (e.g., instantaneous probability updating and logical omniscience) which are unattainable by humans and intractable for computational systems. Topics include Bayesian probability, the relation between belief and probability, expected utility theory, sequential decision-making under uncertainty, belief and goal inference, and multi-agent settings."
