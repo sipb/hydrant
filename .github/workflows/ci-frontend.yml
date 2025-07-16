@@ -1,0 +1,42 @@
+name: CI checks for the frontend
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  node-version: 20.x
+
+jobs:
+  prettier:
+    name: Prettier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: "npm"
+      - name: Install node dependencies
+        run: npm install
+      - name: Run Prettier
+        run: npm run ci-prettier
+  lint:
+    name: Lint + Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: "npm"
+      - name: Install node dependencies
+        run: npm install
+      - name: Check types
+        run: npm run typecheck
+      - name: Run ESLint
+        run: npm run ci-eslint
