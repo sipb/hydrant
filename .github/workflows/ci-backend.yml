@@ -55,3 +55,7 @@ jobs:
         run: python3 -m scrapers
       - name: Check existence of public/latest.json
         run: test -f public/latest.json || exit 1
+      - name: Install the JSON Schema CLI
+        uses: sourcemeta/jsonschema@v10.0.0
+      - name: Validate output against JSON schema
+        run: jsonschema validate -f scrapers/hydrant_schema.json public/latest.json
