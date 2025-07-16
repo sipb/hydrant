@@ -36,3 +36,22 @@ jobs:
       - name: Analysing the code with pylint
         run: |
           pylint $(git ls-files '*.py')
+  integration:
+    name: Test for valid JSON output
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.python-version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pylint
+      - name: Run scrapers
+        run: python3 -m scrapers
+      - name: Check existence of public/latest.json
+        run: test -f public/latest.json || exit 1
