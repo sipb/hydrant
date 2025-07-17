@@ -38,7 +38,7 @@ jobs:
           pylint $(git ls-files '*.py')
   integration:
     name: Test for valid JSON output
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 #NOTE: python 3.7 is NOT supported on ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.7
