@@ -43,7 +43,8 @@
     "format": "prettier --write '**/*.{ts,tsx}'",
     "ci-prettier": "prettier --check '**/*.{ts,tsx,js}'",
     "ci-eslint": "eslint .",
-    "test": "tsx --test"
+    "test": "tsx --test",
+    "ci-all": "npm test && npm run ci-eslint && npm run ci-prettier"
   },
   "engines": {
     "node": ">=20.0"
