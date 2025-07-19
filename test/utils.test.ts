@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
 import {
+  classNumberMatch,
   sum,
   urlencode,
   urldecode,
@@ -9,6 +10,46 @@ import {
 
 test("example", (t) => {
   assert.strictEqual(1, 1);
+});
+
+describe("classNumberMatch", () => {
+  /**
+   * Partition:
+   * - searchString: contains ".", doesn't contain "."
+   * - classNumber: identical, non-identical match, not a match
+   * - exact: true, false
+   */
+  test("searchString contains period, classNumber matches, exact = true", () => {
+    assert.strictEqual(classNumberMatch("1.234", "1.234", true), true);
+  });
+
+  test("searchString contains period, classNumber doesn't match, exact = true", () => {
+    assert.strictEqual(classNumberMatch("1.234", "5.678", true), false);
+  });
+
+  test("searchString contains period, classNumber matches, exact = false", () => {
+    assert.strictEqual(classNumberMatch("1.35", "1.357", false), true);
+  });
+
+  test("searchString contains period, classNumber matches, exact = false", () => {
+    assert.strictEqual(classNumberMatch("1.35", "2.46", false), false);
+  });
+
+  test("searchString without period, classNumber matches, exact = true", () => {
+    assert.strictEqual(classNumberMatch("1234", "1.234", true), true);
+  });
+
+  test("searchString without period, classNumber doesn't match, exact = true", () => {
+    assert.strictEqual(classNumberMatch("1234", "5.678", true), false);
+  });
+
+  test("searchString without period, classNumber matches, exact = false", () => {
+    assert.strictEqual(classNumberMatch("1A35", "1A.357", false), true);
+  });
+
+  test("searchString without period, classNumber matches, exact = false", () => {
+    assert.strictEqual(classNumberMatch("1A35", "2B.46", false), false);
+  });
 });
 
 describe("sum", () => {
