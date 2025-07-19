@@ -9,48 +9,27 @@ await test("parseUrlName", () => {
   });
 });
 
-await describe("getClosestUrlName", async () => {
+await describe("toFullUrl", async () => {
   /**
    * Partition:
-   * - urlName is null
-   * - urlName is empty string
-   * - urlName is equal to "latest"
-   * - getUrlNames(latestUrlName) includes urlName
-   * - EXCLUDED_URLS includes urlName, urlName includes nextUrlName
-   * - unrecognized term
-   * - fallback to latest term
+   * - window.location.href: has parameters, has no parameters
+   * - urlName, latestUrlName: same, different
    */
-  await test("urlName is null", () => {
-    assert.deepStrictEqual(getClosestUrlName(null, "f22"), {
-      urlName: "f22",
-      shouldWarn: false,
-    });
-  });
-
-  await test("urlName is empty string", () => {
-    assert.deepStrictEqual(getClosestUrlName("", "f22"), {
-      urlName: "f22",
-      shouldWarn: false,
-    });
-  });
-
-  await test('urlName is equal to "latest"', () => {
-    assert.deepStrictEqual(getClosestUrlName("latest", "f22"), {
-      urlName: "f22",
-      shouldWarn: false,
-    });
-  });
-
-  // TODO: implement these (and possibly a better partition for this?)
-  await test.skip("getUrlNames(latestUrlName) includes urlName");
-
   await test.skip(
-    "EXCLUDED_URLS includes urlName, urlName includes nextUrlName",
+    "window.location.href has parameters, urlName = latestUrlName",
   );
 
-  await test.skip("unrecognized term");
+  await test.skip(
+    "window.location.href has no parameters, urlName = latestUrlName",
+  );
 
-  await test.skip("fallback to latest term");
+  await test.skip(
+    "window.location.href has parameters, urlName != latestUrlName",
+  );
+
+  await test.skip(
+    "window.location.href has no parameters, urlName != latestUrlName",
+  );
 });
 
 await describe("Term", async () => {
@@ -107,4 +86,64 @@ await describe("Slot", async () => {
   await test.skip("Slot.timeString");
 });
 
-// TODO: figure out how to mock `window.location.href`
+// TODO: figure out how to mock `window.location.href` for these tests
+await describe("getUrlNames", async () => {
+  /**
+   * Partition on urlName:
+   * - EARLIEST_URL
+   * - between EARLIEST_URL and excluded urls
+   * - an excluded url
+   * - after excluded urls
+   */
+  await test.skip("urlName === EARLIEST_URL");
+
+  await test.skip("urlName is before excluded urls");
+
+  await test.skip("urlName is excluded");
+
+  await test.skip("urlName is after excluded urls");
+});
+
+await describe("getClosestUrlName", async () => {
+  /**
+   * Partition:
+   * - urlName is null
+   * - urlName is empty string
+   * - urlName is equal to "latest"
+   * - getUrlNames(latestUrlName) includes urlName
+   * - EXCLUDED_URLS includes urlName, urlName includes nextUrlName
+   * - unrecognized term
+   * - fallback to latest term
+   */
+  await test("urlName is null", () => {
+    assert.deepStrictEqual(getClosestUrlName(null, "f22"), {
+      urlName: "f22",
+      shouldWarn: false,
+    });
+  });
+
+  await test("urlName is empty string", () => {
+    assert.deepStrictEqual(getClosestUrlName("", "f22"), {
+      urlName: "f22",
+      shouldWarn: false,
+    });
+  });
+
+  await test('urlName is equal to "latest"', () => {
+    assert.deepStrictEqual(getClosestUrlName("latest", "f22"), {
+      urlName: "f22",
+      shouldWarn: false,
+    });
+  });
+
+  // TODO: implement these (and possibly a better partition for this?)
+  await test.skip("getUrlNames(latestUrlName) includes urlName");
+
+  await test.skip(
+    "EXCLUDED_URLS includes urlName, urlName includes nextUrlName",
+  );
+
+  await test.skip("unrecognized term");
+
+  await test.skip("fallback to latest term");
+});
