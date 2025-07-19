@@ -53,4 +53,58 @@ await describe("getClosestUrlName", async () => {
   await test.skip("fallback to latest term");
 });
 
+await describe("Term", async () => {
+  /**
+   * Test each method separately (most of them don't need to be partitioned)
+   * TODO
+   */
+  await test.skip("Term.constructor");
+
+  await test.skip("Term.fullRealYear");
+
+  await test.skip("Term.semesterFull");
+
+  await test.skip("Term.semesterFullCaps");
+
+  await test.skip("Term.niceName");
+
+  await test.skip("Term.urlName");
+
+  await test.skip("Term.toString");
+
+  await test.skip("Term.startDateFor");
+
+  await test.skip("Term.endDateFor");
+
+  await test.skip("Term.exDatesFor");
+
+  await test.skip("Term.rDateFor");
+});
+
+await describe("Slot", async () => {
+  /**
+   * Test each method separately (most of them don't need to be partitioned)
+   * TODO
+   */
+  await test.skip("Slot.fromSlotNumber");
+
+  await test.skip("Slot.fromStartDate");
+
+  await test.skip("Slot.fromDayString");
+
+  await test.skip("Slot.add");
+
+  await test.skip("Slot.onDate");
+
+  await test.skip("Slot.startDate");
+
+  await test.skip("Slot.endDate");
+
+  await test.skip("Slot.weekday");
+
+  await test.skip("Slot.dayString");
+
+  await test.skip("Slot.timeString");
+});
+
 // TODO: figure out how to mock `window.location.href`
