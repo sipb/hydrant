@@ -3,10 +3,14 @@ name: CI checks for the backend
 on:
   push:
     branches: [main]
-    paths-ignore: ["**/*.{ts,tsx,js,md,txt}"]
+    paths-ignore:
+      - "**/*.{ts,tsx,js,md,txt,toml}"
+      - "{public,scrapers}/**/*.json"
   pull_request:
     branches: [main]
-    paths-ignore: ["**/*.{ts,tsx,js,md,txt}"]
+    paths-ignore:
+      - "**/*.{ts,tsx,js,md,txt,toml}"
+      - "{public,scrapers}/**/*.json"
 
 env:
   python-version: 3.7

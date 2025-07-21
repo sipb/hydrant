@@ -3,10 +3,14 @@ name: CI checks for the frontend
 on:
   push:
     branches: [main]
-    paths-ignore: ["**/*.{py,md,txt}"]
+    paths-ignore:
+      - "**/*.{py,md,txt,toml}"
+      - "{public,scrapers}/**/*.json"
   pull_request:
     branches: [main]
-    paths-ignore: ["**/*.{py,md,txt}"]
+    paths-ignore:
+      - "**/*.{py,md,txt,toml}"
+      - "{public,scrapers}/**/*.json"
 
 env:
   node-version: 20.x
