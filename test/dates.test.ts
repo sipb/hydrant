@@ -3,6 +3,7 @@ import { describe, test } from "node:test";
 import {
   parseUrlName,
   getClosestUrlName,
+  getUrlNames,
   Slot,
   Term,
 } from "../src/lib/dates.js";
@@ -142,6 +143,38 @@ await describe("Slot", async () => {
   });
 });
 
+await describe("getUrlNames", async () => {
+  /**
+   * Partition on urlName:
+   * - EARLIEST_URL
+   * - between EARLIEST_URL and excluded urls
+   * - an excluded url
+   * - after excluded urls
+   */
+  await test("urlName === EARLIEST_URL", () => {
+    assert.deepStrictEqual(getUrlNames("f22"), ["f22"]);
+  });
+
+  await test("urlName is before excluded urls", () => {
+    assert.deepStrictEqual(getUrlNames("i23"), ["i23", "f22"]);
+  });
+
+  await test.skip("urlName is excluded", () => {
+    assert.deepStrictEqual(getUrlNames("m23"), ["m23", "f22"]);
+  });
+
+  await test.skip("urlName is after excluded urls", () => {
+    assert.deepStrictEqual(getUrlNames("i25"), [
+      "i25",
+      "f24",
+      "s24",
+      "f23",
+      "s23",
+      "f22",
+    ]);
+  });
+});
+
 // TODO: figure out how to mock `window.location.href` for these tests
 await describe("toFullUrl", async () => {
   /**
@@ -164,23 +197,6 @@ await describe("toFullUrl", async () => {
   await test.skip(
     "window.location.href has no parameters, urlName != latestUrlName",
   );
-});
-
-await describe("getUrlNames", async () => {
-  /**
-   * Partition on urlName:
-   * - EARLIEST_URL
-   * - between EARLIEST_URL and excluded urls
-   * - an excluded url
-   * - after excluded urls
-   */
-  await test.skip("urlName === EARLIEST_URL");
-
-  await test.skip("urlName is before excluded urls");
-
-  await test.skip("urlName is excluded");
-
-  await test.skip("urlName is after excluded urls");
 });
 
 await describe("getClosestUrlName", async () => {
