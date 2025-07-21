@@ -9,29 +9,6 @@ await test("parseUrlName", () => {
   });
 });
 
-await describe("toFullUrl", async () => {
-  /**
-   * Partition:
-   * - window.location.href: has parameters, has no parameters
-   * - urlName, latestUrlName: same, different
-   */
-  await test.skip(
-    "window.location.href has parameters, urlName = latestUrlName",
-  );
-
-  await test.skip(
-    "window.location.href has no parameters, urlName = latestUrlName",
-  );
-
-  await test.skip(
-    "window.location.href has parameters, urlName != latestUrlName",
-  );
-
-  await test.skip(
-    "window.location.href has no parameters, urlName != latestUrlName",
-  );
-});
-
 await describe("Term", async () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
@@ -87,6 +64,29 @@ await describe("Slot", async () => {
 });
 
 // TODO: figure out how to mock `window.location.href` for these tests
+await describe("toFullUrl", async () => {
+  /**
+   * Partition:
+   * - window.location.href: has parameters, has no parameters
+   * - urlName, latestUrlName: same, different
+   */
+  await test.skip(
+    "window.location.href has parameters, urlName = latestUrlName",
+  );
+
+  await test.skip(
+    "window.location.href has no parameters, urlName = latestUrlName",
+  );
+
+  await test.skip(
+    "window.location.href has parameters, urlName != latestUrlName",
+  );
+
+  await test.skip(
+    "window.location.href has no parameters, urlName != latestUrlName",
+  );
+});
+
 await describe("getUrlNames", async () => {
   /**
    * Partition on urlName:
