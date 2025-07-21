@@ -1,6 +1,11 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
-import { parseUrlName, getClosestUrlName, Term } from "../src/lib/dates.js";
+import {
+  parseUrlName,
+  getClosestUrlName,
+  Slot,
+  Term,
+} from "../src/lib/dates.js";
 
 await test("parseUrlName", () => {
   assert.deepStrictEqual(parseUrlName("f22"), {
@@ -83,25 +88,58 @@ await describe("Slot", async () => {
    * Test each method separately (most of them don't need to be partitioned)
    * TODO
    */
-  await test.skip("Slot.fromSlotNumber");
+  await test("Slot.fromSlotNumber", () => {
+    const mySlot: Slot = Slot.fromSlotNumber(42);
+    assert.strictEqual(mySlot.slot, 42);
+  });
 
-  await test.skip("Slot.fromStartDate");
+  await test("Slot.fromStartDate", () => {
+    const myDate: Date = new Date(2001, 6, 19, 22, 1, 52, 23); // randomly chosen date
+    const mySlot: Slot = Slot.fromStartDate(myDate);
+    assert.strictEqual(mySlot.slot, 134); // note: this was a Thursday (July 19, 2001), slot number 32
+  });
 
-  await test.skip("Slot.fromDayString");
+  await test("Slot.fromDayString", () => {
+    const mySlot: Slot = Slot.fromDayString("Thu", "10:00 PM");
+    assert.strictEqual(mySlot.slot, 134);
+  });
 
-  await test.skip("Slot.add");
+  await test("Slot.add", () => {
+    const mySlot: Slot = new Slot(125);
+    const myOtherSlot: Slot = mySlot.add(-111);
+    assert.strictEqual(myOtherSlot.slot, 14);
+  });
 
-  await test.skip("Slot.onDate");
+  await test("Slot.onDate", () => {
+    const mySlot: Slot = new Slot(125); // Thursday, 5:30 PM
+    const myDate: Date = new Date(2068, 8, 6); // this is also a Thursday
+    assert.deepStrictEqual(mySlot.onDate(myDate), new Date(2068, 8, 6, 17, 30));
+  });
 
-  await test.skip("Slot.startDate");
+  await test("Slot.startDate", () => {
+    const mySlot: Slot = new Slot(62); // Tuesday, 8:00 PM
+    assert.deepStrictEqual(mySlot.startDate, new Date(2001, 0, 2, 20, 0));
+  });
 
-  await test.skip("Slot.endDate");
+  await test("Slot.endDate", () => {
+    const mySlot: Slot = new Slot(130); // Thursday, 8:00 PM
+    assert.deepStrictEqual(mySlot.endDate, new Date(2001, 0, 4, 20, 30));
+  });
 
-  await test.skip("Slot.weekday");
+  await test("Slot.weekday", () => {
+    const mySlot: Slot = new Slot(18); // Monday, 3:00 PM
+    assert.strictEqual(mySlot.weekday, 1);
+  });
 
-  await test.skip("Slot.dayString");
+  await test("Slot.dayString", () => {
+    const mySlot: Slot = new Slot(12); // Monday, 12:00 PM
+    assert.strictEqual(mySlot.dayString, "Mon");
+  });
 
-  await test.skip("Slot.timeString");
+  await test("Slot.timeString", () => {
+    const mySlot: Slot = new Slot(31); // Monday, 9:30 PM
+    assert.strictEqual(mySlot.timeString, "9:30 PM");
+  });
 });
 
 // TODO: figure out how to mock `window.location.href` for these tests
