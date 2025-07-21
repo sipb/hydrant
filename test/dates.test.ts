@@ -159,11 +159,11 @@ await describe("getUrlNames", async () => {
     assert.deepStrictEqual(getUrlNames("i23"), ["i23", "f22"]);
   });
 
-  await test.skip("urlName is excluded", () => {
+  await test("urlName is excluded", () => {
     assert.deepStrictEqual(getUrlNames("m23"), ["m23", "f22"]);
   });
 
-  await test.skip("urlName is after excluded urls", () => {
+  await test("urlName is after excluded urls", () => {
     assert.deepStrictEqual(getUrlNames("i25"), [
       "i25",
       "f24",
