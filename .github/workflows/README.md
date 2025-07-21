@@ -1,10 +1,10 @@
 # Deploy scripts
 
-GitHub Actions processes all scripts in this directory.
+GitHub Actions runs all workflows in this folder.
 
 ## autodeploy.yml
 
-This script automatically deploys a build of Hydrant to Scripts when it receives the `push` Git hook.
+Whenever someone pushes to the `deploy` branch, this script will build Hydrant from source anew and upload it as an artifact. This, in turn, automatically deploys the new version to Scripts. See  `deploy/README.md` for details.
 
 ## ci-frontend.yml
 
@@ -13,14 +13,14 @@ This runs two checks:
 - Prettier for formatting
 - ESLint linting + TypeScript typechecking (bundled as a single check)
 
-This pipeline will NOT trigger on pull requests or commits that only affect backend-related code or documentation. It also only triggers on the `main` branch.
+This pipeline does NOT trigger on pull requests or commits that only affect backend-related code, documentation, or JSON/TOML data.
 
 ## ci-backend.yml
 
-This runs three checks:
+This runs three checks, also for pull requests and commits to the `main` branch:
 
 - Black for formatting
 - Pylint for linting
-- A basic integration test. The job executes the scrapers and then checks whether `public/latest.json` exists. We use this instead of comprehensive unit testing, which we haven't gotten around to yet.
+- A basic integration test. This job executes the scrapers and then checks whether `public/latest.json` (which the scrapers should have generated) now exists. We're currently using this instead of comprehensive unit testing, since we haven't gotten around to that yet.
 
-As with the previous pipeline, it will NOT trigger on pull requests or commits that only affect *frontend*-related code or documentation. It also only triggers on the `main` branch.
+As with the previous pipeline, this one does NOT trigger on pull requests or commits that only affect *frontend*-related code, documentation, or JSON/TOML data.
