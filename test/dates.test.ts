@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
-import { parseUrlName, getClosestUrlName } from "../src/lib/dates.js";
+import { parseUrlName, getClosestUrlName, Term } from "../src/lib/dates.js";
 
 await test("parseUrlName", () => {
   assert.deepStrictEqual(parseUrlName("f22"), {
@@ -14,7 +14,30 @@ await describe("Term", async () => {
    * Test each method separately (most of them don't need to be partitioned)
    * TODO
    */
-  await test.skip("Term.constructor");
+  await test("Term.constructor", () => {
+    const myTerm = new Term({
+      urlName: "f42", // arbitrary values
+      startDate: "2042-04-20",
+      h1EndDate: "2042-04-21",
+      h2StartDate: "2042-04-22",
+      mondayScheduleDate: "2042-04-23",
+      holidayDates: ["2042-04-24"],
+      endDate: "2042-04-25",
+    });
+    assert.strictEqual(myTerm.year, "42");
+    assert.strictEqual(myTerm.semester, "f");
+    assert.deepStrictEqual(myTerm.start, new Date(2042, 3, 20, 0, 0, 0, 0));
+    assert.deepStrictEqual(myTerm.h1End, new Date(2042, 3, 21, 0, 0, 0, 0));
+    assert.deepStrictEqual(myTerm.h2Start, new Date(2042, 3, 22, 0, 0, 0, 0));
+    assert.deepStrictEqual(
+      myTerm.mondaySchedule,
+      new Date(2042, 3, 23, 0, 0, 0, 0),
+    );
+    assert.deepStrictEqual(myTerm.holidays, [
+      new Date(2042, 3, 24, 0, 0, 0, 0),
+    ]);
+    assert.deepStrictEqual(myTerm.end, new Date(2042, 3, 25, 0, 0, 0, 0));
+  });
 
   await test.skip("Term.fullRealYear");
 
