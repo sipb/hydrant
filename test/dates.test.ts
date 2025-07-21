@@ -15,7 +15,7 @@ await describe("Term", async () => {
    * TODO
    */
   await test("Term.constructor", () => {
-    const myTerm = new Term({
+    const myTerm: Term = new Term({
       urlName: "f42", // arbitrary values
       startDate: "2042-04-20",
       h1EndDate: "2042-04-21",
@@ -39,17 +39,35 @@ await describe("Term", async () => {
     assert.deepStrictEqual(myTerm.end, new Date(2042, 3, 25, 0, 0, 0, 0));
   });
 
-  await test.skip("Term.fullRealYear");
+  await test("Term.fullRealYear", () => {
+    const myTerm: Term = new Term({ urlName: "i69" });
+    assert.strictEqual(myTerm.fullRealYear, "2069");
+  });
 
-  await test.skip("Term.semesterFull");
+  await test("Term.semesterFull", () => {
+    const myTerm: Term = new Term({ urlName: "i69" });
+    assert.strictEqual(myTerm.semesterFull, "iap");
+  });
 
-  await test.skip("Term.semesterFullCaps");
+  await test("Term.semesterFullCaps", () => {
+    const myTerm: Term = new Term({ urlName: "i69" });
+    assert.strictEqual(myTerm.semesterFullCaps, "IAP");
+  });
 
-  await test.skip("Term.niceName");
+  await test("Term.niceName", () => {
+    const myTerm: Term = new Term({ urlName: "i69" });
+    assert.strictEqual(myTerm.niceName, "IAP 2069");
+  });
 
-  await test.skip("Term.urlName");
+  await test("Term.urlName", () => {
+    const myTerm: Term = new Term({ urlName: "i69" });
+    assert.strictEqual(myTerm.urlName, "i69");
+  });
 
-  await test.skip("Term.toString");
+  await test("Term.toString", () => {
+    const myTerm: Term = new Term({ urlName: "i69" });
+    assert.strictEqual(myTerm.toString(), "i69");
+  });
 
   await test.skip("Term.startDateFor");
 
