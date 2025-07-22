@@ -1,5 +1,6 @@
 import assert from "node:assert";
-import { describe, test } from "node:test";
+import { after, before, describe, test } from "node:test";
+import jsdomGlobal from "jsdom-global";
 import {
   parseUrlName,
   getClosestUrlName,
@@ -237,12 +238,27 @@ await describe("getUrlNames", async () => {
 });
 
 // TODO: figure out how to mock `window.location.href` for these tests
+await describe("sanity check", async () => {
+  let cleanup: () => void;
+  before(() => {
+    cleanup = jsdomGlobal();
+  });
+
+  after(() => {
+    cleanup();
+  });
+
+  test("sanity check!", () => {
+  });
+})
+
 await describe("toFullUrl", async () => {
+
   /**
    * Partition:
    * - window.location.href: has parameters, has no parameters
    * - urlName, latestUrlName: same, different
-   */
+   */ 
   await test.skip(
     "window.location.href has parameters, urlName = latestUrlName",
   );
