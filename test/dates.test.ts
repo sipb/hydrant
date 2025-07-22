@@ -15,6 +15,67 @@ await test("parseUrlName", () => {
   });
 });
 
+await describe("getClosestUrlName", async () => {
+  /**
+   * Partition:
+   * - urlName is null
+   * - urlName is empty string
+   * - urlName is equal to "latest"
+   * - getUrlNames(latestUrlName) includes urlName
+   * - EXCLUDED_URLS includes urlName, urlName includes nextUrlName
+   * - unrecognized term
+   * - fallback to latest term
+   */
+  await test("urlName is null", () => {
+    assert.deepStrictEqual(getClosestUrlName(null, "f22"), {
+      urlName: "f22",
+      shouldWarn: false,
+    });
+  });
+
+  await test("urlName is empty string", () => {
+    assert.deepStrictEqual(getClosestUrlName("", "f22"), {
+      urlName: "f22",
+      shouldWarn: false,
+    });
+  });
+
+  await test('urlName is equal to "latest"', () => {
+    assert.deepStrictEqual(getClosestUrlName("latest", "f22"), {
+      urlName: "f22",
+      shouldWarn: false,
+    });
+  });
+
+  await test("getUrlNames(latestUrlName) includes urlName", () => {
+    assert.deepStrictEqual(getClosestUrlName("f24", "i25"), {
+      urlName: "f24",
+      shouldWarn: false,
+    });
+  });
+
+  await test("EXCLUDED_URLS includes urlName, urlName includes nextUrlName", () => {
+    assert.deepStrictEqual(getClosestUrlName("m23", "f23"), {
+      urlName: "f23",
+      shouldWarn: false,
+    });
+  });
+
+  await test("unrecognized term", () => {
+    assert.deepStrictEqual(getClosestUrlName("ipsum", "m25"), {
+      urlName: "i25",
+      shouldWarn: true,
+    });
+  });
+
+  await test("fallback to latest term", () => {
+    assert.deepStrictEqual(getClosestUrlName("lorem", "m25"), {
+      urlName: "m25",
+      shouldWarn: true,
+    });
+  });
+});
+
 await describe("Term", async () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
@@ -197,48 +258,4 @@ await describe("toFullUrl", async () => {
   await test.skip(
     "window.location.href has no parameters, urlName != latestUrlName",
   );
-});
-
-await describe("getClosestUrlName", async () => {
-  /**
-   * Partition:
-   * - urlName is null
-   * - urlName is empty string
-   * - urlName is equal to "latest"
-   * - getUrlNames(latestUrlName) includes urlName
-   * - EXCLUDED_URLS includes urlName, urlName includes nextUrlName
-   * - unrecognized term
-   * - fallback to latest term
-   */
-  await test("urlName is null", () => {
-    assert.deepStrictEqual(getClosestUrlName(null, "f22"), {
-      urlName: "f22",
-      shouldWarn: false,
-    });
-  });
-
-  await test("urlName is empty string", () => {
-    assert.deepStrictEqual(getClosestUrlName("", "f22"), {
-      urlName: "f22",
-      shouldWarn: false,
-    });
-  });
-
-  await test('urlName is equal to "latest"', () => {
-    assert.deepStrictEqual(getClosestUrlName("latest", "f22"), {
-      urlName: "f22",
-      shouldWarn: false,
-    });
-  });
-
-  // TODO: implement these (and possibly a better partition for this?)
-  await test.skip("getUrlNames(latestUrlName) includes urlName");
-
-  await test.skip(
-    "EXCLUDED_URLS includes urlName, urlName includes nextUrlName",
-  );
-
-  await test.skip("unrecognized term");
-
-  await test.skip("fallback to latest term");
 });
