@@ -1,10 +1,11 @@
 import assert from "node:assert";
-import { after, before, describe, test } from "node:test";
+import { describe, test } from "node:test";
 import jsdomGlobal from "jsdom-global";
 import {
   parseUrlName,
   getClosestUrlName,
   getUrlNames,
+  toFullUrl,
   Slot,
   Term,
 } from "../src/lib/dates.js";
@@ -237,41 +238,47 @@ await describe("getUrlNames", async () => {
   });
 });
 
-// TODO: figure out how to mock `window.location.href` for these tests
-await describe("sanity check", async () => {
-  let cleanup: () => void;
-  before(() => {
-    cleanup = jsdomGlobal();
-  });
-
-  after(() => {
-    cleanup();
-  });
-
-  test("sanity check!", () => {
-  });
-})
-
 await describe("toFullUrl", async () => {
-
   /**
    * Partition:
    * - window.location.href: has parameters, has no parameters
    * - urlName, latestUrlName: same, different
-   */ 
-  await test.skip(
-    "window.location.href has parameters, urlName = latestUrlName",
-  );
+   */
+  await test("window.location.href has parameters, urlName = latestUrlName", () => {
+    const myUrl = "https://example.com/?utm_source=lorem&utm_medium=ipsum";
+    const cleanup = jsdomGlobal("", { url: myUrl });
+    assert.strictEqual(window.location.href, myUrl);
+    assert.strictEqual(toFullUrl("lorem", "lorem"), "https://example.com/");
+    cleanup();
+  });
 
-  await test.skip(
-    "window.location.href has no parameters, urlName = latestUrlName",
-  );
+  await test("window.location.href has no parameters, urlName = latestUrlName", () => {
+    const myUrl = "https://example.com/";
+    const cleanup = jsdomGlobal("", { url: myUrl });
+    assert.strictEqual(window.location.href, myUrl);
+    assert.strictEqual(toFullUrl("lorem", "lorem"), "https://example.com/");
+    cleanup();
+  });
 
-  await test.skip(
-    "window.location.href has parameters, urlName != latestUrlName",
-  );
+  await test("window.location.href has parameters, urlName = latestUrlName", () => {
+    const myUrl = "https://example.com/?utm_source=lorem&utm_medium=ipsum";
+    const cleanup = jsdomGlobal("", { url: myUrl });
+    assert.strictEqual(window.location.href, myUrl);
+    assert.strictEqual(
+      toFullUrl("lorem", "ipsum"),
+      "https://example.com/?t=lorem",
+    );
+    cleanup();
+  });
 
-  await test.skip(
-    "window.location.href has no parameters, urlName != latestUrlName",
-  );
+  await test("window.location.href has no parameters, urlName = latestUrlName", () => {
+    const myUrl = "https://example.com/";
+    const cleanup = jsdomGlobal("", { url: myUrl });
+    assert.strictEqual(window.location.href, myUrl);
+    assert.strictEqual(
+      toFullUrl("lorem", "ipsum"),
+      "https://example.com/?t=lorem",
+    );
+    cleanup();
+  });
 });
