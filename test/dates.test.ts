@@ -138,13 +138,113 @@ await describe("Term", async () => {
     assert.strictEqual(myTerm.toString(), "i69");
   });
 
-  await test.skip("Term.startDateFor");
+  await describe("Term.startDateFor", async () => {
+    /**
+     * Partition:
+     * - secondHalf: false, true
+     * - startDay: undefined, defined
+     * - slot.weekday: same as start day, different from start day
+     *
+     * TODO
+     */
+    await test.skip(
+      "secondHalf false, startDay undefined, slot.weekday matches",
+    );
 
-  await test.skip("Term.endDateFor");
+    await test.skip(
+      "secondHalf false, startDay undefined, slot.weekday doesn't match",
+    );
 
-  await test.skip("Term.exDatesFor");
+    await test.skip("secondHalf false, startDay defined, slot.weekday matches");
 
-  await test.skip("Term.rDateFor");
+    await test.skip(
+      "secondHalf false, startDay defined, slot.weekday doesn't match",
+    );
+
+    await test.skip(
+      "secondHalf true, startDay undefined, slot.weekday matches",
+    );
+
+    await test.skip(
+      "secondHalf true, startDay undefined, slot.weekday doesn't match",
+    );
+
+    await test.skip("secondHalf true, startDay defined, slot.weekday matches");
+
+    await test.skip(
+      "secondHalf true, startDay defined, slot.weekday doesn't match",
+    );
+  });
+
+  await describe("Term.endDateFor", async () => {
+    /**
+     * Partition:
+     * - secondHalf: false, true
+     * - endDay: undefined, defined
+     * - slot.weekday: same as end day, different from end day
+     *
+     * TODO
+     */
+    await test.skip("secondHalf false, endDay undefined, slot.weekday matches");
+
+    await test.skip(
+      "secondHalf false, endDay undefined, slot.weekday doesn't match",
+    );
+
+    await test.skip("secondHalf false, endDay defined, slot.weekday matches");
+
+    await test.skip(
+      "secondHalf false, endDay defined, slot.weekday doesn't match",
+    );
+
+    await test.skip("secondHalf true, endDay undefined, slot.weekday matches");
+
+    await test.skip(
+      "secondHalf true, endDay undefined, slot.weekday doesn't match",
+    );
+
+    await test.skip("secondHalf true, endDay defined, slot.weekday matches");
+
+    await test.skip(
+      "secondHalf true, endDay defined, slot.weekday doesn't match",
+    );
+  });
+
+  await describe("Term.exDatesFor", async () => {
+    /**
+     * Partition:
+     * - has matching holiday, has no matching holiday
+     * - includes tuesday for monday schedule, doesn't include it
+     *
+     * TODO
+     */
+    await test.skip(
+      "has matching holiday, includes tuesday on monday schedule",
+    );
+
+    await test.skip("has matching holiday, not monday schedule");
+
+    await test.skip("no matching holidays, tuesday for monday schedule");
+
+    await test.skip("no matching holidays, not monday schedule");
+  });
+
+  await test.skip("Term.rDateFor", async () => {
+    /**
+     * Partition:
+     * - slot.weekday: 1, not 1
+     * - this.mondaySchedule: defined undefined
+     *
+     * TODO
+     */
+    await test.skip("slot.weekday Monday, this.mondaySchedule defined");
+
+    await test.skip("slot.weekday not Monday, this.mondaySchedule defined");
+
+    await test.skip("slot.weekday Monday, this.mondaySchedule undefined");
+
+    await test.skip("slot.weekday not Monday, this.mondaySchedule undefined");
+  });
 });
 
 await describe("Slot", async () => {
