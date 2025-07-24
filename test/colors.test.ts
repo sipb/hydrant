@@ -79,11 +79,11 @@ await describe("canonicalizeColor", async () => {
     assert.strictEqual(canonicalizeColor("#A51"), "AA5511");
   });
 
-  await test.skip("3-symbol hex without #", () => {
-    assert.strictEqual(canonicalizeColor("12B"), "1122BB");
+  await test("3-symbol hex without #", () => {
+    assert.strictEqual(canonicalizeColor("12B"), "#1122BB");
   });
 
-  await test.skip("invalid hex code", () => {
+  await test("invalid hex code", () => {
     assert.strictEqual(canonicalizeColor("have a great day!"), undefined);
   });
 });
