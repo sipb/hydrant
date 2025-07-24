@@ -1,17 +1,32 @@
+import assert from "node:assert";
 import { describe, test } from "node:test";
-// TODO: import relevant functions from src/lib/colors.ts
+import {
+  COLOR_SCHEME_LIGHT,
+  COLOR_SCHEME_DARK,
+  COLOR_SCHEME_LIGHT_CONTRAST,
+  COLOR_SCHEME_DARK_CONTRAST,
+  fallbackColor,
+} from "../src/lib/colors.js";
 
 await describe("fallbackColor", async () => {
   /**
    * Test all 4 color modes
    */
-  await test.skip("COLOR_SCHEME_LIGHT");
+  await test("COLOR_SCHEME_LIGHT", () => {
+    assert.strictEqual(fallbackColor(COLOR_SCHEME_LIGHT), "#4A5568");
+  });
 
-  await test.skip("COLOR_SCHEME_DARK");
+  await test("COLOR_SCHEME_DARK", () => {
+    assert.strictEqual(fallbackColor(COLOR_SCHEME_DARK), "#CBD5E0");
+  });
 
-  await test.skip("COLOR_SCHEME_LIGHT_CONTRAST");
+  await test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
+    assert.strictEqual(fallbackColor(COLOR_SCHEME_LIGHT_CONTRAST), "#4A5568");
+  });
 
-  await test.skip("COLOR_SCHEME_DARK_CONTRAST");
+  await test("COLOR_SCHEME_DARK_CONTRAST", () => {
+    assert.strictEqual(fallbackColor(COLOR_SCHEME_DARK_CONTRAST), "#CBD5E0");
+  });
 });
 
 await describe("getDefaultColorScheme", async () => {
