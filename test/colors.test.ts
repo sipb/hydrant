@@ -6,6 +6,7 @@ import {
   COLOR_SCHEME_LIGHT_CONTRAST,
   COLOR_SCHEME_DARK_CONTRAST,
   fallbackColor,
+  canonicalizeColor,
 } from "../src/lib/colors.js";
 
 await describe("fallbackColor", async () => {
@@ -58,17 +59,31 @@ await describe("canonicalizeColor", async () => {
    * - valid 3-symbol hex code (with or without #)
    * - not valid
    */
-  await test.skip("6-symbol hex with #");
+  await test("6-symbol hex with #", () => {
+    assert.strictEqual(canonicalizeColor("#AC26C4"), "#AC26C4"); // random colors generated using RNG
+  });
 
-  await test.skip("6-symbol hex without #");
+  await test("6-symbol hex without #", () => {
+    assert.strictEqual(canonicalizeColor("28259A"), "#28259A");
+  });
 
-  await test.skip("5-symbol hex with #");
+  await test("5-symbol hex with #", () => {
+    assert.strictEqual(canonicalizeColor("#AA1B8"), "#AA1B8");
+  });
 
-  await test.skip("5-symbol hex without #");
+  await test("5-symbol hex without #", () => {
+    assert.strictEqual(canonicalizeColor("9C863"), "#9C863");
+  });
 
-  await test.skip("3-symbol hex with #");
+  await test("3-symbol hex with #", () => {
+    assert.strictEqual(canonicalizeColor("#A51"), "AA5511");
+  });
 
-  await test.skip("3-symbol hex without #");
+  await test.skip("3-symbol hex without #", () => {
+    assert.strictEqual(canonicalizeColor("12B"), "1122BB");
+  });
 
-  await test.skip("invalid hex code");
+  await test.skip("invalid hex code", () => {
+    assert.strictEqual(canonicalizeColor("have a great day!"), undefined);
+  });
 });
