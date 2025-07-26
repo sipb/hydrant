@@ -6,6 +6,7 @@ import {
   COLOR_SCHEME_LIGHT_CONTRAST,
   COLOR_SCHEME_DARK_CONTRAST,
   fallbackColor,
+  textColor,
   canonicalizeColor,
 } from "../src/lib/colors.js";
 
@@ -49,7 +50,35 @@ await describe("getDefaultColorScheme", async () => {
   await test.skip("prefers-color-scheme = dark, prefers-contrast = more");
 });
 
-await test.skip("textColor");
+await describe("textColor", async () => {
+  /**
+   * Partition on `brightness`:
+   * - exactly 0
+   * - between 0 and 128 exclusive
+   * - exactly 128
+   * - between 128 and 256 exclusive
+   * - exactly 256
+   */
+  await test("brightness === 0", () => {
+    assert.deepStrictEqual(textColor("#000000"), "#ffffff");
+  });
+
+  await test("0 < brightness < 128", () => {
+    assert.deepStrictEqual(textColor("#217ac8"), "#ffffff"); // randomly generated colors
+  });
+
+  await test("brightness === 128", () => {
+    assert.deepStrictEqual(textColor("#808080"), "#ffffff");
+  });
+
+  await test.skip("128 < brightness < 256", () => {
+    assert.deepStrictEqual(textColor("#c5accc"), "#000000");
+  });
+
+  await test("brightness === 256", () => {
+    assert.deepStrictEqual(textColor("#ffffff"), "#000000");
+  });
+});
 
 await describe("canonicalizeColor", async () => {
   /**
