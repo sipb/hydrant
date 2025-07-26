@@ -38,16 +38,43 @@ await describe("Timeslot", async () => {
     assert.strictEqual(myTimeslot.hours, 7);
   });
 
-  // TODO: partition
-  await test.skip("Timeslot.conflicts");
+  await test.skip("Timeslot.conflict");
 
   await test("Timeslot.toString", () => {
     const myTimeslot: Timeslot = new Timeslot(151, 5);
     assert.strictEqual(myTimeslot.toString(), "Fri, 1:30 PM – 4:00 PM");
   });
 
-  // TODO: partition
-  await test.skip("Timeslot.equals");
+  await describe("Timeslot.equals", async () => {
+    /**
+     * Partition:
+     * - this.startSlot, other.startSlot: same, different
+     * - this.endSlot, other.endSlot: same, different
+     */
+    await test("starSlot same, endSlot same", () => {
+      const myTimeslot: Timeslot = new Timeslot(38, 18);
+      const otherTimeslot: Timeslot = new Timeslot(38, 18);
+      assert.strictEqual(myTimeslot.equals(otherTimeslot), true);
+    });
+
+    await test("startSlot same, endSlot different", () => {
+      const myTimeslot: Timeslot = new Timeslot(15, 10);
+      const otherTimeslot: Timeslot = new Timeslot(15, 139);
+      assert.strictEqual(myTimeslot.equals(otherTimeslot), false);
+    });
+
+    await test("startSlot different, endSlot same", () => {
+      const myTimeslot: Timeslot = new Timeslot(61, 46); // NOTE: both end at timeslot 107
+      const otherTimeslot: Timeslot = new Timeslot(90, 17);
+      assert.strictEqual(myTimeslot.equals(otherTimeslot), false);
+    });
+
+    await test("StartSlot different, endSlot different", () => {
+      const myTimeslot: Timeslot = new Timeslot(7, 61);
+      const otherTimeslot: Timeslot = new Timeslot(77, 44);
+      assert.strictEqual(myTimeslot.equals(otherTimeslot), false);
+    });
+  });
 });
 
 await test.skip("Event.getEventInputs");
