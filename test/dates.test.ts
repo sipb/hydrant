@@ -95,17 +95,12 @@ await describe("Term", async () => {
     });
     assert.strictEqual(myTerm.year, "42");
     assert.strictEqual(myTerm.semester, "f");
-    assert.deepStrictEqual(myTerm.start, new Date(2042, 3, 20, 0, 0, 0, 0));
-    assert.deepStrictEqual(myTerm.h1End, new Date(2042, 3, 21, 0, 0, 0, 0));
-    assert.deepStrictEqual(myTerm.h2Start, new Date(2042, 3, 22, 0, 0, 0, 0));
-    assert.deepStrictEqual(
-      myTerm.mondaySchedule,
-      new Date(2042, 3, 23, 0, 0, 0, 0),
-    );
-    assert.deepStrictEqual(myTerm.holidays, [
-      new Date(2042, 3, 24, 0, 0, 0, 0),
-    ]);
-    assert.deepStrictEqual(myTerm.end, new Date(2042, 3, 25, 0, 0, 0, 0));
+    assert.deepStrictEqual(myTerm.start, new Date(2042, 3, 20, 0));
+    assert.deepStrictEqual(myTerm.h1End, new Date(2042, 3, 21, 0));
+    assert.deepStrictEqual(myTerm.h2Start, new Date(2042, 3, 22, 0));
+    assert.deepStrictEqual(myTerm.mondaySchedule, new Date(2042, 3, 23, 0));
+    assert.deepStrictEqual(myTerm.holidays, [new Date(2042, 3, 24, 0)]);
+    assert.deepStrictEqual(myTerm.end, new Date(2042, 3, 25, 0));
   });
 
   await test("Term.fullRealYear", () => {
@@ -144,36 +139,102 @@ await describe("Term", async () => {
      * - secondHalf: false, true
      * - startDay: undefined, defined
      * - slot.weekday: same as start day, different from start day
-     *
-     * TODO
      */
-    await test.skip(
-      "secondHalf false, startDay undefined, slot.weekday matches",
-    );
 
-    await test.skip(
-      "secondHalf false, startDay undefined, slot.weekday doesn't match",
-    );
+    // declare this arbitrary constant once and for all to make code DRYer
+    const myTerm: Term = new Term({
+      urlName: "f44", // arbitrary values
+      startDate: "2044-10-19", // NOTE: this is a Wednesday
+      h2StartDate: "2044-11-21", // NOTE: this is a Monday
+    });
 
-    await test.skip("secondHalf false, startDay defined, slot.weekday matches");
+    await test("secondHalf false, startDay undefined, slot.weekday matches", () => {
+      assert.deepStrictEqual(
+        myTerm.startDateFor(
+          new Slot(69), // Wednesday, slot 1 (= 6:30 AM)
+          false,
+          undefined,
+        ),
+        new Date(2044, 9, 19, 6, 30),
+      );
+    });
 
-    await test.skip(
-      "secondHalf false, startDay defined, slot.weekday doesn't match",
-    );
+    await test("secondHalf false, startDay undefined, slot.weekday doesn't match", () => {
+      assert.deepStrictEqual(
+        myTerm.startDateFor(
+          new Slot(61), // Tuesday, slot 27 (= 7:30 PM)
+          false,
+          undefined,
+        ),
+        new Date(2044, 9, 25, 19, 30), // bump to next Tuesday, October 25, 2044
+      );
+    });
 
-    await test.skip(
-      "secondHalf true, startDay undefined, slot.weekday matches",
-    );
+    await test("secondHalf false, startDay defined, slot.weekday matches", () => {
+      assert.deepStrictEqual(
+        myTerm.startDateFor(
+          new Slot(168), // Friday, slot 32 (= 10:00 PM)
+          false,
+          [11, 4], // this would mean Friday, November 4, 2044
+        ),
+        new Date(2044, 10, 4, 22),
+      );
+    });
 
-    await test.skip(
-      "secondHalf true, startDay undefined, slot.weekday doesn't match",
-    );
+    await test("secondHalf false, startDay defined, slot.weekday doesn't match", () => {
+      assert.deepStrictEqual(
+        myTerm.startDateFor(
+          new Slot(28), // Monday, slot 28 (= 8:00 PM)
+          false,
+          [11, 4],
+        ),
+        new Date(2044, 10, 7, 20), // bumps to next Monday, November 7, 2044
+      );
+    });
 
-    await test.skip("secondHalf true, startDay defined, slot.weekday matches");
+    await test("secondHalf true, startDay undefined, slot.weekday matches", () => {
+      assert.deepStrictEqual(
+        myTerm.startDateFor(
+          new Slot(1), // Monday, slot 1 (= 6:30 AM)
+          true,
+          undefined,
+        ),
+        new Date(2044, 10, 21, 6, 30),
+      );
+    });
 
-    await test.skip(
-      "secondHalf true, startDay defined, slot.weekday doesn't match",
-    );
+    await test("secondHalf true, startDay undefined, slot.weekday doesn't match", () => {
+      assert.deepStrictEqual(
+        myTerm.startDateFor(
+          new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
+          true,
+          undefined,
+        ),
+        new Date(2044, 10, 22, 6, 30), // bump to next day
+      );
+    });
+
+    await test.skip("secondHalf true, startDay defined, slot.weekday matches", () => {
+      assert.deepStrictEqual(
+        myTerm.startDateFor(
+          new Slot(1), // Monday, slot 1 (= 6:30 AM)
+          true,
+          [11, 14], // Monday, November 14, 2044
+        ),
+        new Date(2044, 10, 14, 6, 30),
+      );
+    });
+
+    await test.skip("secondHalf true, startDay defined, slot.weekday doesn't match", () => {
+      assert.deepStrictEqual(
+        myTerm.startDateFor(
+          new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
+          true,
+          undefined,
+        ),
+        new Date(2044, 10, 15, 6, 30), // bump to next day
+      );
+    });
   });
 
   await describe("Term.endDateFor", async () => {
