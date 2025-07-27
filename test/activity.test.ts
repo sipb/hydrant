@@ -87,7 +87,7 @@ await test.skip("Event.getEventInputs");
 
 await describe("NonClass", async () => {
   await describe("NonClass.constructor", async () => {
-    const nanoidRegex: RegExp = /^[A-Za-z0-9-_]{8}$/;
+    const nanoidRegex = /^[A-Za-z0-9-_]{8}$/;
 
     await test("COLOR_SCHEME_LIGHT", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
