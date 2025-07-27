@@ -1,7 +1,13 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
-import { Timeslot } from "../src/lib/activity.js";
+import { Timeslot, NonClass } from "../src/lib/activity.js";
 import { Slot } from "../src/lib/dates.js";
+import {
+  COLOR_SCHEME_LIGHT,
+  COLOR_SCHEME_DARK,
+  COLOR_SCHEME_LIGHT_CONTRAST,
+  COLOR_SCHEME_DARK_CONTRAST,
+} from "../src/lib/colors.js";
 
 await describe("Timeslot", async () => {
   await test.skip("Timeslot.fromStartEnd", () => {
@@ -80,7 +86,33 @@ await describe("Timeslot", async () => {
 await test.skip("Event.getEventInputs");
 
 await describe("NonClass", async () => {
-  await test.skip("NonClass.constructor");
+  await describe("NonClass.constructor", async () => {
+    const nanoidRegex: RegExp = /^[A-Za-z0-9-_]{8}$/;
+
+    await test("COLOR_SCHEME_LIGHT", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      assert.ok(nanoidRegex.test(myNonClass.id));
+      assert.strictEqual(myNonClass.backgroundColor, "#4A5568");
+    });
+
+    await test("COLOR_SCHEME_DARK", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_DARK);
+      assert.ok(nanoidRegex.test(myNonClass.id));
+      assert.strictEqual(myNonClass.backgroundColor, "#CBD5E0");
+    });
+
+    await test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT_CONTRAST);
+      assert.ok(nanoidRegex.test(myNonClass.id));
+      assert.strictEqual(myNonClass.backgroundColor, "#4A5568");
+    });
+
+    await test("COLOR_SCHEME_DARK_CONTRAST", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_DARK_CONTRAST);
+      assert.ok(nanoidRegex.test(myNonClass.id));
+      assert.strictEqual(myNonClass.backgroundColor, "#CBD5E0");
+    });
+  });
 
   await test.skip("NonClass.buttonName");
 
