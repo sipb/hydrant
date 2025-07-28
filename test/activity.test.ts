@@ -219,7 +219,76 @@ await describe("NonClass", async () => {
     });
   });
 
-  await test.skip("NonClass.deflate");
+  await describe("NonClass.deflate", async () => {
+    /** Partition:
+     * - this.timeslots: empty, nonempty
+     * - this.room: defined, undefined
+     */
+    await test("timeslots empty, room undefined", () => {
+      assert.deepStrictEqual(new NonClass(COLOR_SCHEME_LIGHT).deflate(), [
+        [],
+        "New Activity",
+        "#4A5568",
+        "",
+      ]);
+    });
 
-  await test.skip("NonClass.inflate");
+    await test("timeslots empty, room defined", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      myNonClass.room = "lorem ipsum";
+      assert.deepStrictEqual(myNonClass.deflate(), [
+        [],
+        "New Activity",
+        "#4A5568",
+        "lorem ipsum",
+      ]);
+    });
+
+    await test("timeslots nonempty, room undefined", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      myNonClass.timeslots = [new Timeslot(10, 2)];
+      assert.deepStrictEqual(myNonClass.deflate(), [
+        [[10, 2]],
+        "New Activity",
+        "#4A5568",
+        "",
+      ]);
+    });
+  });
+
+  await describe("NonClass.inflate", async () => {
+    /**
+     * Partition on first item: empty, nonempty
+     */
+    await test("first item empty", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      myNonClass.inflate([[], "alpha", "#123456", "beta"]);
+
+      assert.deepStrictEqual(myNonClass.timeslots, []);
+      assert.strictEqual(myNonClass.name, "alpha");
+      assert.strictEqual(myNonClass.backgroundColor, "#123456");
+      assert.strictEqual(myNonClass.room, "beta");
+    });
+
+    await test("first item nonempty", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      myNonClass.inflate([
+        [
+          [1, 2],
+          [4, 5],
+        ],
+        "gamma",
+        "#7890AB",
+        "delta",
+      ]);
+
+      assert.deepStrictEqual(myNonClass.timeslots, [
+        new Timeslot(1, 2),
+        new Timeslot(4, 5),
+      ]);
+      assert.strictEqual(myNonClass.name, "gamma");
+      assert.strictEqual(myNonClass.backgroundColor, "#7890AB");
+      assert.strictEqual(myNonClass.room, "delta");
+    });
+  });
 });
