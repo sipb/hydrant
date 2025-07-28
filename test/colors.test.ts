@@ -71,7 +71,7 @@ await describe("textColor", async () => {
     assert.deepStrictEqual(textColor("#808080"), "#ffffff");
   });
 
-  await test.skip("128 < brightness < 256", () => {
+  await test("128 < brightness < 256", () => {
     assert.deepStrictEqual(textColor("#c5accc"), "#000000");
   });
 
