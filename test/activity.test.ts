@@ -10,7 +10,7 @@ import {
 } from "../src/lib/colors.js";
 
 await describe("Timeslot", async () => {
-  await test.skip("Timeslot.fromStartEnd", () => {
+  await test("Timeslot.fromStartEnd", () => {
     const myStart: Slot = new Slot(2);
     const myEnd: Slot = new Slot(120);
     const myTimeslot: Timeslot = Timeslot.fromStartEnd(myStart, myEnd);
@@ -114,17 +114,112 @@ await describe("NonClass", async () => {
     });
   });
 
-  await test.skip("NonClass.buttonName");
+  await describe("NonClass.buttonName", async () => {
+    /** Partition on this.name: changed, not changed */
+    await test("NonClass.name not changed", () => {
+      assert.strictEqual(
+        new NonClass(COLOR_SCHEME_LIGHT).buttonName,
+        "New Activity",
+      );
+    });
 
-  await test.skip("NonClass.hours");
+    await test("NonClass.name changed", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      const myString = "lorem ipsum dolor sit amet";
+      myNonClass.name = myString;
+      assert.strictEqual(myNonClass.buttonName, myString);
+    });
+  });
+
+  await describe("NonClass.hours", async () => {
+    /** Partition on timeslot count: 0, 1, >1 */
+    await test("0 timeslots", () => {
+      assert.strictEqual(new NonClass(COLOR_SCHEME_LIGHT).hours, 0);
+    });
+
+    await test("1 timeslot", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      myNonClass.timeslots = [new Timeslot(4, 5)];
+      assert.strictEqual(myNonClass.hours, 5 / 2);
+    });
+
+    await test("multiple timeslots", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      myNonClass.timeslots = [new Timeslot(2, 7), new Timeslot(11, 5)];
+      assert.strictEqual(myNonClass.hours, 6);
+    });
+  });
 
   await test.skip("NonClass.events");
 
-  await test.skip("NonClass.addTimeslot");
+  await describe("NonClass.addTimeslot", async () => {
+    /** Partition:
+     * - slot matches existing timeslot, doesn't add
+     * - slot extends over multiple days, doesn't add
+     * - slot is valid, adds
+     */
+    await test("adds valid slot", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      const myTimeslot: Timeslot = new Timeslot(1, 1);
+      myNonClass.addTimeslot(myTimeslot);
+      assert.deepStrictEqual(myNonClass.timeslots, [myTimeslot]);
+    });
 
-  await test.skip("NonClass.removeTimeslot");
+    await test("doesn't add existing slot", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      const myTimeslot: Timeslot = new Timeslot(4, 6);
+      myNonClass.timeslots = [myTimeslot];
+      myNonClass.addTimeslot(myTimeslot);
+      assert.deepStrictEqual(myNonClass.timeslots, [myTimeslot]);
+    });
 
-  await test.skip("NonClass.inflate");
+    await test("doesn't add multi-day slot", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      myNonClass.addTimeslot(new Timeslot(42, 69));
+      assert.deepStrictEqual(myNonClass.timeslots, []);
+    });
+  });
+
+  await describe("NonClass.removeTimeslot", async () => {
+    /**
+     * Partition:
+     * - NonClass.timeslots (before call): empty, nonempty with match, nonempty without match
+     */
+    await test("removing timeslot from empty NonClass", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      myNonClass.removeTimeslot(new Timeslot(1, 1));
+      assert.deepStrictEqual(myNonClass.timeslots, []);
+    });
+
+    await test("remove matching timeslot from nonempty NonClass", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      const myTimeslots: Timeslot[] = [
+        new Timeslot(1, 2),
+        new Timeslot(4, 3),
+        new Timeslot(42, 4),
+      ];
+      myNonClass.timeslots = myTimeslots;
+      myNonClass.removeTimeslot(new Timeslot(1, 2));
+      assert.deepStrictEqual(myNonClass.timeslots, [
+        new Timeslot(4, 3),
+        new Timeslot(42, 4),
+      ]);
+    });
+
+    await test("remove non-matching timeslot from nonempty NonClass", () => {
+      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      const myTimeslots: Timeslot[] = [
+        new Timeslot(1, 2),
+        new Timeslot(4, 3),
+        new Timeslot(42, 4),
+      ];
+      myNonClass.timeslots = myTimeslots;
+      myNonClass.removeTimeslot(new Timeslot(1, 1));
+      assert.deepStrictEqual(myNonClass.timeslots, myTimeslots);
+    });
+  });
 
   await test.skip("NonClass.deflate");
+
+  await test.skip("NonClass.inflate");
 });
