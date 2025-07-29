@@ -1,14 +1,6 @@
 import { describe, test } from "node:test";
 
 // TODO
-await describe("Section", async () => {
-  await test.skip("Section.constructor");
-
-  await test.skip("Section.parsedTime");
-
-  await test.skip("Section.countConflicts");
-});
-
 await describe("Sections", async () => {
   await test.skip("Sections.shortName");
 
@@ -17,6 +9,16 @@ await describe("Sections", async () => {
   await test.skip("Sections.event");
 
   await test.skip("Sections.lockSection");
+});
+
+await describe("Section", async () => {
+
+  await test("Section.constructor", () => {
+  });
+
+  await test.skip("Section.parsedTime");
+
+  await test.skip("Section.countConflicts");
 });
 
 await describe("Class", async () => {
