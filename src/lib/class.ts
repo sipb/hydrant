@@ -21,9 +21,11 @@ import hassAImg from "../assets/hassA.gif";
 import hassSImg from "../assets/hassS.gif";
 import hassEImg from "../assets/hassE.gif";
 
-// This isn't exported intentionally. Instead of using this, can you use
-// Sections directly?
-enum SectionKind {
+/** Kinds of sections.
+ * 
+ * NOTE: This is intentionally exported *solely* so we can construct `Section` and `Sections` instances for automated testing.
+ */
+export enum SectionKind {
   LECTURE,
   RECITATION,
   LAB,
