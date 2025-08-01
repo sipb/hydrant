@@ -20,7 +20,7 @@
     "ag-grid-react": "^34.0.0",
     "html-entities": "^2.6.0",
     "ical-generator": "^9.0.0",
-    "isbot": "^5.1.28",
+    "isbot": "^5.1.29",
     "lucide-react": "^0.525.0",
     "msgpackr": "^1.11.4",
     "nanoid": "^5.1.5",
