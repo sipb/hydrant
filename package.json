@@ -64,7 +64,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.2",
-    "vite-plugin-checker": "^0.9.3",
+    "vite-plugin-checker": "^0.10.2",
     "vite-plugin-node-polyfills": "^0.24.0",
     "vite-tsconfig-paths": "^5.1.4"
   }
