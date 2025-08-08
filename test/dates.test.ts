@@ -240,34 +240,56 @@ await describe("Term", async () => {
   await describe("Term.endDateFor", async () => {
     /**
      * Partition:
-     * - secondHalf: false, true
+     * - firstHalf: false, true
      * - endDay: undefined, defined
      * - slot.weekday: same as end day, different from end day
      *
      * TODO
      */
-    await test.skip("secondHalf false, endDay undefined, slot.weekday matches");
+    const myTerm: Term = new Term({
+      urlName: "f44",
+      h1EndDate: "2044-10-19", // NOTE: this is a Wednesday
+      endDate: "2044-11-21", // NOTE: this is a Monday
+    });
+
+    await test("firstHalf false, endDay undefined, slot.weekday matches", () => {
+      assert.deepStrictEqual(
+        myTerm.endDateFor(new Slot(1), false, undefined), // NOTE: slot 1 = Monday at 6:30 AM
+        new Date(2044, 10, 22, 6, 30, 0, 0),
+      );
+    });
+
+    await test("firstHalf false, endDay undefined, slot.weekday doesn't match", () => {
+      assert.deepStrictEqual(
+        myTerm.endDateFor(new Slot(68), false, undefined), // NOTE: slot 68 = Wednesday at 6:00 AM
+        new Date(2044, 10, 17, 6, 0, 0, 0), // NOTE: 2044-11-17 is a Thursday
+      );
+    });
+
+    await test("firstHalf true, endDay undefined, slot.weekday matches", () => {
+      assert.deepStrictEqual(
+        myTerm.endDateFor(new Slot(94), true, undefined), // NOTE: slot 94 = Wednesday at 7:00 PM
+        new Date(2044, 9, 20, 19, 0, 0, 0),
+      );
+    });
+
+    await test("firstHalf true, endDay undefined, slot.weekday doesn't match", () => {
+      assert.deepStrictEqual(
+        myTerm.endDateFor(new Slot(4), true, undefined), // NOTE: slot 4 = Monday at 8:00 PM
+        new Date(2044, 9, 18, 8, 0, 0, 0), // NOTE: 2044-10-18 is a Tuesday
+      );
+    });
+
+    await test.skip("firstHalf false, endDay defined, slot.weekday matches");
 
     await test.skip(
-      "secondHalf false, endDay undefined, slot.weekday doesn't match",
+      "firstHalf false, endDay defined, slot.weekday doesn't match",
     );
 
-    await test.skip("secondHalf false, endDay defined, slot.weekday matches");
+    await test.skip("firstHalf true, endDay defined, slot.weekday matches");
 
     await test.skip(
-      "secondHalf false, endDay defined, slot.weekday doesn't match",
-    );
-
-    await test.skip("secondHalf true, endDay undefined, slot.weekday matches");
-
-    await test.skip(
-      "secondHalf true, endDay undefined, slot.weekday doesn't match",
-    );
-
-    await test.skip("secondHalf true, endDay defined, slot.weekday matches");
-
-    await test.skip(
-      "secondHalf true, endDay defined, slot.weekday doesn't match",
+      "firstHalf true, endDay defined, slot.weekday doesn't match",
     );
   });
 
