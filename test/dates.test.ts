@@ -312,7 +312,7 @@ await describe("Term", async () => {
     await test.skip("no matching holidays, not monday schedule");
   });
 
-  await test.skip("Term.rDateFor", async () => {
+  await describe("Term.rDateFor", async () => {
     /**
      * Partition:
      * - slot.weekday: 1, not 1
