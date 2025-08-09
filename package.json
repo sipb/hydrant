@@ -44,7 +44,7 @@
     "ci-prettier": "prettier --check '**/*.{ts,tsx,js}'",
     "ci-eslint": "eslint .",
     "test": "tsx --test",
-    "ci-all": "npm test && npm run ci-eslint && npm run ci-prettier"
+    "ci-all": "npm run typecheck && npm test && npm run ci-eslint && npm run ci-prettier"
   },
   "engines": {
     "node": ">=20.0"
