@@ -22,7 +22,7 @@ import hassSImg from "../assets/hassS.gif";
 import hassEImg from "../assets/hassE.gif";
 
 /** Kinds of sections.
- * 
+ *
  * NOTE: This is intentionally exported *solely* so we can construct `Section` and `Sections` instances for automated testing.
  */
 export enum SectionKind {
