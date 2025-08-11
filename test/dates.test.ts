@@ -389,13 +389,34 @@ await describe("Term", async () => {
      *
      * TODO
      */
-    await test.skip("slot.weekday Monday, this.mondaySchedule defined");
+    await test("slot.weekday Monday, this.mondaySchedule defined", () => {
+      const myTerm: Term = new Term({
+        urlName: "f56",
+        mondayScheduleDate: "2056-04-24",
+      });
+      assert.deepStrictEqual(
+        myTerm.rDateFor(new Slot(0)),
+        new Date(2056, 3, 24, 6, 0, 0, 0),
+      );
+    });
 
-    await test.skip("slot.weekday not Monday, this.mondaySchedule defined");
+    await test("slot.weekday not Monday, this.mondaySchedule defined", () => {
+      const myTerm: Term = new Term({
+        urlName: "f56",
+        mondayScheduleDate: "2056-04-24",
+      });
+      assert.deepStrictEqual(myTerm.rDateFor(new Slot(157)), undefined);
+    });
 
-    await test.skip("slot.weekday Monday, this.mondaySchedule undefined");
+    await test("slot.weekday Monday, this.mondaySchedule undefined", () => {
+      const myTerm: Term = new Term({ urlName: "s51" });
+      assert.deepStrictEqual(myTerm.rDateFor(new Slot(6)), undefined);
+    });
 
-    await test.skip("slot.weekday not Monday, this.mondaySchedule undefined");
+    await test("slot.weekday not Monday, this.mondaySchedule undefined", () => {
+      const myTerm: Term = new Term({ urlName: "s51" });
+      assert.deepStrictEqual(myTerm.rDateFor(new Slot(118)), undefined);
+    });
   });
 });
 
