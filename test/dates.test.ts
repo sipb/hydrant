@@ -296,18 +296,70 @@ await describe("Term", async () => {
   await describe("Term.exDatesFor", async () => {
     /**
      * Partition:
-     * - has matching holiday, has no matching holiday
+     * - has matching holiday, has non-matching holiday, has no holiday
      * - includes tuesday for monday schedule, doesn't include it
      *
      * TODO
      */
-    await test.skip(
-      "has matching holiday, includes tuesday on monday schedule",
-    );
+    await test("has matching holiday, tuesday on monday schedule", () => {
+      const myTerm: Term = new Term({
+        urlName: "m79",
+        holidayDates: ["2079-08-08"], // NOTE: 2079-08-08 is a Tuesday
+        mondayScheduleDate: "2079-08-11",
+      });
+      assert.deepStrictEqual(
+        myTerm.exDatesFor(new Slot(40)), // NOTE: slot 40 = Tuesday at 9:00 AM
+        [
+          new Date(2079, 7, 8, 9, 0, 0, 0),
+          new Date(1999, 11, 31, 9, 0, 0, 0),
+          new Date(2079, 7, 11, 9, 0, 0, 0),
+        ],
+      );
+    });
 
-    await test.skip("has matching holiday, not monday schedule");
+    await test("has matching holiday, not monday schedule", () => {
+      const myTerm: Term = new Term({
+        urlName: "m79",
+        holidayDates: ["2079-08-09"], // NOTE: 2079-08-09 is a Wednesday
+        mondayScheduleDate: "2079-08-11",
+      });
+      assert.deepStrictEqual(
+        myTerm.exDatesFor(new Slot(100)), // NOTE: slot 100 = Wednesday at 10:00 PM
+        [
+          new Date(2079, 7, 9, 22, 0, 0, 0),
+          new Date(1999, 11, 31, 22, 0, 0, 0),
+        ],
+      );
+    });
 
-    await test("no matching holidays, tuesday for monday schedule", () => {
+    await test("has non-matching holiday, tuesday on monday schedule", () => {
+      const myTerm: Term = new Term({
+        urlName: "m79",
+        holidayDates: ["2079-08-20"], // NOTE: 2079-08-20 is a Sunday
+        mondayScheduleDate: "2079-08-11",
+      });
+      assert.deepStrictEqual(
+        myTerm.exDatesFor(new Slot(41)), // NOTE: slot 41 = Tuesday at 9:30 AM
+        [
+          new Date(1999, 11, 31, 9, 30, 0, 0),
+          new Date(2079, 7, 11, 9, 30, 0, 0),
+        ],
+      );
+    });
+
+    await test("has non-matching holiday, not monday schedule", () => {
+      const myTerm: Term = new Term({
+        urlName: "m79",
+        holidayDates: ["2079-08-14"], // NOTE: 2079-08-14 is a Monday
+        mondayScheduleDate: "2079-08-11",
+      });
+      assert.deepStrictEqual(
+        myTerm.exDatesFor(new Slot(168)), // NOTE: slot 100 = Friday at 10:00 PM
+        [new Date(1999, 11, 31, 22, 0, 0, 0)],
+      );
+    });
+
+    await test("no holidays, tuesday for monday schedule", () => {
       const myTerm: Term = new Term({
         urlName: "f79",
         mondayScheduleDate: "2079-01-01",
@@ -318,7 +370,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("no matching holidays, not monday schedule", () => {
+    await test("no holidays, not monday schedule", () => {
       const myTerm: Term = new Term({
         urlName: "f79",
         mondayScheduleDate: undefined,
