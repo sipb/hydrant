@@ -81,7 +81,6 @@ await describe("getClosestUrlName", async () => {
 await describe("Term", async () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
-   * TODO
    */
   await test("Term.constructor", () => {
     const myTerm: Term = new Term({
@@ -243,8 +242,6 @@ await describe("Term", async () => {
      * - firstHalf: false, true
      * - endDay: undefined, defined
      * - slot.weekday: same as end day, different from end day
-     *
-     * TODO
      */
     const myTerm: Term = new Term({
       urlName: "f44",
@@ -298,8 +295,6 @@ await describe("Term", async () => {
      * Partition:
      * - has matching holiday, has non-matching holiday, has no holiday
      * - includes tuesday for monday schedule, doesn't include it
-     *
-     * TODO
      */
     await test("has matching holiday, tuesday on monday schedule", () => {
       const myTerm: Term = new Term({
@@ -386,8 +381,6 @@ await describe("Term", async () => {
      * Partition:
      * - slot.weekday: 1, not 1
      * - this.mondaySchedule: defined undefined
-     *
-     * TODO
      */
     await test("slot.weekday Monday, this.mondaySchedule defined", () => {
       const myTerm: Term = new Term({
@@ -423,7 +416,6 @@ await describe("Term", async () => {
 await describe("Slot", async () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
-   * TODO
    */
   await test("Slot.fromSlotNumber", () => {
     const mySlot: Slot = Slot.fromSlotNumber(42);
