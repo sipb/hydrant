@@ -307,9 +307,26 @@ await describe("Term", async () => {
 
     await test.skip("has matching holiday, not monday schedule");
 
-    await test.skip("no matching holidays, tuesday for monday schedule");
+    await test("no matching holidays, tuesday for monday schedule", () => {
+      const myTerm: Term = new Term({
+        urlName: "f79",
+        mondayScheduleDate: "2079-01-01",
+      });
+      assert.deepStrictEqual(
+        myTerm.exDatesFor(new Slot(34)), // NOTE: slot 34 = Tuesday at 6:00 AM
+        [new Date(1999, 11, 31, 6, 0, 0, 0), new Date(2079, 0, 1, 6, 0, 0, 0)], // NOTE: in some timezones this shifts to 2000-01-01 so we hardcode "America/New_York" for reproducibility
+      );
+    });
 
-    await test.skip("no matching holidays, not monday schedule");
+    await test("no matching holidays, not monday schedule", () => {
+      const myTerm: Term = new Term({
+        urlName: "f79",
+        mondayScheduleDate: undefined,
+      });
+      assert.deepStrictEqual(myTerm.exDatesFor(new Slot(34)), [
+        new Date(1999, 11, 31, 6, 0, 0, 0),
+      ]);
+    });
   });
 
   await describe("Term.rDateFor", async () => {
