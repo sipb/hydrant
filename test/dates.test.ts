@@ -277,17 +277,33 @@ await describe("Term", async () => {
       );
     });
 
-    await test.skip("firstHalf false, endDay defined, slot.weekday matches");
+    await test("firstHalf false, endDay defined, slot.weekday matches", () => {
+      assert.deepStrictEqual(
+        myTerm.endDateFor(new Slot(0), false, [9, 5]), // NOTE: 2044-09-05 is a Monday
+        new Date(2044, 8, 6, 6, 0, 0, 0),
+      );
+    });
 
-    await test.skip(
-      "firstHalf false, endDay defined, slot.weekday doesn't match",
-    );
+    await test("firstHalf true, endDay defined, slot.weekday matches", () => {
+      assert.deepStrictEqual(
+        myTerm.endDateFor(new Slot(0), true, [9, 5]),
+        new Date(2044, 8, 6, 6, 0, 0, 0),
+      );
+    });
 
-    await test.skip("firstHalf true, endDay defined, slot.weekday matches");
+    await test("firstHalf false, endDay defined, slot.weekday doesn't match", () => {
+      assert.deepStrictEqual(
+        myTerm.endDateFor(new Slot(69), false, [9, 5]), // NOTE: slot 69 = Wednesday at 6:30 AM
+        new Date(2044, 8, 1, 6, 30, 0, 0),
+      );
+    });
 
-    await test.skip(
-      "firstHalf true, endDay defined, slot.weekday doesn't match",
-    );
+    await test("firstHalf true, endDay defined, slot.weekday doesn't match", () => {
+      assert.deepStrictEqual(
+        myTerm.endDateFor(new Slot(69), true, [9, 5]),
+        new Date(2044, 8, 1, 6, 30, 0, 0),
+      );
+    });
   });
 
   await describe("Term.exDatesFor", async () => {
