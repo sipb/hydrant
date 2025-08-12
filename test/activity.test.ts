@@ -83,7 +83,42 @@ await describe("Timeslot", async () => {
   });
 });
 
-await test.skip("Event.getEventInputs");
+await test("Event.eventInputs", () => {
+  const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT_CONTRAST);
+  const myHexCode = "#611917"; // randomly generated hex code
+  const myTitle = "y8g0i81"; // random keysmashes
+  const myRoom = "ahouttoanhontjanota";
+  myNonClass.backgroundColor = myHexCode;
+  const myEvent: Event = new Event(
+    myNonClass,
+    myTitle,
+    [new Timeslot(6, 7), new Timeslot(57, 10)],
+    myRoom,
+    undefined,
+  );
+  assert.deepStrictEqual(myEvent.eventInputs, [
+    {
+      textColor: "#ffffff",
+      title: myTitle,
+      start: new Date(2001, 0, 1, 9, 0, 0, 0), // slot 6 = Monday at 9 AM
+      end: new Date(2001, 0, 1, 12, 30, 0, 0), // slot 13 = Monday at 12:30 PM
+      backgroundColor: myHexCode,
+      borderColor: myHexCode,
+      room: myRoom,
+      activity: myNonClass,
+    },
+    {
+      textColor: "#ffffff",
+      title: myTitle,
+      start: new Date(2001, 0, 2, 17, 30, 0, 0), // slot 57 = Tuesday at 5:30 PM
+      end: new Date(2001, 0, 2, 22, 30, 0, 0), // slot 67 = Tuesday at 10:30 PM
+      backgroundColor: myHexCode,
+      borderColor: myHexCode,
+      room: myRoom,
+      activity: myNonClass,
+    },
+  ]);
+});
 
 await describe("NonClass", async () => {
   await describe("NonClass.constructor", async () => {
