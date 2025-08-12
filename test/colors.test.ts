@@ -1,5 +1,6 @@
 import assert from "node:assert";
-import { describe, test } from "node:test";
+import { after, before, describe, test } from "node:test";
+import jsdomGlobal from "jsdom-global";
 import {
   COLOR_SCHEME_LIGHT,
   COLOR_SCHEME_DARK,
@@ -8,6 +9,7 @@ import {
   fallbackColor,
   textColor,
   canonicalizeColor,
+  getDefaultColorScheme,
 } from "../src/lib/colors.js";
 
 await describe("fallbackColor", async () => {
@@ -37,17 +39,66 @@ await describe("getDefaultColorScheme", async () => {
    * - prefers-color-scheme: light, dark
    * - prefers-contrast: no-preference, more
    */
+
+  // Some declarations
+  let cleanup: () => void;
+  function myUncallableFunction(_: unknown): void {
+    throw new Error("Don't call me!");
+  }
+
+  function myUncallableDispatcher(_: unknown): boolean {
+    throw new Error("Don't call me!");
+  }
+
+  // a function to create window.matchMedia mocks on the fly
+  function makeMatchMediaMock(matchMediaMap: Map<string, boolean>): void {
+    // the mock function to assign to window.matchMedia
+    function matchMediaMock(query: string): MediaQueryList {
+      return {
+        matches: matchMediaMap.get(query) ?? false,
+        media: query,
+        onchange: null,
+        addListener: myUncallableFunction,
+        removeListener: myUncallableFunction,
+        addEventListener: myUncallableFunction,
+        removeEventListener: myUncallableFunction,
+        dispatchEvent: myUncallableDispatcher,
+      };
+    }
+    // actually assign this mock function!
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: matchMediaMock,
+    });
+  }
+
+  // before and after hooks to simplify the code
+  before(() => {
+    cleanup = jsdomGlobal();
+  });
+
+  after(() => {
+    cleanup();
+  });
+
+  await test("prefers-color-scheme = light, prefers-constrast = no-preference", () => {
+    makeMatchMediaMock(
+      new Map<string, boolean>([
+        ["(prefers-color-scheme: dark)", false],
+        ["(prefers-constrast: more)", false],
+      ]),
+    );
+    assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_LIGHT);
+  });
+
+  await test.skip("prefers-color-scheme = light, prefers-constrast = more");
+
   await test.skip(
-    "prefers-color-scheme = light, prefers-contrast = no-preference",
+    "prefers-color-scheme = dark, prefers-constrast = no-preference",
   );
 
-  await test.skip("prefers-color-scheme = light, prefers-contrast = more");
-
-  await test.skip(
-    "prefers-color-scheme = dark, prefers-contrast = no-preference",
-  );
-
-  await test.skip("prefers-color-scheme = dark, prefers-contrast = more");
+  await test.skip("prefers-color-scheme = dark, prefers-constrast = more");
 });
 
 await describe("textColor", async () => {
