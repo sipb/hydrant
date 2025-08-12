@@ -92,13 +92,38 @@ await describe("getDefaultColorScheme", async () => {
     assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_LIGHT);
   });
 
-  await test.skip("prefers-color-scheme = light, prefers-constrast = more");
+  await test("prefers-color-scheme = light, prefers-constrast = more", () => {
+    makeMatchMediaMock(
+      new Map<string, boolean>([
+        ["(prefers-color-scheme: dark)", false],
+        ["(prefers-constrast: more)", true],
+      ]),
+    );
+    assert.deepStrictEqual(
+      getDefaultColorScheme(),
+      COLOR_SCHEME_LIGHT_CONTRAST,
+    );
+  });
 
-  await test.skip(
-    "prefers-color-scheme = dark, prefers-constrast = no-preference",
-  );
+  await test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
+    makeMatchMediaMock(
+      new Map<string, boolean>([
+        ["(prefers-color-scheme: dark)", true],
+        ["(prefers-constrast: more)", false],
+      ]),
+    );
+    assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_DARK);
+  });
 
-  await test.skip("prefers-color-scheme = dark, prefers-constrast = more");
+  await test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
+    makeMatchMediaMock(
+      new Map<string, boolean>([
+        ["(prefers-color-scheme: dark)", true],
+        ["(prefers-constrast: more)", true],
+      ]),
+    );
+    assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_DARK_CONTRAST);
+  });
 });
 
 await describe("textColor", async () => {
