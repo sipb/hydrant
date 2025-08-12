@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, test } from "node:test";
-import { Timeslot, NonClass } from "../src/lib/activity.js";
+import { Timeslot, NonClass, Event } from "../src/lib/activity.js";
 import { Slot } from "../src/lib/dates.js";
 import {
   COLOR_SCHEME_LIGHT,
@@ -150,7 +150,24 @@ await describe("NonClass", async () => {
     });
   });
 
-  await test.skip("NonClass.events");
+  await test("NonClass.events", () => {
+    // arbitrary random constants
+    const myName = "r57t68y9u";
+    const myTimeslots: Timeslot[] = [
+      new Timeslot(1, 2),
+      new Timeslot(5, 7),
+      new Timeslot(21, 32),
+    ];
+    const myRoom = "ahuotiyuwiq";
+    // constructing and testing `myNonClass`
+    const myNonClass: NonClass = new NonClass(COLOR_SCHEME_DARK);
+    myNonClass.name = myName;
+    myNonClass.timeslots = myTimeslots;
+    myNonClass.room = myRoom;
+    assert.deepStrictEqual(myNonClass.events, [
+      new Event(myNonClass, myName, myTimeslots, myRoom),
+    ]);
+  });
 
   await describe("NonClass.addTimeslot", async () => {
     /** Partition:
