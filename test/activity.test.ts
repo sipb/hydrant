@@ -44,7 +44,46 @@ await describe("Timeslot", async () => {
     assert.strictEqual(myTimeslot.hours, 7);
   });
 
-  await test.skip("Timeslot.conflict");
+  await describe("Timeslot.conflicts", async () => {
+    // PARTITION: all possible orderings of this.startSlot, this.endSlot, other.startSlot, other.endSlot (excluding edge cases)
+    // NOTE: all of the timezone start and end points were randomly generated
+
+    await test("this.startSlot < this.endSlot < other.startSlot < other.endSlot", () => {
+      const mySlot: Timeslot = new Timeslot(18, 115); // slots 18 - 133
+      const otherSlot: Timeslot = new Timeslot(135, 21); // slots 135 - 156
+      assert.strictEqual(mySlot.conflicts(otherSlot), false);
+    });
+
+    await test("this.startSlot < other.startSlot < this.endSlot < other.endSlot", () => {
+      const mySlot: Timeslot = new Timeslot(73, 27); // slots 73 - 99
+      const otherSlot: Timeslot = new Timeslot(80, 36); // slots 80 - 116
+      assert.strictEqual(mySlot.conflicts(otherSlot), true);
+    });
+
+    await test("this.startSlot < other.startSlot < other.endSlot < this.endSlot", () => {
+      const mySlot: Timeslot = new Timeslot(36, 125); // slots 36 - 161
+      const otherSlot: Timeslot = new Timeslot(120, 19); // slots 120 - 139
+      assert.strictEqual(mySlot.conflicts(otherSlot), true);
+    });
+
+    await test("other.startSlot < this.startSlot < this.endSlot < other.endSlot", () => {
+      const mySlot: Timeslot = new Timeslot(37, 11); // slots 37 - 48
+      const otherSlot: Timeslot = new Timeslot(35, 121); // slots 35 - 156
+      assert.strictEqual(mySlot.conflicts(otherSlot), true);
+    });
+
+    await test("other.startSlot < this.startSlot < other.endSlot < this.endSlot", () => {
+      const mySlot: Timeslot = new Timeslot(118, 55); // slots 118 - 163
+      const otherSlot: Timeslot = new Timeslot(73, 69); // slots 73 - 142
+      assert.strictEqual(mySlot.conflicts(otherSlot), true);
+    });
+
+    await test("other.startSlot < other.endSlot < this.startSlot < this.endSlot", () => {
+      const mySlot: Timeslot = new Timeslot(112, 42); // slots 112 - 154
+      const otherSlot: Timeslot = new Timeslot(58, 15); // slots 58 - 73
+      assert.strictEqual(mySlot.conflicts(otherSlot), false);
+    });
+  });
 
   await test("Timeslot.toString", () => {
     const myTimeslot: Timeslot = new Timeslot(151, 5);
