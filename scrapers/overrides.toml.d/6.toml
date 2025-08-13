@@ -11,6 +11,28 @@ description = "Topics on the engineering and analysis of network protocols and a
 ['6.5820']
 meets = "6.S042"
 
+['6.S043']
+name = "AI and Decision Making in the Medicine: From Disease to Therapy"
+meets = "6.S983"
+prereqs = "6.100A, 6.C01, (7.012 or 7.05 or 5.07)"
+inCharge = "R. Barzilay, C. Stultz"
+description = "Introduction to fundamental principles and applications of artificial intelligence (AI) in medicine and medical research. Students are introduced to foundational concepts in  machine learning as it pertains to clinical decision support systems, personalized medicine, and advanced computational methods for drug optimization and protein folding.   The role of explainablity and uncertainty analysis in deep learning for healthcare are discussed.  Problem sets integrate theoretical knowledge and hands-on applications based on concrete problems in both medical and pharmaceutical science."
+
+['6.S983']
+name = "AI and Decision Making in the Medicine: From Disease to Therapy"
+meets = "6.S043"
+prereqs = "6.100A, 6.C01, (7.012 or 7.05 or 5.07)"
+inCharge = "R. Barzilay, C. Stultz"
+description = "Introduction to fundamental principles and applications of artificial intelligence (AI) in medicine and medical research. Students are introduced to foundational concepts in  machine learning as it pertains to clinical decision support systems, personalized medicine, and advanced computational methods for drug optimization and protein folding.   The role of explainablity and uncertainty analysis in deep learning for healthcare are discussed.  Problem sets integrate theoretical knowledge and hands-on applications based on concrete problems in both medical and pharmaceutical science."
+
+
+["6.S044"]
+name = "AI and Rationality"
+same = "24.S00"
+prereqs = "6.1200 or a subject in probability or logic"
+inCharge = "L. Kaelbling, B. Hedden"
+description = "This class brings together philosophical work on rationality – primarily in formal epistemology and decision theory – with work in AI on belief-formation and planning, with the aim of giving students interested in AI a more philosophically sophisticated understanding of rational agency and illustrating how attempts to design intelligent systems might shed light on human rationality. The distinction between “ideal” rationality and “bounded” rationality (which takes computational and memory limitations into account) will be a major theme throughout the course.\n\nWe begin with an overview of theories of rationality and agency, including classic discussions of whether it can make sense to attribute mental states like beliefs, desires, and intentions to artificial systems. We then focus on different aspects of rational agency – beliefs, desires/utilities, decision theory, planning and sequential decision-making, and multi-agent cases – before closing the course with a week on whether LLMs have beliefs and desires."
+
 ['6.S056']
 name = "Hack Yourself: Data-driven Wellbeing and Learning"
 inCharge = "A. Bell"
