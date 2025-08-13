@@ -53,7 +53,8 @@ from typing import Union
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString
 
 BASE_URL = "http://student.mit.edu/catalog"
 
@@ -193,6 +194,21 @@ def is_limited(html: BeautifulSoup) -> bool:
     return False
 
 
+def is_new(html: BeautifulSoup) -> bool:
+    """
+    Checks if the subject is new.
+
+    Args:
+        html (BeautifulSoup): the input webpage
+
+    Returns:
+        bool: True if the class is new
+    """
+    if html.find(text=re.compile("(New)")):
+        return True
+    return False
+
+
 def get_course_data(filtered_html: BeautifulSoup) -> dict[str, Union[bool, int, str]]:
     """
     Gets the metadata about a class from the filtered HTML.
@@ -210,6 +226,7 @@ def get_course_data(filtered_html: BeautifulSoup) -> dict[str, Union[bool, int, 
         "final": has_final(filtered_html),
         "half": get_half(filtered_html),
         "limited": is_limited(filtered_html),
+        "new": is_new(filtered_html),
     }
 
 
@@ -297,7 +314,7 @@ def scrape_courses_from_page(
     with urlopen(f"{BASE_URL}/{href}", timeout=10) as href_req:
         # The "html.parser" parses pretty badly
         html = BeautifulSoup(href_req.read(), "lxml")
-    classes_content: Tag = html.find(
+    classes_content: Tag = html.find(  # type: ignore
         "table", width="100%", border="0"
     ).find(  # type: ignore
         "td"

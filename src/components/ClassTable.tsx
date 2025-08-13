@@ -35,6 +35,7 @@ import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { TSemester } from "../lib/dates";
 import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
+import type { State } from "../lib/state";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -226,7 +227,13 @@ function ClassInput(props: {
   );
 }
 
-type Filter = keyof Flags | "fits" | "starred";
+const filtersNonFlags = {
+  fits: (state: State, cls: Class) => state.fitsSchedule(cls),
+  starred: (state: State, cls: Class) => state.isClassStarred(cls),
+  new: (_: State, cls: Class) => cls.new,
+} satisfies Record<string, (state: State, cls: Class) => boolean>;
+
+type Filter = keyof Flags | keyof typeof filtersNonFlags;
 type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
@@ -236,6 +243,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["cim", "CI-M"],
   ["fits", "Fits schedule"],
+  ["new", "New!"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
@@ -314,15 +322,16 @@ function ClassFlags(props: {
       if (!cls) return false;
       let result = true;
       newFlags.forEach((value, flag) => {
-        if (value && flag === "fits" && !state.fitsSchedule(cls)) {
-          result = false;
-        } else if (value && flag === "starred" && !state.isClassStarred(cls)) {
+        if (
+          value &&
+          flag in filtersNonFlags &&
+          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+        ) {
           result = false;
         } else if (
           value &&
-          flag !== "fits" &&
-          flag !== "starred" &&
-          !cls.flags[flag]
+          !(flag in filtersNonFlags) &&
+          !cls.flags[flag as keyof typeof cls.flags]
         ) {
           result = false;
         }
@@ -524,7 +533,13 @@ export function ClassTable() {
           ),
         ...numberSortProps,
       },
-      { field: "name", sortable: false, flex: 1 },
+      {
+        field: "name",
+        sortable: false,
+        flex: 1,
+        valueFormatter: (params) =>
+          `${params.data?.class.new ? "✨ " : ""}${params.value ?? ""}`,
+      },
     ];
   }, [state]);
 

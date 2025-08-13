@@ -326,6 +326,11 @@
         "title": "Limited enrollment",
         "description": "True if limited enrollment"
       },
+      "new": {
+        "type": "boolean",
+        "title": "New",
+        "description": "True if subject is new"
+      },
       "rating": {
         "type": "number",
         "title": "Rating",
