@@ -18,6 +18,7 @@
     "@rjsf/utils": "^6.0.0-beta.12",
     "@rjsf/validator-ajv8": "^6.0.0-beta.12",
     "ag-grid-react": "^34.1.0",
+    "cross-env": "^10.0.0",
     "html-entities": "^2.6.0",
     "ical-generator": "^9.0.0",
     "isbot": "^5.1.29",
@@ -43,7 +44,7 @@
     "format": "prettier --write '**/*.{ts,tsx}'",
     "ci-prettier": "prettier --check '**/*.{ts,tsx,js}'",
     "ci-eslint": "eslint .",
-    "test": "env TZ=\"America/New_York\" tsx --test",
+    "test": "cross-env TZ=\"America/New_York\" tsx --test",
     "ci-all": "npm run typecheck && npm test && npm run ci-eslint && npm run ci-prettier"
   },
   "engines": {
