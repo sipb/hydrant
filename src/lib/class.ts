@@ -357,6 +357,11 @@ export class Class {
     return this.rawClass.half || undefined;
   }
 
+  /** Whether this class is new and should be highlighted as such. */
+  get new(): boolean {
+    return this.rawClass.new || false;
+  }
+
   /** Get all calendar events corresponding to this class. */
   get events(): Event[] {
     return this.sections
