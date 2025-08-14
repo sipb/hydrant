@@ -1,4 +1,4 @@
-import { assert, test, describe } from 'vitest'
+import { test, describe, expect } from 'vitest'
 import {
   classSort,
   classNumberMatch,
@@ -30,63 +30,63 @@ describe("classSort", () => {
    * - everything matches
    */
   test("a and b both null", () => {
-    assert.strictEqual(classSort(null, null), 0);
+    expect(classSort(null, null)).toBe(0);
   });
 
   test("a null, b not null", () => {
-    assert.strictEqual(classSort(null, "lorem"), 1);
+    expect(classSort(null, "lorem")).toBe(1);
   });
 
   test("b null, a not null", () => {
-    assert.strictEqual(classSort("ipsum", null), -1);
+    expect(classSort("ipsum", null)).toBe(-1);
   });
 
   test("a & b both invalid", () => {
-    assert.strictEqual(classSort("HeLlO", "wOrLd"), 0);
+    expect(classSort("HeLlO", "wOrLd")).toBe(0);
   });
 
   test("a invalid, b valid", () => {
-    assert.strictEqual(classSort("dolor", "1A.2B"), 0);
+    expect(classSort("dolor", "1A.2B")).toBe(0);
   });
 
   test("a valid, b invalid", () => {
-    assert.strictEqual(classSort("3C.4D", "sit"), 0);
+    expect(classSort("3C.4D", "sit")).toBe(0);
   });
 
   test("a no course number, b has course number", () => {
-    assert.strictEqual(classSort("A.1", "1.234"), 1);
+    expect(classSort("A.1", "1.234")).toBe(1);
   });
 
   test("b no course number, a has course number", () => {
-    assert.strictEqual(classSort("5.678", "B.9"), -1);
+    expect(classSort("5.678", "B.9")).toBe(-1);
   });
 
   test("a has greater course number than b", () => {
-    assert.strictEqual(classSort("1.23", "0.12"), 1);
+    expect(classSort("1.23", "0.12")).toBe(1);
   });
 
   test("a has lesser course number than b", () => {
-    assert.strictEqual(classSort("1.01", "2.56"), -1);
+    expect(classSort("1.01", "2.56")).toBe(-1);
   });
 
   test("same course number, a has greater course letter than b", () => {
-    assert.strictEqual(classSort("1BETA.1", "1ALPHA.2"), 1);
+    expect(classSort("1BETA.1", "1ALPHA.2")).toBe(1);
   });
 
   test("same course number, a has lesser course letter than b", () => {
-    assert.strictEqual(classSort("1DELTA.3", "1EPSILON.4"), -1);
+    expect(classSort("1DELTA.3", "1EPSILON.4")).toBe(-1);
   });
 
   test("same course number and letter, a has greater class number than b", () => {
-    assert.strictEqual(classSort("AWS.208", "AWS.084"), 1);
+    expect(classSort("AWS.208", "AWS.084")).toBe(1);
   });
 
   test("same course number and letter, a has lesser class number than b", () => {
-    assert.strictEqual(classSort("1234.271", "1234.316"), -1);
+    expect(classSort("1234.271", "1234.316")).toBe(-1);
   });
 
   test("everything is identical", () => {
-    assert.strictEqual(classSort("4BF.261", "4BF.261"), 0);
+    expect(classSort("4BF.261", "4BF.261")).toBe(0);
   });
 });
 
@@ -98,35 +98,35 @@ describe("classNumberMatch", () => {
    * - exact: true, false
    */
   test("searchString contains period, classNumber matches, exact = true", () => {
-    assert.strictEqual(classNumberMatch("1.234", "1.234", true), true);
+    expect(classNumberMatch("1.234", "1.234", true)).toBe(true);
   });
 
   test("searchString contains period, classNumber doesn't match, exact = true", () => {
-    assert.strictEqual(classNumberMatch("1.234", "5.678", true), false);
+    expect(classNumberMatch("1.234", "5.678", true)).toBe(false);
   });
 
   test("searchString contains period, classNumber matches, exact = false", () => {
-    assert.strictEqual(classNumberMatch("1.35", "1.357", false), true);
+    expect(classNumberMatch("1.35", "1.357", false)).toBe(true);
   });
 
   test("searchString contains period, classNumber matches, exact = false", () => {
-    assert.strictEqual(classNumberMatch("1.35", "2.46", false), false);
+    expect(classNumberMatch("1.35", "2.46", false)).toBe(false);
   });
 
   test("searchString without period, classNumber matches, exact = true", () => {
-    assert.strictEqual(classNumberMatch("1234", "1.234", true), true);
+    expect(classNumberMatch("1234", "1.234", true)).toBe(true);
   });
 
   test("searchString without period, classNumber doesn't match, exact = true", () => {
-    assert.strictEqual(classNumberMatch("1234", "5.678", true), false);
+    expect(classNumberMatch("1234", "5.678", true)).toBe(false);
   });
 
   test("searchString without period, classNumber matches, exact = false", () => {
-    assert.strictEqual(classNumberMatch("1A35", "1A.357", false), true);
+    expect(classNumberMatch("1A35", "1A.357", false)).toBe(true);
   });
 
   test("searchString without period, classNumber matches, exact = false", () => {
-    assert.strictEqual(classNumberMatch("1A35", "2B.46", false), false);
+    expect(classNumberMatch("1A35", "2B.46", false)).toBe(false);
   });
 });
 
@@ -135,15 +135,15 @@ describe("sum", () => {
      NOTE: test cases are intentionally chosen somewhat randomly
      */
   test("length 0", () => {
-    assert.strictEqual(sum([]), 0);
+    expect(sum([])).toBe(0);
   });
 
   test("length 1", () => {
-    assert.strictEqual(sum([15]), 15);
+    expect(sum([15])).toBe(15);
   });
 
   test("length >1", () => {
-    assert.strictEqual(sum([9, 1, 1, 8]), 19);
+    expect(sum([9, 1, 1, 8])).toBe(19);
   });
 });
 
@@ -154,10 +154,7 @@ test("urlencode followed by urldecode", () => {
     ipsum: "hello",
     dolor: { 1: 1, 2: 2 },
   };
-  assert.deepStrictEqual(
-    urldecode(urlencode(someRandomTestData)),
-    someRandomTestData,
-  );
+  expect(urldecode(urlencode(someRandomTestData))).toStrictEqual(someRandomTestData);
 });
 
 describe("simplifyString", () => {
@@ -167,25 +164,22 @@ describe("simplifyString", () => {
    * - has non-alphanumeric symbols: yes, no
    */
   test("keeps lowercase only same", () => {
-    assert.strictEqual(simplifyString("hi"), "hi");
+    expect(simplifyString("hi")).toBe("hi");
   });
 
   test("keeps number same", () => {
-    assert.strictEqual(simplifyString("42"), "42");
+    expect(simplifyString("42")).toBe("42");
   });
 
   test("has uppercase letters, no non-alphanumeric symbols", () => {
-    assert.strictEqual(simplifyString("Hello42"), "hello42");
+    expect(simplifyString("Hello42")).toBe("hello42");
   });
 
   test("has non-alphanumeric symbols, no uppercase letters", () => {
-    assert.strictEqual(simplifyString(".1223h9f obanboit"), "1223h9fobanboit");
+    expect(simplifyString(".1223h9f obanboit")).toBe("1223h9fobanboit");
   });
 
   test("has non-alphanumeric symbols and uppercase letters", () => {
-    assert.strictEqual(
-      simplifyString("OH) U$oiu262 HUG*$ uIo"),
-      "ohuoiu262huguio",
-    );
+    expect(simplifyString("OH) U$oiu262 HUG*$ uIo")).toBe("ohuoiu262huguio");
   });
 });

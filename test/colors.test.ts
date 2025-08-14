@@ -1,4 +1,4 @@
-import { assert, test, describe } from 'vitest'
+import { test, describe, expect, vi } from 'vitest'
 import {
   COLOR_SCHEME_LIGHT,
   COLOR_SCHEME_DARK,
@@ -15,19 +15,19 @@ describe("fallbackColor", () => {
    * Test all 4 color modes
    */
   test("COLOR_SCHEME_LIGHT", () => {
-    assert.strictEqual(fallbackColor(COLOR_SCHEME_LIGHT), "#4A5568");
+    expect(fallbackColor(COLOR_SCHEME_LIGHT)).toBe("#4A5568");
   });
 
   test("COLOR_SCHEME_DARK", () => {
-    assert.strictEqual(fallbackColor(COLOR_SCHEME_DARK), "#CBD5E0");
+    expect(fallbackColor(COLOR_SCHEME_DARK)).toBe("#CBD5E0");
   });
 
   test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
-    assert.strictEqual(fallbackColor(COLOR_SCHEME_LIGHT_CONTRAST), "#4A5568");
+    expect(fallbackColor(COLOR_SCHEME_LIGHT_CONTRAST)).toBe("#4A5568");
   });
 
   test("COLOR_SCHEME_DARK_CONTRAST", () => {
-    assert.strictEqual(fallbackColor(COLOR_SCHEME_DARK_CONTRAST), "#CBD5E0");
+    expect(fallbackColor(COLOR_SCHEME_DARK_CONTRAST)).toBe("#CBD5E0");
   });
 });
 
@@ -38,15 +38,6 @@ describe("getDefaultColorScheme", () => {
    * - prefers-contrast: no-preference, more
    */
 
-  // Some declarations
-  function myUncallableFunction(_: unknown): void {
-    throw new Error("Don't call me!");
-  }
-
-  function myUncallableDispatcher(_: unknown): boolean {
-    throw new Error("Don't call me!");
-  }
-
   // a function to create window.matchMedia mocks on the fly
   function makeMatchMediaMock(matchMediaMap: Map<string, boolean>): void {
     // the mock function to assign to window.matchMedia
@@ -55,11 +46,11 @@ describe("getDefaultColorScheme", () => {
         matches: matchMediaMap.get(query) ?? false,
         media: query,
         onchange: null,
-        addListener: myUncallableFunction,
-        removeListener: myUncallableFunction,
-        addEventListener: myUncallableFunction,
-        removeEventListener: myUncallableFunction,
-        dispatchEvent: myUncallableDispatcher,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
       };
     }
     // actually assign this mock function!
@@ -77,7 +68,7 @@ describe("getDefaultColorScheme", () => {
         ["(prefers-constrast: more)", false],
       ]),
     );
-    assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_LIGHT);
+    expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_LIGHT);
   });
 
   test("prefers-color-scheme = light, prefers-constrast = more", () => {
@@ -87,8 +78,9 @@ describe("getDefaultColorScheme", () => {
         ["(prefers-constrast: more)", true],
       ]),
     );
-    assert.deepStrictEqual(
-      getDefaultColorScheme(),
+    expect(
+      getDefaultColorScheme()
+    ).toStrictEqual(
       COLOR_SCHEME_LIGHT_CONTRAST,
     );
   });
@@ -100,7 +92,11 @@ describe("getDefaultColorScheme", () => {
         ["(prefers-constrast: more)", false],
       ]),
     );
-    assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_DARK);
+    expect(
+      getDefaultColorScheme()
+    ).toStrictEqual(
+      COLOR_SCHEME_DARK,
+    );
   });
 
   test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
@@ -110,7 +106,11 @@ describe("getDefaultColorScheme", () => {
         ["(prefers-constrast: more)", true],
       ]),
     );
-    assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_DARK_CONTRAST);
+    expect(
+      getDefaultColorScheme()
+    ).toStrictEqual(
+      COLOR_SCHEME_DARK_CONTRAST,
+    );
   });
 });
 
@@ -124,23 +124,23 @@ describe("textColor", () => {
    * - exactly 256
    */
   test("brightness === 0", () => {
-    assert.deepStrictEqual(textColor("#000000"), "#ffffff");
+    expect(textColor("#000000")).toBe("#ffffff");
   });
 
   test("0 < brightness < 128", () => {
-    assert.deepStrictEqual(textColor("#217ac8"), "#ffffff"); // randomly generated colors
+    expect(textColor("#217ac8")).toBe("#ffffff"); // randomly generated colors
   });
 
   test("brightness === 128", () => {
-    assert.deepStrictEqual(textColor("#808080"), "#ffffff");
+    expect(textColor("#808080")).toBe("#ffffff");
   });
 
   test("128 < brightness < 256", () => {
-    assert.deepStrictEqual(textColor("#c5accc"), "#000000");
+    expect(textColor("#c5accc")).toBe("#000000");
   });
 
   test("brightness === 256", () => {
-    assert.deepStrictEqual(textColor("#ffffff"), "#000000");
+    expect(textColor("#ffffff")).toBe("#000000");
   });
 });
 
@@ -153,30 +153,30 @@ describe("canonicalizeColor", () => {
    * - not valid
    */
   test("6-symbol hex with #", () => {
-    assert.strictEqual(canonicalizeColor("#AC26C4"), "#AC26C4"); // random colors generated using RNG
+    expect(canonicalizeColor("#AC26C4")).toBe("#AC26C4"); // random colors generated using RNG
   });
 
   test("6-symbol hex without #", () => {
-    assert.strictEqual(canonicalizeColor("28259A"), "#28259A");
+    expect(canonicalizeColor("28259A")).toBe("#28259A");
   });
 
   test("5-symbol hex with #", () => {
-    assert.strictEqual(canonicalizeColor("#AA1B8"), "#AA1B8");
+    expect(canonicalizeColor("#AA1B8")).toBe("#AA1B8");
   });
 
   test("5-symbol hex without #", () => {
-    assert.strictEqual(canonicalizeColor("9C863"), "#9C863");
+    expect(canonicalizeColor("9C863")).toBe("#9C863");
   });
 
   test("3-symbol hex with #", () => {
-    assert.strictEqual(canonicalizeColor("#A51"), "AA5511");
+    expect(canonicalizeColor("#A51")).toBe("AA5511");
   });
 
   test("3-symbol hex without #", () => {
-    assert.strictEqual(canonicalizeColor("12B"), "#1122BB");
+    expect(canonicalizeColor("12B")).toBe("#1122BB");
   });
 
   test("invalid hex code", () => {
-    assert.strictEqual(canonicalizeColor("have a great day!"), undefined);
+    expect(canonicalizeColor("have a great day!")).toBeUndefined();
   });
 });

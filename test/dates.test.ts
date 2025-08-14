@@ -1,4 +1,4 @@
-import { assert, test, describe, beforeEach } from 'vitest'
+import { test, describe, beforeEach, expect } from 'vitest'
 import {
   parseUrlName,
   getClosestUrlName,
@@ -9,7 +9,7 @@ import {
 } from "../src/lib/dates";
 
 test("parseUrlName", () => {
-  assert.deepStrictEqual(parseUrlName("f22"), {
+  expect(parseUrlName("f22")).toStrictEqual({
     year: "22",
     semester: "f",
   });
@@ -27,49 +27,49 @@ describe("getClosestUrlName", () => {
    * - fallback to latest term
    */
   test("urlName is null", () => {
-    assert.deepStrictEqual(getClosestUrlName(null, "f22"), {
+    expect(getClosestUrlName(null, "f22")).toStrictEqual({
       urlName: "f22",
       shouldWarn: false,
     });
   });
 
   test("urlName is empty string", () => {
-    assert.deepStrictEqual(getClosestUrlName("", "f22"), {
+    expect(getClosestUrlName("", "f22")).toStrictEqual({
       urlName: "f22",
       shouldWarn: false,
     });
   });
 
   test('urlName is equal to "latest"', () => {
-    assert.deepStrictEqual(getClosestUrlName("latest", "f22"), {
+    expect(getClosestUrlName("latest", "f22")).toStrictEqual({
       urlName: "f22",
       shouldWarn: false,
     });
   });
 
   test("getUrlNames(latestUrlName) includes urlName", () => {
-    assert.deepStrictEqual(getClosestUrlName("f24", "i25"), {
+    expect(getClosestUrlName("f24", "i25")).toStrictEqual({
       urlName: "f24",
       shouldWarn: false,
     });
   });
 
   test("EXCLUDED_URLS includes urlName, urlName includes nextUrlName", () => {
-    assert.deepStrictEqual(getClosestUrlName("m23", "f23"), {
+    expect(getClosestUrlName("m23", "f23")).toStrictEqual({
       urlName: "f23",
       shouldWarn: false,
     });
   });
 
   test("unrecognized term", () => {
-    assert.deepStrictEqual(getClosestUrlName("ipsum", "m25"), {
+    expect(getClosestUrlName("ipsum", "m25")).toStrictEqual({
       urlName: "i25",
       shouldWarn: true,
     });
   });
 
   test("fallback to latest term", () => {
-    assert.deepStrictEqual(getClosestUrlName("lorem", "m25"), {
+    expect(getClosestUrlName("lorem", "m25")).toStrictEqual({
       urlName: "m25",
       shouldWarn: true,
     });
@@ -90,44 +90,44 @@ describe("Term", () => {
       holidayDates: ["2042-04-24"],
       endDate: "2042-04-25",
     });
-    assert.strictEqual(myTerm.year, "42");
-    assert.strictEqual(myTerm.semester, "f");
-    assert.deepStrictEqual(myTerm.start, new Date(2042, 3, 20, 0));
-    assert.deepStrictEqual(myTerm.h1End, new Date(2042, 3, 21, 0));
-    assert.deepStrictEqual(myTerm.h2Start, new Date(2042, 3, 22, 0));
-    assert.deepStrictEqual(myTerm.mondaySchedule, new Date(2042, 3, 23, 0));
-    assert.deepStrictEqual(myTerm.holidays, [new Date(2042, 3, 24, 0)]);
-    assert.deepStrictEqual(myTerm.end, new Date(2042, 3, 25, 0));
+    expect(myTerm.year).toBe("42");
+    expect(myTerm.semester).toBe("f");
+    expect(myTerm.start).toStrictEqual(new Date(2042, 3, 20, 0));
+    expect(myTerm.h1End).toStrictEqual(new Date(2042, 3, 21, 0));
+    expect(myTerm.h2Start).toStrictEqual(new Date(2042, 3, 22, 0));
+    expect(myTerm.mondaySchedule).toStrictEqual(new Date(2042, 3, 23, 0));
+    expect(myTerm.holidays).toStrictEqual([new Date(2042, 3, 24, 0)]);
+    expect(myTerm.end).toStrictEqual(new Date(2042, 3, 25, 0));
   });
 
   test("Term.fullRealYear", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
-    assert.strictEqual(myTerm.fullRealYear, "2069");
+    expect(myTerm.fullRealYear).toBe("2069");
   });
 
   test("Term.semesterFull", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
-    assert.strictEqual(myTerm.semesterFull, "iap");
+    expect(myTerm.semesterFull).toBe("iap");
   });
 
   test("Term.semesterFullCaps", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
-    assert.strictEqual(myTerm.semesterFullCaps, "IAP");
+    expect(myTerm.semesterFullCaps).toBe("IAP");
   });
 
   test("Term.niceName", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
-    assert.strictEqual(myTerm.niceName, "IAP 2069");
+    expect(myTerm.niceName).toBe("IAP 2069");
   });
 
   test("Term.urlName", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
-    assert.strictEqual(myTerm.urlName, "i69");
+    expect(myTerm.urlName).toBe("i69");
   });
 
   test("Term.toString", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
-    assert.strictEqual(myTerm.toString(), "i69");
+    expect(myTerm.toString()).toBe("i69");
   });
 
   describe("Term.startDateFor", () => {
@@ -146,91 +146,91 @@ describe("Term", () => {
     });
 
     test("secondHalf false, startDay undefined, slot.weekday matches", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.startDateFor(
           new Slot(69), // Wednesday, slot 1 (= 6:30 AM)
           false,
           undefined,
-        ),
-        new Date(2044, 9, 19, 6, 30),
-      );
+        )).toStrictEqual(
+          new Date(2044, 9, 19, 6, 30),
+        );
     });
 
     test("secondHalf false, startDay undefined, slot.weekday doesn't match", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.startDateFor(
           new Slot(61), // Tuesday, slot 27 (= 7:30 PM)
           false,
           undefined,
-        ),
-        new Date(2044, 9, 25, 19, 30), // bump to next Tuesday, October 25, 2044
-      );
+        )).toStrictEqual(
+          new Date(2044, 9, 25, 19, 30), // bump to next Tuesday, October 25, 2044
+        );
     });
 
     test("secondHalf false, startDay defined, slot.weekday matches", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.startDateFor(
           new Slot(168), // Friday, slot 32 (= 10:00 PM)
           false,
           [11, 4], // this would mean Friday, November 4, 2044
-        ),
-        new Date(2044, 10, 4, 22),
-      );
+        )).toStrictEqual(
+          new Date(2044, 10, 4, 22),
+        );
     });
 
     test("secondHalf false, startDay defined, slot.weekday doesn't match", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.startDateFor(
           new Slot(28), // Monday, slot 28 (= 8:00 PM)
           false,
           [11, 4],
-        ),
-        new Date(2044, 10, 7, 20), // bumps to next Monday, November 7, 2044
-      );
+        )).toStrictEqual(
+          new Date(2044, 10, 7, 20), // bumps to next Monday, November 7, 2044
+        );
     });
 
     test("secondHalf true, startDay undefined, slot.weekday matches", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.startDateFor(
           new Slot(1), // Monday, slot 1 (= 6:30 AM)
           true,
           undefined,
-        ),
-        new Date(2044, 10, 21, 6, 30),
-      );
+        )).toStrictEqual(
+          new Date(2044, 10, 21, 6, 30),
+        );
     });
 
     test("secondHalf true, startDay undefined, slot.weekday doesn't match", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.startDateFor(
           new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
           true,
           undefined,
-        ),
-        new Date(2044, 10, 22, 6, 30), // bump to next day
-      );
+        )).toStrictEqual(
+          new Date(2044, 10, 22, 6, 30), // bump to next day
+        );
     });
 
     test("secondHalf true, startDay defined, slot.weekday matches", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.startDateFor(
           new Slot(1), // Monday, slot 1 (= 6:30 AM)
           true,
           [11, 14], // Monday, November 14, 2044
-        ),
-        new Date(2044, 10, 14, 6, 30),
-      );
+        )).toStrictEqual(
+          new Date(2044, 10, 14, 6, 30),
+        );
     });
 
     test("secondHalf true, startDay defined, slot.weekday doesn't match", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.startDateFor(
           new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
           true,
           [11, 14],
-        ),
-        new Date(2044, 10, 15, 6, 30), // bump to next day
-      );
+        )).toStrictEqual(
+          new Date(2044, 10, 15, 6, 30), // bump to next day
+        );
     });
   });
 
@@ -248,57 +248,65 @@ describe("Term", () => {
     });
 
     test("firstHalf false, endDay undefined, slot.weekday matches", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.endDateFor(new Slot(1), false, undefined), // NOTE: slot 1 = Monday at 6:30 AM
+      ).toStrictEqual(
         new Date(2044, 10, 22, 6, 30, 0, 0),
       );
     });
 
     test("firstHalf false, endDay undefined, slot.weekday doesn't match", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.endDateFor(new Slot(68), false, undefined), // NOTE: slot 68 = Wednesday at 6:00 AM
+      ).toStrictEqual(
         new Date(2044, 10, 17, 6, 0, 0, 0), // NOTE: 2044-11-17 is a Thursday
       );
     });
 
     test("firstHalf true, endDay undefined, slot.weekday matches", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.endDateFor(new Slot(94), true, undefined), // NOTE: slot 94 = Wednesday at 7:00 PM
+      ).toStrictEqual(
         new Date(2044, 9, 20, 19, 0, 0, 0),
       );
     });
 
     test("firstHalf true, endDay undefined, slot.weekday doesn't match", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.endDateFor(new Slot(4), true, undefined), // NOTE: slot 4 = Monday at 8:00 PM
+      ).toStrictEqual(
         new Date(2044, 9, 18, 8, 0, 0, 0), // NOTE: 2044-10-18 is a Tuesday
       );
     });
 
     test("firstHalf false, endDay defined, slot.weekday matches", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.endDateFor(new Slot(0), false, [9, 5]), // NOTE: 2044-09-05 is a Monday
+      ).toStrictEqual(
         new Date(2044, 8, 6, 6, 0, 0, 0),
       );
     });
 
     test("firstHalf true, endDay defined, slot.weekday matches", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.endDateFor(new Slot(0), true, [9, 5]),
+      ).toStrictEqual(
         new Date(2044, 8, 6, 6, 0, 0, 0),
       );
     });
 
     test("firstHalf false, endDay defined, slot.weekday doesn't match", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.endDateFor(new Slot(69), false, [9, 5]), // NOTE: slot 69 = Wednesday at 6:30 AM
+      ).toStrictEqual(
         new Date(2044, 8, 1, 6, 30, 0, 0),
       );
     });
 
     test("firstHalf true, endDay defined, slot.weekday doesn't match", () => {
-      assert.deepStrictEqual(
+      expect(
         myTerm.endDateFor(new Slot(69), true, [9, 5]),
+      ).toStrictEqual(
         new Date(2044, 8, 1, 6, 30, 0, 0),
       );
     });
@@ -316,8 +324,9 @@ describe("Term", () => {
         holidayDates: ["2079-08-08"], // NOTE: 2079-08-08 is a Tuesday
         mondayScheduleDate: "2079-08-11",
       });
-      assert.deepStrictEqual(
+      expect(
         myTerm.exDatesFor(new Slot(40)), // NOTE: slot 40 = Tuesday at 9:00 AM
+      ).toStrictEqual(
         [
           new Date(2079, 7, 8, 9, 0, 0, 0),
           new Date(1999, 11, 31, 9, 0, 0, 0),
@@ -332,8 +341,9 @@ describe("Term", () => {
         holidayDates: ["2079-08-09"], // NOTE: 2079-08-09 is a Wednesday
         mondayScheduleDate: "2079-08-11",
       });
-      assert.deepStrictEqual(
+      expect(
         myTerm.exDatesFor(new Slot(100)), // NOTE: slot 100 = Wednesday at 10:00 PM
+      ).toStrictEqual(
         [
           new Date(2079, 7, 9, 22, 0, 0, 0),
           new Date(1999, 11, 31, 22, 0, 0, 0),
@@ -347,8 +357,9 @@ describe("Term", () => {
         holidayDates: ["2079-08-20"], // NOTE: 2079-08-20 is a Sunday
         mondayScheduleDate: "2079-08-11",
       });
-      assert.deepStrictEqual(
+      expect(
         myTerm.exDatesFor(new Slot(41)), // NOTE: slot 41 = Tuesday at 9:30 AM
+      ).toStrictEqual(
         [
           new Date(1999, 11, 31, 9, 30, 0, 0),
           new Date(2079, 7, 11, 9, 30, 0, 0),
@@ -362,8 +373,9 @@ describe("Term", () => {
         holidayDates: ["2079-08-14"], // NOTE: 2079-08-14 is a Monday
         mondayScheduleDate: "2079-08-11",
       });
-      assert.deepStrictEqual(
+      expect(
         myTerm.exDatesFor(new Slot(168)), // NOTE: slot 100 = Friday at 10:00 PM
+      ).toStrictEqual(
         [new Date(1999, 11, 31, 22, 0, 0, 0)],
       );
     });
@@ -373,8 +385,9 @@ describe("Term", () => {
         urlName: "f79",
         mondayScheduleDate: "2079-01-01",
       });
-      assert.deepStrictEqual(
+      expect(
         myTerm.exDatesFor(new Slot(34)), // NOTE: slot 34 = Tuesday at 6:00 AM
+      ).toStrictEqual(
         [new Date(1999, 11, 31, 6, 0, 0, 0), new Date(2079, 0, 1, 6, 0, 0, 0)], // NOTE: in some timezones this shifts to 2000-01-01 so we hardcode "America/New_York" for reproducibility
       );
     });
@@ -384,7 +397,7 @@ describe("Term", () => {
         urlName: "f79",
         mondayScheduleDate: undefined,
       });
-      assert.deepStrictEqual(myTerm.exDatesFor(new Slot(34)), [
+      expect(myTerm.exDatesFor(new Slot(34)),).toStrictEqual([
         new Date(1999, 11, 31, 6, 0, 0, 0),
       ]);
     });
@@ -401,8 +414,9 @@ describe("Term", () => {
         urlName: "f56",
         mondayScheduleDate: "2056-04-24",
       });
-      assert.deepStrictEqual(
+      expect(
         myTerm.rDateFor(new Slot(0)),
+      ).toStrictEqual(
         new Date(2056, 3, 24, 6, 0, 0, 0),
       );
     });
@@ -412,17 +426,17 @@ describe("Term", () => {
         urlName: "f56",
         mondayScheduleDate: "2056-04-24",
       });
-      assert.deepStrictEqual(myTerm.rDateFor(new Slot(157)), undefined);
+      expect(myTerm.rDateFor(new Slot(157))).toBeUndefined();
     });
 
     test("slot.weekday Monday, this.mondaySchedule undefined", () => {
       const myTerm: Term = new Term({ urlName: "s51" });
-      assert.deepStrictEqual(myTerm.rDateFor(new Slot(6)), undefined);
+      expect(myTerm.rDateFor(new Slot(6))).toBeUndefined();
     });
 
     test("slot.weekday not Monday, this.mondaySchedule undefined", () => {
       const myTerm: Term = new Term({ urlName: "s51" });
-      assert.deepStrictEqual(myTerm.rDateFor(new Slot(118)), undefined);
+      expect(myTerm.rDateFor(new Slot(118))).toBeUndefined();
     });
   });
 });
@@ -433,55 +447,55 @@ describe("Slot", () => {
    */
   test("Slot.fromSlotNumber", () => {
     const mySlot: Slot = Slot.fromSlotNumber(42);
-    assert.strictEqual(mySlot.slot, 42);
+    expect(mySlot.slot).toBe(42);
   });
 
   test("Slot.fromStartDate", () => {
     const myDate: Date = new Date(2001, 6, 19, 22, 1, 52, 23); // randomly chosen date
     const mySlot: Slot = Slot.fromStartDate(myDate);
-    assert.strictEqual(mySlot.slot, 134); // note: this was a Thursday (July 19, 2001), slot number 32
+    expect(mySlot.slot).toBe(134); // note: this was a Thursday (July 19, 2001), slot number 32
   });
 
   test("Slot.fromDayString", () => {
     const mySlot: Slot = Slot.fromDayString("Thu", "10:00 PM");
-    assert.strictEqual(mySlot.slot, 134);
+    expect(mySlot.slot).toBe(134);
   });
 
   test("Slot.add", () => {
     const mySlot: Slot = new Slot(125);
     const myOtherSlot: Slot = mySlot.add(-111);
-    assert.strictEqual(myOtherSlot.slot, 14);
+    expect(myOtherSlot.slot).toBe(14);
   });
 
   test("Slot.onDate", () => {
     const mySlot: Slot = new Slot(125); // Thursday, 5:30 PM
     const myDate: Date = new Date(2068, 8, 6); // this is also a Thursday
-    assert.deepStrictEqual(mySlot.onDate(myDate), new Date(2068, 8, 6, 17, 30));
+    expect(mySlot.onDate(myDate)).toStrictEqual(new Date(2068, 8, 6, 17, 30));
   });
 
   test("Slot.startDate", () => {
     const mySlot: Slot = new Slot(62); // Tuesday, 8:00 PM
-    assert.deepStrictEqual(mySlot.startDate, new Date(2001, 0, 2, 20, 0));
+    expect(mySlot.startDate).toStrictEqual(new Date(2001, 0, 2, 20, 0));
   });
 
   test("Slot.endDate", () => {
     const mySlot: Slot = new Slot(130); // Thursday, 8:00 PM
-    assert.deepStrictEqual(mySlot.endDate, new Date(2001, 0, 4, 20, 30));
+    expect(mySlot.endDate).toStrictEqual(new Date(2001, 0, 4, 20, 30));
   });
 
   test("Slot.weekday", () => {
     const mySlot: Slot = new Slot(18); // Monday, 3:00 PM
-    assert.strictEqual(mySlot.weekday, 1);
+    expect(mySlot.weekday).toBe(1);
   });
 
   test("Slot.dayString", () => {
     const mySlot: Slot = new Slot(12); // Monday, 12:00 PM
-    assert.strictEqual(mySlot.dayString, "Mon");
+    expect(mySlot.dayString).toBe("Mon");
   });
 
   test("Slot.timeString", () => {
     const mySlot: Slot = new Slot(31); // Monday, 9:30 PM
-    assert.strictEqual(mySlot.timeString, "9:30 PM");
+    expect(mySlot.timeString).toBe("9:30 PM");
   });
 });
 
@@ -494,19 +508,19 @@ describe("getUrlNames", () => {
    * - after excluded urls
    */
   test("urlName === EARLIEST_URL", () => {
-    assert.deepStrictEqual(getUrlNames("f22"), ["f22"]);
+    expect(getUrlNames("f22")).toStrictEqual(["f22"]);
   });
 
   test("urlName is before excluded urls", () => {
-    assert.deepStrictEqual(getUrlNames("i23"), ["i23", "f22"]);
+    expect(getUrlNames("i23")).toStrictEqual(["i23", "f22"]);
   });
 
   test("urlName is excluded", () => {
-    assert.deepStrictEqual(getUrlNames("m23"), ["m23", "s23", "f22"]);
+    expect(getUrlNames("m23")).toStrictEqual(["m23", "s23", "f22"]);
   });
 
   test("urlName is after excluded urls", () => {
-    assert.deepStrictEqual(getUrlNames("i25"), [
+    expect(getUrlNames("i25")).toStrictEqual([
       "i25",
       "f24",
       "s24",
@@ -530,34 +544,28 @@ describe("toFullUrl", () => {
   test("window.location.href has parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/?utm_source=lorem&utm_medium=ipsum";
     jsdom.reconfigure({ url: myUrl });
-    assert.strictEqual(window.location.href, myUrl);
-    assert.strictEqual(toFullUrl("lorem", "lorem"), "https://example.com/");
+    expect(window.location.href).toBe(myUrl);
+    expect(toFullUrl("lorem", "lorem")).toBe("https://example.com/");
   });
 
   test("window.location.href has no parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/";
     jsdom.reconfigure({ url: myUrl });
-    assert.strictEqual(window.location.href, myUrl);
-    assert.strictEqual(toFullUrl("lorem", "lorem"), "https://example.com/");
+    expect(window.location.href).toBe(myUrl);
+    expect(toFullUrl("lorem", "lorem")).toBe("https://example.com/");
   });
 
   test("window.location.href has parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/?utm_source=lorem&utm_medium=ipsum";
     jsdom.reconfigure({ url: myUrl });
-    assert.strictEqual(window.location.href, myUrl);
-    assert.strictEqual(
-      toFullUrl("lorem", "ipsum"),
-      "https://example.com/?t=lorem",
-    );
+    expect(window.location.href).toBe(myUrl);
+    expect(toFullUrl("lorem", "ipsum")).toBe("https://example.com/?t=lorem");
   });
 
   test("window.location.href has no parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/";
     jsdom.reconfigure({ url: myUrl });
-    assert.strictEqual(window.location.href, myUrl);
-    assert.strictEqual(
-      toFullUrl("lorem", "ipsum"),
-      "https://example.com/?t=lorem",
-    );
+    expect(window.location.href).toBe(myUrl);
+    expect(toFullUrl("lorem", "ipsum")).toBe("https://example.com/?t=lorem");
   });
 });
