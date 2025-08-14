@@ -314,7 +314,7 @@ def scrape_courses_from_page(
     with urlopen(f"{BASE_URL}/{href}", timeout=10) as href_req:
         # The "html.parser" parses pretty badly
         html = BeautifulSoup(href_req.read(), "lxml")
-    classes_content: Tag = html.find(  # type: ignore
+    classes_content: Tag = html.find(
         "table", width="100%", border="0"
     ).find(  # type: ignore
         "td"

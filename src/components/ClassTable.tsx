@@ -228,9 +228,9 @@ function ClassInput(props: {
 }
 
 const filtersNonFlags = {
-  fits: (state: State, cls: Class) => state.fitsSchedule(cls),
-  starred: (state: State, cls: Class) => state.isClassStarred(cls),
-  new: (_: State, cls: Class) => cls.new,
+  fits: (state, cls) => state.fitsSchedule(cls),
+  starred: (state, cls) => state.isClassStarred(cls),
+  new: (_, cls) => cls.new,
 } satisfies Record<string, (state: State, cls: Class) => boolean>;
 
 type Filter = keyof Flags | keyof typeof filtersNonFlags;
