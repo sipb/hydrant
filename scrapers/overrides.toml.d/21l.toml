@@ -15,12 +15,16 @@ name = "Kubrick: Film Styles and Genres"
 
 ['21L.450']
 name = "Ecofeminism: Global Environmental Literature"
+new = true
+description = "This class introduces students to major international writers who explore the intersections of the environment and pressing social issues related to gender and sexuality. Writers to be considered include Han Kang, Sayaka Murata, Margaret Atwood, J. M. Coetzee, and Ruth Ozeki, among others."
 
 ['21L.475']
 name = "Writers Responding to a Rapidly Modernizing World: Enlightenment and Modernity"
 
 ['21L.S89']
 name = "French Modernity: Special Subject in Literature"
+new = true
+description = "French Modernity will study a variety of representative texts from French-language literary movements dating from mid 19th century to the present and beyond the boundaries of France. Modernity is understood as a rejection of tradition and norms of writing and thinking about life and culture. The course will cover prose, poetry, and drama as well as a selection of visual artists such as Henri Matisse. Taught in French."
 
 ['21L.703']
 name = "Murder & Mayhem Remade: Studies in Drama"
