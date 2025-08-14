@@ -15,4 +15,8 @@ export default defineConfig({
       eslint: { lintCommand: "eslint **/*.{ts,tsx}", useFlatConfig: true },
     }),
   ],
+  test: {
+    globals: true,
+    environment: "jsdom",
+  }
 });

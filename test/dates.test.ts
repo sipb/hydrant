@@ -1,6 +1,4 @@
-import assert from "node:assert";
-import { describe, test } from "node:test";
-import jsdomGlobal from "jsdom-global";
+import { assert, test, describe, beforeEach } from 'vitest'
 import {
   parseUrlName,
   getClosestUrlName,
@@ -8,16 +6,16 @@ import {
   toFullUrl,
   Slot,
   Term,
-} from "../src/lib/dates.js";
+} from "../src/lib/dates";
 
-await test("parseUrlName", () => {
+test("parseUrlName", () => {
   assert.deepStrictEqual(parseUrlName("f22"), {
     year: "22",
     semester: "f",
   });
 });
 
-await describe("getClosestUrlName", async () => {
+describe("getClosestUrlName", () => {
   /**
    * Partition:
    * - urlName is null
@@ -28,49 +26,49 @@ await describe("getClosestUrlName", async () => {
    * - unrecognized term
    * - fallback to latest term
    */
-  await test("urlName is null", () => {
+  test("urlName is null", () => {
     assert.deepStrictEqual(getClosestUrlName(null, "f22"), {
       urlName: "f22",
       shouldWarn: false,
     });
   });
 
-  await test("urlName is empty string", () => {
+  test("urlName is empty string", () => {
     assert.deepStrictEqual(getClosestUrlName("", "f22"), {
       urlName: "f22",
       shouldWarn: false,
     });
   });
 
-  await test('urlName is equal to "latest"', () => {
+  test('urlName is equal to "latest"', () => {
     assert.deepStrictEqual(getClosestUrlName("latest", "f22"), {
       urlName: "f22",
       shouldWarn: false,
     });
   });
 
-  await test("getUrlNames(latestUrlName) includes urlName", () => {
+  test("getUrlNames(latestUrlName) includes urlName", () => {
     assert.deepStrictEqual(getClosestUrlName("f24", "i25"), {
       urlName: "f24",
       shouldWarn: false,
     });
   });
 
-  await test("EXCLUDED_URLS includes urlName, urlName includes nextUrlName", () => {
+  test("EXCLUDED_URLS includes urlName, urlName includes nextUrlName", () => {
     assert.deepStrictEqual(getClosestUrlName("m23", "f23"), {
       urlName: "f23",
       shouldWarn: false,
     });
   });
 
-  await test("unrecognized term", () => {
+  test("unrecognized term", () => {
     assert.deepStrictEqual(getClosestUrlName("ipsum", "m25"), {
       urlName: "i25",
       shouldWarn: true,
     });
   });
 
-  await test("fallback to latest term", () => {
+  test("fallback to latest term", () => {
     assert.deepStrictEqual(getClosestUrlName("lorem", "m25"), {
       urlName: "m25",
       shouldWarn: true,
@@ -78,11 +76,11 @@ await describe("getClosestUrlName", async () => {
   });
 });
 
-await describe("Term", async () => {
+describe("Term", () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
    */
-  await test("Term.constructor", () => {
+  test("Term.constructor", () => {
     const myTerm: Term = new Term({
       urlName: "f42", // arbitrary values
       startDate: "2042-04-20",
@@ -102,37 +100,37 @@ await describe("Term", async () => {
     assert.deepStrictEqual(myTerm.end, new Date(2042, 3, 25, 0));
   });
 
-  await test("Term.fullRealYear", () => {
+  test("Term.fullRealYear", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
     assert.strictEqual(myTerm.fullRealYear, "2069");
   });
 
-  await test("Term.semesterFull", () => {
+  test("Term.semesterFull", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
     assert.strictEqual(myTerm.semesterFull, "iap");
   });
 
-  await test("Term.semesterFullCaps", () => {
+  test("Term.semesterFullCaps", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
     assert.strictEqual(myTerm.semesterFullCaps, "IAP");
   });
 
-  await test("Term.niceName", () => {
+  test("Term.niceName", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
     assert.strictEqual(myTerm.niceName, "IAP 2069");
   });
 
-  await test("Term.urlName", () => {
+  test("Term.urlName", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
     assert.strictEqual(myTerm.urlName, "i69");
   });
 
-  await test("Term.toString", () => {
+  test("Term.toString", () => {
     const myTerm: Term = new Term({ urlName: "i69" });
     assert.strictEqual(myTerm.toString(), "i69");
   });
 
-  await describe("Term.startDateFor", async () => {
+  describe("Term.startDateFor", () => {
     /**
      * Partition:
      * - secondHalf: false, true
@@ -147,7 +145,7 @@ await describe("Term", async () => {
       h2StartDate: "2044-11-21", // NOTE: this is a Monday
     });
 
-    await test("secondHalf false, startDay undefined, slot.weekday matches", () => {
+    test("secondHalf false, startDay undefined, slot.weekday matches", () => {
       assert.deepStrictEqual(
         myTerm.startDateFor(
           new Slot(69), // Wednesday, slot 1 (= 6:30 AM)
@@ -158,7 +156,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("secondHalf false, startDay undefined, slot.weekday doesn't match", () => {
+    test("secondHalf false, startDay undefined, slot.weekday doesn't match", () => {
       assert.deepStrictEqual(
         myTerm.startDateFor(
           new Slot(61), // Tuesday, slot 27 (= 7:30 PM)
@@ -169,7 +167,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("secondHalf false, startDay defined, slot.weekday matches", () => {
+    test("secondHalf false, startDay defined, slot.weekday matches", () => {
       assert.deepStrictEqual(
         myTerm.startDateFor(
           new Slot(168), // Friday, slot 32 (= 10:00 PM)
@@ -180,7 +178,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("secondHalf false, startDay defined, slot.weekday doesn't match", () => {
+    test("secondHalf false, startDay defined, slot.weekday doesn't match", () => {
       assert.deepStrictEqual(
         myTerm.startDateFor(
           new Slot(28), // Monday, slot 28 (= 8:00 PM)
@@ -191,7 +189,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("secondHalf true, startDay undefined, slot.weekday matches", () => {
+    test("secondHalf true, startDay undefined, slot.weekday matches", () => {
       assert.deepStrictEqual(
         myTerm.startDateFor(
           new Slot(1), // Monday, slot 1 (= 6:30 AM)
@@ -202,7 +200,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("secondHalf true, startDay undefined, slot.weekday doesn't match", () => {
+    test("secondHalf true, startDay undefined, slot.weekday doesn't match", () => {
       assert.deepStrictEqual(
         myTerm.startDateFor(
           new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
@@ -213,7 +211,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("secondHalf true, startDay defined, slot.weekday matches", () => {
+    test("secondHalf true, startDay defined, slot.weekday matches", () => {
       assert.deepStrictEqual(
         myTerm.startDateFor(
           new Slot(1), // Monday, slot 1 (= 6:30 AM)
@@ -224,7 +222,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("secondHalf true, startDay defined, slot.weekday doesn't match", () => {
+    test("secondHalf true, startDay defined, slot.weekday doesn't match", () => {
       assert.deepStrictEqual(
         myTerm.startDateFor(
           new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
@@ -236,7 +234,7 @@ await describe("Term", async () => {
     });
   });
 
-  await describe("Term.endDateFor", async () => {
+  describe("Term.endDateFor", () => {
     /**
      * Partition:
      * - firstHalf: false, true
@@ -249,56 +247,56 @@ await describe("Term", async () => {
       endDate: "2044-11-21", // NOTE: this is a Monday
     });
 
-    await test("firstHalf false, endDay undefined, slot.weekday matches", () => {
+    test("firstHalf false, endDay undefined, slot.weekday matches", () => {
       assert.deepStrictEqual(
         myTerm.endDateFor(new Slot(1), false, undefined), // NOTE: slot 1 = Monday at 6:30 AM
         new Date(2044, 10, 22, 6, 30, 0, 0),
       );
     });
 
-    await test("firstHalf false, endDay undefined, slot.weekday doesn't match", () => {
+    test("firstHalf false, endDay undefined, slot.weekday doesn't match", () => {
       assert.deepStrictEqual(
         myTerm.endDateFor(new Slot(68), false, undefined), // NOTE: slot 68 = Wednesday at 6:00 AM
         new Date(2044, 10, 17, 6, 0, 0, 0), // NOTE: 2044-11-17 is a Thursday
       );
     });
 
-    await test("firstHalf true, endDay undefined, slot.weekday matches", () => {
+    test("firstHalf true, endDay undefined, slot.weekday matches", () => {
       assert.deepStrictEqual(
         myTerm.endDateFor(new Slot(94), true, undefined), // NOTE: slot 94 = Wednesday at 7:00 PM
         new Date(2044, 9, 20, 19, 0, 0, 0),
       );
     });
 
-    await test("firstHalf true, endDay undefined, slot.weekday doesn't match", () => {
+    test("firstHalf true, endDay undefined, slot.weekday doesn't match", () => {
       assert.deepStrictEqual(
         myTerm.endDateFor(new Slot(4), true, undefined), // NOTE: slot 4 = Monday at 8:00 PM
         new Date(2044, 9, 18, 8, 0, 0, 0), // NOTE: 2044-10-18 is a Tuesday
       );
     });
 
-    await test("firstHalf false, endDay defined, slot.weekday matches", () => {
+    test("firstHalf false, endDay defined, slot.weekday matches", () => {
       assert.deepStrictEqual(
         myTerm.endDateFor(new Slot(0), false, [9, 5]), // NOTE: 2044-09-05 is a Monday
         new Date(2044, 8, 6, 6, 0, 0, 0),
       );
     });
 
-    await test("firstHalf true, endDay defined, slot.weekday matches", () => {
+    test("firstHalf true, endDay defined, slot.weekday matches", () => {
       assert.deepStrictEqual(
         myTerm.endDateFor(new Slot(0), true, [9, 5]),
         new Date(2044, 8, 6, 6, 0, 0, 0),
       );
     });
 
-    await test("firstHalf false, endDay defined, slot.weekday doesn't match", () => {
+    test("firstHalf false, endDay defined, slot.weekday doesn't match", () => {
       assert.deepStrictEqual(
         myTerm.endDateFor(new Slot(69), false, [9, 5]), // NOTE: slot 69 = Wednesday at 6:30 AM
         new Date(2044, 8, 1, 6, 30, 0, 0),
       );
     });
 
-    await test("firstHalf true, endDay defined, slot.weekday doesn't match", () => {
+    test("firstHalf true, endDay defined, slot.weekday doesn't match", () => {
       assert.deepStrictEqual(
         myTerm.endDateFor(new Slot(69), true, [9, 5]),
         new Date(2044, 8, 1, 6, 30, 0, 0),
@@ -306,13 +304,13 @@ await describe("Term", async () => {
     });
   });
 
-  await describe("Term.exDatesFor", async () => {
+  describe("Term.exDatesFor", () => {
     /**
      * Partition:
      * - has matching holiday, has non-matching holiday, has no holiday
      * - includes tuesday for monday schedule, doesn't include it
      */
-    await test("has matching holiday, tuesday on monday schedule", () => {
+    test("has matching holiday, tuesday on monday schedule", () => {
       const myTerm: Term = new Term({
         urlName: "m79",
         holidayDates: ["2079-08-08"], // NOTE: 2079-08-08 is a Tuesday
@@ -328,7 +326,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("has matching holiday, not monday schedule", () => {
+    test("has matching holiday, not monday schedule", () => {
       const myTerm: Term = new Term({
         urlName: "m79",
         holidayDates: ["2079-08-09"], // NOTE: 2079-08-09 is a Wednesday
@@ -343,7 +341,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("has non-matching holiday, tuesday on monday schedule", () => {
+    test("has non-matching holiday, tuesday on monday schedule", () => {
       const myTerm: Term = new Term({
         urlName: "m79",
         holidayDates: ["2079-08-20"], // NOTE: 2079-08-20 is a Sunday
@@ -358,7 +356,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("has non-matching holiday, not monday schedule", () => {
+    test("has non-matching holiday, not monday schedule", () => {
       const myTerm: Term = new Term({
         urlName: "m79",
         holidayDates: ["2079-08-14"], // NOTE: 2079-08-14 is a Monday
@@ -370,7 +368,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("no holidays, tuesday for monday schedule", () => {
+    test("no holidays, tuesday for monday schedule", () => {
       const myTerm: Term = new Term({
         urlName: "f79",
         mondayScheduleDate: "2079-01-01",
@@ -381,7 +379,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("no holidays, not monday schedule", () => {
+    test("no holidays, not monday schedule", () => {
       const myTerm: Term = new Term({
         urlName: "f79",
         mondayScheduleDate: undefined,
@@ -392,13 +390,13 @@ await describe("Term", async () => {
     });
   });
 
-  await describe("Term.rDateFor", async () => {
+  describe("Term.rDateFor", () => {
     /**
      * Partition:
      * - slot.weekday: 1, not 1
      * - this.mondaySchedule: defined undefined
      */
-    await test("slot.weekday Monday, this.mondaySchedule defined", () => {
+    test("slot.weekday Monday, this.mondaySchedule defined", () => {
       const myTerm: Term = new Term({
         urlName: "f56",
         mondayScheduleDate: "2056-04-24",
@@ -409,7 +407,7 @@ await describe("Term", async () => {
       );
     });
 
-    await test("slot.weekday not Monday, this.mondaySchedule defined", () => {
+    test("slot.weekday not Monday, this.mondaySchedule defined", () => {
       const myTerm: Term = new Term({
         urlName: "f56",
         mondayScheduleDate: "2056-04-24",
@@ -417,77 +415,77 @@ await describe("Term", async () => {
       assert.deepStrictEqual(myTerm.rDateFor(new Slot(157)), undefined);
     });
 
-    await test("slot.weekday Monday, this.mondaySchedule undefined", () => {
+    test("slot.weekday Monday, this.mondaySchedule undefined", () => {
       const myTerm: Term = new Term({ urlName: "s51" });
       assert.deepStrictEqual(myTerm.rDateFor(new Slot(6)), undefined);
     });
 
-    await test("slot.weekday not Monday, this.mondaySchedule undefined", () => {
+    test("slot.weekday not Monday, this.mondaySchedule undefined", () => {
       const myTerm: Term = new Term({ urlName: "s51" });
       assert.deepStrictEqual(myTerm.rDateFor(new Slot(118)), undefined);
     });
   });
 });
 
-await describe("Slot", async () => {
+describe("Slot", () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
    */
-  await test("Slot.fromSlotNumber", () => {
+  test("Slot.fromSlotNumber", () => {
     const mySlot: Slot = Slot.fromSlotNumber(42);
     assert.strictEqual(mySlot.slot, 42);
   });
 
-  await test("Slot.fromStartDate", () => {
+  test("Slot.fromStartDate", () => {
     const myDate: Date = new Date(2001, 6, 19, 22, 1, 52, 23); // randomly chosen date
     const mySlot: Slot = Slot.fromStartDate(myDate);
     assert.strictEqual(mySlot.slot, 134); // note: this was a Thursday (July 19, 2001), slot number 32
   });
 
-  await test("Slot.fromDayString", () => {
+  test("Slot.fromDayString", () => {
     const mySlot: Slot = Slot.fromDayString("Thu", "10:00 PM");
     assert.strictEqual(mySlot.slot, 134);
   });
 
-  await test("Slot.add", () => {
+  test("Slot.add", () => {
     const mySlot: Slot = new Slot(125);
     const myOtherSlot: Slot = mySlot.add(-111);
     assert.strictEqual(myOtherSlot.slot, 14);
   });
 
-  await test("Slot.onDate", () => {
+  test("Slot.onDate", () => {
     const mySlot: Slot = new Slot(125); // Thursday, 5:30 PM
     const myDate: Date = new Date(2068, 8, 6); // this is also a Thursday
     assert.deepStrictEqual(mySlot.onDate(myDate), new Date(2068, 8, 6, 17, 30));
   });
 
-  await test("Slot.startDate", () => {
+  test("Slot.startDate", () => {
     const mySlot: Slot = new Slot(62); // Tuesday, 8:00 PM
     assert.deepStrictEqual(mySlot.startDate, new Date(2001, 0, 2, 20, 0));
   });
 
-  await test("Slot.endDate", () => {
+  test("Slot.endDate", () => {
     const mySlot: Slot = new Slot(130); // Thursday, 8:00 PM
     assert.deepStrictEqual(mySlot.endDate, new Date(2001, 0, 4, 20, 30));
   });
 
-  await test("Slot.weekday", () => {
+  test("Slot.weekday", () => {
     const mySlot: Slot = new Slot(18); // Monday, 3:00 PM
     assert.strictEqual(mySlot.weekday, 1);
   });
 
-  await test("Slot.dayString", () => {
+  test("Slot.dayString", () => {
     const mySlot: Slot = new Slot(12); // Monday, 12:00 PM
     assert.strictEqual(mySlot.dayString, "Mon");
   });
 
-  await test("Slot.timeString", () => {
+  test("Slot.timeString", () => {
     const mySlot: Slot = new Slot(31); // Monday, 9:30 PM
     assert.strictEqual(mySlot.timeString, "9:30 PM");
   });
 });
 
-await describe("getUrlNames", async () => {
+describe("getUrlNames", () => {
   /**
    * Partition on urlName:
    * - EARLIEST_URL
@@ -495,19 +493,19 @@ await describe("getUrlNames", async () => {
    * - an excluded url
    * - after excluded urls
    */
-  await test("urlName === EARLIEST_URL", () => {
+  test("urlName === EARLIEST_URL", () => {
     assert.deepStrictEqual(getUrlNames("f22"), ["f22"]);
   });
 
-  await test("urlName is before excluded urls", () => {
+  test("urlName is before excluded urls", () => {
     assert.deepStrictEqual(getUrlNames("i23"), ["i23", "f22"]);
   });
 
-  await test("urlName is excluded", () => {
+  test("urlName is excluded", () => {
     assert.deepStrictEqual(getUrlNames("m23"), ["m23", "s23", "f22"]);
   });
 
-  await test("urlName is after excluded urls", () => {
+  test("urlName is after excluded urls", () => {
     assert.deepStrictEqual(getUrlNames("i25"), [
       "i25",
       "f24",
@@ -519,47 +517,47 @@ await describe("getUrlNames", async () => {
   });
 });
 
-await describe("toFullUrl", async () => {
+describe("toFullUrl", () => {
   /**
    * Partition:
    * - window.location.href: has parameters, has no parameters
    * - urlName, latestUrlName: same, different
    */
-  await test("window.location.href has parameters, urlName = latestUrlName", () => {
+  beforeEach(() => {
+    // Reset URL before each test
+    jsdom.reconfigure({ url: 'http://localhost/' });
+  });
+  test("window.location.href has parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/?utm_source=lorem&utm_medium=ipsum";
-    const cleanup = jsdomGlobal("", { url: myUrl });
+    jsdom.reconfigure({ url: myUrl });
     assert.strictEqual(window.location.href, myUrl);
     assert.strictEqual(toFullUrl("lorem", "lorem"), "https://example.com/");
-    cleanup();
   });
 
-  await test("window.location.href has no parameters, urlName = latestUrlName", () => {
+  test("window.location.href has no parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/";
-    const cleanup = jsdomGlobal("", { url: myUrl });
+    jsdom.reconfigure({ url: myUrl });
     assert.strictEqual(window.location.href, myUrl);
     assert.strictEqual(toFullUrl("lorem", "lorem"), "https://example.com/");
-    cleanup();
   });
 
-  await test("window.location.href has parameters, urlName = latestUrlName", () => {
+  test("window.location.href has parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/?utm_source=lorem&utm_medium=ipsum";
-    const cleanup = jsdomGlobal("", { url: myUrl });
+    jsdom.reconfigure({ url: myUrl });
     assert.strictEqual(window.location.href, myUrl);
     assert.strictEqual(
       toFullUrl("lorem", "ipsum"),
       "https://example.com/?t=lorem",
     );
-    cleanup();
   });
 
-  await test("window.location.href has no parameters, urlName = latestUrlName", () => {
+  test("window.location.href has no parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/";
-    const cleanup = jsdomGlobal("", { url: myUrl });
+    jsdom.reconfigure({ url: myUrl });
     assert.strictEqual(window.location.href, myUrl);
     assert.strictEqual(
       toFullUrl("lorem", "ipsum"),
       "https://example.com/?t=lorem",
     );
-    cleanup();
   });
 });

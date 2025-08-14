@@ -1,16 +1,15 @@
-import assert from "node:assert";
-import { describe, test } from "node:test";
-import { Timeslot, NonClass, Event } from "../src/lib/activity.js";
-import { Slot } from "../src/lib/dates.js";
+import { assert, test, describe } from 'vitest'
+import { Timeslot, NonClass, Event } from "../src/lib/activity";
+import { Slot } from "../src/lib/dates";
 import {
   COLOR_SCHEME_LIGHT,
   COLOR_SCHEME_DARK,
   COLOR_SCHEME_LIGHT_CONTRAST,
   COLOR_SCHEME_DARK_CONTRAST,
-} from "../src/lib/colors.js";
+} from "../src/lib/colors";
 
-await describe("Timeslot", async () => {
-  await test("Timeslot.fromStartEnd", () => {
+describe("Timeslot", () => {
+  test("Timeslot.fromStartEnd", () => {
     const myStart: Slot = new Slot(2);
     const myEnd: Slot = new Slot(120);
     const myTimeslot: Timeslot = Timeslot.fromStartEnd(myStart, myEnd);
@@ -18,12 +17,12 @@ await describe("Timeslot", async () => {
     assert.deepStrictEqual(myTimeslot.endSlot, myEnd);
   });
 
-  await test("Timeslot.endSlot", () => {
+  test("Timeslot.endSlot", () => {
     const myTimeslot: Timeslot = new Timeslot(131, 4); // numbers generated with the help of an RNG; adjust as needed
     assert.deepStrictEqual(myTimeslot.endSlot, new Slot(135));
   });
 
-  await test("Timeslot.startTime", () => {
+  test("Timeslot.startTime", () => {
     const myTimeslot: Timeslot = new Timeslot(22, 43); // note: slot 22 is Monday at 5:00 PM
     assert.deepStrictEqual(
       myTimeslot.startTime,
@@ -31,7 +30,7 @@ await describe("Timeslot", async () => {
     );
   });
 
-  await test("Timeslot.endTime", () => {
+  test("Timeslot.endTime", () => {
     const myTimeslot: Timeslot = new Timeslot(79, 52); // note: slot 79 + 52 = 131 is Thursday at 8:30 PM
     assert.deepStrictEqual(
       myTimeslot.endTime,
@@ -39,82 +38,82 @@ await describe("Timeslot", async () => {
     );
   });
 
-  await test("Timeslot.hours", () => {
+  test("Timeslot.hours", () => {
     const myTimeslot: Timeslot = new Timeslot(9, 14);
     assert.strictEqual(myTimeslot.hours, 7);
   });
 
-  await describe("Timeslot.conflicts", async () => {
+  describe("Timeslot.conflicts", () => {
     // PARTITION: all possible orderings of this.startSlot, this.endSlot, other.startSlot, other.endSlot (excluding edge cases)
     // NOTE: all of the timezone start and end points were randomly generated
 
-    await test("this.startSlot < this.endSlot < other.startSlot < other.endSlot", () => {
+    test("this.startSlot < this.endSlot < other.startSlot < other.endSlot", () => {
       const mySlot: Timeslot = new Timeslot(18, 115); // slots 18 - 133
       const otherSlot: Timeslot = new Timeslot(135, 21); // slots 135 - 156
       assert.strictEqual(mySlot.conflicts(otherSlot), false);
     });
 
-    await test("this.startSlot < other.startSlot < this.endSlot < other.endSlot", () => {
+    test("this.startSlot < other.startSlot < this.endSlot < other.endSlot", () => {
       const mySlot: Timeslot = new Timeslot(73, 27); // slots 73 - 99
       const otherSlot: Timeslot = new Timeslot(80, 36); // slots 80 - 116
       assert.strictEqual(mySlot.conflicts(otherSlot), true);
     });
 
-    await test("this.startSlot < other.startSlot < other.endSlot < this.endSlot", () => {
+    test("this.startSlot < other.startSlot < other.endSlot < this.endSlot", () => {
       const mySlot: Timeslot = new Timeslot(36, 125); // slots 36 - 161
       const otherSlot: Timeslot = new Timeslot(120, 19); // slots 120 - 139
       assert.strictEqual(mySlot.conflicts(otherSlot), true);
     });
 
-    await test("other.startSlot < this.startSlot < this.endSlot < other.endSlot", () => {
+    test("other.startSlot < this.startSlot < this.endSlot < other.endSlot", () => {
       const mySlot: Timeslot = new Timeslot(37, 11); // slots 37 - 48
       const otherSlot: Timeslot = new Timeslot(35, 121); // slots 35 - 156
       assert.strictEqual(mySlot.conflicts(otherSlot), true);
     });
 
-    await test("other.startSlot < this.startSlot < other.endSlot < this.endSlot", () => {
+    test("other.startSlot < this.startSlot < other.endSlot < this.endSlot", () => {
       const mySlot: Timeslot = new Timeslot(118, 55); // slots 118 - 163
       const otherSlot: Timeslot = new Timeslot(73, 69); // slots 73 - 142
       assert.strictEqual(mySlot.conflicts(otherSlot), true);
     });
 
-    await test("other.startSlot < other.endSlot < this.startSlot < this.endSlot", () => {
+    test("other.startSlot < other.endSlot < this.startSlot < this.endSlot", () => {
       const mySlot: Timeslot = new Timeslot(112, 42); // slots 112 - 154
       const otherSlot: Timeslot = new Timeslot(58, 15); // slots 58 - 73
       assert.strictEqual(mySlot.conflicts(otherSlot), false);
     });
   });
 
-  await test("Timeslot.toString", () => {
+  test("Timeslot.toString", () => {
     const myTimeslot: Timeslot = new Timeslot(151, 5);
     assert.strictEqual(myTimeslot.toString(), "Fri, 1:30 PM – 4:00 PM");
   });
 
-  await describe("Timeslot.equals", async () => {
+  describe("Timeslot.equals", () => {
     /**
      * Partition:
      * - this.startSlot, other.startSlot: same, different
      * - this.endSlot, other.endSlot: same, different
      */
-    await test("starSlot same, endSlot same", () => {
+    test("starSlot same, endSlot same", () => {
       const myTimeslot: Timeslot = new Timeslot(38, 18);
       const otherTimeslot: Timeslot = new Timeslot(38, 18);
       assert.strictEqual(myTimeslot.equals(otherTimeslot), true);
     });
 
-    await test("startSlot same, endSlot different", () => {
+    test("startSlot same, endSlot different", () => {
       const myTimeslot: Timeslot = new Timeslot(15, 10);
       const otherTimeslot: Timeslot = new Timeslot(15, 139);
       assert.strictEqual(myTimeslot.equals(otherTimeslot), false);
     });
 
-    await test("startSlot different, endSlot same", () => {
+    test("startSlot different, endSlot same", () => {
       const myTimeslot: Timeslot = new Timeslot(61, 46); // NOTE: both end at timeslot 107
       const otherTimeslot: Timeslot = new Timeslot(90, 17);
       assert.strictEqual(myTimeslot.equals(otherTimeslot), false);
     });
 
-    await test("StartSlot different, endSlot different", () => {
+    test("StartSlot different, endSlot different", () => {
       const myTimeslot: Timeslot = new Timeslot(7, 61);
       const otherTimeslot: Timeslot = new Timeslot(77, 44);
       assert.strictEqual(myTimeslot.equals(otherTimeslot), false);
@@ -122,7 +121,7 @@ await describe("Timeslot", async () => {
   });
 });
 
-await test("Event.eventInputs", () => {
+test("Event.eventInputs", () => {
   const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT_CONTRAST);
   const myHexCode = "#611917"; // randomly generated hex code
   const myTitle = "y8g0i81"; // random keysmashes
@@ -159,45 +158,45 @@ await test("Event.eventInputs", () => {
   ]);
 });
 
-await describe("NonClass", async () => {
-  await describe("NonClass.constructor", async () => {
+describe("NonClass", () => {
+  describe("NonClass.constructor", () => {
     const nanoidRegex = /^[A-Za-z0-9-_]{8}$/;
 
-    await test("COLOR_SCHEME_LIGHT", () => {
+    test("COLOR_SCHEME_LIGHT", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       assert.ok(nanoidRegex.test(myNonClass.id));
       assert.strictEqual(myNonClass.backgroundColor, "#4A5568");
     });
 
-    await test("COLOR_SCHEME_DARK", () => {
+    test("COLOR_SCHEME_DARK", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_DARK);
       assert.ok(nanoidRegex.test(myNonClass.id));
       assert.strictEqual(myNonClass.backgroundColor, "#CBD5E0");
     });
 
-    await test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
+    test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT_CONTRAST);
       assert.ok(nanoidRegex.test(myNonClass.id));
       assert.strictEqual(myNonClass.backgroundColor, "#4A5568");
     });
 
-    await test("COLOR_SCHEME_DARK_CONTRAST", () => {
+    test("COLOR_SCHEME_DARK_CONTRAST", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_DARK_CONTRAST);
       assert.ok(nanoidRegex.test(myNonClass.id));
       assert.strictEqual(myNonClass.backgroundColor, "#CBD5E0");
     });
   });
 
-  await describe("NonClass.buttonName", async () => {
+  describe("NonClass.buttonName", () => {
     /** Partition on this.name: changed, not changed */
-    await test("NonClass.name not changed", () => {
+    test("NonClass.name not changed", () => {
       assert.strictEqual(
         new NonClass(COLOR_SCHEME_LIGHT).buttonName,
         "New Activity",
       );
     });
 
-    await test("NonClass.name changed", () => {
+    test("NonClass.name changed", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       const myString = "lorem ipsum dolor sit amet";
       myNonClass.name = myString;
@@ -205,26 +204,26 @@ await describe("NonClass", async () => {
     });
   });
 
-  await describe("NonClass.hours", async () => {
+  describe("NonClass.hours", () => {
     /** Partition on timeslot count: 0, 1, >1 */
-    await test("0 timeslots", () => {
+    test("0 timeslots", () => {
       assert.strictEqual(new NonClass(COLOR_SCHEME_LIGHT).hours, 0);
     });
 
-    await test("1 timeslot", () => {
+    test("1 timeslot", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       myNonClass.timeslots = [new Timeslot(4, 5)];
       assert.strictEqual(myNonClass.hours, 5 / 2);
     });
 
-    await test("multiple timeslots", () => {
+    test("multiple timeslots", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       myNonClass.timeslots = [new Timeslot(2, 7), new Timeslot(11, 5)];
       assert.strictEqual(myNonClass.hours, 6);
     });
   });
 
-  await test("NonClass.events", () => {
+  test("NonClass.events", () => {
     // arbitrary random constants
     const myName = "r57t68y9u";
     const myTimeslots: Timeslot[] = [
@@ -243,20 +242,20 @@ await describe("NonClass", async () => {
     ]);
   });
 
-  await describe("NonClass.addTimeslot", async () => {
+  describe("NonClass.addTimeslot", () => {
     /** Partition:
      * - slot matches existing timeslot, doesn't add
      * - slot extends over multiple days, doesn't add
      * - slot is valid, adds
      */
-    await test("adds valid slot", () => {
+    test("adds valid slot", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       const myTimeslot: Timeslot = new Timeslot(1, 1);
       myNonClass.addTimeslot(myTimeslot);
       assert.deepStrictEqual(myNonClass.timeslots, [myTimeslot]);
     });
 
-    await test("doesn't add existing slot", () => {
+    test("doesn't add existing slot", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       const myTimeslot: Timeslot = new Timeslot(4, 6);
       myNonClass.timeslots = [myTimeslot];
@@ -264,25 +263,25 @@ await describe("NonClass", async () => {
       assert.deepStrictEqual(myNonClass.timeslots, [myTimeslot]);
     });
 
-    await test("doesn't add multi-day slot", () => {
+    test("doesn't add multi-day slot", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       myNonClass.addTimeslot(new Timeslot(42, 69));
       assert.deepStrictEqual(myNonClass.timeslots, []);
     });
   });
 
-  await describe("NonClass.removeTimeslot", async () => {
+  describe("NonClass.removeTimeslot", () => {
     /**
      * Partition:
      * - NonClass.timeslots (before call): empty, nonempty with match, nonempty without match
      */
-    await test("removing timeslot from empty NonClass", () => {
+    test("removing timeslot from empty NonClass", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       myNonClass.removeTimeslot(new Timeslot(1, 1));
       assert.deepStrictEqual(myNonClass.timeslots, []);
     });
 
-    await test("remove matching timeslot from nonempty NonClass", () => {
+    test("remove matching timeslot from nonempty NonClass", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       const myTimeslots: Timeslot[] = [
         new Timeslot(1, 2),
@@ -297,7 +296,7 @@ await describe("NonClass", async () => {
       ]);
     });
 
-    await test("remove non-matching timeslot from nonempty NonClass", () => {
+    test("remove non-matching timeslot from nonempty NonClass", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       const myTimeslots: Timeslot[] = [
         new Timeslot(1, 2),
@@ -310,12 +309,12 @@ await describe("NonClass", async () => {
     });
   });
 
-  await describe("NonClass.deflate", async () => {
+  describe("NonClass.deflate", () => {
     /** Partition:
      * - this.timeslots: empty, nonempty
      * - this.room: defined, undefined
      */
-    await test("timeslots empty, room undefined", () => {
+    test("timeslots empty, room undefined", () => {
       assert.deepStrictEqual(new NonClass(COLOR_SCHEME_LIGHT).deflate(), [
         [],
         "New Activity",
@@ -324,7 +323,7 @@ await describe("NonClass", async () => {
       ]);
     });
 
-    await test("timeslots empty, room defined", () => {
+    test("timeslots empty, room defined", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       myNonClass.room = "lorem ipsum";
       assert.deepStrictEqual(myNonClass.deflate(), [
@@ -335,7 +334,7 @@ await describe("NonClass", async () => {
       ]);
     });
 
-    await test("timeslots nonempty, room undefined", () => {
+    test("timeslots nonempty, room undefined", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       myNonClass.timeslots = [new Timeslot(10, 2)];
       assert.deepStrictEqual(myNonClass.deflate(), [
@@ -347,11 +346,11 @@ await describe("NonClass", async () => {
     });
   });
 
-  await describe("NonClass.inflate", async () => {
+  describe("NonClass.inflate", () => {
     /**
      * Partition on first item: empty, nonempty
      */
-    await test("first item empty", () => {
+    test("first item empty", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       myNonClass.inflate([[], "alpha", "#123456", "beta"]);
 
@@ -361,7 +360,7 @@ await describe("NonClass", async () => {
       assert.strictEqual(myNonClass.room, "beta");
     });
 
-    await test("first item nonempty", () => {
+    test("first item nonempty", () => {
       const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
       myNonClass.inflate([
         [

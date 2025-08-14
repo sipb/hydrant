@@ -1,6 +1,4 @@
-import assert from "node:assert";
-import { after, before, describe, test } from "node:test";
-import jsdomGlobal from "jsdom-global";
+import { assert, test, describe } from 'vitest'
 import {
   COLOR_SCHEME_LIGHT,
   COLOR_SCHEME_DARK,
@@ -10,30 +8,30 @@ import {
   textColor,
   canonicalizeColor,
   getDefaultColorScheme,
-} from "../src/lib/colors.js";
+} from "../src/lib/colors";
 
-await describe("fallbackColor", async () => {
+describe("fallbackColor", () => {
   /**
    * Test all 4 color modes
    */
-  await test("COLOR_SCHEME_LIGHT", () => {
+  test("COLOR_SCHEME_LIGHT", () => {
     assert.strictEqual(fallbackColor(COLOR_SCHEME_LIGHT), "#4A5568");
   });
 
-  await test("COLOR_SCHEME_DARK", () => {
+  test("COLOR_SCHEME_DARK", () => {
     assert.strictEqual(fallbackColor(COLOR_SCHEME_DARK), "#CBD5E0");
   });
 
-  await test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
+  test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
     assert.strictEqual(fallbackColor(COLOR_SCHEME_LIGHT_CONTRAST), "#4A5568");
   });
 
-  await test("COLOR_SCHEME_DARK_CONTRAST", () => {
+  test("COLOR_SCHEME_DARK_CONTRAST", () => {
     assert.strictEqual(fallbackColor(COLOR_SCHEME_DARK_CONTRAST), "#CBD5E0");
   });
 });
 
-await describe("getDefaultColorScheme", async () => {
+describe("getDefaultColorScheme", () => {
   /**
    * Partition:
    * - prefers-color-scheme: light, dark
@@ -41,7 +39,6 @@ await describe("getDefaultColorScheme", async () => {
    */
 
   // Some declarations
-  let cleanup: () => void;
   function myUncallableFunction(_: unknown): void {
     throw new Error("Don't call me!");
   }
@@ -73,16 +70,7 @@ await describe("getDefaultColorScheme", async () => {
     });
   }
 
-  // before and after hooks to simplify the code
-  before(() => {
-    cleanup = jsdomGlobal();
-  });
-
-  after(() => {
-    cleanup();
-  });
-
-  await test("prefers-color-scheme = light, prefers-constrast = no-preference", () => {
+  test("prefers-color-scheme = light, prefers-constrast = no-preference", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", false],
@@ -92,7 +80,7 @@ await describe("getDefaultColorScheme", async () => {
     assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_LIGHT);
   });
 
-  await test("prefers-color-scheme = light, prefers-constrast = more", () => {
+  test("prefers-color-scheme = light, prefers-constrast = more", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", false],
@@ -105,7 +93,7 @@ await describe("getDefaultColorScheme", async () => {
     );
   });
 
-  await test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
+  test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", true],
@@ -115,7 +103,7 @@ await describe("getDefaultColorScheme", async () => {
     assert.deepStrictEqual(getDefaultColorScheme(), COLOR_SCHEME_DARK);
   });
 
-  await test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
+  test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", true],
@@ -126,7 +114,7 @@ await describe("getDefaultColorScheme", async () => {
   });
 });
 
-await describe("textColor", async () => {
+describe("textColor", () => {
   /**
    * Partition on `brightness`:
    * - exactly 0
@@ -135,28 +123,28 @@ await describe("textColor", async () => {
    * - between 128 and 256 exclusive
    * - exactly 256
    */
-  await test("brightness === 0", () => {
+  test("brightness === 0", () => {
     assert.deepStrictEqual(textColor("#000000"), "#ffffff");
   });
 
-  await test("0 < brightness < 128", () => {
+  test("0 < brightness < 128", () => {
     assert.deepStrictEqual(textColor("#217ac8"), "#ffffff"); // randomly generated colors
   });
 
-  await test("brightness === 128", () => {
+  test("brightness === 128", () => {
     assert.deepStrictEqual(textColor("#808080"), "#ffffff");
   });
 
-  await test("128 < brightness < 256", () => {
+  test("128 < brightness < 256", () => {
     assert.deepStrictEqual(textColor("#c5accc"), "#000000");
   });
 
-  await test("brightness === 256", () => {
+  test("brightness === 256", () => {
     assert.deepStrictEqual(textColor("#ffffff"), "#000000");
   });
 });
 
-await describe("canonicalizeColor", async () => {
+describe("canonicalizeColor", () => {
   /**
    * Partition:
    * - valid 6-symbol hex code (with or without #)
@@ -164,31 +152,31 @@ await describe("canonicalizeColor", async () => {
    * - valid 3-symbol hex code (with or without #)
    * - not valid
    */
-  await test("6-symbol hex with #", () => {
+  test("6-symbol hex with #", () => {
     assert.strictEqual(canonicalizeColor("#AC26C4"), "#AC26C4"); // random colors generated using RNG
   });
 
-  await test("6-symbol hex without #", () => {
+  test("6-symbol hex without #", () => {
     assert.strictEqual(canonicalizeColor("28259A"), "#28259A");
   });
 
-  await test("5-symbol hex with #", () => {
+  test("5-symbol hex with #", () => {
     assert.strictEqual(canonicalizeColor("#AA1B8"), "#AA1B8");
   });
 
-  await test("5-symbol hex without #", () => {
+  test("5-symbol hex without #", () => {
     assert.strictEqual(canonicalizeColor("9C863"), "#9C863");
   });
 
-  await test("3-symbol hex with #", () => {
+  test("3-symbol hex with #", () => {
     assert.strictEqual(canonicalizeColor("#A51"), "AA5511");
   });
 
-  await test("3-symbol hex without #", () => {
+  test("3-symbol hex without #", () => {
     assert.strictEqual(canonicalizeColor("12B"), "#1122BB");
   });
 
-  await test("invalid hex code", () => {
+  test("invalid hex code", () => {
     assert.strictEqual(canonicalizeColor("have a great day!"), undefined);
   });
 });
