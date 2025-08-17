@@ -47,16 +47,6 @@ meets = "21A.S10"
 prereqs = "6.1010"
 description = "Teaches an end-to-end user-centric design process focusing on developing humane (usable, joyful, whimsical) frontend user experiences for generative AI, grounded in anthropology. Topics include understanding human context (e.g., through observation, interviews, and user testing), qualitative data analysis, principles of effective and expressive visual and interaction design, frontend web application implementation, and user testing and ethical audits. Enrollment limited."
 
-['6.S077']
-name = "Life Science and Semiconductor"
-meets = "6.S897"
-inCharge = "A. Bahai, T. Heldt"
-
-['6.S897']
-name = "Life Science and Semiconductor"
-meets = "6.S077"
-inCharge = "A. Bahai, T. Heldt"
-
 ['6.S890']
 name = "Topics in Mulitagent Learning"
 prereqs = "6.1220 or 6.7201, 6.1200"
@@ -87,3 +77,9 @@ name = "Digital Systems Laboratory II"
 prereqs = "6.2050"
 inCharge = "J. Steinmeyer"
 description = "Continuation of topics introduced in Digital Systems Laboratory (6.205). Particular focus on modern design verification practices, System Verilog, and Universal Verification Methodology (UVM) as well as designing complex digital systems in hybrid platforms such as SoC and state-of-the-art RFSoC platforms. Weekly labs and final design project with emphasis on signal processing, RF, data acquisition, and other applications.  The course will utilize a number of tools and areas of study in pursuit of our work, reflective of the hybrid modern state of the field, so usage of C, Python, shells scripts, signals and systems, communications, and RF concepts, should be expected."
+
+['6.S981']
+name = "Special Seminar: AI for Protein Biology"
+prereqs = "Permission of instructor"
+inCharge = "A. Rives"
+description = "Enrollment limited. Graduate seminar on artificial intelligence for protein understanding and design. Explores the developing understanding of protein biology with artificial intelligence, building from classical ideas about the structure and organization of protein space, and making connections to foundational modeling approaches across artificial intelligence from representation learning, to language models, diffusion models, and mechanistic interpretability. It also surveys the frontier of applications of artificial intelligence to programmable biology."
