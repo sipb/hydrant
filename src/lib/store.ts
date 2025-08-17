@@ -47,9 +47,6 @@ export class Store {
 
   /** Set the corresponding global saved value. */
   globalSet<T extends keyof GlobalStore>(key: T, value: GlobalStore[T]): void {
-    localStorage.setItem(
-      this.toKey(key, true),
-      JSON.stringify(value),
-    );
+    localStorage.setItem(this.toKey(key, true), JSON.stringify(value));
   }
 }
