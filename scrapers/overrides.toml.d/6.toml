@@ -35,6 +35,7 @@ description = "This class brings together philosophical work on rationality – 
 
 ['6.S056']
 name = "Hack Yourself: Data-driven Wellbeing and Learning"
+same = "ES.S70"
 inCharge = "A. Bell"
 prereqs = "6.1000 or 6.100A"
 description = "Did you know that celebrating a friend’s success is more important than supporting them during tough times? Or that taking a practice test improves memory 17% more than simply studying?  Or that time pressure decreases your creativity by 45%?\n\nPsychology is full of surprises, but simply knowing the facts isn’t enough.  In this course, you’ll take charge of your wellbeing and learning and develop leadership skills, coming away with a toolkit of over 60 sustainable positive habits.  In addition, you’ll explore data science methods to validate these positive psychology tools, gaining hands-on experience with AI and statistical analysis that you will be able apply across different fields.  Finally, you’ll develop skills for positive communication and effective persuasion through data and visualization."
