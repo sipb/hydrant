@@ -21,7 +21,7 @@ import json
 from collections.abc import Mapping
 from typing import Iterable
 
-from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.tokenize import sent_tokenize, word_tokenize  # type: ignore[import-untyped]
 
 KEYWORDS = ["limited", "restricted", "enrollment", "preference", "priority"]
 FOLDER = "../public/"
