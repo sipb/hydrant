@@ -346,11 +346,13 @@ def get_course_data(
         "subject": course_class,
     }
 
-    # terms, prereqs
-    raw_class.update(parse_terms(course))
+    # prereqs
     raw_class.update(parse_prereqs(course))
 
-    if term.name not in raw_class["terms"]:  # type: ignore
+    # terms
+    terms_dict = parse_terms(course)
+    raw_class.update(terms_dict)
+    if term.name not in terms_dict.get("terms", []):
         return False
 
     has_schedule = "schedule" in course
