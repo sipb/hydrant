@@ -325,7 +325,8 @@ def get_course_data(
     Returns:
         bool: Whether the course was entered into courses.
     """
-    course_code: str = course["subject_id"]  # type: ignore
+    course_code = course.get("subject_id", "")
+    assert isinstance(course_code, str)
     course_num, course_class = course_code.split(".")
     raw_class: dict[
         str,
