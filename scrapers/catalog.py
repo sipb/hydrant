@@ -172,9 +172,9 @@ def get_half(html: BeautifulSoup) -> Union[int, bool]:
             2 if the class is in the second half of the term, False if it is not a half
             semester course
     """
-    if html.find(text=re.compile("first half of term")):
+    if html.find(text=re.compile("; first half of term")):
         return 1
-    if html.find(text=re.compile("second half of term")):
+    if html.find(text=re.compile("; second half of term")):
         return 2
     return False
 
