@@ -435,11 +435,17 @@ def get_course_data(
     if "old_id" in course:
         raw_class["oldNumber"] = course["old_id"]
 
+    # NOTE: a priori these could be different types
+    # (the most elegant way to fix this would probably be JSON schema validation)
+    in_class_hours = course.get("in_class_hours", 0)
+    out_of_class_hours = course.get("out_of_class_hours", 0)
+    assert isinstance(in_class_hours, float | int)
+    assert isinstance(out_of_class_hours, float | int)
+
     raw_class.update(
         {
             "rating": course.get("rating", 0),
-            "hours": course.get("in_class_hours", 0)
-            + course.get("out_of_class_hours", 0),  # type: ignore
+            "hours": in_class_hours + out_of_class_hours,
             "size": course.get("enrollment_number", 0),
         }
     )
