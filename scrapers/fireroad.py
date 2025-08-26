@@ -361,19 +361,21 @@ def get_course_data(
     # designSections, lectureRawSections, recitationRawSections, labRawSections,
     # designRawSections
     if has_schedule:
+        # helper variable to make code DRYer
+        term_to_parse: str = ""
+        if term == Term.FA and "schedule_fall" in course:
+            term_to_parse = "schedule_fall"
+        elif term == Term.JA and "schedule_IAP" in course:
+            term_to_parse = "schedule_IAP"
+        elif term == Term.SP and "schedule_spring" in course:
+            term_to_parse = "schedule_spring"
+        else:
+            term_to_parse = "schedule"
+
+        course_schedule = course[term_to_parse]
+        assert isinstance(course_schedule, str)
         try:
-            if term == Term.FA and "schedule_fall" in course:
-                raw_class.update(
-                    parse_schedule(course["schedule_fall"])  # type: ignore
-                )
-            elif term == Term.JA and "schedule_IAP" in course:
-                raw_class.update(parse_schedule(course["schedule_IAP"]))  # type: ignore
-            elif term == Term.SP and "schedule_spring" in course:
-                raw_class.update(
-                    parse_schedule(course["schedule_spring"])  # type: ignore
-                )
-            else:
-                raw_class.update(parse_schedule(course["schedule"]))  # type: ignore
+            raw_class.update(parse_schedule(course_schedule))
         except ValueError as val_err:
             # if we can't parse the schedule, warn
             # NOTE: parse_schedule will raise a ValueError
