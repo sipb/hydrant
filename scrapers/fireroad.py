@@ -137,7 +137,11 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
 
         # The key is lowercase
         kind = name.lower()
-        result["sectionKinds"].append(kind)
+
+        result_section_kinds = result["sectionKinds"]
+        # assert since a priori this variable could be a boolean too
+        assert isinstance(result_section_kinds, list)
+        result_section_kinds.append(kind)
 
         # Raw section times, e.g. T9.301-11 or TR1,F2.
         result[kind + "RawSections"] = sections
