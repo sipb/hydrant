@@ -303,6 +303,57 @@ def parse_prereqs(
     return {"prereqs": prereqs}
 
 
+def get_schedule_data(
+    course: Mapping[str, Union[bool, float, int, Sequence[str], str]], term: Term
+) -> dict[str, list[str] | bool]:
+    """
+    Helper function for `get_course_data`
+
+    Args:
+        course (Mapping[str, Union[bool, float, int, Sequence[str], str]]): the course
+        term (Term): the term
+
+    Returns:
+        (dict[str, list[str] | bool] | None): schedule-related data
+    """
+    has_schedule = "schedule" in course
+    if has_schedule:
+        # helper variable to make code DRYer
+        term_to_parse: str = ""
+        if term == Term.FA and "schedule_fall" in course:
+            term_to_parse = "schedule_fall"
+        elif term == Term.JA and "schedule_IAP" in course:
+            term_to_parse = "schedule_IAP"
+        elif term == Term.SP and "schedule_spring" in course:
+            term_to_parse = "schedule_spring"
+        else:
+            term_to_parse = "schedule"
+
+        course_schedule = course[term_to_parse]
+        assert isinstance(course_schedule, str)
+        try:
+            return parse_schedule(course_schedule)
+        except ValueError as val_err:
+            # if we can't parse the schedule, warn
+            # NOTE: parse_schedule will raise a ValueError
+            print(f"Can't parse schedule {course.get('subject_id', '')}: {val_err!r}")
+            has_schedule = False
+    if not has_schedule:
+        return {
+            "tba": False,
+            "sectionKinds": [],
+            "lectureSections": [],
+            "recitationSections": [],
+            "labSections": [],
+            "designSections": [],
+            "lectureRawSections": [],
+            "recitationRawSections": [],
+            "labRawSections": [],
+            "designRawSections": [],
+        }
+    raise AssertionError("This shouldn't be possible")
+
+
 def get_course_data(
     courses: MutableMapping[
         str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
@@ -355,47 +406,10 @@ def get_course_data(
     if term.name not in terms_dict.get("terms", []):
         return False
 
-    has_schedule = "schedule" in course
-
     # tba, sectionKinds, lectureSections, recitationSections, labSections,
     # designSections, lectureRawSections, recitationRawSections, labRawSections,
     # designRawSections
-    if has_schedule:
-        # helper variable to make code DRYer
-        term_to_parse: str = ""
-        if term == Term.FA and "schedule_fall" in course:
-            term_to_parse = "schedule_fall"
-        elif term == Term.JA and "schedule_IAP" in course:
-            term_to_parse = "schedule_IAP"
-        elif term == Term.SP and "schedule_spring" in course:
-            term_to_parse = "schedule_spring"
-        else:
-            term_to_parse = "schedule"
-
-        course_schedule = course[term_to_parse]
-        assert isinstance(course_schedule, str)
-        try:
-            raw_class.update(parse_schedule(course_schedule))
-        except ValueError as val_err:
-            # if we can't parse the schedule, warn
-            # NOTE: parse_schedule will raise a ValueError
-            print(f"Can't parse schedule {course_code}: {val_err!r}")
-            has_schedule = False
-    if not has_schedule:
-        raw_class.update(
-            {
-                "tba": False,
-                "sectionKinds": [],
-                "lectureSections": [],
-                "recitationSections": [],
-                "labSections": [],
-                "designSections": [],
-                "lectureRawSections": [],
-                "recitationRawSections": [],
-                "labRawSections": [],
-                "designRawSections": [],
-            }
-        )
+    raw_class.update(get_schedule_data(course, term))
 
     # hassH, hassA, hassS, hassE, cih, cihw, rest, lab, partLab
     raw_class.update(parse_attributes(course))
