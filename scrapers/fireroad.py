@@ -125,8 +125,9 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
     result: dict[str, Union[list[str], bool]] = {}
 
     # Kinds of sections that exist.
-    result["sectionKinds"] = []
     section_kinds = ("Lecture", "Recitation", "Lab", "Design")
+
+    result_section_kinds: list[str] = []
 
     for chunk in schedule.split(";"):
         name, *sections = chunk.split(",")
@@ -137,10 +138,6 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
 
         # The key is lowercase
         kind = name.lower()
-
-        result_section_kinds = result["sectionKinds"]
-        # assert since a priori this variable could be a boolean too
-        assert isinstance(result_section_kinds, list)
         result_section_kinds.append(kind)
 
         # Raw section times, e.g. T9.301-11 or TR1,F2.
@@ -156,6 +153,7 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
                 result[kind_section_name].append(parse_section(info))  # type: ignore
 
     # True if some schedule is not scheduled yet.
+    result["sectionKinds"] = result_section_kinds
     result["tba"] = section_tba
     return result
 
