@@ -193,7 +193,7 @@ function ClassBody(props: { cls: Class }) {
 
   return (
     <Flex direction="column" gap={2}>
-      <Text lang="en" style={{ hyphens: "auto" }}>
+      <Text lang="en" style={{ hyphens: "auto", whiteSpace: "pre-wrap" }}>
         {linkClasses(state, decode(description))}
       </Text>
       {inCharge !== "" && <Text>In-charge: {inCharge}.</Text>}
