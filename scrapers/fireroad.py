@@ -174,8 +174,9 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
         month, day = date.split("/")
         return int(month), int(day)
     if " " in date:
-        month, day = MONTHS[(date.split())[0]], (date.split())[1]
-        return int(month), int(day)
+        # NOTE: if we reuse the `month` variable, mypy will complain!
+        other_month, other_day = MONTHS[(date.split())[0]], (date.split())[1]
+        return int(other_month), int(other_day)
 
     return None
 
