@@ -416,7 +416,7 @@ export class Class {
     hours: string;
     people: string;
   } {
-    if (this.rawClass.rating === 0) {
+    if (this.rawClass.rating === 0 || this.new) {
       return {
         rating: "N/A",
         hours: "N/A",
