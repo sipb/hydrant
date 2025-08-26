@@ -2,5 +2,5 @@ beautifulsoup4==4.11.1
 lxml==4.9.3
 tomli>=2.0.1; python_version < "3.11"
 nltk>=3.6.5    # skip yanked version; see https://pypi.org/project/nltk/#history
-mypy=1.17.1
-types-beautifulsoup4=4.12.0.20250516
+mypy==1.17.1
+types-beautifulsoup4==4.12.0.20250516
