@@ -297,7 +297,8 @@ def parse_prereqs(
     Returns:
         dict[str, str]: The parsed prereqs, in the key "prereqs".
     """
-    prereqs: str = course.get("prerequisites", "")  # type: ignore
+    prereqs = course.get("prerequisites", "")
+    assert isinstance(prereqs, str)
     for gir, gir_rw in GIR_REWRITE.items():
         prereqs = prereqs.replace(gir, gir_rw)
     if not prereqs:
