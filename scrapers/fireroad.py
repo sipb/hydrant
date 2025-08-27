@@ -201,7 +201,8 @@ def parse_quarter_info(
         dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
     """
 
-    quarter_info: str = course.get("quarter_information", "")  # type: ignore
+    quarter_info = course.get("quarter_information", "")
+    assert isinstance(quarter_info, str)
     if quarter_info:
         quarter_info_list = quarter_info.split(",")
 
