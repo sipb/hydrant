@@ -239,9 +239,12 @@ def parse_attributes(
     Returns:
         dict[str, bool]: The attributes of the course.
     """
-    hass_code: str = course.get("hass_attribute", "X")[-1]  # type: ignore
-    comms_code: str = course.get("communication_requirement", "")  # type: ignore
-    gir_attr: str = course.get("gir_attribute", "")  # type: ignore
+    hass_codes = course.get("hass_attribute", "X")
+    comms_code = course.get("communication_requirement", "")
+    gir_attr = course.get("gir_attribute", "")
+
+    assert isinstance(hass_codes, str)
+    hass_code: str = hass_codes[-1]
 
     return {
         "hassH": hass_code == "H",
