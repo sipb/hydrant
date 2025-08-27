@@ -416,6 +416,11 @@ def get_course_data(
 
     # hassH, hassA, hassS, hassE, cih, cihw, rest, lab, partLab
     raw_class.update(parse_attributes(course))
+
+    samelist = course.get("joint_subjects", [])
+    meetslist = course.get("meets_with_subjects", [])
+    assert isinstance(samelist, Sequence)
+    assert isinstance(meetslist, Sequence)
     try:
         raw_class.update(
             {
@@ -424,10 +429,8 @@ def get_course_data(
                 "preparationUnits": course["preparation_units"],
                 "level": course["level"],
                 "isVariableUnits": course["is_variable_units"],
-                "same": ", ".join(course.get("joint_subjects", [])),  # type: ignore
-                "meets": ", ".join(
-                    course.get("meets_with_subjects", [])  # type: ignore
-                ),
+                "same": ", ".join(samelist),
+                "meets": ", ".join(meetslist),
             }
         )
     except KeyError as key_err:
@@ -443,11 +446,13 @@ def get_course_data(
     # Get quarter info if available
     raw_class.update(parse_quarter_info(course))
 
+    instructor_list = course.get("instructors", [])
+    assert isinstance(instructor_list, Sequence)
     raw_class.update(
         {
             "description": course.get("description", ""),
             "name": course.get("title", ""),
-            "inCharge": ",".join(course.get("instructors", [])),  # type: ignore
+            "inCharge": ",".join(instructor_list),
             "virtualStatus": course.get("virtual_status", "") == "Virtual",
         }
     )
