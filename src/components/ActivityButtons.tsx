@@ -41,6 +41,7 @@ import { Timeslot } from "../lib/activity";
 import type { Class, SectionLockOption, Sections } from "../lib/class";
 import { LockOption } from "../lib/class";
 import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
+import { StarButton } from "./ClassTable";
 import { HydrantContext } from "../lib/hydrant";
 
 /**
@@ -258,6 +259,13 @@ export function ClassButtons(props: { cls: Class }) {
   return (
     <Flex direction="column" gap={2}>
       <ButtonGroup wrap="wrap">
+        <StarButton
+          cls={cls}
+          onStarToggle={() => {
+            const event = new CustomEvent("refreshStarCells");
+            window.dispatchEvent(event);
+          }}
+        />
         <Button
           onClick={() => {
             state.toggleActivity(cls);
