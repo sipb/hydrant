@@ -26,7 +26,6 @@ from __future__ import annotations
 import json
 import os.path
 import socket
-from collections.abc import Mapping, MutableMapping, Sequence
 from functools import lru_cache
 from typing import Any, Union
 from urllib.error import URLError
@@ -43,6 +42,22 @@ from .utils import (
 )
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
+
+# type declarations
+
+UnionOfDifferentThings = Union[
+    str,
+    bool,
+    float,
+    int,
+    dict[str, tuple[int, int]],
+    list[str],
+    dict[str, Union[list[str], bool]],
+]
+
+Course = dict[str, UnionOfDifferentThings]
+
+CourseListing = dict[str, Course]
 
 
 def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
@@ -180,7 +195,7 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
 
 
 def parse_quarter_info(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    course: Course,
 ) -> dict[str, dict[str, tuple[int, int]]]:
     """
     Parses quarter info from the course.
@@ -195,7 +210,7 @@ def parse_quarter_info(
         dates can appear as either "4/4" or "apr 4".
 
     Args:
-        course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+        course (Course): The course object.
 
     Returns:
         dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
@@ -227,13 +242,13 @@ def parse_quarter_info(
 
 
 def parse_attributes(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    course: Course,
 ) -> dict[str, bool]:
     """
     Parses attributes of the course.
 
     Args:
-        course (Mapping[str, Union[bool, float, int, list[str], str]]):
+        course (Course):
             The course object.
 
     Returns:
@@ -260,13 +275,13 @@ def parse_attributes(
 
 
 def parse_terms(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    course: Course,
 ) -> dict[str, list[str]]:
     """
     Parses the terms of the course.
 
     Args:
-        course (Mapping[str, Union[bool, float, int, Sequence[str], str]]):
+        course (Course):
             The course object.
 
     Returns:
@@ -286,13 +301,13 @@ def parse_terms(
 
 
 def parse_prereqs(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    course: Course,
 ) -> dict[str, str]:
     """
     Parses prerequisites from the course.
 
     Args:
-        course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+        course (Course): The course object.
 
     Returns:
         dict[str, str]: The parsed prereqs, in the key "prereqs".
@@ -306,14 +321,12 @@ def parse_prereqs(
     return {"prereqs": prereqs}
 
 
-def get_schedule_data(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]], term: Term
-) -> dict[str, list[str] | bool]:
+def get_schedule_data(course: Course, term: Term) -> dict[str, list[str] | bool]:
     """
     Helper function for `get_course_data`
 
     Args:
-        course (Mapping[str, Union[bool, float, int, Sequence[str], str]]): the course
+        course (Course): the course
         term (Term): the term
 
     Returns:
@@ -358,10 +371,8 @@ def get_schedule_data(
 
 
 def get_course_data(
-    courses: MutableMapping[
-        str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
-    ],
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    courses: CourseListing,
+    course: Course,
     term: Term,
 ) -> bool:
     """
@@ -370,9 +381,9 @@ def get_course_data(
     True otherwise. The `courses` variable is modified in place.
 
     Args:
-        courses (list[dict[str, Union[bool, float, int, list[str], str]]]):
+        courses (CourseListing):
             The list of courses.
-        course (dict[str, Union[bool, float, int, list[str], str]]):
+        course (Course):
             The course in particular.
         term (Term): The current term (fall, IAP, or spring).
 
@@ -382,19 +393,7 @@ def get_course_data(
     course_code = course.get("subject_id", "")
     assert isinstance(course_code, str)
     course_num, course_class = course_code.split(".")
-    raw_class: dict[
-        str,
-        Union[
-            str,
-            bool,
-            float,
-            int,
-            Mapping[str, tuple[int, int]],
-            Sequence[str],
-            Mapping[str, Union[Sequence[str], bool]],
-            bool,
-        ],
-    ] = {
+    raw_class: Course = {
         "number": course_code,
         "course": course_num,
         "subject": course_class,
@@ -419,8 +418,8 @@ def get_course_data(
 
     samelist = course.get("joint_subjects", [])
     meetslist = course.get("meets_with_subjects", [])
-    assert isinstance(samelist, Sequence)
-    assert isinstance(meetslist, Sequence)
+    assert isinstance(samelist, list)
+    assert isinstance(meetslist, list)
     try:
         raw_class.update(
             {
@@ -447,7 +446,7 @@ def get_course_data(
     raw_class.update(parse_quarter_info(course))
 
     instructor_list = course.get("instructors", [])
-    assert isinstance(instructor_list, Sequence)
+    assert isinstance(instructor_list, list)
     raw_class.update(
         {
             "description": course.get("description", ""),
@@ -477,7 +476,7 @@ def get_course_data(
         }
     )
 
-    courses[course_code] = raw_class  # type: ignore
+    courses[course_code] = raw_class
     return True
 
 
@@ -518,9 +517,7 @@ def run(is_semester_term: bool) -> None:
                 json.dump({}, fireroad_file)
         return
 
-    courses: MutableMapping[
-        str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
-    ] = {}
+    courses: CourseListing = {}
     term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
     missing = 0
 
