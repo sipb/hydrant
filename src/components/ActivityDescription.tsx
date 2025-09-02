@@ -1,7 +1,15 @@
 import { useContext } from "react";
 import { decode } from "html-entities";
 
-import { Flex, Heading, Image, Link, Text, Button } from "@chakra-ui/react";
+import {
+  Flex,
+  Heading,
+  Image,
+  Link,
+  Text,
+  Button,
+  Span,
+} from "@chakra-ui/react";
 import { useColorMode } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
@@ -128,7 +136,12 @@ function ClassRelated(props: { cls: Class }) {
 
   return (
     <>
-      <Text>Prereq: {linkClasses(state, prereq)}</Text>
+      <Text>
+        Prereq:{" "}
+        <Span fontWeight={prereq.toLowerCase() === "none" ? "bold" : "normal"}>
+          {linkClasses(state, prereq)}
+        </Span>
+      </Text>
       {same !== "" && <Text>Same class as: {linkClasses(state, same)}</Text>}
       {meets !== "" && <Text> Meets with: {linkClasses(state, meets)} </Text>}
     </>
@@ -180,7 +193,7 @@ function ClassBody(props: { cls: Class }) {
 
   return (
     <Flex direction="column" gap={2}>
-      <Text lang="en" style={{ hyphens: "auto" }}>
+      <Text lang="en" style={{ hyphens: "auto", whiteSpace: "pre-wrap" }}>
         {linkClasses(state, decode(description))}
       </Text>
       {inCharge !== "" && <Text>In-charge: {inCharge}.</Text>}

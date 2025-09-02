@@ -33,7 +33,7 @@ export class Store {
 
   /** Return the corresponding global saved value. */
   globalGet<T extends keyof GlobalStore>(key: T): GlobalStore[T] | null {
-    const result = localStorage.getItem(this.toKey(key.toString(), true));
+    const result = localStorage.getItem(this.toKey(key, true));
     return result !== null ? (JSON.parse(result) as GlobalStore[T]) : null;
   }
 
@@ -47,9 +47,6 @@ export class Store {
 
   /** Set the corresponding global saved value. */
   globalSet<T extends keyof GlobalStore>(key: T, value: GlobalStore[T]): void {
-    localStorage.setItem(
-      this.toKey(key.toString(), true),
-      JSON.stringify(value),
-    );
+    localStorage.setItem(this.toKey(key, true), JSON.stringify(value));
   }
 }

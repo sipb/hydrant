@@ -128,6 +128,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         },
         submitText: "Download",
       },
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       items: {
         "ui:title": "Class Override",
         "ui:field": "LayoutGridField",
@@ -182,7 +183,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
               {
                 "ui:row": {
                   gap: 2,
-                  templateColumns: "repeat(5, 1fr)",
+                  templateColumns: "repeat(6, 1fr)",
                   children: [
                     {
                       "ui:columns": [
@@ -190,6 +191,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
                         "lectureUnits",
                         "labUnits",
                         "preparationUnits",
+                        "new",
                         "isVariableUnits",
                       ],
                     },

@@ -53,7 +53,8 @@ from typing import Union
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString
 
 BASE_URL = "http://student.mit.edu/catalog"
 
@@ -171,9 +172,9 @@ def get_half(html: BeautifulSoup) -> Union[int, bool]:
             2 if the class is in the second half of the term, False if it is not a half
             semester course
     """
-    if html.find(text=re.compile("first half of term")):
+    if html.find(text=re.compile("; first half of term")):
         return 1
-    if html.find(text=re.compile("second half of term")):
+    if html.find(text=re.compile("; second half of term")):
         return 2
     return False
 
@@ -189,6 +190,21 @@ def is_limited(html: BeautifulSoup) -> bool:
         bool: True if enrollment in the class is limited
     """
     if html.find(text=LIMITED_REGEX):
+        return True
+    return False
+
+
+def is_new(html: BeautifulSoup) -> bool:
+    """
+    Checks if the subject is new.
+
+    Args:
+        html (BeautifulSoup): the input webpage
+
+    Returns:
+        bool: True if the class is new
+    """
+    if html.find(text=re.compile(r"\(New\)")):
         return True
     return False
 
@@ -210,6 +226,7 @@ def get_course_data(filtered_html: BeautifulSoup) -> dict[str, Union[bool, int, 
         "final": has_final(filtered_html),
         "half": get_half(filtered_html),
         "limited": is_limited(filtered_html),
+        "new": is_new(filtered_html),
     }
 
 
