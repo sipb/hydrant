@@ -1,4 +1,4 @@
-import { test, describe, expect, vi } from 'vitest'
+import { test, describe, expect, vi } from "vitest";
 import {
   COLOR_SCHEME_LIGHT,
   COLOR_SCHEME_DARK,
@@ -78,11 +78,7 @@ describe("getDefaultColorScheme", () => {
         ["(prefers-constrast: more)", true],
       ]),
     );
-    expect(
-      getDefaultColorScheme()
-    ).toStrictEqual(
-      COLOR_SCHEME_LIGHT_CONTRAST,
-    );
+    expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_LIGHT_CONTRAST);
   });
 
   test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
@@ -92,11 +88,7 @@ describe("getDefaultColorScheme", () => {
         ["(prefers-constrast: more)", false],
       ]),
     );
-    expect(
-      getDefaultColorScheme()
-    ).toStrictEqual(
-      COLOR_SCHEME_DARK,
-    );
+    expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_DARK);
   });
 
   test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
@@ -106,11 +98,7 @@ describe("getDefaultColorScheme", () => {
         ["(prefers-constrast: more)", true],
       ]),
     );
-    expect(
-      getDefaultColorScheme()
-    ).toStrictEqual(
-      COLOR_SCHEME_DARK_CONTRAST,
-    );
+    expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_DARK_CONTRAST);
   });
 });
 

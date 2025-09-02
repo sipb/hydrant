@@ -1,4 +1,4 @@
-import { test, describe, expect } from 'vitest'
+import { test, describe, expect } from "vitest";
 import {
   classSort,
   classNumberMatch,
@@ -154,7 +154,9 @@ test("urlencode followed by urldecode", () => {
     ipsum: "hello",
     dolor: { 1: 1, 2: 2 },
   };
-  expect(urldecode(urlencode(someRandomTestData))).toStrictEqual(someRandomTestData);
+  expect(urldecode(urlencode(someRandomTestData))).toStrictEqual(
+    someRandomTestData,
+  );
 });
 
 describe("simplifyString", () => {

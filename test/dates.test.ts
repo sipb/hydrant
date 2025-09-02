@@ -1,4 +1,4 @@
-import { test, describe, beforeEach, expect } from 'vitest'
+import { test, describe, beforeEach, expect } from "vitest";
 import {
   parseUrlName,
   getClosestUrlName,
@@ -151,9 +151,8 @@ describe("Term", () => {
           new Slot(69), // Wednesday, slot 1 (= 6:30 AM)
           false,
           undefined,
-        )).toStrictEqual(
-          new Date(2044, 9, 19, 6, 30),
-        );
+        ),
+      ).toStrictEqual(new Date(2044, 9, 19, 6, 30));
     });
 
     test("secondHalf false, startDay undefined, slot.weekday doesn't match", () => {
@@ -162,9 +161,10 @@ describe("Term", () => {
           new Slot(61), // Tuesday, slot 27 (= 7:30 PM)
           false,
           undefined,
-        )).toStrictEqual(
-          new Date(2044, 9, 25, 19, 30), // bump to next Tuesday, October 25, 2044
-        );
+        ),
+      ).toStrictEqual(
+        new Date(2044, 9, 25, 19, 30), // bump to next Tuesday, October 25, 2044
+      );
     });
 
     test("secondHalf false, startDay defined, slot.weekday matches", () => {
@@ -173,9 +173,8 @@ describe("Term", () => {
           new Slot(168), // Friday, slot 32 (= 10:00 PM)
           false,
           [11, 4], // this would mean Friday, November 4, 2044
-        )).toStrictEqual(
-          new Date(2044, 10, 4, 22),
-        );
+        ),
+      ).toStrictEqual(new Date(2044, 10, 4, 22));
     });
 
     test("secondHalf false, startDay defined, slot.weekday doesn't match", () => {
@@ -184,9 +183,10 @@ describe("Term", () => {
           new Slot(28), // Monday, slot 28 (= 8:00 PM)
           false,
           [11, 4],
-        )).toStrictEqual(
-          new Date(2044, 10, 7, 20), // bumps to next Monday, November 7, 2044
-        );
+        ),
+      ).toStrictEqual(
+        new Date(2044, 10, 7, 20), // bumps to next Monday, November 7, 2044
+      );
     });
 
     test("secondHalf true, startDay undefined, slot.weekday matches", () => {
@@ -195,9 +195,8 @@ describe("Term", () => {
           new Slot(1), // Monday, slot 1 (= 6:30 AM)
           true,
           undefined,
-        )).toStrictEqual(
-          new Date(2044, 10, 21, 6, 30),
-        );
+        ),
+      ).toStrictEqual(new Date(2044, 10, 21, 6, 30));
     });
 
     test("secondHalf true, startDay undefined, slot.weekday doesn't match", () => {
@@ -206,9 +205,10 @@ describe("Term", () => {
           new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
           true,
           undefined,
-        )).toStrictEqual(
-          new Date(2044, 10, 22, 6, 30), // bump to next day
-        );
+        ),
+      ).toStrictEqual(
+        new Date(2044, 10, 22, 6, 30), // bump to next day
+      );
     });
 
     test("secondHalf true, startDay defined, slot.weekday matches", () => {
@@ -217,9 +217,8 @@ describe("Term", () => {
           new Slot(1), // Monday, slot 1 (= 6:30 AM)
           true,
           [11, 14], // Monday, November 14, 2044
-        )).toStrictEqual(
-          new Date(2044, 10, 14, 6, 30),
-        );
+        ),
+      ).toStrictEqual(new Date(2044, 10, 14, 6, 30));
     });
 
     test("secondHalf true, startDay defined, slot.weekday doesn't match", () => {
@@ -228,9 +227,10 @@ describe("Term", () => {
           new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
           true,
           [11, 14],
-        )).toStrictEqual(
-          new Date(2044, 10, 15, 6, 30), // bump to next day
-        );
+        ),
+      ).toStrictEqual(
+        new Date(2044, 10, 15, 6, 30), // bump to next day
+      );
     });
   });
 
@@ -250,9 +250,7 @@ describe("Term", () => {
     test("firstHalf false, endDay undefined, slot.weekday matches", () => {
       expect(
         myTerm.endDateFor(new Slot(1), false, undefined), // NOTE: slot 1 = Monday at 6:30 AM
-      ).toStrictEqual(
-        new Date(2044, 10, 22, 6, 30, 0, 0),
-      );
+      ).toStrictEqual(new Date(2044, 10, 22, 6, 30, 0, 0));
     });
 
     test("firstHalf false, endDay undefined, slot.weekday doesn't match", () => {
@@ -266,9 +264,7 @@ describe("Term", () => {
     test("firstHalf true, endDay undefined, slot.weekday matches", () => {
       expect(
         myTerm.endDateFor(new Slot(94), true, undefined), // NOTE: slot 94 = Wednesday at 7:00 PM
-      ).toStrictEqual(
-        new Date(2044, 9, 20, 19, 0, 0, 0),
-      );
+      ).toStrictEqual(new Date(2044, 9, 20, 19, 0, 0, 0));
     });
 
     test("firstHalf true, endDay undefined, slot.weekday doesn't match", () => {
@@ -282,15 +278,11 @@ describe("Term", () => {
     test("firstHalf false, endDay defined, slot.weekday matches", () => {
       expect(
         myTerm.endDateFor(new Slot(0), false, [9, 5]), // NOTE: 2044-09-05 is a Monday
-      ).toStrictEqual(
-        new Date(2044, 8, 6, 6, 0, 0, 0),
-      );
+      ).toStrictEqual(new Date(2044, 8, 6, 6, 0, 0, 0));
     });
 
     test("firstHalf true, endDay defined, slot.weekday matches", () => {
-      expect(
-        myTerm.endDateFor(new Slot(0), true, [9, 5]),
-      ).toStrictEqual(
+      expect(myTerm.endDateFor(new Slot(0), true, [9, 5])).toStrictEqual(
         new Date(2044, 8, 6, 6, 0, 0, 0),
       );
     });
@@ -298,15 +290,11 @@ describe("Term", () => {
     test("firstHalf false, endDay defined, slot.weekday doesn't match", () => {
       expect(
         myTerm.endDateFor(new Slot(69), false, [9, 5]), // NOTE: slot 69 = Wednesday at 6:30 AM
-      ).toStrictEqual(
-        new Date(2044, 8, 1, 6, 30, 0, 0),
-      );
+      ).toStrictEqual(new Date(2044, 8, 1, 6, 30, 0, 0));
     });
 
     test("firstHalf true, endDay defined, slot.weekday doesn't match", () => {
-      expect(
-        myTerm.endDateFor(new Slot(69), true, [9, 5]),
-      ).toStrictEqual(
+      expect(myTerm.endDateFor(new Slot(69), true, [9, 5])).toStrictEqual(
         new Date(2044, 8, 1, 6, 30, 0, 0),
       );
     });
@@ -326,13 +314,11 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(40)), // NOTE: slot 40 = Tuesday at 9:00 AM
-      ).toStrictEqual(
-        [
-          new Date(2079, 7, 8, 9, 0, 0, 0),
-          new Date(1999, 11, 31, 9, 0, 0, 0),
-          new Date(2079, 7, 11, 9, 0, 0, 0),
-        ],
-      );
+      ).toStrictEqual([
+        new Date(2079, 7, 8, 9, 0, 0, 0),
+        new Date(1999, 11, 31, 9, 0, 0, 0),
+        new Date(2079, 7, 11, 9, 0, 0, 0),
+      ]);
     });
 
     test("has matching holiday, not monday schedule", () => {
@@ -343,12 +329,10 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(100)), // NOTE: slot 100 = Wednesday at 10:00 PM
-      ).toStrictEqual(
-        [
-          new Date(2079, 7, 9, 22, 0, 0, 0),
-          new Date(1999, 11, 31, 22, 0, 0, 0),
-        ],
-      );
+      ).toStrictEqual([
+        new Date(2079, 7, 9, 22, 0, 0, 0),
+        new Date(1999, 11, 31, 22, 0, 0, 0),
+      ]);
     });
 
     test("has non-matching holiday, tuesday on monday schedule", () => {
@@ -359,12 +343,10 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(41)), // NOTE: slot 41 = Tuesday at 9:30 AM
-      ).toStrictEqual(
-        [
-          new Date(1999, 11, 31, 9, 30, 0, 0),
-          new Date(2079, 7, 11, 9, 30, 0, 0),
-        ],
-      );
+      ).toStrictEqual([
+        new Date(1999, 11, 31, 9, 30, 0, 0),
+        new Date(2079, 7, 11, 9, 30, 0, 0),
+      ]);
     });
 
     test("has non-matching holiday, not monday schedule", () => {
@@ -375,9 +357,7 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(168)), // NOTE: slot 100 = Friday at 10:00 PM
-      ).toStrictEqual(
-        [new Date(1999, 11, 31, 22, 0, 0, 0)],
-      );
+      ).toStrictEqual([new Date(1999, 11, 31, 22, 0, 0, 0)]);
     });
 
     test("no holidays, tuesday for monday schedule", () => {
@@ -397,7 +377,7 @@ describe("Term", () => {
         urlName: "f79",
         mondayScheduleDate: undefined,
       });
-      expect(myTerm.exDatesFor(new Slot(34)),).toStrictEqual([
+      expect(myTerm.exDatesFor(new Slot(34))).toStrictEqual([
         new Date(1999, 11, 31, 6, 0, 0, 0),
       ]);
     });
@@ -414,9 +394,7 @@ describe("Term", () => {
         urlName: "f56",
         mondayScheduleDate: "2056-04-24",
       });
-      expect(
-        myTerm.rDateFor(new Slot(0)),
-      ).toStrictEqual(
+      expect(myTerm.rDateFor(new Slot(0))).toStrictEqual(
         new Date(2056, 3, 24, 6, 0, 0, 0),
       );
     });
@@ -539,7 +517,7 @@ describe("toFullUrl", () => {
    */
   beforeEach(() => {
     // Reset URL before each test
-    jsdom.reconfigure({ url: 'http://localhost/' });
+    jsdom.reconfigure({ url: "http://localhost/" });
   });
   test("window.location.href has parameters, urlName = latestUrlName", () => {
     const myUrl = "https://example.com/?utm_source=lorem&utm_medium=ipsum";

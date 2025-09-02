@@ -1,4 +1,4 @@
-import { expect, test, describe } from 'vitest'
+import { expect, test, describe } from "vitest";
 import { Timeslot, NonClass, Event } from "../src/lib/activity";
 import { Slot } from "../src/lib/dates";
 import {
@@ -189,9 +189,7 @@ describe("NonClass", () => {
   describe("NonClass.buttonName", () => {
     /** Partition on this.name: changed, not changed */
     test("NonClass.name not changed", () => {
-      expect(
-        new NonClass(COLOR_SCHEME_LIGHT).buttonName)
-        .toBe("New Activity");
+      expect(new NonClass(COLOR_SCHEME_LIGHT).buttonName).toBe("New Activity");
     });
 
     test("NonClass.name changed", () => {
