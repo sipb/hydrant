@@ -128,6 +128,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         },
         submitText: "Download",
       },
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       items: {
         "ui:title": "Class Override",
         "ui:field": "LayoutGridField",
