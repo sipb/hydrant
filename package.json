@@ -17,7 +17,7 @@
     "@rjsf/core": "^6.0.0-beta.13",
     "@rjsf/utils": "^6.0.0-beta.13",
     "@rjsf/validator-ajv8": "^6.0.0-beta.13",
-    "ag-grid-react": "^34.1.1",
+    "ag-grid-react": "^34.1.2",
     "html-entities": "^2.6.0",
     "ical-generator": "^9.0.0",
     "isbot": "^5.1.29",
