@@ -20,13 +20,13 @@ jobs:
     name: Black
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: psf/black@stable
   pylint:
     name: Pylint
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up Python 3.7
         uses: actions/setup-python@v5
         with:
@@ -44,7 +44,7 @@ jobs:
     name: Test for valid JSON output
     runs-on: ubuntu-22.04 #NOTE: python 3.7 is NOT supported on ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up Python 3.7
         uses: actions/setup-python@v5
         with:
