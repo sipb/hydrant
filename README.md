@@ -74,7 +74,7 @@ _I want to change..._
 
 ### Technologies
 
-Try to introduce as few technologies as possible to keep this mostly future-proof. If you introduce something, make sure it'll last a few years. Usually one of these is a sign it'll last:
+Try not to introduce new technologies that must be separately understood to keep this mostly future-proof. If you introduce something, make sure it'll last a few years. Usually one of these is a sign it'll last:
 
 - some MIT class teaches how to use it
   - e.g. web.lab teaches React, 6.102 teaches Typescript
