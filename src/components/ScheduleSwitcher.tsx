@@ -309,7 +309,7 @@ export function ScheduleSwitcher() {
           )}
           <MenuItem value="copy" onClick={onCopy}>
             <LuCopy />
-            <Box flex="1">Copy</Box>
+            <Box flex="1">Make a copy</Box>
           </MenuItem>
           {saveId && (
             <DeleteDialog
