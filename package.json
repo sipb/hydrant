@@ -42,7 +42,8 @@
     "format": "prettier --write '**/*.{ts,tsx}'",
     "ci-prettier": "prettier --check '**/*.{ts,tsx,js}'",
     "ci-eslint": "eslint .",
-    "test": "vitest",
+    "test": "vitest --run --reporter=verbose",
+    "test-watch": "vitest --reporter=verbose",
     "ci-all": "npm run typecheck && npm test && npm run ci-eslint && npm run ci-prettier"
   },
   "engines": {
