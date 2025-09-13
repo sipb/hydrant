@@ -1,6 +1,14 @@
-import { describe, test } from "vitest";
+import { expect, describe, test } from "vitest";
+import { LocalStorage } from "node-localstorage";
 
-// TODO: find out some way to mock `localStorage`
+test("node-localstorage sanity check", () => {
+  expect(LocalStorage).toBeDefined();
+  const myLocalStorage: Storage = new LocalStorage("./storage.txt");
+  expect(myLocalStorage).toBeDefined();
+  myLocalStorage._deleteLocation();
+});
+
+// TODO
 describe("Store", () => {
   test.skip("Store.toKey");
 
