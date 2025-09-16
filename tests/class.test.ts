@@ -40,7 +40,7 @@ test.each(flagNameValidity)(
   },
 );
 
-// random example of a real class!
+// random example of a real class! used as test data
 const myRawClass: RawClass = {
   number: "21H.143",
   course: "21H",
@@ -102,43 +102,191 @@ const myRawClass: RawClass = {
 describe("Class", () => {
   test("Class.constructor", () => {
     const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
-    expect(myClass.rawClass).toStrictEqual(myRawClass);
+    expect(myClass.rawClass).toBe(myRawClass); // NOTE: they should be reference-equal
     expect(myClass.backgroundColor).toEqual("#4A5568");
+    // TODO: test myClass.sections
   });
 
-  test.skip("Class.id");
+  test("Class.id", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.id).toEqual("21H.143");
+  });
 
-  test.skip("Class.name");
+  describe("Class.name", () => {
+    test("Class.name without old number", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      expect(myClass.name).toEqual(
+        "The 'Making' of Modern Europe: 1789-Present",
+      );
+    });
+
+    test.skip("Class.name with old number", () => {
+      const modifiedRawClass: RawClass = {
+        ...myRawClass,
+        oldNumber: "21H.206", // fictitious course number
+      };
+      const myClass: Class = new Class(modifiedRawClass, COLOR_SCHEME_LIGHT);
+      expect(myClass.name).toEqual(
+        "[21H.206] The 'Making' of Modern Europe: 1789-Present",
+      );
+    });
+  });
 
   test.skip("Class.buttonName");
 
-  test.skip("Class.number");
+  test("Class.number", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.number).toEqual("21H.143");
+  });
 
-  test.skip("Class.oldNumber");
+  test("Class.oldNumber", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.oldNumber).toEqual("");
+  });
 
-  test.skip("Class.course");
+  test("Class.course", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.course).toEqual("21H");
+  });
 
-  test.skip("Class.units");
+  test("Class.units", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.units).toEqual([3, 0, 9]);
+  });
 
-  test.skip("Class.isVariableUnits");
+  test("Class.isVariableUnits", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.isVariableUnits).toEqual(false);
+  });
 
-  test.skip("Class.totalUnits");
+  test("Class.totalUnits", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.totalUnits).toEqual(12);
+  });
 
-  test.skip("Class.hours");
+  test("Class.hours", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.hours).toEqual(5.9);
+  });
 
-  test.skip("Class.half");
+  describe("Class.half", () => {
+    // Partition by value
+    test("Class.half = undefined", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      expect(myClass.half).toEqual(undefined);
+    });
 
-  test.skip("Class.new");
+    test("Class.half = 1", () => {
+      const modifiedRawClass: RawClass = { ...myRawClass, half: 1 };
+      const myClass: Class = new Class(modifiedRawClass, COLOR_SCHEME_LIGHT);
+      expect(myClass.half).toEqual(1);
+    });
+
+    test("Class.half = 2", () => {
+      const modifiedRawClass: RawClass = { ...myRawClass, half: 2 };
+      const myClass: Class = new Class(modifiedRawClass, COLOR_SCHEME_LIGHT);
+      expect(myClass.half).toEqual(2);
+    });
+  });
+
+  test("Class.new", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.new).toEqual(false);
+  });
 
   test.skip("Class.events");
 
-  test.skip("Class.flags");
+  test("Class.flags", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    const expectedFlags: Flags = {
+      nonext: false,
+      under: true,
+      grad: false,
+      fall: true,
+      iap: false,
+      spring: false,
+      summer: false,
+      repeat: false,
+      rest: false,
+      Lab: false,
+      PartLab: false,
+      hass: true,
+      hassH: true,
+      hassA: false,
+      hassS: false,
+      hassE: false,
+      cih: false,
+      cihw: false,
+      notcih: true,
+      cim: false,
+      final: false,
+      nofinal: true,
+      nopreq: true,
+      le9units: false,
+      half: false,
+      limited: false,
+    };
+    expect(myClass.flags).toStrictEqual(expectedFlags);
+  });
 
-  test.skip("Class.cim");
+  test("Class.cim", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.cim).toStrictEqual([]);
+  });
 
-  test.skip("Class.evals");
+  describe("Class.evals", () => {
+    // type declaration for type safety; could be moved into the main code instead
+    type Evals = InstanceType<typeof Class>["evals"];
 
-  test.skip("Class.related");
+    // this constant could also be moved into the main code too
+    const naEvals: Evals = {
+      rating: "N/A",
+      hours: "N/A",
+      people: "N/A",
+    };
+
+    test("rated and not new", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      const expectedEvals: Evals = {
+        rating: "6.9/7.0",
+        hours: "5.9",
+        people: "9.5",
+      };
+      expect(myClass.evals).toStrictEqual(expectedEvals);
+    });
+
+    test.skip("rated and new", () => {
+      const modifiedRawClass: RawClass = { ...myRawClass, new: true };
+      const myClass: Class = new Class(modifiedRawClass, COLOR_SCHEME_LIGHT);
+      expect(myClass.evals).toStrictEqual(naEvals);
+    });
+
+    test.skip("unrated and not new", () => {
+      const modifiedRawClass: RawClass = { ...myRawClass, rating: 0 };
+      const myClass: Class = new Class(modifiedRawClass, COLOR_SCHEME_LIGHT);
+      expect(myClass.evals).toStrictEqual(naEvals);
+    });
+
+    test.skip("unrated and new", () => {
+      const modifiedRawClass: RawClass = {
+        ...myRawClass,
+        new: true,
+        rating: 0,
+      };
+      const myClass: Class = new Class(modifiedRawClass, COLOR_SCHEME_LIGHT);
+      expect(myClass.evals).toStrictEqual(naEvals);
+    });
+  });
+
+  test("Class.related", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    const myRelated: InstanceType<typeof Class>["related"] = {
+      prereq: "None",
+      same: "21G.056",
+      meets: "21G.356",
+    };
+    expect(myClass.related).toStrictEqual(myRelated);
+  });
 
   test.skip("Class.warnings");
 
