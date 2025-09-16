@@ -1,5 +1,6 @@
 import { afterEach, expect, describe, test } from "vitest";
 import { Store } from "../src/lib/store.js";
+import { Preferences } from "../src/lib/schema.js";
 
 // TODO: write these tests
 // note that jsdom supports localStorage since v11.12.0; c.f. github.com/jsdom/jsdom/blob/main/Changelog.md
@@ -34,11 +35,20 @@ describe("Store", () => {
     expect(localStorage.length).toStrictEqual(0);
   });
 
-  test.skip("Store.get");
+  test("Store.set and Store.get", () => {
+    myStore.set<string>("alpha", []);
+    expect(myStore.get<string>("alpha")).toStrictEqual([]);
+  });
 
-  test.skip("Store.globalGet");
-
-  test.skip("Store.set");
-
-  test.skip("Store.globalSet");
+  test("Store.globalSet and Store.globalGet", () => {
+    const myPreferences: Preferences = {
+      colorScheme: null,
+      roundedCorners: false,
+      showEventTimes: false,
+      defaultScheduleId: null,
+      showFeedback: false,
+    };
+    myStore.globalSet("preferences", myPreferences);
+    expect(myStore.globalGet("preferences")).toStrictEqual(myPreferences);
+  });
 });
