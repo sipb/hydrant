@@ -1,5 +1,7 @@
 import { expect, test } from "vitest";
-import { Flags, getFlagImg } from "../src/lib/class.js";
+import { Flags, getFlagImg, Class } from "../src/lib/class.js";
+import { RawClass } from "../src/lib/rawClass.js";
+import { COLOR_SCHEME_LIGHT } from "../src/lib/colors.js";
 
 // auxiliary object for testing getFlagImg; change as needed
 const flagNameValidity: Array<[keyof Flags, boolean]> = [
@@ -38,9 +40,71 @@ test.each(flagNameValidity)(
   },
 );
 
-// TODO: figure out how to construct these objects to begin with
+// random example of a real class!
+const myRawClass: RawClass = {
+  number: "21H.143",
+  course: "21H",
+  subject: "143",
+  sectionKinds: ["lecture"],
+  lectureRawSections: ["56-191/MW/0/11-12.30"],
+  lectureSections: [
+    [
+      [
+        [10, 3],
+        [78, 3],
+      ],
+      "56-191",
+    ],
+  ],
+  tba: false,
+  hassH: true,
+  hassA: false,
+  hassS: false,
+  hassE: false,
+  rest: false,
+  lab: false,
+  partLab: false,
+  lectureUnits: 3,
+  labUnits: 0,
+  preparationUnits: 9,
+  level: "U",
+  isVariableUnits: false,
+  same: "21G.056",
+  meets: "21G.356",
+  terms: ["FA"],
+  prereqs: "None",
+  description:
+    "Provides an overview of European history from 1789 to the present. Explores how the ideas of 'European' and 'modern' have been defined over time. Explores major events and the evolution of major tensions and issues that consumed Europe and Europeans through the period, including questions of identity, inclusion/exclusion, religion, and equality. Places major emphasis on the fiction, visual culture, and films of the century as the products and evidence of political, social and cultural change. Taught in English.",
+  name: "The 'Making' of Modern Europe: 1789-Present",
+  inCharge: "E. Kempf",
+  virtualStatus: false,
+  rating: 6.9,
+  hours: 5.9,
+  size: 9.5,
+  nonext: false,
+  repeat: false,
+  url: "",
+  final: false,
+  half: false,
+  limited: false,
+  oldNumber: "",
+  recitationSections: [],
+  labSections: [],
+  designSections: [],
+  recitationRawSections: [],
+  labRawSections: [],
+  designRawSections: [],
+  cih: false,
+  cihw: false,
+  new: false,
+};
+
 describe("Class", () => {
-  test.skip("Class.constructor");
+  test("Class.constructor", () => {
+    const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+    expect(myClass.rawClass).toStrictEqual(myRawClass);
+    expect(myClass.backgroundColor).toEqual("#4A5568");
+  });
 
   test.skip("Class.id");
 
