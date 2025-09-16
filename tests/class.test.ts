@@ -33,12 +33,14 @@ const flagNameValidity: Array<[keyof Flags, boolean]> = [
   ["under", true],
 ];
 
-test.each(flagNameValidity)(
-  'getFlagImg(\"%s\")',
-  (flagName: keyof Flags, validity: boolean) => {
-    expect.soft(Boolean(getFlagImg(flagName))).toStrictEqual(validity);
-  },
-);
+describe("getFlagImg", () => {
+  test.each(flagNameValidity)(
+    'getFlagImg(\"%s\")',
+    (flagName: keyof Flags, validity: boolean) => {
+      expect.soft(Boolean(getFlagImg(flagName))).toStrictEqual(validity);
+    },
+  );
+});
 
 // random example of a real class! used as test data
 const myRawClass: RawClass = {
