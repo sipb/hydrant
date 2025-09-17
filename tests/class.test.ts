@@ -257,19 +257,19 @@ describe("Class", () => {
       expect(myClass.evals).toStrictEqual(expectedEvals);
     });
 
-    test.skip("rated and new", () => {
+    test("rated and new", () => {
       const modifiedRawClass: RawClass = { ...myRawClass, new: true };
       const myClass: Class = new Class(modifiedRawClass, COLOR_SCHEME_LIGHT);
       expect(myClass.evals).toStrictEqual(naEvals);
     });
 
-    test.skip("unrated and not new", () => {
+    test("unrated and not new", () => {
       const modifiedRawClass: RawClass = { ...myRawClass, rating: 0 };
       const myClass: Class = new Class(modifiedRawClass, COLOR_SCHEME_LIGHT);
       expect(myClass.evals).toStrictEqual(naEvals);
     });
 
-    test.skip("unrated and new", () => {
+    test("unrated and new", () => {
       const modifiedRawClass: RawClass = {
         ...myRawClass,
         new: true,
