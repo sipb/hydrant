@@ -290,25 +290,93 @@ describe("Class", () => {
     expect(myClass.related).toStrictEqual(myRelated);
   });
 
-  test.skip("Class.warnings");
+  describe("Class.warnings", () => {
+    // Test each kind of warning individually
+    test.skip("no warnings");
 
-  test.skip("Class.description");
+    test.skip("TBA warning");
 
-  test.skip("Class.deflate");
+    test.skip("No sections warning");
 
-  test.skip("Class.inflate");
+    test.skip("Variable units and hours = 0 warning");
+
+    test.skip("Variable units and hours != 0 warning");
+
+    test.skip("No evaluations warning");
+  });
+
+  describe("Class.description", () => {
+    // Test each kind of extra URL individually
+    test.skip("Fewest extra URLs");
+
+    test.skip("Has oldNumber");
+
+    test.skip("course 6");
+
+    test.skip("course 18");
+  });
+
+  describe("Class.deflate", () => {
+    /**
+     * Partition:
+     * - has unlocked sections, doesn't have unlocked sections
+     * - has manual color, no manual color
+     * - has section room overrides, doesn't have section room overrides
+     */
+
+    test.skip(
+      "no unlocked sections, no manual color, no section room overrides",
+    );
+
+    test.skip("has unlocked sections");
+
+    test.skip("has manual color");
+
+    test.skip("has section room override");
+  });
+
+  describe("Class.inflate", () => {
+    test.skip("Parsed is string");
+
+    // TODO: partition this further
+    test.skip("Parsed is array");
+  });
 });
 
 describe("Sections", () => {
   test.skip("Sections.constructor");
 
-  test.skip("Sections.shortName");
+  describe("Sections.shortName", () => {
+    // One test per section type
+    test.skip("SectionKind.LECTURE");
 
-  test.skip("Sections.name");
+    test.skip("SectionKind.RECITATION");
+
+    test.skip("SectionKind.LAB");
+
+    test.skip("SectionKind.DESIGN");
+  });
+
+  describe("Sections.name", () => {
+    // as before, one test per section type
+    test.skip("SectionKind.LECTURE");
+
+    test.skip("SectionKind.RECITATION");
+
+    test.skip("SectionKind.LAB");
+
+    test.skip("SectionKind.DESIGN");
+  });
 
   test.skip("Sections.event");
 
-  test.skip("Sections.lockSection");
+  describe("Sections.lockSection", () => {
+    test.skip("SectionLockOption is Auto");
+
+    test.skip("SectionLockOption is None");
+
+    test.skip("SectionLockOption instance of Section");
+  });
 });
 
 describe("Section", () => {
