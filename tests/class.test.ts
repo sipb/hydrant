@@ -382,7 +382,15 @@ describe("Sections", () => {
 describe("Section", () => {
   test.skip("Section.constructor");
 
-  test.skip("Section.parsedTime");
+  describe("Section.parsedTime", () => {
+    test.skip("isEvening true");
 
-  test.skip("Section.countConflicts");
+    test.skip("isEvening false");
+  });
+
+  describe("Section.countConflicts", () => {
+    test.skip("no conflicts");
+
+    test.skip("has conflicts");
+  });
 });
