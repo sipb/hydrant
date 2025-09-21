@@ -307,13 +307,125 @@ describe("Class", () => {
 
   describe("Class.description", () => {
     // Test each kind of extra URL individually
-    test.skip("Fewest extra URLs");
 
-    test.skip("Has oldNumber");
+    // some variable declaration to make the testcases DRYer
+    type ExtraUrlList = { label: string; url: string }[];
+    type Description = {
+      description: string;
+      inCharge: string;
+      extraUrls: ExtraUrlList;
+    };
+    const alwaysExpectedUrls: ExtraUrlList = [
+      {
+        label: "Course Catalog",
+        url: `http://student.mit.edu/catalog/search.cgi?search=21H.143`,
+      },
+      {
+        label: "Course Data on OpenGrades",
+        url: `https://opengrades.mit.edu/classes/aggregate/21H.143?utm_source=hydrant`,
+      },
+      {
+        label: "Class Evaluations",
+        url: `https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode=21H.143`,
+      },
+    ];
 
-    test.skip("course 6");
+    test("Fewest extra URLs", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      const myDescription: Description = myClass.description;
+      expect(myDescription.description).toEqual(myRawClass.description);
+      expect(myDescription.inCharge).toEqual("E. Kempf");
+      expect(myDescription.extraUrls).toStrictEqual(alwaysExpectedUrls);
+    });
 
-    test.skip("course 18");
+    test("Has oldNumber", () => {
+      const myModifiedRawClass: RawClass = {
+        ...myRawClass,
+        oldNumber: "21H.688", // fictitious old number
+      };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const myDescription: Description = myClass.description;
+      expect(myDescription.description).toEqual(myRawClass.description);
+      expect(myDescription.inCharge).toEqual("E. Kempf");
+      const expectedUrls: ExtraUrlList = [
+        ...alwaysExpectedUrls.slice(0, -1), // remember to slice the last one off!
+        {
+          label: "Class Evaluations (for 21H.143)",
+          url: `https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode=21H.143`,
+        },
+        {
+          label: "Class Evaluations (for 21H.688)",
+          url: `https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode=21H.688`,
+        },
+      ];
+      expect(myDescription.extraUrls).toStrictEqual(expectedUrls);
+    });
+
+    test("course 6 and no oldNumber", () => {
+      const myModifiedRawClass: RawClass = {
+        ...myRawClass,
+        course: "6",
+      };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const myDescription: Description = myClass.description;
+      expect(myDescription.description).toEqual(myRawClass.description);
+      expect(myDescription.inCharge).toEqual("E. Kempf");
+      const expectedUrls: ExtraUrlList = [
+        ...alwaysExpectedUrls,
+        {
+          label: "HKN Underground Guide",
+          url: `https://underground-guide.mit.edu/search?q=`, // NOTE: this will occur because oldNumber already exists as an empty string
+        },
+      ];
+      expect(myDescription.extraUrls).toStrictEqual(expectedUrls);
+    });
+
+    test("course 6 and oldNumber", () => {
+      const myModifiedRawClass: RawClass = {
+        ...myRawClass,
+        course: "6",
+        oldNumber: "6.2384483", // fictitious course number
+      };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const myDescription: Description = myClass.description;
+      expect(myDescription.description).toEqual(myRawClass.description);
+      expect(myDescription.inCharge).toEqual("E. Kempf");
+      const expectedUrls: ExtraUrlList = [
+        ...alwaysExpectedUrls.slice(0, -1),
+        {
+          label: "Class Evaluations (for 21H.143)",
+          url: `https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode=21H.143`,
+        },
+        {
+          label: "Class Evaluations (for 6.2384483)",
+          url: `https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode=6.2384483`,
+        },
+        {
+          label: "HKN Underground Guide",
+          url: `https://underground-guide.mit.edu/search?q=6.2384483`,
+        },
+      ];
+      expect(myDescription.extraUrls).toStrictEqual(expectedUrls);
+    });
+
+    test("course 18", () => {
+      const myModifiedRawClass: RawClass = {
+        ...myRawClass,
+        course: "18",
+      };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const myDescription: Description = myClass.description;
+      expect(myDescription.description).toEqual(myRawClass.description);
+      expect(myDescription.inCharge).toEqual("E. Kempf");
+      const expectedUrls: ExtraUrlList = [
+        ...alwaysExpectedUrls,
+        {
+          label: "Course 18 Underground Guide",
+          url: `https://mathguide.mit.edu/21H.143`,
+        },
+      ];
+      expect(myDescription.extraUrls).toStrictEqual(expectedUrls);
+    });
   });
 
   describe("Class.deflate", () => {
