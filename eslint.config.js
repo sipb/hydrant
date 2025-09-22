@@ -24,7 +24,7 @@ export default defineConfig(
       reactRefresh.configs.vite,
       eslintConfigPrettier,
     ],
-    files: ["src/**"],
+    files: ["src/**", "tests/**"],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
@@ -52,7 +52,7 @@ export default defineConfig(
     },
   },
   {
-    files: ["test/**"], // or any other pattern
+    files: ["tests/**"], // or any other pattern
     plugins: {
       vitest,
     },
