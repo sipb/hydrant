@@ -134,8 +134,6 @@ describe("Class", () => {
     });
   });
 
-  test.skip("Class.buttonName");
-
   test("Class.number", () => {
     const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
     expect(myClass.number).toEqual("21H.143");
@@ -290,7 +288,7 @@ describe("Class", () => {
     expect(myClass.related).toStrictEqual(myRelated);
   });
 
-  describe("Class.warnings", () => {
+  describe("Class.warnings and Class.buttonName", () => {
     // Some type declarations to make the code cleaner
     type Warnings = {
       suffix: string;
@@ -300,8 +298,8 @@ describe("Class", () => {
     type PartialRawClass = Partial<RawClass>;
 
     // Test each kind of warning individually; add more as desired
-    const myTestData: Array<[string, PartialRawClass, Warnings]> = [
-      ["no warnings", {}, { suffix: "", messages: [] }],
+    const myTestData: Array<[string, PartialRawClass, Warnings, string]> = [
+      ["no warnings", {}, { suffix: "", messages: [] }, "21H.143"],
       [
         "TBA warning",
         { tba: true },
@@ -311,6 +309,7 @@ describe("Class", () => {
             "+ Class has at least one section yet to be scheduled—check course catalog.",
           ],
         },
+        "21H.143+",
       ],
       [
         "No sections warning",
@@ -321,6 +320,7 @@ describe("Class", () => {
             "& Class schedule is unknown—check course catalog or department website.",
           ],
         },
+        "21H.143&",
       ],
       [
         "Variable units and hours = 0 warning",
@@ -331,6 +331,7 @@ describe("Class", () => {
             "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours.",
           ],
         },
+        "21H.143^",
       ],
       [
         "Variable units and hours != 0 warning",
@@ -341,6 +342,7 @@ describe("Class", () => {
             "# This class has an arranged number of units and its units were not counted in the total.",
           ],
         },
+        "21H.143#",
       ],
       [
         "No evaluations warning",
@@ -351,6 +353,7 @@ describe("Class", () => {
             "* Class does not have evaluations, so its hours were set to units.",
           ],
         },
+        "21H.143*",
       ],
     ];
 
@@ -360,6 +363,7 @@ describe("Class", () => {
         _: string,
         modification: PartialRawClass,
         expectedWarnings: Warnings,
+        expectedButtonName: string,
       ) => {
         const myModifiedRawClass: RawClass = { ...myRawClass, ...modification };
         const myClass: Class = new Class(
@@ -367,6 +371,7 @@ describe("Class", () => {
           COLOR_SCHEME_LIGHT,
         );
         expect(myClass.warnings).toStrictEqual(expectedWarnings);
+        expect(myClass.buttonName).toStrictEqual(expectedButtonName);
       },
     );
   });
