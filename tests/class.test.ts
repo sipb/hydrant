@@ -122,7 +122,7 @@ describe("Class", () => {
       );
     });
 
-    test.skip("Class.name with old number", () => {
+    test("Class.name with old number", () => {
       const modifiedRawClass: RawClass = {
         ...myRawClass,
         oldNumber: "21H.206", // fictitious course number
