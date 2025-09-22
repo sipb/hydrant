@@ -1,13 +1,14 @@
-import type { IconButtonProps, StackProps } from "@chakra-ui/react";
 import {
   ColorPicker as ChakraColorPicker,
   For,
   IconButton,
+  IconButtonProps,
+  parseColor,
   Portal,
   Span,
-  Stack,
-  Text,
-  VStack,
+  Stack, StackProps, Text,
+  useColorPickerContext,
+  VStack
 } from "@chakra-ui/react";
 import type { RefObject } from "react";
 import { forwardRef } from "react";
@@ -35,7 +36,32 @@ export const ColorPickerInput = forwardRef<
   HTMLInputElement,
   Omit<ChakraColorPicker.ChannelInputProps, "channel">
 >(function ColorHexInput(props, ref) {
-  return <ChakraColorPicker.ChannelInput channel="hex" ref={ref} {...props} />;
+  const { setValue } = useColorPickerContext();
+
+  return <ChakraColorPicker.ChannelInput 
+    onChange={(e) => {
+      const value = e.target.value;
+      if (value.length === 6 || (value.length === 7 && value.startsWith("#"))) {
+        // parseColor will throw if the value is not a valid hex color
+        try {
+          const caretPositionBefore = e.target.selectionStart;
+          if(value.startsWith("#")) {
+            setValue(parseColor(value));
+          } else {
+            setValue(parseColor(`#${value}`));
+          }
+          setTimeout(() => {
+            e.target.setSelectionRange(caretPositionBefore, caretPositionBefore);
+          }, 0);
+        } catch {
+          return
+        }
+      }
+    }}
+    channel="hex" 
+    ref={ref} 
+    {...props}
+  />;
 });
 
 interface ColorPickerContentProps extends ChakraColorPicker.ContentProps {

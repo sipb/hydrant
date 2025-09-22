@@ -1,19 +1,32 @@
 import {
-  Group,
-  createListCollection,
-  Flex,
-  Heading,
-  Input,
-  Text,
-  parseColor,
-  HStack,
-  Stack,
   Button,
   ButtonGroup,
+  Flex,
+  Group,
+  HStack,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  createListCollection,
+  parseColor,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, FormEvent } from "react";
 import { useContext, useLayoutEffect, useState } from "react";
 
+import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
+import { Checkbox } from "./ui/checkbox";
+import {
+  ColorPickerArea,
+  ColorPickerChannelSlider,
+  ColorPickerContent,
+  ColorPickerControl,
+  ColorPickerEyeDropper,
+  ColorPickerInput,
+  ColorPickerRoot,
+  ColorPickerTrigger,
+} from "./ui/color-picker";
+import { Field } from "./ui/field";
 import { Radio, RadioGroup } from "./ui/radio";
 import {
   SelectContent,
@@ -22,25 +35,12 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "./ui/select";
-import { Field } from "./ui/field";
-import { Checkbox } from "./ui/checkbox";
-import {
-  ColorPickerArea,
-  ColorPickerContent,
-  ColorPickerControl,
-  ColorPickerEyeDropper,
-  ColorPickerChannelSlider,
-  ColorPickerInput,
-  ColorPickerRoot,
-  ColorPickerTrigger,
-} from "./ui/color-picker";
-import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 
 import type { Activity, NonClass } from "../lib/activity";
 import { Timeslot } from "../lib/activity";
 import type { Class, SectionLockOption, Sections } from "../lib/class";
 import { LockOption } from "../lib/class";
-import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
+import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
 /**
