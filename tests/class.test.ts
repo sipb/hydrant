@@ -1,10 +1,10 @@
 import { expect, test } from "vitest";
-import { Flags, getFlagImg, Class } from "../src/lib/class.js";
-import { RawClass } from "../src/lib/rawClass.js";
+import { type Flags, getFlagImg, Class } from "../src/lib/class.js";
+import type { RawClass } from "../src/lib/rawClass.js";
 import { COLOR_SCHEME_LIGHT } from "../src/lib/colors.js";
 
 // auxiliary object for testing getFlagImg; change as needed
-const flagNameValidity: Array<[keyof Flags, boolean]> = [
+const flagNameValidity: [keyof Flags, boolean][] = [
   ["cim", false],
   ["final", false],
   ["half", false],
@@ -35,7 +35,7 @@ const flagNameValidity: Array<[keyof Flags, boolean]> = [
 
 describe("getFlagImg", () => {
   test.each(flagNameValidity)(
-    'getFlagImg(\"%s\")',
+    'getFlagImg("%s")',
     (flagName: keyof Flags, validity: boolean) => {
       expect.soft(Boolean(getFlagImg(flagName))).toStrictEqual(validity);
     },
@@ -290,15 +290,15 @@ describe("Class", () => {
 
   describe("Class.warnings and Class.buttonName", () => {
     // Some type declarations to make the code cleaner
-    type Warnings = {
+    interface Warnings {
       suffix: string;
       messages: string[];
-    };
+    }
 
     type PartialRawClass = Partial<RawClass>;
 
     // Test each kind of warning individually; add more as desired
-    const myTestData: Array<[string, PartialRawClass, Warnings, string]> = [
+    const myTestData: [string, PartialRawClass, Warnings, string][] = [
       ["no warnings", {}, { suffix: "", messages: [] }, "21H.143"],
       [
         "TBA warning",
@@ -381,11 +381,11 @@ describe("Class", () => {
 
     // some variable declaration to make the testcases DRYer
     type ExtraUrlList = { label: string; url: string }[];
-    type Description = {
+    interface Description {
       description: string;
       inCharge: string;
       extraUrls: ExtraUrlList;
-    };
+    }
     const alwaysExpectedUrls: ExtraUrlList = [
       {
         label: "Course Catalog",
