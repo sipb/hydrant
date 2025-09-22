@@ -48,7 +48,7 @@ describe("State", () => {
   test.skip("get State.showFeedback");
 
   test.skip("set State.showFeedback");
-  
+
   test.skip("State.reset");
 
   test.skip("State.deflate");
