@@ -536,14 +536,14 @@ describe("toFullUrl", () => {
     expect(toFullUrl("lorem", "lorem")).toBe("https://example.com/");
   });
 
-  test("window.location.href has parameters, urlName = latestUrlName", () => {
+  test("window.location.href has parameters, urlName !== latestUrlName", () => {
     const myUrl = "https://example.com/?utm_source=lorem&utm_medium=ipsum";
     jsdom.reconfigure({ url: myUrl });
     expect(window.location.href).toBe(myUrl);
     expect(toFullUrl("lorem", "ipsum")).toBe("https://example.com/?t=lorem");
   });
 
-  test("window.location.href has no parameters, urlName = latestUrlName", () => {
+  test("window.location.href has no parameters, urlName !== latestUrlName", () => {
     const myUrl = "https://example.com/";
     jsdom.reconfigure({ url: myUrl });
     expect(window.location.href).toBe(myUrl);
