@@ -7,6 +7,7 @@ import {
   Slot,
   Term,
 } from "../src/lib/dates";
+import { JSDOM } from "jsdom";
 
 test("parseUrlName", () => {
   expect(parseUrlName("f22")).toStrictEqual({
@@ -515,6 +516,8 @@ describe("toFullUrl", () => {
    * - window.location.href: has parameters, has no parameters
    * - urlName, latestUrlName: same, different
    */
+
+  assert(jsdom instanceof JSDOM); // otherwise eslint doesn't know what kind of thing `jsdom` is
   beforeEach(() => {
     // Reset URL before each test
     jsdom.reconfigure({ url: "http://localhost/" });
