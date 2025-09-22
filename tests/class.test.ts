@@ -292,17 +292,84 @@ describe("Class", () => {
 
   describe("Class.warnings", () => {
     // Test each kind of warning individually
-    test.skip("no warnings");
 
-    test.skip("TBA warning");
+    type Warnings = {
+      suffix: string;
+      messages: string[];
+    };
 
-    test.skip("No sections warning");
+    test("no warnings", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      const expectedWarnings: Warnings = { suffix: "", messages: [] };
+      expect(myClass.warnings).toStrictEqual(expectedWarnings);
+    });
 
-    test.skip("Variable units and hours = 0 warning");
+    test("TBA warning", () => {
+      const myModifiedRawClass: RawClass = { ...myRawClass, tba: true };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const expectedWarnings: Warnings = {
+        suffix: "+",
+        messages: [
+          "+ Class has at least one section yet to be scheduled—check course catalog.",
+        ],
+      };
+      expect(myClass.warnings).toStrictEqual(expectedWarnings);
+    });
 
-    test.skip("Variable units and hours != 0 warning");
+    test("No sections warning", () => {
+      const myModifiedRawClass: RawClass = { ...myRawClass, sectionKinds: [] };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const expectedWarnings: Warnings = {
+        suffix: "&",
+        messages: [
+          "& Class schedule is unknown—check course catalog or department website.",
+        ],
+      };
+      expect(myClass.warnings).toStrictEqual(expectedWarnings);
+    });
 
-    test.skip("No evaluations warning");
+    test("Variable units and hours = 0 warning", () => {
+      const myModifiedRawClass: RawClass = {
+        ...myRawClass,
+        isVariableUnits: true,
+        hours: 0,
+      };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const expectedWarnings: Warnings = {
+        suffix: "^",
+        messages: [
+          "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours.",
+        ],
+      };
+      expect(myClass.warnings).toStrictEqual(expectedWarnings);
+    });
+
+    test("Variable units and hours != 0 warning", () => {
+      const myModifiedRawClass: RawClass = {
+        ...myRawClass,
+        isVariableUnits: true,
+      };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const expectedWarnings: Warnings = {
+        suffix: "#",
+        messages: [
+          "# This class has an arranged number of units and its units were not counted in the total.",
+        ],
+      };
+      expect(myClass.warnings).toStrictEqual(expectedWarnings);
+    });
+
+    test("No evaluations warning", () => {
+      const myModifiedRawClass: RawClass = { ...myRawClass, hours: 0 };
+      const myClass: Class = new Class(myModifiedRawClass, COLOR_SCHEME_LIGHT);
+      const expectedWarnings: Warnings = {
+        suffix: "*",
+        messages: [
+          "* Class does not have evaluations, so its hours were set to units.",
+        ],
+      };
+      expect(myClass.warnings).toStrictEqual(expectedWarnings);
+    });
   });
 
   describe("Class.description", () => {
