@@ -6,9 +6,11 @@ import {
   parseColor,
   Portal,
   Span,
-  Stack, StackProps, Text,
+  Stack,
+  StackProps,
+  Text,
   useColorPickerContext,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import type { RefObject } from "react";
 import { forwardRef } from "react";
@@ -38,30 +40,38 @@ export const ColorPickerInput = forwardRef<
 >(function ColorHexInput(props, ref) {
   const { setValue } = useColorPickerContext();
 
-  return <ChakraColorPicker.ChannelInput 
-    onChange={(e) => {
-      const value = e.target.value;
-      if (value.length === 6 || (value.length === 7 && value.startsWith("#"))) {
-        // parseColor will throw if the value is not a valid hex color
-        try {
-          const caretPositionBefore = e.target.selectionStart;
-          if(value.startsWith("#")) {
-            setValue(parseColor(value));
-          } else {
-            setValue(parseColor(`#${value}`));
+  return (
+    <ChakraColorPicker.ChannelInput
+      onChange={(e) => {
+        const value = e.target.value;
+        if (
+          value.length === 6 ||
+          (value.length === 7 && value.startsWith("#"))
+        ) {
+          // parseColor will throw if the value is not a valid hex color
+          try {
+            const caretPositionBefore = e.target.selectionStart;
+            if (value.startsWith("#")) {
+              setValue(parseColor(value));
+            } else {
+              setValue(parseColor(`#${value}`));
+            }
+            setTimeout(() => {
+              e.target.setSelectionRange(
+                caretPositionBefore,
+                caretPositionBefore,
+              );
+            }, 0);
+          } catch {
+            return;
           }
-          setTimeout(() => {
-            e.target.setSelectionRange(caretPositionBefore, caretPositionBefore);
-          }, 0);
-        } catch {
-          return
         }
-      }
-    }}
-    channel="hex" 
-    ref={ref} 
-    {...props}
-  />;
+      }}
+      channel="hex"
+      ref={ref}
+      {...props}
+    />
+  );
 });
 
 interface ColorPickerContentProps extends ChakraColorPicker.ContentProps {
