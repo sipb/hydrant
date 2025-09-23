@@ -5,12 +5,16 @@ on:
     branches: [main]
     paths-ignore:
       - "**/*.{ts,tsx,js,md,txt,toml}"
-      - "{public,scrapers}/**/*.json"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - "{package,package-lock,tsconfig}.json"
   pull_request:
     branches: [main]
     paths-ignore:
       - "**/*.{ts,tsx,js,md,txt,toml}"
-      - "{public,scrapers}/**/*.json"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - "{package,package-lock,tsconfig}.json"
 
 env:
   python-version: 3.7

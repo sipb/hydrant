@@ -5,12 +5,16 @@ on:
     branches: [main]
     paths-ignore:
       - "**/*.{py,md,txt,toml}"
-      - "{public,scrapers}/**/*.json"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - "pylintrc"
   pull_request:
     branches: [main]
     paths-ignore:
       - "**/*.{py,md,txt,toml}"
-      - "{public,scrapers}/**/*.json"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - "pylintrc"
 
 env:
   node-version: 20.x
