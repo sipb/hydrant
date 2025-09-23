@@ -8,6 +8,7 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - "{package,package-lock,tsconfig}.json"
+      - "scrapers/overrides.toml.d/override-schema.json"
   pull_request:
     branches: [main]
     paths-ignore:
@@ -15,6 +16,7 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - "{package,package-lock,tsconfig}.json"
+      - "scrapers/overrides.toml.d/override-schema.json"
 
 env:
   python-version: 3.7

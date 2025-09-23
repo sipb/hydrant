@@ -34,6 +34,8 @@ public/m25.json
 
 # python
 __pycache__
+.mypy_cache
+scrapers/.mypy_cache
 
 # deploy script
 deploy.sh

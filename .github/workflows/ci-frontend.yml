@@ -8,6 +8,7 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - "pylintrc"
+      - "scrapers/overrides.toml.d/override-schema.json"
   pull_request:
     branches: [main]
     paths-ignore:
@@ -15,6 +16,7 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - "pylintrc"
+      - "scrapers/overrides.toml.d/override-schema.json"
 
 env:
   node-version: 20.x
