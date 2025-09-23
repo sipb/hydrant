@@ -9,6 +9,7 @@ on:
       - ".editorconfig"
       - "pylintrc"
       - ".gitignore"
+      - ".prettierignore"
       - "scrapers/overrides.toml.d/override-schema.json"
   pull_request:
     branches: [main]
@@ -18,6 +19,7 @@ on:
       - ".editorconfig"
       - "pylintrc"
       - ".gitignore"
+      - ".prettierignore"
       - "scrapers/overrides.toml.d/override-schema.json"
 
 env:
