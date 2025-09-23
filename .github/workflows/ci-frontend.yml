@@ -8,6 +8,7 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - "pylintrc"
+      - ".gitignore"
       - "scrapers/overrides.toml.d/override-schema.json"
   pull_request:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - "pylintrc"
+      - ".gitignore"
       - "scrapers/overrides.toml.d/override-schema.json"
 
 env:

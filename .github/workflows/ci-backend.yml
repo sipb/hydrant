@@ -7,6 +7,7 @@ on:
       - "**/*.{ts,tsx,js,md,txt,toml}"
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
+      - ".gitignore"
       - "{package,package-lock,tsconfig}.json"
       - "scrapers/overrides.toml.d/override-schema.json"
   pull_request:
@@ -15,6 +16,7 @@ on:
       - "**/*.{ts,tsx,js,md,txt,toml}"
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
+      - ".gitignore"
       - "{package,package-lock,tsconfig}.json"
       - "scrapers/overrides.toml.d/override-schema.json"
 
