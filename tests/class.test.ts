@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { type Flags, getFlagImg, Class } from "../src/lib/class.js";
+import { type Flags, getFlagImg, Class, Sections } from "../src/lib/class.js";
 import type { RawClass } from "../src/lib/rawClass.js";
 import { COLOR_SCHEME_LIGHT } from "../src/lib/colors.js";
 
@@ -507,15 +507,38 @@ describe("Class", () => {
      * - has section room overrides, doesn't have section room overrides
      */
 
-    test.skip(
-      "no unlocked sections, no manual color, no section room overrides",
-    );
+    type Deflated = (string | number | string[])[];
 
-    test.skip("has unlocked sections");
+    test("no unlocked sections, no manual color, no section room overrides", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      const expectedDeflated: Deflated = ["21H.143", [""]];
+      expect(myClass.deflate()).toStrictEqual(expectedDeflated);
+    });
 
-    test.skip("has manual color");
+    test("has unlocked sections", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      const mySections: Sections | undefined = myClass.sections.at(0);
+      assert(mySections instanceof Sections);
+      mySections.locked = true;
+      const expectedDeflated: Deflated = ["21H.143", [""], -1];
+      expect(myClass.deflate()).toStrictEqual(expectedDeflated);
+    });
 
-    test.skip("has section room override");
+    test("has manual color", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      myClass.manualColor = true;
+      const expectedDeflated: Deflated = ["21H.143", "#4A5568", [""]];
+      expect(myClass.deflate()).toStrictEqual(expectedDeflated);
+    });
+
+    test("has section room override", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      const mySections: Sections | undefined = myClass.sections.at(0);
+      assert(mySections instanceof Sections);
+      mySections.roomOverride = "lorem";
+      const expectedDeflated: Deflated = ["21H.143", ["lorem"]];
+      expect(myClass.deflate()).toStrictEqual(expectedDeflated);
+    });
   });
 
   describe("Class.inflate", () => {
