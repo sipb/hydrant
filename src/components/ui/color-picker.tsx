@@ -43,24 +43,26 @@ export const ColorPickerInput = forwardRef<
   return (
     <ChakraColorPicker.ChannelInput
       onChange={(e) => {
-        const value = e.target.value;
+        const input = e.target.value;
         if (
-          value.length === 6 ||
-          (value.length === 7 && value.startsWith("#"))
+          input.length === 6 ||
+          (input.length === 7 && input.startsWith("#"))
         ) {
           // parseColor will throw if the value is not a valid hex color
           try {
-            const caretPositionBefore = e.target.selectionStart;
-            if (value.startsWith("#")) {
-              setValue(parseColor(value));
-            } else {
-              setValue(parseColor(`#${value}`));
+            let caretPositionBefore = e.target.selectionStart;
+            let colorToParse = input;
+            if (!colorToParse.startsWith("#")) {
+              colorToParse = `#${colorToParse}`;
+              caretPositionBefore = caretPositionBefore ? caretPositionBefore + 1 : caretPositionBefore;
             }
+            setValue(parseColor(colorToParse));
             setTimeout(() => {
-              e.target.setSelectionRange(
-                caretPositionBefore,
-                caretPositionBefore,
-              );
+              try {
+                e.target.setSelectionRange(caretPositionBefore, caretPositionBefore);
+              } catch (error) {
+                console.error('Error setting selection range:', error);
+              }
             }, 0);
           } catch {
             return;
