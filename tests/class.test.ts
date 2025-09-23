@@ -101,6 +101,64 @@ const myRawClass: RawClass = {
   new: false,
 };
 
+const myOtherRawClass: RawClass = {
+  number: "21H.143",
+  oldNumber: "",
+  course: "21H",
+  subject: "143",
+  tba: false,
+  sectionKinds: ["lecture"],
+  lectureRawSections: ["56-191/MW/0/11-12.30"],
+  lectureSections: [
+    [
+      [
+        [10, 3],
+        [78, 3],
+      ],
+      "56-191",
+    ],
+  ],
+  recitationSections: [],
+  labSections: [],
+  designSections: [],
+  recitationRawSections: [],
+  labRawSections: [],
+  designRawSections: [],
+  hassH: true,
+  hassA: false,
+  hassS: false,
+  hassE: false,
+  cih: false,
+  cihw: false,
+  rest: false,
+  lab: false,
+  partLab: false,
+  lectureUnits: 3,
+  labUnits: 0,
+  preparationUnits: 9,
+  isVariableUnits: false,
+  level: "U",
+  same: "21G.056",
+  meets: "21G.356",
+  terms: ["FA"],
+  prereqs: "None",
+  description:
+    "Provides an overview of European history from 1789 to the present. Explores how the ideas of 'European' and 'modern' have been defined over time. Explores major events and the evolution of major tensions and issues that consumed Europe and Europeans through the period, including questions of identity, inclusion/exclusion, religion, and equality. Places major emphasis on the fiction, visual culture, and films of the century as the products and evidence of political, social and cultural change. Taught in English.",
+  name: "The 'Making' of Modern Europe: 1789-Present",
+  inCharge: "E. Kempf",
+  virtualStatus: false,
+  nonext: false,
+  repeat: false,
+  url: "",
+  final: false,
+  half: false,
+  limited: false,
+  new: false,
+  rating: 6.9,
+  hours: 5.9,
+  size: 9.5,
+};
+
 describe("Class", () => {
   test("Class.constructor", () => {
     const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
@@ -499,7 +557,7 @@ describe("Class", () => {
     });
   });
 
-  describe("Class.deflate", () => {
+  describe("Class.deflate and Class.inflate", () => {
     /**
      * Partition:
      * - has unlocked sections, doesn't have unlocked sections
@@ -513,6 +571,13 @@ describe("Class", () => {
       const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
       const expectedDeflated: Deflated = ["21H.143", [""]];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
+
+      const myOtherClass: Class = new Class(
+        myOtherRawClass,
+        COLOR_SCHEME_LIGHT,
+      );
+      myOtherClass.inflate(expectedDeflated);
+      expect(myClass).toStrictEqual(myOtherClass);
     });
 
     test("has unlocked sections", () => {
@@ -522,6 +587,17 @@ describe("Class", () => {
       mySections.locked = true;
       const expectedDeflated: Deflated = ["21H.143", [""], -1];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
+
+      const myOtherClass: Class = new Class(
+        myOtherRawClass,
+        COLOR_SCHEME_LIGHT,
+      );
+      myOtherClass.inflate(expectedDeflated);
+      const myOtherSections: Sections | undefined = myOtherClass.sections.at(0);
+      assert(myOtherSections instanceof Sections);
+      // If you don't change this, it is `undefined` (TODO: fix!)
+      myOtherSections.selected = null;
+      expect(myClass).toStrictEqual(myOtherClass);
     });
 
     test("has manual color", () => {
@@ -529,6 +605,13 @@ describe("Class", () => {
       myClass.manualColor = true;
       const expectedDeflated: Deflated = ["21H.143", "#4A5568", [""]];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
+
+      const myOtherClass: Class = new Class(
+        myOtherRawClass,
+        COLOR_SCHEME_LIGHT,
+      );
+      myOtherClass.inflate(expectedDeflated);
+      expect(myClass).toStrictEqual(myOtherClass);
     });
 
     test("has section room override", () => {
@@ -538,14 +621,21 @@ describe("Class", () => {
       mySections.roomOverride = "lorem";
       const expectedDeflated: Deflated = ["21H.143", ["lorem"]];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
+
+      const myOtherClass: Class = new Class(
+        myOtherRawClass,
+        COLOR_SCHEME_LIGHT,
+      );
+      myOtherClass.inflate(expectedDeflated);
+      expect(myClass).toStrictEqual(myOtherClass);
     });
-  });
 
-  describe("Class.inflate", () => {
-    test.skip("Parsed is string");
-
-    // TODO: partition this further
-    test.skip("Parsed is array");
+    test("Class.inflate with string input", () => {
+      const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      const myOtherClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
+      myClass.inflate("alpha beta gamma delta");
+      expect(myClass).toStrictEqual(myOtherClass);
+    });
   });
 });
 
