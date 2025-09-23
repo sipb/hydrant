@@ -1,12 +1,15 @@
-import type { IconButtonProps, StackProps } from "@chakra-ui/react";
 import {
   ColorPicker as ChakraColorPicker,
   For,
   IconButton,
+  IconButtonProps,
+  parseColor,
   Portal,
   Span,
   Stack,
+  StackProps,
   Text,
+  useColorPickerContext,
   VStack,
 } from "@chakra-ui/react";
 import type { RefObject } from "react";
@@ -35,7 +38,42 @@ export const ColorPickerInput = forwardRef<
   HTMLInputElement,
   Omit<ChakraColorPicker.ChannelInputProps, "channel">
 >(function ColorHexInput(props, ref) {
-  return <ChakraColorPicker.ChannelInput channel="hex" ref={ref} {...props} />;
+  const { setValue } = useColorPickerContext();
+
+  return (
+    <ChakraColorPicker.ChannelInput
+      onChange={(e) => {
+        const input = e.target.value;
+        if (
+          input.length === 6 ||
+          (input.length === 7 && input.startsWith("#"))
+        ) {
+          // parseColor will throw if the value is not a valid hex color
+          try {
+            let caretPositionBefore = e.target.selectionStart;
+            let colorToParse = input;
+            if (!colorToParse.startsWith("#")) {
+              colorToParse = `#${colorToParse}`;
+              caretPositionBefore = caretPositionBefore ? caretPositionBefore + 1 : caretPositionBefore;
+            }
+            setValue(parseColor(colorToParse));
+            setTimeout(() => {
+              try {
+                e.target.setSelectionRange(caretPositionBefore, caretPositionBefore);
+              } catch (error) {
+                console.error('Error setting selection range:', error);
+              }
+            }, 0);
+          } catch {
+            return;
+          }
+        }
+      }}
+      channel="hex"
+      ref={ref}
+      {...props}
+    />
+  );
 });
 
 interface ColorPickerContentProps extends ChakraColorPicker.ContentProps {

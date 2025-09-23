@@ -40,8 +40,12 @@ def get_sections() -> Iterable[Tag]:
         Iterable[bs4.element.Tag]: The accordion sections that contain lists of CI-M
             subjects
     """
-    with urlopen(CIM_URL, timeout=5) as cim_req:
-        soup = BeautifulSoup(cim_req.read().decode("utf-8"), "html.parser")
+    try:
+        with urlopen(CIM_URL, timeout=5) as cim_req:
+            soup = BeautifulSoup(cim_req.read().decode("utf-8"), "html.parser")
+    except Exception as e:
+        print(f"error in get_sections: {e}")
+        raise e
 
     return (
         item
