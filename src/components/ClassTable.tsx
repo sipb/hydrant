@@ -432,7 +432,7 @@ function ClassFlags(props: {
   );
 }
 
-const StarButton = ({
+export const StarButton = ({
   cls,
   onStarToggle,
 }: {
@@ -464,6 +464,20 @@ export function ClassTable() {
   const { classes } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
+
+  useEffect(() => {
+    const refreshCells = () => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      gridRef.current?.api?.refreshCells({
+        force: true,
+        columns: ["number"],
+      });
+    };
+    window.addEventListener("refreshStarCells", refreshCells);
+    return () => {
+      window.removeEventListener("refreshStarCells", refreshCells);
+    };
+  }, []);
 
   // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
