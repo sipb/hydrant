@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python 3.7
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python-version }}
           cache: "pip"
@@ -46,7 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python 3.7
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python-version }}
           cache: "pip"
