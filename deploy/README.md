@@ -1,6 +1,6 @@
 # Hydrant - deploy steps
 
-This file, and other contents of this folder, should be mirrored in `/afs/sipb/project/hydrant`. This folder is called our *locker*.
+This file, and other contents of this folder, should be mirrored in `/afs/sipb/project/hydrant`. This folder is called our _locker_.
 
 If you're in the `sipb-hydrant` list, you can login to Athena and do `ssh hydrant@scripts`. You'll sign in to the Scripts account, whose home folder `~` is `/afs/sipb/project/hydrant`.
 
@@ -23,11 +23,11 @@ The server's frontend updates based on the `deploy` branch on GitHub, so any cha
 
 2. Once the build is done, CI fires a GitHub webhook (https://github.com/sipb/hydrant/settings/hooks). This one is pointed at (https://hydrant.scripts.mit.edu/report_build.py); hosted at `~/web_scripts/report_build.py` in the locker.
 
-  The webhook does something called a [POST request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST). You can think of it as running the `~/web_scripts/report_build.py` script and giving it input, except we're giving the input through the internet. The input is taken in through `stdin`, and is encoded with JSON.
+The webhook does something called a [POST request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST). You can think of it as running the `~/web_scripts/report_build.py` script and giving it input, except we're giving the input through the internet. The input is taken in through `stdin`, and is encoded with JSON.
 
-  You can look at the output of the webhook in the Github hooks settings: (https://github.com/sipb/hydrant/settings/hooks).
+You can look at the output of the webhook in the Github hooks settings: (https://github.com/sipb/hydrant/settings/hooks).
 
-3. The script grabs the URL to the 'artifact'* and downloads it. The relevant API docs are on GitHub at (https://docs.github.com/en/rest/actions/artifacts).
+3. The script grabs the URL to the 'artifact'\* and downloads it. The relevant API docs are on GitHub at (https://docs.github.com/en/rest/actions/artifacts).
 
 4. The script unpacks the files to the production directory `~/web_scripts/hydrant`.
 

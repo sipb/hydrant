@@ -39,8 +39,8 @@
     "typecheck": "react-router typegen && tsc",
     "build": "react-router build",
     "preview": "vite preview",
-    "format": "prettier --write '**/*.{ts,tsx}'",
-    "ci-prettier": "prettier --check '**/*.{ts,tsx,js}'",
+    "format": "prettier . --write",
+    "ci-prettier": "prettier . --check --ignore-unknown",
     "ci-eslint": "eslint .",
     "test": "vitest",
     "ci-all": "npm run typecheck && npm test && npm run ci-eslint && npm run ci-prettier"
