@@ -1,14 +1,6 @@
 import { useContext } from "react";
 
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "./ui/select";
-import { createListCollection } from "@chakra-ui/react";
+import { createListCollection, Portal, Select } from "@chakra-ui/react";
 
 import { Term, toFullUrl, getUrlNames } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
@@ -29,7 +21,7 @@ export function TermSwitcher() {
   });
 
   return (
-    <SelectRoot
+    <Select.Root
       collection={urlOptions}
       value={[defaultValue]}
       onValueChange={(e) => {
@@ -38,19 +30,30 @@ export function TermSwitcher() {
       size="sm"
       w="9rem"
     >
-      <SelectLabel hidden>Select semester</SelectLabel>
-      <SelectTrigger>
-        <SelectValueText />
-      </SelectTrigger>
-      <SelectContent>
-        {urlOptions.items.map(({ label, value }) => {
-          return (
-            <SelectItem item={value} key={value}>
-              {label}
-            </SelectItem>
-          );
-        })}
-      </SelectContent>
-    </SelectRoot>
+      <Select.HiddenSelect />
+      <Select.Label hidden>Select semester</Select.Label>
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
+      </Select.Control>
+      <Portal>
+        <Select.Positioner>
+          <Select.Content>
+            {urlOptions.items.map((semester) => {
+              return (
+                <Select.Item item={semester} key={semester.value}>
+                  {semester.label}
+                  <Select.ItemIndicator />
+                </Select.Item>
+              );
+            })}
+          </Select.Content>
+        </Select.Positioner>
+      </Portal>
+    </Select.Root>
   );
 }
