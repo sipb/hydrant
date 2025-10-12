@@ -10,31 +10,17 @@ import {
   Text,
   createListCollection,
   parseColor,
+  ColorPicker,
+  Select,
+  Portal,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, FormEvent } from "react";
 import { useContext, useLayoutEffect, useState } from "react";
 
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 import { Checkbox } from "./ui/checkbox";
-import {
-  ColorPickerArea,
-  ColorPickerChannelSlider,
-  ColorPickerContent,
-  ColorPickerControl,
-  ColorPickerEyeDropper,
-  ColorPickerInput,
-  ColorPickerRoot,
-  ColorPickerTrigger,
-} from "./ui/color-picker";
 import { Field } from "./ui/field";
 import { Radio, RadioGroup } from "./ui/radio";
-import {
-  SelectContent,
-  SelectItem,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "./ui/select";
 
 import type { Activity, NonClass } from "../lib/activity";
 import { Timeslot } from "../lib/activity";
@@ -219,24 +205,29 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
   return (
     <Flex gap={2}>
       <Flex direction="row" gap={2}>
-        <ColorPickerRoot
+        <ColorPicker.Root
           value={color}
           onValueChange={(e) => {
             setColor(e.value);
           }}
         >
-          <ColorPickerControl>
-            <ColorPickerInput autoFocus />
-            <ColorPickerTrigger />
-          </ColorPickerControl>
-          <ColorPickerContent>
-            <ColorPickerArea />
-            <HStack>
-              <ColorPickerEyeDropper />
-              <ColorPickerChannelSlider channel="hue" />
-            </HStack>
-          </ColorPickerContent>
-        </ColorPickerRoot>
+          <ColorPicker.HiddenInput />
+          <ColorPicker.Control>
+            <ColorPicker.Input autoFocus />
+            <ColorPicker.Trigger />
+          </ColorPicker.Control>
+          <Portal>
+            <ColorPicker.Positioner>
+              <ColorPicker.Content>
+                <ColorPicker.Area />
+                <HStack>
+                  <ColorPicker.EyeDropper />
+                  <ColorPicker.ChannelSlider channel="hue" />
+                </HStack>
+              </ColorPicker.Content>
+            </ColorPicker.Positioner>
+          </Portal>
+        </ColorPicker.Root>
         <ButtonGroup>
           <Button onClick={onReset}>Reset</Button>
           <Button onClick={onCancel}>Cancel</Button>
@@ -347,7 +338,7 @@ function NonClassAddTime(props: { activity: NonClass }) {
   });
 
   const renderTimeDropdown = (key: "start" | "end") => (
-    <SelectRoot
+    <Select.Root
       collection={timesCollection}
       size="sm"
       width="8rem"
@@ -356,17 +347,28 @@ function NonClassAddTime(props: { activity: NonClass }) {
         setTimes({ ...times, [key]: e.value[0] });
       }}
     >
-      <SelectTrigger>
-        <SelectValueText />
-      </SelectTrigger>
-      <SelectContent>
-        {timesCollection.items.map((time) => (
-          <SelectItem item={time} key={time}>
-            {time}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </SelectRoot>
+      <Select.HiddenSelect />
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
+      </Select.Control>
+      <Portal>
+        <Select.Positioner>
+          <Select.Content>
+            {timesCollection.items.map((time) => (
+              <Select.Item item={time} key={time}>
+                {time}
+                <Select.ItemIndicator />
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Positioner>
+      </Portal>
+    </Select.Root>
   );
 
   return (

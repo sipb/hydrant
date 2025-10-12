@@ -5,7 +5,8 @@ import { HydrantContext } from "../lib/hydrant";
 
 import { LuMessageSquare } from "react-icons/lu";
 import { Tooltip } from "./ui/tooltip";
-import { LinkButton } from "./ui/link-button";
+import { Link } from "react-router";
+import { Button } from "@chakra-ui/react";
 
 /** A link to SIPB Matrix's class group chat importer UI */
 export function MatrixLink() {
@@ -21,18 +22,18 @@ export function MatrixLink() {
 
   return (
     <Tooltip content="You will be able to choose which chats to join, if any.">
-      <LinkButton
+      <Button
         colorPalette="teal"
         size="sm"
-        href={matrixLink}
         variant="solid"
-        target="_blank"
-        rel="noreferrer"
         fontWeight={"semibold"}
+        asChild
       >
-        <LuMessageSquare />
-        Join Matrix group chats
-      </LinkButton>
+        <Link to={matrixLink} target="_blank" rel="noreferrer">
+          <LuMessageSquare />
+          Join Matrix group chats
+        </Link>
+      </Button>
     </Tooltip>
   );
 }

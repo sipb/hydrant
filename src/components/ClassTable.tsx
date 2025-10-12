@@ -23,9 +23,16 @@ import {
   type Module,
 } from "ag-grid-community";
 
-import { Box, Flex, Image, Input, Button, ButtonGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Image,
+  Input,
+  Button,
+  ButtonGroup,
+  InputGroup,
+} from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
-import { InputGroup } from "./ui/input-group";
 import { LabelledButton } from "./ui/button";
 import { useColorMode } from "./ui/color-mode";
 

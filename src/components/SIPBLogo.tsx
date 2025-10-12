@@ -1,18 +1,14 @@
-import { Image, Link } from "@chakra-ui/react";
+import { Image, Link as ChakraLink } from "@chakra-ui/react";
+import { Link } from "react-router";
 import sipbLogo from "../assets/simple-fuzzball.png";
 
 export function SIPBLogo() {
   return (
-    <Link
-      variant="plain"
-      href="https://sipb.mit.edu/"
-      target="_blank"
-      rel="noreferrer"
-      fontSize="sm"
-      fontWeight="500"
-    >
-      by SIPB
-      <Image src={sipbLogo} alt="SIPB Logo" height="1lh" />
-    </Link>
+    <ChakraLink variant="plain" fontSize="sm" fontWeight="500" asChild>
+      <Link to="https://sipb.mit.edu/" target="_blank" rel="noreferrer">
+        by SIPB
+        <Image src={sipbLogo} alt="SIPB Logo" height="1lh" />
+      </Link>
+    </ChakraLink>
   );
 }
