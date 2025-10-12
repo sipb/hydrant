@@ -5,12 +5,22 @@ on:
     branches: [main]
     paths-ignore:
       - "**/*.{ts,tsx,js,md,txt,toml}"
-      - "{public,scrapers}/**/*.json"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".prettierignore"
+      - "{package,package-lock,tsconfig}.json"
+      - "scrapers/overrides.toml.d/override-schema.json"
   pull_request:
     branches: [main]
     paths-ignore:
       - "**/*.{ts,tsx,js,md,txt,toml}"
-      - "{public,scrapers}/**/*.json"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".prettierignore"
+      - "{package,package-lock,tsconfig}.json"
+      - "scrapers/overrides.toml.d/override-schema.json"
 
 env:
   python-version: 3.7
@@ -28,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python 3.7
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python-version }}
           cache: "pip"
@@ -46,7 +56,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python 3.7
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python-version }}
           cache: "pip"
