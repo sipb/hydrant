@@ -43,9 +43,9 @@ def get_sections() -> Iterable[Tag]:
     try:
         with urlopen(CIM_URL, timeout=5) as cim_req:
             soup = BeautifulSoup(cim_req.read().decode("utf-8"), "html.parser")
-    except Exception as e:
-        print(f"error in get_sections: {e}")
-        raise e
+    except (URLError, socket.timeout) as error:
+        print(f"error in get_sections: {error}")
+        raise error
 
     return (
         item
