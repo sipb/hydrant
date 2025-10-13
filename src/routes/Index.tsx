@@ -14,7 +14,7 @@ import { TermSwitcher } from "../components/TermSwitcher";
 import { FeedbackBanner } from "../components/FeedbackBanner";
 import { MatrixLink } from "../components/MatrixLink";
 import { PreregLink } from "../components/PreregLink";
-import { LuCalendar } from "react-icons/lu";
+import { LuCalendarArrowDown } from "react-icons/lu";
 
 import { State } from "../lib/state";
 import { Term } from "../lib/dates";
@@ -118,7 +118,7 @@ function HydrantApp() {
                     onICSExport();
                   }}
                 >
-                  <LuCalendar />
+                  <LuCalendarArrowDown />
                   Export calendar
                 </Button>
               </Tooltip>

@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { Class } from "../lib/class";
 import { HydrantContext } from "../lib/hydrant";
 
-import { LuMessageSquare } from "react-icons/lu";
+import { LuMessagesSquare } from "react-icons/lu";
 import { Tooltip } from "./ui/tooltip";
 import { Link } from "react-router";
 import { Button } from "@chakra-ui/react";
@@ -30,7 +30,7 @@ export function MatrixLink() {
         asChild
       >
         <Link to={matrixLink} target="_blank" rel="noreferrer">
-          <LuMessageSquare />
+          <LuMessagesSquare />
           Join Matrix group chats
         </Link>
       </Button>
