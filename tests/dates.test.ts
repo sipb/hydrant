@@ -316,7 +316,6 @@ describe("Term", () => {
         myTerm.exDatesFor(new Slot(40)), // NOTE: slot 40 = Tuesday at 9:00 AM
       ).toStrictEqual([
         new Date(2079, 7, 8, 9, 0, 0, 0),
-        new Date(1999, 11, 31, 9, 0, 0, 0),
         new Date(2079, 7, 11, 9, 0, 0, 0),
       ]);
     });
@@ -329,10 +328,7 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(100)), // NOTE: slot 100 = Wednesday at 10:00 PM
-      ).toStrictEqual([
-        new Date(2079, 7, 9, 22, 0, 0, 0),
-        new Date(1999, 11, 31, 22, 0, 0, 0),
-      ]);
+      ).toStrictEqual([new Date(2079, 7, 9, 22, 0, 0, 0)]);
     });
 
     test("has non-matching holiday, tuesday on monday schedule", () => {
@@ -343,10 +339,7 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(41)), // NOTE: slot 41 = Tuesday at 9:30 AM
-      ).toStrictEqual([
-        new Date(1999, 11, 31, 9, 30, 0, 0),
-        new Date(2079, 7, 11, 9, 30, 0, 0),
-      ]);
+      ).toStrictEqual([new Date(2079, 7, 11, 9, 30, 0, 0)]);
     });
 
     test("has non-matching holiday, not monday schedule", () => {
@@ -357,7 +350,7 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(168)), // NOTE: slot 100 = Friday at 10:00 PM
-      ).toStrictEqual([new Date(1999, 11, 31, 22, 0, 0, 0)]);
+      ).toStrictEqual([]);
     });
 
     test("no holidays, tuesday for monday schedule", () => {
@@ -368,7 +361,7 @@ describe("Term", () => {
       expect(
         myTerm.exDatesFor(new Slot(34)), // NOTE: slot 34 = Tuesday at 6:00 AM
       ).toStrictEqual(
-        [new Date(1999, 11, 31, 6, 0, 0, 0), new Date(2079, 0, 1, 6, 0, 0, 0)], // NOTE: in some timezones this shifts to 2000-01-01 so we hardcode "America/New_York" for reproducibility
+        [new Date(2079, 0, 1, 6, 0, 0, 0)], // NOTE: in some timezones this shifts to 2000-01-01 so we hardcode "America/New_York" for reproducibility
       );
     });
 
@@ -377,9 +370,7 @@ describe("Term", () => {
         urlName: "f79",
         mondayScheduleDate: undefined,
       });
-      expect(myTerm.exDatesFor(new Slot(34))).toStrictEqual([
-        new Date(1999, 11, 31, 6, 0, 0, 0),
-      ]);
+      expect(myTerm.exDatesFor(new Slot(34))).toStrictEqual([]);
     });
   });
 
