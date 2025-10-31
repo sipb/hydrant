@@ -1,21 +1,23 @@
 import {
   Button,
   ButtonGroup,
+  ColorPicker,
   Flex,
   Group,
   HStack,
   Heading,
   Input,
+  Portal,
+  Select,
   Stack,
   Text,
   createListCollection,
   parseColor,
-  ColorPicker,
-  Select,
-  Portal,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, FormEvent } from "react";
 import { useContext, useLayoutEffect, useState } from "react";
+
+import { ColorPickerInput } from "./ui/colorpicker-input";
 
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 import { Checkbox } from "./ui/checkbox";
@@ -213,7 +215,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
         >
           <ColorPicker.HiddenInput />
           <ColorPicker.Control>
-            <ColorPicker.Input autoFocus />
+            <ColorPickerInput autoFocus />
             <ColorPicker.Trigger />
           </ColorPicker.Control>
           <Portal>
