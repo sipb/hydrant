@@ -1,5 +1,5 @@
 import { Class } from "../lib/class";
-import { LuClipboardList } from "react-icons/lu";
+import { LuClipboardCopy } from "react-icons/lu";
 
 import { Tooltip } from "./ui/tooltip";
 import { useContext } from "react";
@@ -29,7 +29,7 @@ export function PreregLink() {
         asChild
       >
         <Link to={preregLink} target="_blank" rel="noreferrer">
-          <LuClipboardList />
+          <LuClipboardCopy />
           Pre-register classes
         </Link>
       </Button>

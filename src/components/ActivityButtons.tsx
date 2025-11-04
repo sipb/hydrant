@@ -14,7 +14,7 @@ import {
   createListCollection,
   parseColor,
 } from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef, FormEvent } from "react";
+import type { ComponentPropsWithRef, FormEvent } from "react";
 import { useContext, useLayoutEffect, useState } from "react";
 
 import { ColorPickerInput } from "./ui/colorpicker-input";
@@ -31,17 +31,21 @@ import { LockOption } from "../lib/class";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
+interface ToggleButtonProps extends ComponentPropsWithRef<typeof Button> {
+  active: boolean;
+  handleClick: () => void;
+}
+
 /**
  * A button that toggles the active value, and is outlined if active, solid
  * if not.
  */
-function ToggleButton(
-  props: ComponentPropsWithoutRef<"button"> & {
-    active: boolean;
-    handleClick: () => void;
-  },
-) {
-  const { children, active, handleClick, ...otherProps } = props;
+function ToggleButton({
+  children,
+  active,
+  handleClick,
+  ...otherProps
+}: ToggleButtonProps) {
   return (
     <Button
       {...otherProps}
