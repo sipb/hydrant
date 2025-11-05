@@ -12,6 +12,7 @@
     "@fullcalendar/interaction": "^6.1.19",
     "@fullcalendar/react": "^6.1.19",
     "@fullcalendar/timegrid": "^6.1.19",
+    "@react-router/fs-routes": "^7.9.5",
     "@react-router/node": "^7.9.5",
     "@rjsf/chakra-ui": "^6.0.1",
     "@rjsf/core": "^6.0.1",
@@ -69,6 +70,7 @@
     "typescript-eslint": "^8.46.2",
     "vite": "^7.1.12",
     "vite-plugin-checker": "^0.11.0",
+    "vite-plugin-devtools-json": "^1.0.0",
     "vite-plugin-node-polyfills": "^0.24.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.6"
