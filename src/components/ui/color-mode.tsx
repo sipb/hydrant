@@ -25,12 +25,14 @@ export interface UseColorModeReturn {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function useColorMode(): UseColorModeReturn {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme, forcedTheme } = useTheme();
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const colorMode = forcedTheme || resolvedTheme;
   const toggleColorMode = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
   return {
-    colorMode: resolvedTheme as ColorMode,
+    colorMode: colorMode as ColorMode,
     setColorMode: setTheme,
     toggleColorMode,
   };
@@ -55,7 +57,7 @@ export const ColorModeButton = forwardRef<
 >(function ColorModeButton(props, ref) {
   const { toggleColorMode } = useColorMode();
   return (
-    <ClientOnly fallback={<Skeleton boxSize="8" />}>
+    <ClientOnly fallback={<Skeleton boxSize="9" />}>
       <IconButton
         onClick={toggleColorMode}
         variant="ghost"

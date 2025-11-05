@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -13,8 +14,12 @@ export default defineConfig({
     nodePolyfills({ include: ["buffer"] }),
     checker({
       typescript: true,
-      eslint: { lintCommand: "eslint **/*.{ts,tsx}", useFlatConfig: true },
+      eslint: { lintCommand: "eslint .", useFlatConfig: true },
     }),
     devtoolsJson(),
   ],
+  test: {
+    globals: true,
+    environment: "jsdom",
+  },
 });

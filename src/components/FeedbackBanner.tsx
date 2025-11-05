@@ -8,10 +8,11 @@ import {
   Float,
   Presence,
   CloseButton,
+  Button,
 } from "@chakra-ui/react";
-import { LinkButton } from "./ui/link-button";
 
 import { HydrantContext } from "../lib/hydrant";
+import { Link } from "react-router";
 
 export const FeedbackBanner = () => {
   const { state } = useContext(HydrantContext);
@@ -40,10 +41,9 @@ export const FeedbackBanner = () => {
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
               Do you have feedback on Hydrant? We'd love to hear it!
             </Text>
-            <LinkButton
+            <Button
               flexShrink={0}
               variant="plain"
-              href={"mailto:sipb-hydrant@mit.edu"}
               ms="6"
               bg="blackAlpha.300"
               color="whiteAlpha.900"
@@ -51,9 +51,10 @@ export const FeedbackBanner = () => {
               px="3"
               py="1"
               height="inherit"
+              asChild
             >
-              Contact us
-            </LinkButton>
+              <Link to={"mailto:sipb-hydrant@mit.edu"}>Contact us</Link>
+            </Button>
             <CloseButton
               hideFrom="sm"
               variant="ghost"

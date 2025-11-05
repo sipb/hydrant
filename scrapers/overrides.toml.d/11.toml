@@ -41,25 +41,6 @@ lectureUnits = 2
 labUnits = 0
 preparationUnits = 10
 
-["11.S189"]
-name = "Topics in Urban Health Policy"
-meets = "11.S939"
-level = "U"
-lectureUnits = 3
-labUnits = 0
-preparationUnits = 3
-description = "Introduces the fundamental components of urban health systems, including emergency medical services, community health centers and primary and specialty care facilities, hospitals and hospital networks, and health insurance providers. Explores the role of public policy, and state, local, and provider variation in these structures on access to care, health care costs, and health equity. This is a Half One class."
-inCharge = "Justin Steil"
-
-["11.S939"]
-description = "Introduces the fundamental components of urban health systems, including emergency medical services, community health centers and primary and specialty care facilities, hospitals and hospital networks, and health insurance providers. Explores the role of public policy, and state, local, and provider variation in these structures on access to care, health care costs, and health equity. This is a Half One class."
-name = "Topics in Urban Health Policy"
-meets = "11.S189"
-level = "G"
-lectureUnits = 3
-labUnits = 0
-preparationUnits = 3
-
 ["11.S197"]
 name = "Renewing the Great Society: A New Era of Progressive National Policies"
 meets = "11.S947"
@@ -68,11 +49,29 @@ level = "U"
 inCharge = "Amy Glasmeier"
 
 ["11.S947"]
-name = "Renewing the Great Society: A New Era of Progressive National Policie"
+name = "Renewing the Great Society: A New Era of Progressive National Policies"
 meets = "11.S197"
 description = "President Johnson's short five-year tenure ushered in some of the most essential midcentury rights policies that touched all Americans. Starting in 1964, Johnson ushered in the Civil Rights Act, and then in 1965, he pushed through the Voting Rights Act of 1965. Policy programs included the creation of Medicare, Medicaid, and Head Start, and he made critical early steps toward environmental policy reform. Understanding how these monumental programs emerged and were designed and implemented provides lessons for planners and prospective policymakers practicing in a new era of radical reform. Mondays 2-5."
 level = "G"
 inCharge = "Amy Glasmeier"
+
+['11.S199']
+name = "Cities Without Property: Seminar and Art/Design Studio"
+meets = "11.S949"
+description = "This is a reading seminar and art/design studio where we will read and discuss the origins and history of property rights for the many things that humans (strangely) think we can own: land, air, water, ideas, people, women, homes, data and more. We will learn about how the ideas of property and ownership over living beings, worldly systems, and intangible creations came to be. In addition, we will read about and experiment with alternatives to property regimes which start from a position of abundance (e.g. circular economies, mutual aid, gift economies, relation and reciprocity). The class is a mix of reading/discussion and making/doing. Together, we will try to answer the question: Is a city without property possible?"
+inCharge = "C. D'Ignazio"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+
+['11.S949']
+name = "Cities Without Property: Seminar and Art/Design Studio"
+meets = "11.S199"
+description = "This is a reading seminar and art/design studio where we will read and discuss the origins and history of property rights for the many things that humans (strangely) think we can own: land, air, water, ideas, people, women, homes, data and more. We will learn about how the ideas of property and ownership over living beings, worldly systems, and intangible creations came to be. In addition, we will read about and experiment with alternatives to property regimes which start from a position of abundance (e.g. circular economies, mutual aid, gift economies, relation and reciprocity). The class is a mix of reading/discussion and making/doing. Together, we will try to answer the question: Is a city without property possible?"
+inCharge = "C. D'Ignazio"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
 
 ["11.S940"]
 name = "Hacking the Archive: A Field Guide to Co-Designing Alternative Urban Futures"
@@ -88,6 +87,24 @@ name = "Designing urban energy intersections: An integrated, multi-scale approac
 level = "G"
 description = "How can integrated inter-scale design – from the systems level (e.g., energy systems, workforce systems, mobility systems) to the neighborhood level (e.g., street design, building design), the community level (e.g., engagement systems), and the “device” level (e.g., energy storage) – be used to co-create (with communities) green-economy based local economic development strategies? This workshop class aims to answer this question (taught in parallel with an Architecture Urban Design Studio) in collaboration with local government (NYC Economic Development Corporation, EDC) and a local community organization. The subject is driven by the theory of change that just urban transitions require work at the intersection of a range of needs and opportunities driven by the climate crisis, including designing: for waterfront resilience, systems for energy transitions (e.g., battery storage, vehicle electrification), and approaches to maximize community benefits (e.g., workforce training for “green jobs”, entrepreneurial development, cooperative ownership models).  "
 inCharge = "J. Phillip Thompson"
+
+['11.S942']
+name = "Interdisciplinary Perspectives on Housing"
+description = "The class examines contemporary housing issues in the US context through various disciplinary perspectives. Topics may include the construction of new housing, housing management and maintenance, housing search, the planning process, rental and purchase subsidies, tenant protections, and more. These topical investigations will shed light on broader social problems of spatial (segregation, gentrification) and economic (affordability, wealth gap) inequality. Readings will draw on housing research from disciplines potentially including history, sociology, economics, political science, law, and urban planning. Each discipline has its own conception of housing problems. The course is intended to help planning students bring these conceptions together and think through the resulting tensions."
+inCharge = "D. M. Bunten"
+level = "G"
+lectureUnits = 1
+labUnits = 0
+preparationUnits = 5
+
+['11.S944']
+name = "Strategic Design: Regenerative Innovation (Ri)"
+description = "This course introduces Regenerative Innovation (Ri), a new strategic design approach to innovation that moves beyond reactive strategic planning into future-making. By integrating design methodologies, behavioral science, and management strategy, students will develop tools and mindsets to anticipate transformation, shape emerging futures, and develop innovation ideas that are not only sustainable but regenerative—designed to evolve and adapt over time.   Through speculative design, strategic foresight, and cultural resilience, students will engage in future scenario development and prototype regenerative solution ideas that challenge conventional business and policy paradigms."
+inCharge = "S, Gronfeldt, G. Rosenzweig"
+level = "G"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 4
 
 ["11.S945"]
 name = "Land Banks for Affordable Housing Production in New Mexico"

@@ -21,16 +21,9 @@ import {
   Image,
   createListCollection,
   Code,
-  type Select as ChakraSelect,
+  Select,
+  Portal,
 } from "@chakra-ui/react";
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "../components/ui/select";
 
 const schema: RJSFSchema = {
   title: "Overrides",
@@ -128,6 +121,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         },
         submitText: "Download",
       },
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       items: {
         "ui:title": "Class Override",
         "ui:field": "LayoutGridField",
@@ -182,7 +176,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
               {
                 "ui:row": {
                   gap: 2,
-                  templateColumns: "repeat(5, 1fr)",
+                  templateColumns: "repeat(6, 1fr)",
                   children: [
                     {
                       "ui:columns": [
@@ -190,6 +184,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
                         "lectureUnits",
                         "labUnits",
                         "preparationUnits",
+                        "new",
                         "isVariableUnits",
                       ],
                     },
@@ -304,7 +299,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
     [overrideNames],
   );
 
-  const handleChange = (e: ChakraSelect.ValueChangeDetails) => {
+  const handleChange = (e: Select.ValueChangeDetails) => {
     const fileName = e.value[0];
 
     if (fileName === "") {
@@ -348,44 +343,58 @@ export default function App({ loaderData }: Route.ComponentProps) {
         <Text>
           You don't need to populate all of the available
           fields&nbsp;&mdash;&nbsp;only the ones that differ from the course
-          catalog. Thank you for your time, and feel free to reach out to {}
+          catalog. Thank you for your time, and feel free to reach out to{" "}
           <Link colorPalette="blue" asChild>
             <RouterLink to="mailto:sipb-hydrant@mit.edu">
               sipb-hydrant@mit.edu
             </RouterLink>
-          </Link>
-          {} with any questions or concerns!
+          </Link>{" "}
+          with any questions or concerns!
         </Text>
-        <SelectRoot
+        <Select.Root
           collection={overridesCollection}
           value={selected}
           onValueChange={handleChange}
         >
-          <SelectLabel>Pre-fill data</SelectLabel>
-          <SelectTrigger clearable>
-            <SelectValueText />
-          </SelectTrigger>
-          <SelectContent>
-            {overridesCollection.items.map((override) => (
-              <SelectItem item={override} key={override.value}>
-                {override.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectRoot>
+          <Select.HiddenSelect />
+          <Select.Label>Pre-fill data</Select.Label>
+          <Select.Control>
+            <Select.Trigger>
+              <Select.ValueText />
+            </Select.Trigger>
+            <Select.IndicatorGroup>
+              <Select.ClearTrigger />
+              <Select.Indicator />
+            </Select.IndicatorGroup>
+          </Select.Control>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {overridesCollection.items.map((override) => (
+                  <Select.Item item={override} key={override.value}>
+                    {override.label}
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
+        </Select.Root>
         <Form
           schema={schema}
           uiSchema={uischema}
           validator={validator}
           formData={data}
           showErrorList={false}
-          liveValidate={true}
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          liveValidate={"onChange"}
           experimental_defaultFormStateBehavior={{
             arrayMinItems: { populate: "requiredOnly" },
             emptyObjectFields: "populateRequiredDefaults",
             mergeDefaultsIntoFormData: "useFormDataIfPresent",
           }}
-          liveOmit={true}
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          liveOmit={"onChange"}
           omitExtraData={true}
           onChange={({ formData, errors }) => {
             setData(formData as Record<string, unknown>[]);

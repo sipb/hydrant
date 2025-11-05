@@ -13,33 +13,25 @@
         "type": "string",
         "title": "Number",
         "description": "Class number",
-        "examples": [
-          "6.3900"
-        ]
+        "examples": ["6.3900"]
       },
       "oldNumber": {
         "type": "string",
         "title": "Formerly known as",
         "description": "Old class number",
-        "examples": [
-          "6.036"
-        ]
+        "examples": ["6.036"]
       },
       "course": {
         "type": "string",
         "title": "Course",
         "description": "Course number",
-        "examples": [
-          "6"
-        ]
+        "examples": ["6"]
       },
       "subject": {
         "type": "string",
         "title": "Subject",
         "description": "Subject number without course",
-        "examples": [
-          "3900"
-        ]
+        "examples": ["3900"]
       },
       "tba": {
         "type": "boolean",
@@ -53,12 +45,7 @@
         "description": "Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist",
         "items": {
           "type": "string",
-          "enum": [
-            "lecture",
-            "recitation",
-            "lab",
-            "design"
-          ]
+          "enum": ["lecture", "recitation", "lab", "design"]
         }
       },
       "lectureSections": {
@@ -97,10 +84,7 @@
         "type": "array",
         "title": "Lecture sections (raw)",
         "description": "Raw lecture times",
-        "examples": [
-          "T9.301-11",
-          "TR1,F2"
-        ],
+        "examples": ["T9.301-11", "TR1,F2"],
         "items": {
           "type": "string"
         }
@@ -109,10 +93,7 @@
         "type": "array",
         "title": "Recitation sections (raw)",
         "description": "Raw recitation times",
-        "examples": [
-          "T9.301-11",
-          "TR1,F2"
-        ],
+        "examples": ["T9.301-11", "TR1,F2"],
         "items": {
           "type": "string"
         }
@@ -121,10 +102,7 @@
         "type": "array",
         "title": "Lab sections (raw)",
         "description": "Raw lab times",
-        "examples": [
-          "T9.301-11",
-          "TR1,F2"
-        ],
+        "examples": ["T9.301-11", "TR1,F2"],
         "items": {
           "type": "string"
         }
@@ -133,10 +111,7 @@
         "type": "array",
         "title": "Design sections (raw)",
         "description": "Raw design times",
-        "examples": [
-          "T9.301-11",
-          "TR1,F2"
-        ],
+        "examples": ["T9.301-11", "TR1,F2"],
         "items": {
           "type": "string"
         }
@@ -218,18 +193,13 @@
         "type": "string",
         "title": "Level",
         "description": "Subject level (\"U\" or \"G\")",
-        "enum": [
-          "U",
-          "G"
-        ]
+        "enum": ["U", "G"]
       },
       "same": {
         "type": "string",
         "title": "Same as",
         "description": "Comma-separated list of classes with same number",
-        "examples": [
-          "21A.103, WGS.225"
-        ]
+        "examples": ["21A.103, WGS.225"]
       },
       "meets": {
         "type": "string",
@@ -242,12 +212,7 @@
         "description": "Terms class is offered",
         "items": {
           "type": "string",
-          "enum": [
-            "FA",
-            "JA",
-            "SP",
-            "SU"
-          ]
+          "enum": ["FA", "JA", "SP", "SU"]
         }
       },
       "prereqs": {
@@ -264,17 +229,13 @@
         "type": "string",
         "title": "Name",
         "description": "Name of class",
-        "examples": [
-          "Algebra I"
-        ]
+        "examples": ["Algebra I"]
       },
       "inCharge": {
         "type": "string",
         "title": "Instructors",
         "description": "(Person) in-charge",
-        "examples": [
-          "Alyssa Hacker"
-        ]
+        "examples": ["Alyssa Hacker"]
       },
       "virtualStatus": {
         "type": "boolean",
@@ -308,16 +269,11 @@
         "oneOf": [
           {
             "type": "number",
-            "enum": [
-              1,
-              2
-            ]
+            "enum": [1, 2]
           },
           {
             "type": "boolean",
-            "enum": [
-              false
-            ]
+            "enum": [false]
           }
         ]
       },
@@ -325,6 +281,11 @@
         "type": "boolean",
         "title": "Limited enrollment",
         "description": "True if limited enrollment"
+      },
+      "new": {
+        "type": "boolean",
+        "title": "New",
+        "description": "True if subject is new"
       },
       "rating": {
         "type": "number",
@@ -350,9 +311,7 @@
             "properties": {}
           },
           {
-            "required": [
-              "start"
-            ],
+            "required": ["start"],
             "additionalProperties": false,
             "properties": {
               "start": {
@@ -369,16 +328,11 @@
               }
             },
             "default": {
-              "start": [
-                0,
-                0
-              ]
+              "start": [0, 0]
             }
           },
           {
-            "required": [
-              "end"
-            ],
+            "required": ["end"],
             "additionalProperties": false,
             "properties": {
               "end": {
@@ -395,17 +349,11 @@
               }
             },
             "default": {
-              "end": [
-                0,
-                0
-              ]
+              "end": [0, 0]
             }
           },
           {
-            "required": [
-              "start",
-              "end"
-            ],
+            "required": ["start", "end"],
             "additionalProperties": false,
             "properties": {
               "start": {
@@ -434,14 +382,8 @@
               }
             },
             "default": {
-              "start": [
-                0,
-                0
-              ],
-              "end": [
-                0,
-                0
-              ]
+              "start": [0, 0],
+              "end": [0, 0]
             }
           }
         ]

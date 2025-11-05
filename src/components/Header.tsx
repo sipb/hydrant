@@ -9,26 +9,11 @@ import {
   Text,
   Button,
   createListCollection,
+  Dialog,
+  Select,
+  Portal,
 } from "@chakra-ui/react";
-import {
-  DialogRoot,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogActionTrigger,
-} from "./ui/dialog";
 import { useColorModeValue } from "./ui/color-mode";
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "./ui/select";
 import { LuSettings, LuX } from "react-icons/lu";
 
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
@@ -84,7 +69,7 @@ export function PreferencesDialog() {
 
   return (
     <>
-      <DialogRoot
+      <Dialog.Root
         open={visible}
         onOpenChange={(e) => {
           if (e.open) {
@@ -94,58 +79,75 @@ export function PreferencesDialog() {
           }
         }}
       >
-        <DialogTrigger asChild>
+        <Dialog.Trigger asChild>
           <IconButton size="sm" aria-label="Change theme" variant="outline">
             <LuSettings />
           </IconButton>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Preferences</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            <Flex gap={4}>
-              <SelectRoot
-                collection={collection}
-                value={[preferences.colorScheme?.name ?? ""]}
-                onValueChange={(e) => {
-                  if (e.value[0] === "") {
-                    previewPreferences({
-                      ...preferences,
-                      colorScheme: null,
-                    });
-                    return;
-                  }
+        </Dialog.Trigger>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>Preferences</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Flex gap={4}>
+                  <Select.Root
+                    collection={collection}
+                    value={[preferences.colorScheme?.name ?? ""]}
+                    onValueChange={(e) => {
+                      if (e.value[0] === "") {
+                        previewPreferences({
+                          ...preferences,
+                          colorScheme: null,
+                        });
+                        return;
+                      }
 
-                  const colorScheme = COLOR_SCHEME_PRESETS.find(
-                    ({ name }) => name === e.value[0],
-                  );
-                  if (!colorScheme) return;
-                  previewPreferences({ ...preferences, colorScheme });
-                }}
-              >
-                <SelectLabel>Color scheme:</SelectLabel>
-                <SelectTrigger>
-                  <SelectValueText />
-                </SelectTrigger>
-                <SelectContent portalled={false}>
-                  {collection.items.map(({ label, value }) => (
-                    <SelectItem item={value} key={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            </Flex>
-          </DialogBody>
-          <DialogFooter>
-            <DialogActionTrigger asChild>
-              <Button>Cancel</Button>
-            </DialogActionTrigger>
-            <Button onClick={onConfirm}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
+                      const colorScheme = COLOR_SCHEME_PRESETS.find(
+                        ({ name }) => name === e.value[0],
+                      );
+                      if (!colorScheme) return;
+                      previewPreferences({ ...preferences, colorScheme });
+                    }}
+                  >
+                    <Select.HiddenSelect />
+                    <Select.Label>Color scheme:</Select.Label>
+                    <Select.Control>
+                      <Select.Trigger>
+                        <Select.ValueText />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+                    <Select.Positioner>
+                      <Select.Content>
+                        {collection.items.map((colorScheme) => (
+                          <Select.Item
+                            item={colorScheme}
+                            key={colorScheme.value}
+                          >
+                            {colorScheme.label}
+                            <Select.ItemIndicator />
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Select.Root>
+                </Flex>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.ActionTrigger asChild>
+                  <Button>Cancel</Button>
+                </Dialog.ActionTrigger>
+                <Button onClick={onConfirm}>Save</Button>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 }

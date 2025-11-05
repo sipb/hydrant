@@ -28,14 +28,34 @@ lectureUnits = 3
 labUnits = 0
 preparationUnits = 3
 
-["4.S28"]
-name = " X-Machine: AI and Design Innovation"
-description = "In an AI-enhanced future, humans will become better at everything. The machine targets real-world artificial intelligence challenges designed to help address issues related to climate change, and urbanization in cities. X Machine is a mini accelerator workshop course designed to unite computer science and design/architecture together to design and create innovative and impactful technological solutions to problems in the built and human environment. This half-semester course promotes the development of strategic thinking and technical exploration in the realm of AI, focusing on problem framing and early-stage ideation.\n\nThe course will allow students to develop a foundational knowledge of AI within an interdisciplinary context. Students will learn how to design and create a prototype, learn how to maximize their engagement with their users/customers, and learn how to determine the value proposition that will make an AI-empowered startup successful. By the end of this class, students will be able to develop a conceptual business plan for an AI-based technology solution and apply to other programs at MIT such as DesignX, Sandbox, Delta V, The Engine, and more. "
-inCharge = "N. Bayomi, N. Chang"
-lectureUnits = 2
-labUnits = 0
-preparationUnits = 6
+['4.S33']
+name = "Beginner's Guide to Visualizing Data and Life-Like Processes in Digital Art"
+inCharge = "W. Allstetter"
+meets = "4.S37"
 level = "G"
+lectureUnits = 3
+labUnits = 3
+preparationUnits = 3
+description = "This is an incredible opportunity to dive into the basics of biomimicry and natural algorithms in computational design and artificial life. Prior programming or modeling software experience is not needed. Advanced folks will be accommodated on an individual project-based track. Students learn about the cultural and visual implications of automation and biotechnological advancements driven by computational technology, exploring their aesthetic significance through the analysis of data and algorithms.\n\nThis course is designed as a beginner's guide to ethical solutions to design problems in computational design and data concerning nature through visualization and art. It is structured to be accessible and considerate of the broader impact of design decisions on communities, society, and culture. Students will receive a low-level, beginner-friendly introduction to the basics of data visualization in processing and Python, biomimicry, agent-based systems in Grasshopper visual coding, and C# and animation in Maya."
+
+['4.S37']
+name = "Beginner's Guide to Visualizing Data and Life-Like Processes in Digital Art"
+inCharge = "W. Allstetter"
+meets = "4.S33"
+level = "U"
+lectureUnits = 3
+labUnits = 3
+preparationUnits = 6
+description = "This is an incredible opportunity to dive into the basics of biomimicry and natural algorithms in computational design and artificial life. Prior programming or modeling software experience is not needed. Advanced folks will be accommodated on an individual project-based track. Students learn about the cultural and visual implications of automation and biotechnological advancements driven by computational technology, exploring their aesthetic significance through the analysis of data and algorithms.\n\nThis course is designed as a beginner's guide to ethical solutions to design problems in computational design and data concerning nature through visualization and art. It is structured to be accessible and considerate of the broader impact of design decisions on communities, society, and culture. Students will receive a low-level, beginner-friendly introduction to the basics of data visualization in processing and Python, biomimicry, agent-based systems in Grasshopper visual coding, and C# and animation in Maya."
+
+['4.S34']
+name = "Publication as Worldmaking: Performative Approaches to Fiction and Publishing"
+inCharge = "R. Majzoub"
+level = "G"
+lectureUnits = 3
+labUnits = 3
+preparationUnits = 6
+description = "This course investigates the interdisciplinary and generative possibilities of publication, emphasizing its role as a practice of expanding public engagement and imagination. Throughout the semester, students will explore worldmaking strategies, speculative fiction and an array of publication methods ranging from traditional techniques—leveraging ACT and MIT’s extensive resources such as riso printing, book binding and maker labs—to experimental approaches in digital media, performance, political systems, architecture, contemporary art, design and AI.Specific expectations and/or deliverable product resulting from course."
 
 ["4.S43"]
 name = "Applied Category Theory for Engineering Design"

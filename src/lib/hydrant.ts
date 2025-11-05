@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, createContext } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useColorMode } from "../components/ui/color-mode";
 
 import type { TermInfo } from "../lib/dates";
-import type { State } from "../lib/state";
 import type { RawClass } from "../lib/rawClass";
 import type { HydrantState } from "../lib/schema";
 import { DEFAULT_STATE } from "../lib/schema";
+import type { State } from "../lib/state";
 
 export interface SemesterData {
   classes: Record<string, RawClass>;
@@ -51,7 +51,6 @@ export function useHydrant({ globalState }: { globalState: State }): {
       }
     };
     state.updateState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colorMode, state]);
 
   return { state, hydrantState };

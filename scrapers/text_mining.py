@@ -18,9 +18,10 @@ Constants:
 from __future__ import annotations
 
 import json
-from typing import Iterable
 from collections.abc import Mapping
-from nltk.tokenize import word_tokenize, sent_tokenize  # type: ignore
+from typing import Iterable
+
+from nltk.tokenize import sent_tokenize, word_tokenize
 
 KEYWORDS = ["limited", "restricted", "enrollment", "preference", "priority"]
 FOLDER = "../public/"

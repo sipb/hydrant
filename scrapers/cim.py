@@ -20,11 +20,12 @@ from __future__ import annotations
 
 import json
 import os.path
+import socket
 from collections import OrderedDict
 from collections.abc import Iterable
+from urllib.error import URLError
+from urllib.request import urlopen
 
-
-import requests
 from bs4 import BeautifulSoup, Tag
 
 # pylint: disable=line-too-long
@@ -39,11 +40,12 @@ def get_sections() -> Iterable[Tag]:
         Iterable[bs4.element.Tag]: The accordion sections that contain lists of CI-M
             subjects
     """
-    cim_req = requests.get(
-        CIM_URL,
-        timeout=5,
-    )
-    soup = BeautifulSoup(cim_req.text, "html.parser")
+    try:
+        with urlopen(CIM_URL, timeout=5) as cim_req:
+            soup = BeautifulSoup(cim_req.read().decode("utf-8"), "html.parser")
+    except (URLError, socket.timeout) as error:
+        print(f"error in get_sections: {error}")
+        raise error
 
     return (
         item
@@ -86,7 +88,17 @@ def run() -> None:
     """
     The main entry point.
     """
-    sections = get_sections()
+
+    fname = os.path.join(os.path.dirname(__file__), "cim.json")
+
+    try:
+        sections = get_sections()
+    except (URLError, socket.timeout):
+        print("Unable to scrape Registrar page for CI-M subjects.")
+        if not os.path.exists(fname):
+            with open(fname, "w", encoding="utf-8") as cim_file:
+                json.dump({}, cim_file)
+        return
 
     # This maps each course number to a set of CI-M subjects for that course
     courses: OrderedDict[str, set[str]] = OrderedDict()
@@ -102,9 +114,10 @@ def run() -> None:
             for number in subj.replace("J", "").split("/"):
                 subjects.setdefault(number, {"cim": []})["cim"].append(course)
 
-    fname = os.path.join(os.path.dirname(__file__), "cim.json")
     with open(fname, "w", encoding="utf-8") as cim_file:
         json.dump(subjects, cim_file)
+
+    print(f"Found {len(subjects)} CI-M subjects")
 
 
 if __name__ == "__main__":

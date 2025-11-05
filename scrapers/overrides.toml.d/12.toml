@@ -7,3 +7,21 @@ description = "Investigates the diverse surfaces of planetary bodies throughout 
 inCharge = "G. Stucky de Quay"
 level = "G"
 isVariableUnits = true
+
+['12.S680']
+name = "Space Plasmas and Planetary Environments"
+description = "Introduces the fundamentals of space plasma dynamics in planetary and interplanetary environments explored remotely and by spacecraft, including foundations of plasma dynamics (from single particle motion through fluid-like motion to waves and turbulence), solar wind and its effects on planetary environments and impact on technology. Special focus on using state-of-the-art computational models and spacecraft data to drive mission planning and scientific discovery, with applications in hazardous radiation prediction, detection of planetary dynamos and planetary magnetism, detection of ocean worlds , the magnetic history of the solar system, and the role of stellar winds in atmospheric escape and planetary habitability. 12.S680 is letter graded. 12.S681 is p/d/f."
+inCharge = "B. Weiss, R. Oran"
+lectureUnits = 9
+labUnits = 0
+preparationUnits = 3
+meets = "12.S681"
+
+['12.S681']
+name = "Space Plasmas and Planetary Environments"
+description = "Introduces the fundamentals of space plasma dynamics in planetary and interplanetary environments explored remotely and by spacecraft, including foundations of plasma dynamics (from single particle motion through fluid-like motion to waves and turbulence), solar wind and its effects on planetary environments and impact on technology. Special focus on using state-of-the-art computational models and spacecraft data to drive mission planning and scientific discovery, with applications in hazardous radiation prediction, detection of planetary dynamos and planetary magnetism, detection of ocean worlds , the magnetic history of the solar system, and the role of stellar winds in atmospheric escape and planetary habitability. 12.S680 is letter graded. 12.S681 is p/d/f."
+inCharge = "B. Weiss, R. Oran"
+lectureUnits = 9
+labUnits = 0
+preparationUnits = 3
+meets = "12.S680"

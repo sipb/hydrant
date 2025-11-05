@@ -47,11 +47,14 @@ from __future__ import annotations
 import json
 import os.path
 import re
+import socket
+from collections.abc import Iterable, Mapping, MutableMapping
 from typing import Union
-from collections.abc import MutableMapping, Mapping, Iterable
+from urllib.error import URLError
+from urllib.request import urlopen
 
-import requests
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString
 
 BASE_URL = "http://student.mit.edu/catalog"
 
@@ -169,9 +172,9 @@ def get_half(html: BeautifulSoup) -> Union[int, bool]:
             2 if the class is in the second half of the term, False if it is not a half
             semester course
     """
-    if html.find(text=re.compile("first half of term")):
+    if html.find(text=re.compile("; first half of term")):
         return 1
-    if html.find(text=re.compile("second half of term")):
+    if html.find(text=re.compile("; second half of term")):
         return 2
     return False
 
@@ -187,6 +190,21 @@ def is_limited(html: BeautifulSoup) -> bool:
         bool: True if enrollment in the class is limited
     """
     if html.find(text=LIMITED_REGEX):
+        return True
+    return False
+
+
+def is_new(html: BeautifulSoup) -> bool:
+    """
+    Checks if the subject is new.
+
+    Args:
+        html (BeautifulSoup): the input webpage
+
+    Returns:
+        bool: True if the class is new
+    """
+    if html.find(text=re.compile(r"\(New\)")):
         return True
     return False
 
@@ -208,6 +226,7 @@ def get_course_data(filtered_html: BeautifulSoup) -> dict[str, Union[bool, int, 
         "final": has_final(filtered_html),
         "half": get_half(filtered_html),
         "limited": is_limited(filtered_html),
+        "new": is_new(filtered_html),
     }
 
 
@@ -219,8 +238,8 @@ def get_home_catalog_links() -> Iterable[str]:
     Returns:
         Iterable[str]: relative links to major-specific subpages to scrape
     """
-    catalog_req = requests.get(BASE_URL + "/index.cgi", timeout=3)
-    html = BeautifulSoup(catalog_req.content, "html.parser")
+    with urlopen(BASE_URL + "/index.cgi", timeout=3) as catalog_req:
+        html = BeautifulSoup(catalog_req.read(), "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
     return (a["href"] for a in home_list.find_all("a", href=True))  # type: ignore
 
@@ -237,8 +256,8 @@ def get_all_catalog_links(initial_hrefs: Iterable[str]) -> list[str]:
     """
     hrefs: list[str] = []
     for initial_href in initial_hrefs:
-        href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
-        html = BeautifulSoup(href_req.content, "html.parser")
+        with urlopen(f"{BASE_URL}/{initial_href}", timeout=10) as href_req:
+            html = BeautifulSoup(href_req.read(), "html.parser")
         # Links should be in the only table in the #contentmini div
         tables: Tag = html.find("div", id="contentmini").find_all(  # type: ignore
             "table"
@@ -292,9 +311,9 @@ def scrape_courses_from_page(
             a dictionary to fill with course data
         href (str): the relative link to the page to scrape
     """
-    href_req = requests.get(f"{BASE_URL}/{href}", timeout=3)
-    # The "html.parser" parses pretty badly
-    html = BeautifulSoup(href_req.content, "lxml")
+    with urlopen(f"{BASE_URL}/{href}", timeout=10) as href_req:
+        # The "html.parser" parses pretty badly
+        html = BeautifulSoup(href_req.read(), "lxml")
     classes_content: Tag = html.find(
         "table", width="100%", border="0"
     ).find(  # type: ignore
@@ -336,15 +355,24 @@ def run() -> None:
     """
     The main function! This calls all the other functions in this file.
     """
-    home_hrefs = get_home_catalog_links()
-    all_hrefs = get_all_catalog_links(home_hrefs)
-    courses: MutableMapping[str, Mapping[str, Union[bool, int, str]]] = {}
-    for href in all_hrefs:
-        print(f"Scraping page: {href}")
-        scrape_courses_from_page(courses, href)
+    fname = os.path.join(os.path.dirname(__file__), "catalog.json")
+
+    try:
+        home_hrefs = get_home_catalog_links()
+        all_hrefs = get_all_catalog_links(home_hrefs)
+        courses: MutableMapping[str, Mapping[str, Union[bool, int, str]]] = {}
+        for href in all_hrefs:
+            print(f"Scraping page: {href}")
+            scrape_courses_from_page(courses, href)
+    except (URLError, socket.timeout):
+        print("Unable to scrape course catalog data.")
+        if not os.path.exists(fname):
+            with open(fname, "w", encoding="utf-8") as catalog_file:
+                json.dump({}, catalog_file)
+        return
+
     print(f"Got {len(courses)} courses")
 
-    fname = os.path.join(os.path.dirname(__file__), "catalog.json")
     with open(fname, "w", encoding="utf-8") as catalog_file:
         json.dump(courses, catalog_file)
 

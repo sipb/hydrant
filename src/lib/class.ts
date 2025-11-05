@@ -357,6 +357,11 @@ export class Class {
     return this.rawClass.half || undefined;
   }
 
+  /** Whether this class is new and should be highlighted as such. */
+  get new(): boolean {
+    return this.rawClass.new || false;
+  }
+
   /** Get all calendar events corresponding to this class. */
   get events(): Event[] {
     return this.sections
@@ -411,7 +416,7 @@ export class Class {
     hours: string;
     people: string;
   } {
-    if (this.rawClass.rating === 0) {
+    if (this.rawClass.rating === 0 || this.new) {
       return {
         rating: "N/A",
         hours: "N/A",

@@ -1,0 +1,11 @@
+#:schema ./override-schema.json
+# Course WGS special subjects (fall 2025)
+
+["WGS.S10"]
+lectureUnits = 3
+preparationUnits = 9
+level = "U"
+description = "This special subject course examines the history of Women's and Gender Studies at MIT with a focus on documenting its origins as well as its impact. Amid escalating backlash against efforts to diversify higher education, we utilize lessons from the past to chart a sustainable path forward for academic feminism both on our own campus and worldwide. The class explores key debates in WGS around intersectionality, interdisciplinarity, and institutionalization that have informed the process of curricular change. Students will also develop their own research projects informed by feminist methods, with opportunities to practice conducting interviews, managing archival data, and designing digital exhibits."
+name = "Studying Women and Gender at MIT"
+inCharge = "Clara Montague"
+url = "https://wgs.mit.edu/wgs-courses/wgss10-fa25"
