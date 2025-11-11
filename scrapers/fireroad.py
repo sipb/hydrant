@@ -467,8 +467,8 @@ def get_course_data(
     out_of_class_hours = course.get("out_of_class_hours", 0)
 
     # workaround since we can't use the "|" symbol
-    assert(isinstance(in_class_hours, (int, float)))
-    assert(isinstance(out_of_class_hours, (int, float)))
+    assert isinstance(in_class_hours, (int, float))
+    assert isinstance(out_of_class_hours, (int, float))
 
     raw_class.update(
         {
