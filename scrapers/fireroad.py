@@ -26,9 +26,8 @@ from __future__ import annotations
 import json
 import os.path
 import socket
-from collections.abc import Mapping, MutableMapping, Sequence
 from functools import lru_cache
-from typing import Any, Union
+from typing import Any, Union, Dict, List, Tuple
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -44,8 +43,24 @@ from .utils import (
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
 
+# type declarations
 
-def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
+UnionOfDifferentThings = Union[
+    str,
+    bool,
+    float,
+    int,
+    Dict[str, Tuple[int, int]],
+    List[str],
+    Dict[str, Union[List[str], bool]],
+]
+
+Course = Dict[str, UnionOfDifferentThings]
+
+CourseListing = Dict[str, Course]
+
+
+def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> Tuple[int, int]:
     """Parses a timeslot.
 
     >>> parse_timeslot("M", "10-11.30", False)
@@ -62,7 +77,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
         KeyError: If no matching timeslot could be found.
 
     Returns:
-        list[int]: The parsed day and timeslot
+        List[int]: The parsed day and timeslot
     """
     assert time_is_pm == slot.endswith(" PM")
     slot = slot.rstrip(" PM")
@@ -86,7 +101,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
     return start_slot, end_slot - start_slot
 
 
-def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
+def parse_section(section: str) -> Tuple[List[Tuple[int, int]], str]:
     """Parses a section string.
 
     >>> parse_section("32-123/TR/0/11/F/0/2")
@@ -96,10 +111,10 @@ def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
         section (str): The section given as a string
 
     Returns:
-        list[Union[list[str], str]]: The parsed section.
+        List[Union[List[str], str]]: The parsed section.
     """
     place, *infos = section.split("/")
-    slots: list[tuple[int, int]] = []
+    slots: List[Tuple[int, int]] = []
 
     for weekdays, is_pm_int, slot in grouper(infos, 3):
         for day in weekdays:
@@ -110,7 +125,7 @@ def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
     return slots, place
 
 
-def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
+def parse_schedule(schedule: str) -> Dict[str, Union[List[str], bool]]:
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
@@ -119,14 +134,15 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
         schedule (str): The schedule string.
 
     Returns:
-        dict[str, union[list, bool]: The parsed schedule
+        Dict[str, union[list, bool]: The parsed schedule
     """
     section_tba = False
-    result: dict[str, Union[list[str], bool]] = {}
+    result: Dict[str, Union[List[str], bool]] = {}
 
     # Kinds of sections that exist.
-    result["sectionKinds"] = []
     section_kinds = ("Lecture", "Recitation", "Lab", "Design")
+
+    result_section_kinds: List[str] = []
 
     for chunk in schedule.split(";"):
         name, *sections = chunk.split(",")
@@ -137,7 +153,7 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
 
         # The key is lowercase
         kind = name.lower()
-        result["sectionKinds"].append(kind)
+        result_section_kinds.append(kind)
 
         # Raw section times, e.g. T9.301-11 or TR1,F2.
         result[kind + "RawSections"] = sections
@@ -152,11 +168,12 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
                 result[kind_section_name].append(parse_section(info))  # type: ignore
 
     # True if some schedule is not scheduled yet.
+    result["sectionKinds"] = result_section_kinds
     result["tba"] = section_tba
     return result
 
 
-def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
+def decode_quarter_date(date: str) -> Union[Tuple[int, int], None]:
     """
     Decodes a quarter date into a month and day.
 
@@ -164,21 +181,22 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
         date (str): The date in the format "4/4" or "apr 4".
 
     Returns:
-        tuple[int, int]: The month and day.
+        Tuple[int, int]: The month and day.
     """
     if "/" in date:
         month, day = date.split("/")
         return int(month), int(day)
     if " " in date:
-        month, day = MONTHS[(date.split())[0]], (date.split())[1]
-        return int(month), int(day)
+        # NOTE: if we reuse the `month` variable, mypy will complain!
+        other_month, other_day = MONTHS[(date.split())[0]], (date.split())[1]
+        return int(other_month), int(other_day)
 
     return None
 
 
 def parse_quarter_info(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> dict[str, dict[str, tuple[int, int]]]:
+    course: Course,
+) -> Dict[str, Dict[str, Tuple[int, int]]]:
     """
     Parses quarter info from the course.
     If quarter information key is present, returns either start date, end date, or both.
@@ -192,13 +210,14 @@ def parse_quarter_info(
         dates can appear as either "4/4" or "apr 4".
 
     Args:
-        course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+        course (Course): The course object.
 
     Returns:
-        dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
+        Dict[str, Dict[str, Tuple[int, int]]]: The parsed quarter info.
     """
 
-    quarter_info: str = course.get("quarter_information", "")  # type: ignore
+    quarter_info = course.get("quarter_information", "")
+    assert isinstance(quarter_info, str)
     if quarter_info:
         quarter_info_list = quarter_info.split(",")
 
@@ -223,21 +242,24 @@ def parse_quarter_info(
 
 
 def parse_attributes(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> dict[str, bool]:
+    course: Course,
+) -> Dict[str, bool]:
     """
     Parses attributes of the course.
 
     Args:
-        course (Mapping[str, Union[bool, float, int, list[str], str]]):
+        course (Course):
             The course object.
 
     Returns:
-        dict[str, bool]: The attributes of the course.
+        Dict[str, bool]: The attributes of the course.
     """
-    hass_code: str = course.get("hass_attribute", "X")[-1]  # type: ignore
-    comms_code: str = course.get("communication_requirement", "")  # type: ignore
-    gir_attr: str = course.get("gir_attribute", "")  # type: ignore
+    hass_codes = course.get("hass_attribute", "X")
+    comms_code = course.get("communication_requirement", "")
+    gir_attr = course.get("gir_attribute", "")
+
+    assert isinstance(hass_codes, str)
+    hass_code: str = hass_codes[-1]
 
     return {
         "hassH": hass_code == "H",
@@ -253,17 +275,17 @@ def parse_attributes(
 
 
 def parse_terms(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> dict[str, list[str]]:
+    course: Course,
+) -> Dict[str, List[str]]:
     """
     Parses the terms of the course.
 
     Args:
-        course (Mapping[str, Union[bool, float, int, Sequence[str], str]]):
+        course (Course):
             The course object.
 
     Returns:
-        dict[str, list[str]]: The parsed terms, stored in the key "terms".
+        Dict[str, List[str]]: The parsed terms, stored in the key "terms".
     """
     terms = [
         name
@@ -279,18 +301,19 @@ def parse_terms(
 
 
 def parse_prereqs(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> dict[str, str]:
+    course: Course,
+) -> Dict[str, str]:
     """
     Parses prerequisites from the course.
 
     Args:
-        course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+        course (Course): The course object.
 
     Returns:
-        dict[str, str]: The parsed prereqs, in the key "prereqs".
+        Dict[str, str]: The parsed prereqs, in the key "prereqs".
     """
-    prereqs: str = course.get("prerequisites", "")  # type: ignore
+    prereqs = course.get("prerequisites", "")
+    assert isinstance(prereqs, str)
     for gir, gir_rw in GIR_REWRITE.items():
         prereqs = prereqs.replace(gir, gir_rw)
     if not prereqs:
@@ -298,11 +321,58 @@ def parse_prereqs(
     return {"prereqs": prereqs}
 
 
+def get_schedule_data(course: Course, term: Term) -> Dict[str, Union[List[str], bool]]:
+    """
+    Helper function for `get_course_data`
+
+    Args:
+        course (Course): the course
+        term (Term): the term
+
+    Returns:
+        (Dict[str, Union[List[str], bool]]): schedule-related data
+    """
+    has_schedule = "schedule" in course
+    if has_schedule:
+        # helper variable to make code DRYer
+        term_to_parse: str = ""
+        if term == Term.FA and "schedule_fall" in course:
+            term_to_parse = "schedule_fall"
+        elif term == Term.JA and "schedule_IAP" in course:
+            term_to_parse = "schedule_IAP"
+        elif term == Term.SP and "schedule_spring" in course:
+            term_to_parse = "schedule_spring"
+        else:
+            term_to_parse = "schedule"
+
+        course_schedule = course[term_to_parse]
+        assert isinstance(course_schedule, str)
+        try:
+            return parse_schedule(course_schedule)
+        except ValueError as val_err:
+            # if we can't parse the schedule, warn
+            # NOTE: parse_schedule will raise a ValueError
+            print(f"Can't parse schedule {course.get('subject_id', '')}: {val_err!r}")
+            has_schedule = False
+    if not has_schedule:
+        return {
+            "tba": False,
+            "sectionKinds": [],
+            "lectureSections": [],
+            "recitationSections": [],
+            "labSections": [],
+            "designSections": [],
+            "lectureRawSections": [],
+            "recitationRawSections": [],
+            "labRawSections": [],
+            "designRawSections": [],
+        }
+    raise AssertionError("This shouldn't be possible")
+
+
 def get_course_data(
-    courses: MutableMapping[
-        str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
-    ],
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    courses: CourseListing,
+    course: Course,
     term: Term,
 ) -> bool:
     """
@@ -311,84 +381,45 @@ def get_course_data(
     True otherwise. The `courses` variable is modified in place.
 
     Args:
-        courses (list[dict[str, Union[bool, float, int, list[str], str]]]):
+        courses (CourseListing):
             The list of courses.
-        course (dict[str, Union[bool, float, int, list[str], str]]):
+        course (Course):
             The course in particular.
         term (Term): The current term (fall, IAP, or spring).
 
     Returns:
         bool: Whether the course was entered into courses.
     """
-    course_code: str = course["subject_id"]  # type: ignore
+    course_code = course.get("subject_id", "")
+    assert isinstance(course_code, str)
     course_num, course_class = course_code.split(".")
-    raw_class: dict[
-        str,
-        Union[
-            str,
-            bool,
-            float,
-            int,
-            Mapping[str, tuple[int, int]],
-            Sequence[str],
-            Mapping[str, Union[Sequence[str], bool]],
-            bool,
-        ],
-    ] = {
+    raw_class: Course = {
         "number": course_code,
         "course": course_num,
         "subject": course_class,
     }
 
-    # terms, prereqs
-    raw_class.update(parse_terms(course))
+    # prereqs
     raw_class.update(parse_prereqs(course))
 
-    if term.name not in raw_class["terms"]:  # type: ignore
+    # terms
+    terms_dict = parse_terms(course)
+    raw_class.update(terms_dict)
+    if term.name not in terms_dict.get("terms", []):
         return False
-
-    has_schedule = "schedule" in course
 
     # tba, sectionKinds, lectureSections, recitationSections, labSections,
     # designSections, lectureRawSections, recitationRawSections, labRawSections,
     # designRawSections
-    if has_schedule:
-        try:
-            if term == Term.FA and "schedule_fall" in course:
-                raw_class.update(
-                    parse_schedule(course["schedule_fall"])  # type: ignore
-                )
-            elif term == Term.JA and "schedule_IAP" in course:
-                raw_class.update(parse_schedule(course["schedule_IAP"]))  # type: ignore
-            elif term == Term.SP and "schedule_spring" in course:
-                raw_class.update(
-                    parse_schedule(course["schedule_spring"])  # type: ignore
-                )
-            else:
-                raw_class.update(parse_schedule(course["schedule"]))  # type: ignore
-        except ValueError as val_err:
-            # if we can't parse the schedule, warn
-            # NOTE: parse_schedule will raise a ValueError
-            print(f"Can't parse schedule {course_code}: {val_err!r}")
-            has_schedule = False
-    if not has_schedule:
-        raw_class.update(
-            {
-                "tba": False,
-                "sectionKinds": [],
-                "lectureSections": [],
-                "recitationSections": [],
-                "labSections": [],
-                "designSections": [],
-                "lectureRawSections": [],
-                "recitationRawSections": [],
-                "labRawSections": [],
-                "designRawSections": [],
-            }
-        )
+    raw_class.update(get_schedule_data(course, term))
 
     # hassH, hassA, hassS, hassE, cih, cihw, rest, lab, partLab
     raw_class.update(parse_attributes(course))
+
+    samelist = course.get("joint_subjects", [])
+    meetslist = course.get("meets_with_subjects", [])
+    assert isinstance(samelist, list)
+    assert isinstance(meetslist, list)
     try:
         raw_class.update(
             {
@@ -397,10 +428,8 @@ def get_course_data(
                 "preparationUnits": course["preparation_units"],
                 "level": course["level"],
                 "isVariableUnits": course["is_variable_units"],
-                "same": ", ".join(course.get("joint_subjects", [])),  # type: ignore
-                "meets": ", ".join(
-                    course.get("meets_with_subjects", [])  # type: ignore
-                ),
+                "same": ", ".join(samelist),
+                "meets": ", ".join(meetslist),
             }
         )
     except KeyError as key_err:
@@ -416,11 +445,13 @@ def get_course_data(
     # Get quarter info if available
     raw_class.update(parse_quarter_info(course))
 
+    instructor_list = course.get("instructors", [])
+    assert isinstance(instructor_list, list)
     raw_class.update(
         {
             "description": course.get("description", ""),
             "name": course.get("title", ""),
-            "inCharge": ",".join(course.get("instructors", [])),  # type: ignore
+            "inCharge": ",".join(instructor_list),
             "virtualStatus": course.get("virtual_status", "") == "Virtual",
         }
     )
@@ -430,16 +461,24 @@ def get_course_data(
     if "old_id" in course:
         raw_class["oldNumber"] = course["old_id"]
 
+    # NOTE: a priori these could be different types
+    # (the most elegant way to fix this would probably be JSON schema validation)
+    in_class_hours = course.get("in_class_hours", 0)
+    out_of_class_hours = course.get("out_of_class_hours", 0)
+
+    # workaround since we can't use the "|" symbol
+    assert isinstance(in_class_hours, (int, float))
+    assert isinstance(out_of_class_hours, (int, float))
+
     raw_class.update(
         {
             "rating": course.get("rating", 0),
-            "hours": course.get("in_class_hours", 0)
-            + course.get("out_of_class_hours", 0),  # type: ignore
+            "hours": in_class_hours + out_of_class_hours,
             "size": course.get("enrollment_number", 0),
         }
     )
 
-    courses[course_code] = raw_class  # type: ignore
+    courses[course_code] = raw_class
     return True
 
 
@@ -480,9 +519,7 @@ def run(is_semester_term: bool) -> None:
                 json.dump({}, fireroad_file)
         return
 
-    courses: MutableMapping[
-        str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
-    ] = {}
+    courses: CourseListing = {}
     term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
     missing = 0
 
