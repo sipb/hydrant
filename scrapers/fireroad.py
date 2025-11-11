@@ -321,7 +321,7 @@ def parse_prereqs(
     return {"prereqs": prereqs}
 
 
-def get_schedule_data(course: Course, term: Term) -> Dict[str, List[str] | bool]:
+def get_schedule_data(course: Course, term: Term) -> Dict[str, Union[List[str], bool]]:
     """
     Helper function for `get_course_data`
 
@@ -330,7 +330,7 @@ def get_schedule_data(course: Course, term: Term) -> Dict[str, List[str] | bool]
         term (Term): the term
 
     Returns:
-        (Dict[str, List[str] | bool] | None): schedule-related data
+        (Dict[str, Union[List[str], bool]]): schedule-related data
     """
     has_schedule = "schedule" in course
     if has_schedule:
@@ -465,8 +465,10 @@ def get_course_data(
     # (the most elegant way to fix this would probably be JSON schema validation)
     in_class_hours = course.get("in_class_hours", 0)
     out_of_class_hours = course.get("out_of_class_hours", 0)
-    assert isinstance(in_class_hours, float | int)
-    assert isinstance(out_of_class_hours, float | int)
+
+    # workaround since we can't use the "|" symbol
+    assert(isinstance(in_class_hours, (int, float)))
+    assert(isinstance(out_of_class_hours, (int, float)))
 
     raw_class.update(
         {
