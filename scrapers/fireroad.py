@@ -27,7 +27,7 @@ import json
 import os.path
 import socket
 from functools import lru_cache
-from typing import Any, Union
+from typing import Any, Union, Dict, List, Tuple
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -50,17 +50,17 @@ UnionOfDifferentThings = Union[
     bool,
     float,
     int,
-    dict[str, tuple[int, int]],
-    list[str],
-    dict[str, Union[list[str], bool]],
+    Dict[str, Tuple[int, int]],
+    List[str],
+    Dict[str, Union[List[str], bool]],
 ]
 
-Course = dict[str, UnionOfDifferentThings]
+Course = Dict[str, UnionOfDifferentThings]
 
-CourseListing = dict[str, Course]
+CourseListing = Dict[str, Course]
 
 
-def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
+def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> Tuple[int, int]:
     """Parses a timeslot.
 
     >>> parse_timeslot("M", "10-11.30", False)
@@ -77,7 +77,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
         KeyError: If no matching timeslot could be found.
 
     Returns:
-        list[int]: The parsed day and timeslot
+        List[int]: The parsed day and timeslot
     """
     assert time_is_pm == slot.endswith(" PM")
     slot = slot.rstrip(" PM")
@@ -101,7 +101,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
     return start_slot, end_slot - start_slot
 
 
-def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
+def parse_section(section: str) -> Tuple[List[Tuple[int, int]], str]:
     """Parses a section string.
 
     >>> parse_section("32-123/TR/0/11/F/0/2")
@@ -111,10 +111,10 @@ def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
         section (str): The section given as a string
 
     Returns:
-        list[Union[list[str], str]]: The parsed section.
+        List[Union[List[str], str]]: The parsed section.
     """
     place, *infos = section.split("/")
-    slots: list[tuple[int, int]] = []
+    slots: List[Tuple[int, int]] = []
 
     for weekdays, is_pm_int, slot in grouper(infos, 3):
         for day in weekdays:
@@ -125,7 +125,7 @@ def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
     return slots, place
 
 
-def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
+def parse_schedule(schedule: str) -> Dict[str, Union[List[str], bool]]:
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
@@ -134,15 +134,15 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
         schedule (str): The schedule string.
 
     Returns:
-        dict[str, union[list, bool]: The parsed schedule
+        Dict[str, union[list, bool]: The parsed schedule
     """
     section_tba = False
-    result: dict[str, Union[list[str], bool]] = {}
+    result: Dict[str, Union[List[str], bool]] = {}
 
     # Kinds of sections that exist.
     section_kinds = ("Lecture", "Recitation", "Lab", "Design")
 
-    result_section_kinds: list[str] = []
+    result_section_kinds: List[str] = []
 
     for chunk in schedule.split(";"):
         name, *sections = chunk.split(",")
@@ -173,7 +173,7 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
     return result
 
 
-def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
+def decode_quarter_date(date: str) -> Union[Tuple[int, int], None]:
     """
     Decodes a quarter date into a month and day.
 
@@ -181,7 +181,7 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
         date (str): The date in the format "4/4" or "apr 4".
 
     Returns:
-        tuple[int, int]: The month and day.
+        Tuple[int, int]: The month and day.
     """
     if "/" in date:
         month, day = date.split("/")
@@ -196,7 +196,7 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
 
 def parse_quarter_info(
     course: Course,
-) -> dict[str, dict[str, tuple[int, int]]]:
+) -> Dict[str, Dict[str, Tuple[int, int]]]:
     """
     Parses quarter info from the course.
     If quarter information key is present, returns either start date, end date, or both.
@@ -213,7 +213,7 @@ def parse_quarter_info(
         course (Course): The course object.
 
     Returns:
-        dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
+        Dict[str, Dict[str, Tuple[int, int]]]: The parsed quarter info.
     """
 
     quarter_info = course.get("quarter_information", "")
@@ -243,7 +243,7 @@ def parse_quarter_info(
 
 def parse_attributes(
     course: Course,
-) -> dict[str, bool]:
+) -> Dict[str, bool]:
     """
     Parses attributes of the course.
 
@@ -252,7 +252,7 @@ def parse_attributes(
             The course object.
 
     Returns:
-        dict[str, bool]: The attributes of the course.
+        Dict[str, bool]: The attributes of the course.
     """
     hass_codes = course.get("hass_attribute", "X")
     comms_code = course.get("communication_requirement", "")
@@ -276,7 +276,7 @@ def parse_attributes(
 
 def parse_terms(
     course: Course,
-) -> dict[str, list[str]]:
+) -> Dict[str, List[str]]:
     """
     Parses the terms of the course.
 
@@ -285,7 +285,7 @@ def parse_terms(
             The course object.
 
     Returns:
-        dict[str, list[str]]: The parsed terms, stored in the key "terms".
+        Dict[str, List[str]]: The parsed terms, stored in the key "terms".
     """
     terms = [
         name
@@ -302,7 +302,7 @@ def parse_terms(
 
 def parse_prereqs(
     course: Course,
-) -> dict[str, str]:
+) -> Dict[str, str]:
     """
     Parses prerequisites from the course.
 
@@ -310,7 +310,7 @@ def parse_prereqs(
         course (Course): The course object.
 
     Returns:
-        dict[str, str]: The parsed prereqs, in the key "prereqs".
+        Dict[str, str]: The parsed prereqs, in the key "prereqs".
     """
     prereqs = course.get("prerequisites", "")
     assert isinstance(prereqs, str)
@@ -321,7 +321,7 @@ def parse_prereqs(
     return {"prereqs": prereqs}
 
 
-def get_schedule_data(course: Course, term: Term) -> dict[str, list[str] | bool]:
+def get_schedule_data(course: Course, term: Term) -> Dict[str, List[str] | bool]:
     """
     Helper function for `get_course_data`
 
@@ -330,7 +330,7 @@ def get_schedule_data(course: Course, term: Term) -> dict[str, list[str] | bool]
         term (Term): the term
 
     Returns:
-        (dict[str, list[str] | bool] | None): schedule-related data
+        (Dict[str, List[str] | bool] | None): schedule-related data
     """
     has_schedule = "schedule" in course
     if has_schedule:
