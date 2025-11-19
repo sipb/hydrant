@@ -12,8 +12,8 @@ import type { RawClass, RawTimeslot } from "./rawClass";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
-import { DEFAULT_PREFERENCES } from "./schema";
 import { getFavoriteCourses, setFavoriteCourses } from "./auth";
+import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -312,11 +312,16 @@ export class State {
   }
 
   get showFeedback(): boolean {
-    return this.preferences.showFeedback;
+    return (
+      this.preferences.showFeedback ||
+      this.preferences.showFeedbackChanged === undefined ||
+      this.preferences.showFeedbackChanged < BANNER_LAST_CHANGED
+    );
   }
 
   set showFeedback(show: boolean) {
     this.preferences.showFeedback = show;
+    this.preferences.showFeedbackChanged = new Date().valueOf();
     this.updateState();
   }
 
@@ -345,11 +350,11 @@ export class State {
   inflate(
     obj:
       | (
-          | number
-          | (string | number | string[])[][]
-          | (string | RawTimeslot[])[][]
-          | null
-        )[]
+        | number
+        | (string | number | string[])[][]
+        | (string | RawTimeslot[])[][]
+        | null
+      )[]
       | null,
   ): void {
     if (!obj) return;
