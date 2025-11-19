@@ -350,11 +350,11 @@ export class State {
   inflate(
     obj:
       | (
-        | number
-        | (string | number | string[])[][]
-        | (string | RawTimeslot[])[][]
-        | null
-      )[]
+          | number
+          | (string | number | string[])[][]
+          | (string | RawTimeslot[])[][]
+          | null
+        )[]
       | null,
   ): void {
     if (!obj) return;
