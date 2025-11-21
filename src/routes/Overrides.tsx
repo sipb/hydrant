@@ -401,14 +401,16 @@ export default function App({ loaderData }: Route.ComponentProps) {
             setError(errors.length > 0 ? true : false);
           }}
           onSubmit={() => {
-            const contents = TOML.stringify(
-              Object.fromEntries(
-                data.map((override) => {
-                  const { number: num, ...rest } = override;
-                  return [num, rest];
-                }),
-              ),
-            );
+            const contents =
+              "#:schema ./override-schema.json\n\n" +
+              TOML.stringify(
+                Object.fromEntries(
+                  data.map((override) => {
+                    const { number: num, ...rest } = override;
+                    return [num, rest];
+                  }),
+                ),
+              );
 
             const element = document.createElement("a");
             element.href = URL.createObjectURL(

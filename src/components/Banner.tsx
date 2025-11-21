@@ -8,18 +8,16 @@ import {
   Float,
   Presence,
   CloseButton,
-  Button,
 } from "@chakra-ui/react";
 
 import { HydrantContext } from "../lib/hydrant";
-import { Link } from "react-router";
 
-export const FeedbackBanner = () => {
+export const Banner = () => {
   const { state } = useContext(HydrantContext);
 
   return (
     <Presence
-      present={state.showFeedback}
+      present={state.showBanner}
       animationName={{
         _open: "slide-from-top-full",
         _closed: "slide-to-top-full",
@@ -39,29 +37,15 @@ export const FeedbackBanner = () => {
         >
           <Flex align="center" textStyle="sm">
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
-              Do you have feedback on Hydrant? We'd love to hear it!
+              IAP and Spring 2026 classes are now available! ❄️🌹
             </Text>
-            <Button
-              flexShrink={0}
-              variant="plain"
-              ms="6"
-              bg="blackAlpha.300"
-              color="whiteAlpha.900"
-              fontWeight="semibold"
-              px="3"
-              py="1"
-              height="inherit"
-              asChild
-            >
-              <Link to={"mailto:sipb-hydrant@mit.edu"}>Contact us</Link>
-            </Button>
             <CloseButton
               hideFrom="sm"
               variant="ghost"
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
               onClick={() => {
-                state.showFeedback = false;
+                state.showBanner = false;
               }}
             />
           </Flex>
@@ -72,7 +56,7 @@ export const FeedbackBanner = () => {
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
             onClick={() => {
-              state.showFeedback = false;
+              state.showBanner = false;
             }}
           />
         </Float>
