@@ -200,4 +200,25 @@ export const deleteSchedule = async (authToken: string, id: string) => {
   }
 };
 
-// export const syncSchedule = () => { };
+export const syncSchedule = (
+  authToken: string,
+  id: string,
+  contents: ScheduleContents,
+  changed: Date,
+  downloaded?: Date,
+  name?: string,
+  agent?: string,
+  override?: boolean,
+) => {
+  console.log(`syncSchedule called with the following params: `, {
+    authToken,
+    id,
+    contents,
+    changed,
+    downloaded,
+    name,
+    agent,
+    override,
+  });
+  throw new Error("Not implemented");
+};
