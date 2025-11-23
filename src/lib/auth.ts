@@ -195,30 +195,68 @@ export const deleteSchedule = async (authToken: string, id: string) => {
       }
     | { success: true };
 
-  if (!result.success) {
-    throw new Error("Failed to delete schedule: " + result.error);
-  }
+  return result;
 };
 
-export const syncSchedule = (
+export const syncSchedule = async (
   authToken: string,
   id: string,
   contents: ScheduleContents,
-  changed: Date,
-  downloaded?: Date,
+  changed: string,
+  downloaded?: string,
   name?: string,
   agent?: string,
   override?: boolean,
 ) => {
-  console.log(`syncSchedule called with the following params: `, {
-    authToken,
-    id,
-    contents,
-    changed,
-    downloaded,
-    name,
-    agent,
-    override,
+  const response = await fetch(`${FIREROAD_URL}/sync_schedule/`, {
+    method: "POST",
+    body: JSON.stringify({
+      id,
+      contents,
+      changed,
+      downloaded,
+      name,
+      agent,
+      override,
+    }),
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
   });
-  throw new Error("Not implemented");
+
+  if (!response.ok) {
+    throw new Error("Failed to sync schedule");
+  }
+
+  const result = (await response.json()) as
+    | {
+        success: false;
+        error: string;
+      }
+    | { success: true; result: "no_change"; changed: string }
+    | { success: true; result: "update_remote"; changed: string }
+    | {
+        success: true;
+        result: "update_local";
+        contents: ScheduleContents;
+        name: string;
+        id: string;
+        downloaded: string;
+      }
+    | {
+        success: true;
+        result: "conflict";
+        other_name: string;
+        other_agent: string;
+        other_date: string;
+        other_contents: ScheduleContents | "";
+        this_agent: string;
+        this_date: string;
+      };
+
+  if (!result.success) {
+    throw new Error("Failed to sync schedule: " + result.error);
+  }
+
+  return result;
 };
