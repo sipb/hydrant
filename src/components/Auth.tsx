@@ -10,7 +10,7 @@ export function AuthButton() {
   const session = useContext(SessionContext);
   const location = useLocation();
 
-  const [tooltipContent, label, pathname, UserIcon] = useMemo(() => {
+  const [tooltipContent, label, pathname, UserIcon, color] = useMemo(() => {
     const username = session?.get("academic_id");
 
     if (username) {
@@ -19,15 +19,22 @@ export function AuthButton() {
         "Logout",
         "/auth/logout",
         LuLogOut,
+        "red",
       ];
     } else {
-      return ["Click to log in!", "Login", "/auth/login", LuLogIn];
+      return ["Click to log in!", "Login", "/auth/login", LuLogIn, "blue"];
     }
   }, [session]);
 
   return (
     <Tooltip content={tooltipContent}>
-      <IconButton aria-label={label} size="sm" variant="outline" asChild>
+      <IconButton
+        aria-label={label}
+        size="sm"
+        variant="outline"
+        colorPalette={color}
+        asChild
+      >
         <Link to={{ pathname, search: `?next=${location.pathname}` }}>
           <UserIcon />
         </Link>
