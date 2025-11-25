@@ -1,0 +1,17 @@
+#:schema ./override-schema.json
+
+["ES.S10"]
+name = "Many Interesting Things (MIT)"
+
+["ES.S11"]
+name = "Trieste Project"
+
+["ES.S50"]
+name = "Composing the Cosmos: Music, Science, and Cultural Heritage"
+
+["ES.S70"]
+name = "Hack Yourself: Data-Driven Wellbeing and Learning"
+same = "6.S056"
+
+["ES.S71"]
+name = "Transformers and Neural Networks"
