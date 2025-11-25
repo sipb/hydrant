@@ -1,4 +1,4 @@
-#:schema ./override-schema.json
+#:schema ../override-schema.json
 
 ["22.S092"]
 lectureUnits = 123

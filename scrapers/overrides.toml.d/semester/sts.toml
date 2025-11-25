@@ -1,4 +1,4 @@
-#:schema ./override-schema.json
+#:schema ../override-schema.json
 
 ["STS.S20"]
 lectureUnits = 3

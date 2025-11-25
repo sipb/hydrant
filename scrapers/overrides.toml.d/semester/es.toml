@@ -1,4 +1,4 @@
-#:schema ./override-schema.json
+#:schema ../override-schema.json
 
 ["ES.S10"]
 name = "Many Interesting Things (MIT)"
