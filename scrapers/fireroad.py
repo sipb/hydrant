@@ -72,7 +72,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
         try:
             start_slot = find_timeslot(day, start, time_is_pm)
             end_slot = find_timeslot(day, end, time_is_pm)
-        except KeyError:
+        except ValueError: #changed from KeyError to match the ValueError returned by find_timeslot
             # Maybe the start time is AM but the end time is PM
             start_slot = find_timeslot(day, start, False)
             end_slot = find_timeslot(day, end, True)
