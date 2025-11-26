@@ -212,7 +212,7 @@ def url_name_to_term(url_name: str) -> Term:
     Extract the term (without academic year) from a urlName.
 
     >>> url_name_to_term("f24")
-    Term.FA
+    <Term.FA: 'fall'>
 
     Args:
         url_name (string): a urlName representing a term, as found in latestTerm.json.
