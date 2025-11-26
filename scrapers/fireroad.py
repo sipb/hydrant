@@ -48,9 +48,6 @@ URL = "https://fireroad.mit.edu/courses/all?full=true"
 def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
     """Parses a timeslot.
 
-    >>> parse_timeslot("M", "10-11.30", False)
-    (8, 3)
-
     Args:
         day (str): The day as a string
         slot (str): The slot as a string
@@ -62,7 +59,19 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
         KeyError: If no matching timeslot could be found.
 
     Returns:
-        list[int]: The parsed day and timeslot
+        tuple[int, int]: The parsed day and timeslot
+
+    >>> parse_timeslot("M", "10-11.30", False)
+    (8, 3)
+
+    >>> parse_timeslot("T", "1-3 PM", True)
+    (48, 4)
+
+    >>> parse_timeslot("R", "11-2 PM", True)
+    (112, 6)
+
+    >>> parse_timeslot("W", "11-6 PM", True)
+    (78, 14)
     """
     assert time_is_pm == slot.endswith(" PM")
     slot = slot.rstrip(" PM")
@@ -72,7 +81,8 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
         try:
             start_slot = find_timeslot(day, start, time_is_pm)
             end_slot = find_timeslot(day, end, time_is_pm)
-        except ValueError: #changed from KeyError to match the ValueError returned by find_timeslot
+        # changed from KeyError to match the ValueError returned by find_timeslot
+        except ValueError:
             # Maybe the start time is AM but the end time is PM
             start_slot = find_timeslot(day, start, False)
             end_slot = find_timeslot(day, end, True)
@@ -90,13 +100,13 @@ def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
     """Parses a section string.
 
     >>> parse_section("32-123/TR/0/11/F/0/2")
-    ([[36, 2], [96, 2], [132, 2]], '32-123')
+    ([(44, 2), (112, 2), (152, 2)], '32-123')
 
     Args:
         section (str): The section given as a string
 
     Returns:
-        list[Union[list[str], str]]: The parsed section.
+        tuple[list[tuple[int, int]], str]: The parsed section.
     """
     place, *infos = section.split("/")
     slots: list[tuple[int, int]] = []
@@ -119,7 +129,7 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
         schedule (str): The schedule string.
 
     Returns:
-        dict[str, union[list, bool]: The parsed schedule
+        dict[str, Union[list[str], bool]]: The parsed schedule
     """
     section_tba = False
     result: dict[str, Union[list[str], bool]] = {}
@@ -164,7 +174,7 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
         date (str): The date in the format "4/4" or "apr 4".
 
     Returns:
-        tuple[int, int]: The month and day.
+        Union[tuple[int, int], None]: The month and day.
     """
     if "/" in date:
         month, day = date.split("/")

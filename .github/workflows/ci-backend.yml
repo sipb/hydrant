@@ -50,6 +50,23 @@ jobs:
       - name: Analysing the code with pylint
         run: |
           pylint $(git ls-files '*.py')
+  pytest:
+    name: Pytest
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python-version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Run tests with pytest (including doctests)
+        run: pytest --doctest-modules
   integration:
     name: Test for valid JSON output
     runs-on: ubuntu-22.04 #NOTE: python 3.7 is NOT supported on ubuntu-latest
