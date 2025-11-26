@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "vitest.explorer",
-    "ms-python.python"
-  ]
+  "recommendations": ["vitest.explorer", "ms-python.python"]
 }
