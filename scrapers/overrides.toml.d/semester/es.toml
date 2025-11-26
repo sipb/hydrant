@@ -19,3 +19,120 @@ description = "Do you want to take charge of your wellbeing and learn at your be
 ["ES.S71"]
 name = "Transformers and Neural Networks"
 description = "This 6-week seminar offers an introduction to Artificial Intelligence (AI) and its real-world applications through neural networks, image recognition, time series forecasting, and natural language processing (NLP). Designed for students with basic Python skills, the seminar combines conceptual learning with hands-on coding to help participants understand how machines can learn from data to make predictions, recognize patterns, and interpret human language. This seminar provides a comprehensive overview of advanced AI techniques using Python. Students will learn to implement deep neural networks across medicine, business, finance, and other scientific and technological domains."
+
+["ES.7016"]
+name = "Introductory Biology"
+description = "Equivalent to 7.016; see 7.016 for description. Instruction provided through small, interactive classes. Limited to students in ESG."
+number = "ES.7016"
+course = "ES"
+subject = "7016"
+sectionKinds = ["lecture"]
+lectureRawSections = ["MTWRF9", "MTWRF10", "MWRF2,T1"]
+lectureSections = [
+    [
+        [
+            [
+                6,
+                2,
+            ],
+            [
+                40,
+                2,
+            ],
+            [
+                74,
+                2,
+            ],
+            [
+                108,
+                2,
+            ],
+            [
+                142,
+                2,
+            ],
+        ],
+        "TBD",
+    ],
+    [
+        [
+            [
+                8,
+                2,
+            ],
+            [
+                42,
+                2,
+            ],
+            [
+                76,
+                2,
+            ],
+            [
+                110,
+                2,
+            ],
+            [
+                144,
+                2,
+            ],
+        ],
+        "TBD",
+    ],
+    [
+        [
+            [
+                16,
+                2,
+            ],
+            [
+                50,
+                2,
+            ],
+            [
+                84,
+                2,
+            ],
+            [
+                116,
+                2,
+            ],
+            [
+                152,
+                2,
+            ],
+        ],
+        "TBD",
+    ],
+]
+lectureUnits = 5
+preparationUnits = 7
+labUnits = 0
+level = "U"
+terms = ["SP"]
+prereqs = "None"
+tba = false
+hassH = false
+hassA = false
+hassS = false
+hassE = false
+cih = false
+cihw = false
+rest = false
+lab = false
+partLab = false
+isVariableUnits = false
+same = ""
+meets = ""
+virtualStatus = false
+inCharge = "P. Christie"
+nonext = false
+repeat = false
+url = "https://esg.mit.edu/learn-at-esg/subject-offerings/"
+final = false
+half = false
+limited = true
+rating = 0
+hours = 0
+size = 0
+new = true
