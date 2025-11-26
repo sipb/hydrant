@@ -69,6 +69,7 @@ TIMES = {
 }
 
 EVE_TIMES = {
+    "11": 10, #added to account for the edge case where a class in Sloan starts at 11:00 am and goes until 6 pm
     "12": 12,
     "12.30": 13,
     "1": 14,
