@@ -11,7 +11,7 @@ Install:
 
 In the root directory, run:
 
-- `pip install -r requirements.txt` to install dependencies.
+- `pip install -r requirements.txt` (and the same with `requirements-dev.txt` for local development) to install dependencies.
 - `npm install` to install dependencies.
 
 ## Updating

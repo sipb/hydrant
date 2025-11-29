@@ -41,7 +41,7 @@ scrapers/.mypy_cache
 deploy.sh
 
 #virtual env
-hydrant-venv
+.venv
 
 # router
 .react-router

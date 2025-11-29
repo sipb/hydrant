@@ -386,14 +386,12 @@ export default function App({ loaderData }: Route.ComponentProps) {
           validator={validator}
           formData={data}
           showErrorList={false}
-          // eslint-disable-next-line @typescript-eslint/no-deprecated
           liveValidate={"onChange"}
           experimental_defaultFormStateBehavior={{
             arrayMinItems: { populate: "requiredOnly" },
             emptyObjectFields: "populateRequiredDefaults",
             mergeDefaultsIntoFormData: "useDefaultIfFormDataUndefined",
           }}
-          // eslint-disable-next-line @typescript-eslint/no-deprecated
           liveOmit={"onChange"}
           omitExtraData={true}
           onChange={({ formData, errors }) => {
