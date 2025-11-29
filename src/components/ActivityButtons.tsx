@@ -15,7 +15,7 @@ import {
   parseColor,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithRef, FormEvent } from "react";
-import { useContext, useLayoutEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 import { ColorPickerInput } from "./ui/colorpicker-input";
 
@@ -67,7 +67,7 @@ function OverrideLocations(props: { secs: Sections }) {
     setRoom(secs.roomOverride);
   };
   const onConfirm = () => {
-    secs.roomOverride = room.trim();
+    secs.setRoomOverride(room.trim());
     setIsOverriding(false);
     state.updateActivities();
   };
@@ -108,6 +108,7 @@ function OverrideLocations(props: { secs: Sections }) {
 
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class }) {
+  "use no memo";
   const { cls } = props;
   const { state } = useContext(HydrantContext);
   const genSelected = (cls: Class) =>
@@ -119,22 +120,19 @@ function ClassManualSections(props: { cls: Class }) {
         : LockOption.Auto,
     );
   const [selected, setSelected] = useState(genSelected(cls));
-  useLayoutEffect(() => {
-    setSelected(genSelected(cls));
-  }, [cls]);
 
-  const RenderOptions = () => {
-    const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
-      if (sec === LockOption.Auto) {
-        return humanReadable ? "Auto (default)" : LockOption.Auto;
-      } else if (sec === LockOption.None) {
-        return LockOption.None;
-      } else {
-        return humanReadable ? sec.parsedTime : sec.rawTime;
-      }
-    };
+  const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
+    if (sec === LockOption.Auto) {
+      return humanReadable ? "Auto (default)" : LockOption.Auto;
+    } else if (sec === LockOption.None) {
+      return LockOption.None;
+    } else {
+      return humanReadable ? sec.parsedTime : sec.rawTime;
+    }
+  };
 
-    return (
+  return (
+    <Flex>
       <>
         {cls.sections.map((secs, sectionIndex) => {
           const options = [LockOption.Auto, LockOption.None, ...secs.sections];
@@ -181,12 +179,6 @@ function ClassManualSections(props: { cls: Class }) {
           );
         })}
       </>
-    );
-  };
-
-  return (
-    <Flex>
-      <RenderOptions />
     </Flex>
   );
 }
@@ -246,8 +238,9 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
 
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class }) {
+  "use no memo";
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state, hydrantState } = useContext(HydrantContext);
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -285,7 +278,9 @@ export function ClassButtons(props: { cls: Class }) {
           </ToggleButton>
         )}
       </ButtonGroup>
-      {isSelected && showManual && <ClassManualSections cls={cls} />}
+      {isSelected && showManual && (
+        <ClassManualSections cls={cls} key={cls.id + hydrantState.saveId} />
+      )}
       {isSelected && showColors && (
         <ActivityColor
           activity={cls}
@@ -297,6 +292,29 @@ export function ClassButtons(props: { cls: Class }) {
     </Flex>
   );
 }
+
+const RenderCheckboxes = (props: {
+  days: Record<string, boolean>;
+  setDays: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+}) => {
+  const { days, setDays } = props;
+
+  return (
+    <>
+      {WEEKDAY_STRINGS.map((day) => (
+        <Checkbox
+          key={day}
+          checked={days[day]}
+          onCheckedChange={(e) => {
+            setDays({ ...days, [day]: !!e.checked });
+          }}
+        >
+          {day}
+        </Checkbox>
+      ))}
+    </>
+  );
+};
 
 /** Form to add a timeslot to a non-class. */
 function NonClassAddTime(props: { activity: NonClass }) {
@@ -319,24 +337,6 @@ function NonClassAddTime(props: { activity: NonClass }) {
         ),
       );
     }
-  };
-
-  const RenderCheckboxes = () => {
-    return (
-      <>
-        {WEEKDAY_STRINGS.map((day) => (
-          <Checkbox
-            key={day}
-            checked={days[day]}
-            onCheckedChange={(e) => {
-              setDays({ ...days, [day]: !!e.checked });
-            }}
-          >
-            {day}
-          </Checkbox>
-        ))}
-      </>
-    );
   };
 
   const timesCollection = createListCollection({
@@ -384,7 +384,7 @@ function NonClassAddTime(props: { activity: NonClass }) {
           Add time
         </Button>
         <Group wrap="wrap">
-          <RenderCheckboxes />
+          <RenderCheckboxes days={days} setDays={setDays} />
         </Group>
         <Flex align="center" gap={1}>
           {renderTimeDropdown("start")} to {renderTimeDropdown("end")}

@@ -311,11 +311,11 @@ function ClassFlags(props: {
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
   useEffect(() => {
-    state.fitsScheduleCallback = () => {
+    state.setFitsScheduleCallback(() => {
       if (flags.get("fits")) {
         updateFilter();
       }
-    };
+    });
   }, [state, flags, updateFilter]);
 
   const onChange = (flag: Filter, value: boolean) => {
