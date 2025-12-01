@@ -256,8 +256,8 @@ export default function App({ loaderData }: Route.ComponentProps) {
                   key,
                   {
                     ...value,
-                    "ui:help": value.description,
-                    "ui:description": " ",
+                    "ui:title": value.title,
+                    "ui:description": value.description,
                   },
                 ];
               } else {
