@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import checker from "vite-plugin-checker";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
+import devtoolsJson from "vite-plugin-devtools-json";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,6 +16,7 @@ export default defineConfig({
       typescript: true,
       eslint: { lintCommand: "eslint .", useFlatConfig: true },
     }),
+    devtoolsJson(),
   ],
   test: {
     globals: true,
