@@ -1,7 +1,0 @@
-#:schema ../override-schema.json
-# Course 3 special subjects (summer 2025)
-
-['3.371']
-lectureSections = [[[[5, 2], [107, 2]], '4-145']]
-lectureRawSections = ["MR8.30"]
-quarterInfo = { start = [6, 25], end = [8, 14] }

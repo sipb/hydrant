@@ -122,11 +122,15 @@ def run() -> None:
     # If it's not in catalog, it's not offered this year.
     courses_presem = merge_data(
         datasets=[fireroad_presem, catalog, cim, overrides_all, overrides_presem],
-        keys_to_keep=set(fireroad_presem) & set(catalog),
+        keys_to_keep=(set(fireroad_presem) & set(catalog))
+        | set(overrides_all)
+        | set(overrides_presem),
     )
     courses_sem = merge_data(
         datasets=[fireroad_sem, catalog, cim, overrides_all, overrides_semester],
-        keys_to_keep=set(fireroad_sem) & set(catalog),
+        keys_to_keep=(set(fireroad_sem) & set(catalog))
+        # kind of sketchy? but needed to add a custom class :(
+        | set(overrides_all) | set(overrides_semester),
     )
 
     term_info_presem = get_term_info(False)

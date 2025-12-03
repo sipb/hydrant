@@ -1,8 +1,0 @@
-#:schema ./override-schema.json
-# STS special subjects (fall 2025)
-
-['STS.059']
-meets = "20.S900, 20.S948"
-
-['STS.089']
-new = true

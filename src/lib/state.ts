@@ -311,17 +311,17 @@ export class State {
       .filter((cls): cls is Class => cls !== undefined);
   }
 
-  get showFeedback(): boolean {
+  get showBanner(): boolean {
     return (
-      this.preferences.showFeedback ||
-      this.preferences.showFeedbackChanged === undefined ||
-      this.preferences.showFeedbackChanged < BANNER_LAST_CHANGED
+      this.preferences.showBanner ||
+      this.preferences.showBannerChanged === undefined ||
+      this.preferences.showBannerChanged < BANNER_LAST_CHANGED
     );
   }
 
-  set showFeedback(show: boolean) {
-    this.preferences.showFeedback = show;
-    this.preferences.showFeedbackChanged = new Date().valueOf();
+  set showBanner(show: boolean) {
+    this.preferences.showBanner = show;
+    this.preferences.showBannerChanged = new Date().valueOf();
     this.updateState();
   }
 

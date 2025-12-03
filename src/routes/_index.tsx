@@ -11,7 +11,7 @@ import { ScheduleOption } from "../components/ScheduleOption";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
 import { SelectedActivities } from "../components/SelectedActivities";
 import { TermSwitcher } from "../components/TermSwitcher";
-import { FeedbackBanner } from "../components/FeedbackBanner";
+import { Banner } from "../components/Banner";
 import { MatrixLink } from "../components/MatrixLink";
 import { PreregLink } from "../components/PreregLink";
 import { AuthButton } from "../components/Auth";
@@ -90,7 +90,7 @@ function HydrantApp() {
 
   return (
     <>
-      <FeedbackBanner />
+      <Banner />
       <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
         <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
           <Header />

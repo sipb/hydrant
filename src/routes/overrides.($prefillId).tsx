@@ -256,8 +256,8 @@ export default function App({ loaderData }: Route.ComponentProps) {
                   key,
                   {
                     ...value,
-                    "ui:help": value.description,
-                    "ui:description": " ",
+                    "ui:title": value.title,
+                    "ui:description": value.description,
                   },
                 ];
               } else {
@@ -386,14 +386,12 @@ export default function App({ loaderData }: Route.ComponentProps) {
           validator={validator}
           formData={data}
           showErrorList={false}
-          // eslint-disable-next-line @typescript-eslint/no-deprecated
           liveValidate={"onChange"}
           experimental_defaultFormStateBehavior={{
             arrayMinItems: { populate: "requiredOnly" },
             emptyObjectFields: "populateRequiredDefaults",
             mergeDefaultsIntoFormData: "useFormDataIfPresent",
           }}
-          // eslint-disable-next-line @typescript-eslint/no-deprecated
           liveOmit={"onChange"}
           omitExtraData={true}
           onChange={({ formData, errors }) => {
@@ -401,14 +399,16 @@ export default function App({ loaderData }: Route.ComponentProps) {
             setError(errors.length > 0 ? true : false);
           }}
           onSubmit={() => {
-            const contents = TOML.stringify(
-              Object.fromEntries(
-                data.map((override) => {
-                  const { number: num, ...rest } = override;
-                  return [num, rest];
-                }),
-              ),
-            );
+            const contents =
+              "#:schema ./override-schema.json\n\n" +
+              TOML.stringify(
+                Object.fromEntries(
+                  data.map((override) => {
+                    const { number: num, ...rest } = override;
+                    return [num, rest];
+                  }),
+                ),
+              );
 
             const element = document.createElement("a");
             element.href = URL.createObjectURL(
