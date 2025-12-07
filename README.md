@@ -60,7 +60,7 @@ _I want to change..._
 
 - _...the data available to Hydrant._
   - The entry point is `scrapers/update.py`.
-  - This goes through the client loader in `src/routes/_index_.tsx`, which looks for the data.
+  - This goes through the client loader in `src/routes/_index.tsx`, which looks for the data.
   - The exit point is through the constructor of `State` in `src/lib/state.ts`.
 - _...the way Hydrant behaves._
   - The entry point is `src/lib/state.ts`.
