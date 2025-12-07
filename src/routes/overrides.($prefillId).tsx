@@ -75,17 +75,15 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   };
 
   if (prefillId) {
-    const fileName = prefillId.toUpperCase();
-
-    if (fileName in overrideNames) {
-      const newData = await getDataFromFile(fileName);
+    if (prefillId in overrideNames) {
+      const newData = await getDataFromFile(prefillId);
       if (newData.length > 0) {
         prefillData = newData;
       } else {
-        console.error("No data found for prefill ID:", fileName);
+        console.error("No data found for prefill ID:", prefillId);
       }
     } else {
-      console.error("Invalid prefill ID:", fileName);
+      console.error("Invalid prefill ID:", prefillId);
     }
   }
 
