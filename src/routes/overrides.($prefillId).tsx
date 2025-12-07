@@ -6,7 +6,7 @@ import validator from "@rjsf/validator-ajv8";
 import type { JSONSchema7Definition } from "json-schema";
 
 import { Link as RouterLink } from "react-router";
-import type { Route } from "./+types/Overrides";
+import type { Route } from "./+types/overrides.($prefillId)";
 
 import TOML from "smol-toml";
 
@@ -53,9 +53,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   ) as typeof overrides;
 
   let prefillData: Record<string, unknown>[] = [];
-  const prefillId = (
-    params as Record<string, string | undefined>
-  ).prefillId?.toUpperCase();
+  const prefillId = params.prefillId?.toUpperCase();
 
   const getDataFromFile = async (fileName: string) => {
     try {
@@ -77,17 +75,15 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   };
 
   if (prefillId) {
-    const fileName = prefillId.toUpperCase();
-
-    if (fileName in overrideNames) {
-      const newData = await getDataFromFile(fileName);
+    if (prefillId in overrideNames) {
+      const newData = await getDataFromFile(prefillId);
       if (newData.length > 0) {
         prefillData = newData;
       } else {
-        console.error("No data found for prefill ID:", fileName);
+        console.error("No data found for prefill ID:", prefillId);
       }
     } else {
-      console.error("Invalid prefill ID:", fileName);
+      console.error("Invalid prefill ID:", prefillId);
     }
   }
 
