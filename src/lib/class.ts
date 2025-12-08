@@ -41,8 +41,8 @@ export interface Flags {
   summer: boolean;
   repeat: boolean;
   rest: boolean;
-  Lab: boolean;
-  PartLab: boolean;
+  lab: boolean;
+  partLab: boolean;
   hass: boolean;
   hassH: boolean;
   hassA: boolean;
@@ -72,8 +72,8 @@ const flagImages: { [k in keyof Flags]?: string } = {
   summer: summerImg,
   repeat: repeatImg,
   rest: restImg,
-  Lab: labImg,
-  PartLab: partlabImg,
+  lab: labImg,
+  partLab: partlabImg,
   hassH: hassHImg,
   hassA: hassAImg,
   hassS: hassSImg,
@@ -380,21 +380,17 @@ export class Class {
       spring: this.rawClass.terms.includes("SP"),
       summer: this.rawClass.terms.includes("SU"),
       repeat: this.rawClass.repeat,
-      rest: this.rawClass.rest,
-      Lab: this.rawClass.lab,
-      PartLab: this.rawClass.partLab,
-      hass:
-        this.rawClass.hassH ||
-        this.rawClass.hassA ||
-        this.rawClass.hassS ||
-        this.rawClass.hassE,
-      hassH: this.rawClass.hassH,
-      hassA: this.rawClass.hassA,
-      hassS: this.rawClass.hassS,
-      hassE: this.rawClass.hassE,
-      cih: this.rawClass.cih,
-      cihw: this.rawClass.cihw,
-      notcih: !this.rawClass.cih && !this.rawClass.cihw,
+      rest: this.rawClass.gir === "REST",
+      lab: this.rawClass.gir === "LAB",
+      partLab: this.rawClass.gir === "LAB2",
+      hass: this.rawClass.hass.length > 0,
+      hassH: this.rawClass.hass.includes("H"),
+      hassA: this.rawClass.hass.includes("A"),
+      hassS: this.rawClass.hass.includes("S"),
+      hassE: this.rawClass.hass.includes("E"),
+      cih: this.rawClass.comms === "CI-H",
+      cihw: this.rawClass.comms === "CI-HW",
+      notcih: !this.rawClass.comms,
       cim: !!this.rawClass.cim?.length,
       final: this.rawClass.final,
       nofinal: !this.rawClass.final,

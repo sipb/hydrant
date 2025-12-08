@@ -234,7 +234,7 @@ def parse_quarter_info(
 
 def parse_attributes(
     course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
-) -> dict[str, bool]:
+) -> dict[str, str | list[str]]:
     """
     Parses attributes of the course.
 
@@ -243,23 +243,18 @@ def parse_attributes(
             The course object.
 
     Returns:
-        dict[str, bool]: The attributes of the course.
+        dict[str, str | list[str]]: The attributes of the course.
     """
-    hass_code: list[str] = list(map(lambda x: x[-1], str(course.get("hass_attribute", "X")).split(",")))
+    hass_code: list[str] = list(
+        filter(
+            lambda x: x != "X",
+            map(lambda x: x[-1], str(course.get("hass_attribute", "X")).split(",")),
+        )
+    )
     comms_code: str = str(course.get("communication_requirement", ""))
     gir_attr: str = str(course.get("gir_attribute", ""))
 
-    return {
-        "hassH": "H" in hass_code,
-        "hassA": "A" in hass_code,
-        "hassS": "S" in hass_code,
-        "hassE": "E" in hass_code,
-        "cih": comms_code == "CI-H",
-        "cihw": comms_code == "CI-HW",
-        "rest": gir_attr == "REST",
-        "lab": gir_attr == "LAB",
-        "partLab": gir_attr == "LAB2",
-    }
+    return {"hass": hass_code, "comms": comms_code, "gir": gir_attr}
 
 
 def parse_terms(

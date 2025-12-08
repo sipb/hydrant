@@ -271,7 +271,7 @@ const CLASS_FLAGS_3: FilterGroup = [
 /** Third row of hidden filter IDs. */
 const CLASS_FLAGS_4: FilterGroup = [
   ["rest", "REST", getFlagImg("rest")],
-  ["Lab", "Institute Lab", getFlagImg("Lab")],
+  ["lab", "Institute Lab", getFlagImg("lab")],
   ["hassA", "HASS-A", getFlagImg("hassA")],
   ["hassH", "HASS-H", getFlagImg("hassH")],
   ["hassS", "HASS-S", getFlagImg("hassS")],
