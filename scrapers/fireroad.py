@@ -245,15 +245,15 @@ def parse_attributes(
     Returns:
         dict[str, bool]: The attributes of the course.
     """
-    hass_code: str = course.get("hass_attribute", "X")[-1]  # type: ignore
-    comms_code: str = course.get("communication_requirement", "")  # type: ignore
-    gir_attr: str = course.get("gir_attribute", "")  # type: ignore
+    hass_code: list[str] = list(map(lambda x: x[-1], str(course.get("hass_attribute", "X")).split(",")))
+    comms_code: str = str(course.get("communication_requirement", ""))
+    gir_attr: str = str(course.get("gir_attribute", ""))
 
     return {
-        "hassH": hass_code == "H",
-        "hassA": hass_code == "A",
-        "hassS": hass_code == "S",
-        "hassE": hass_code == "E",
+        "hassH": "H" in hass_code,
+        "hassA": "A" in hass_code,
+        "hassS": "S" in hass_code,
+        "hassE": "E" in hass_code,
         "cih": comms_code == "CI-H",
         "cihw": comms_code == "CI-HW",
         "rest": gir_attr == "REST",
