@@ -35,7 +35,15 @@ export function AuthButton() {
         colorPalette={color}
         asChild
       >
-        <Link to={{ pathname, search: `?next=${location.pathname}` }}>
+        <Link
+          to={{
+            pathname,
+            search:
+              location.pathname != "/"
+                ? `?next=${location.pathname}`
+                : undefined,
+          }}
+        >
           <UserIcon />
         </Link>
       </IconButton>
