@@ -1,7 +1,7 @@
 #:schema ../override-schema.json
 
 ["22.S092"]
-lectureUnits = 123
+lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
 level = "U"
@@ -17,6 +17,7 @@ lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
 level = "G"
+meets = "22.S092"
 description = "Explore the science and technology behind nuclear weapons.  Topics include: nuclear weapon effects, nuclear physics and supporting technologies, criticality,  yield, fusion ignition, technologies for the production of radioactive materials for nuclear weapons, doctrines governing nuclear weapons and relationship to design, environmental effects of weapons production, mitigation & cleanup of wastes; environmental effects of nuclear weapons production and nuclear war, arms control and verification, nuclear safeguards and forensics."
 name = "Science and Technology of Nuclear Weapons"
 inCharge = "Haruko Wainwright"
