@@ -213,12 +213,12 @@ export class Sections {
   get event(): Event | null {
     return this.selected
       ? new Event(
-          this.cls,
-          `${this.cls.number} ${this.shortName}`,
-          this.selected.timeslots,
-          this.roomOverride || this.selected.room,
-          this.cls.half,
-        )
+        this.cls,
+        `${this.cls.number} ${this.shortName}`,
+        this.selected.timeslots,
+        this.roomOverride || this.selected.room,
+        this.cls.half,
+      )
       : null;
   }
 
@@ -349,7 +349,9 @@ export class Class {
 
   /** Hours per week, taking from evals if exists, or units if not. */
   get hours(): number {
-    return this.rawClass.hours || this.totalUnits;
+    return !this.new && this.rawClass.hours
+      ? this.rawClass.hours
+      : this.totalUnits;
   }
 
   /** The half the class lies in; 1 if first, 2 if second, else undefined. */
@@ -465,7 +467,7 @@ export class Class {
       );
     }
     if (this.rawClass.isVariableUnits) {
-      if (this.rawClass.hours === 0) {
+      if (!this.rawClass.hours || this.new) {
         suffixes.push("^");
         messages.push(
           "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours.",
@@ -477,7 +479,7 @@ export class Class {
         );
       }
     } else {
-      if (this.rawClass.hours === 0) {
+      if (!this.rawClass.hours || this.new) {
         suffixes.push("*");
         messages.push(
           "* Class does not have evaluations, so its hours were set to units.",
