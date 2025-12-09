@@ -26,6 +26,7 @@ description = "This 6-week seminar offers an introduction to Artificial Intellig
 
 ["ES.7016"]
 name = "Introductory Biology"
+number = "ES.7016"
 description = "Equivalent to 7.016; see 7.016 for description. Instruction provided through small, interactive classes. Limited to students in ESG."
 course = "ES"
 subject = "7016"
