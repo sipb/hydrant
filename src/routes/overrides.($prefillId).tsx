@@ -352,7 +352,9 @@ export default function App({ loaderData }: Route.ComponentProps) {
         <Text>
           You don't need to populate all of the available
           fields&nbsp;&mdash;&nbsp;only the ones that differ from the course
-          catalog. Thank you for your time, and feel free to reach out to{" "}
+          catalog. Once you send us your overrides, we'll upload them and
+          they'll appear under the dropdown below. Thank you for your time, and
+          feel free to reach out to{" "}
           <Link colorPalette="blue" asChild>
             <RouterLink to="mailto:sipb-hydrant@mit.edu">
               sipb-hydrant@mit.edu
