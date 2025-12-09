@@ -6,7 +6,9 @@
   "type": "module",
   "dependencies": {
     "@chakra-ui/react": "^3.30.0",
+    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
+    "@emotion/server": "^11.11.0",
     "@fontsource-variable/inter": "^5.2.8",
     "@fullcalendar/core": "^6.1.19",
     "@fullcalendar/interaction": "^6.1.19",

@@ -8,6 +8,9 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 
+import { withEmotionCache } from "@emotion/react";
+import { useInjectStyles } from "./emotion/emotion-client";
+
 import { Provider } from "./components/ui/provider";
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
@@ -26,7 +29,15 @@ export function HydrateFallback() {
   );
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export const Layout = withEmotionCache((props: LayoutProps, cache) => {
+  const { children } = props;
+
+  useInjectStyles(cache);
+
   return (
     <html lang="en">
       <head>
@@ -50,7 +61,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </body>
     </html>
   );
-}
+});
 
 export default function Root() {
   return <Outlet />;
