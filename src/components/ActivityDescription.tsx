@@ -10,7 +10,7 @@ import {
   Button,
   Span,
 } from "@chakra-ui/react";
-import { useColorMode } from "./ui/color-mode";
+import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
 import type { NonClass } from "../lib/activity";
@@ -25,9 +25,10 @@ import { LuExternalLink } from "react-icons/lu";
 /** A small image indicating a flag, like Spring or CI-H. */
 function TypeSpan(props: { flag?: keyof Flags; title: string }) {
   const { flag, title } = props;
-  const { colorMode } = useColorMode();
-  const filter =
-    colorMode === "dark" && DARK_IMAGES.includes(flag ?? "") ? "invert()" : "";
+  const filter = useColorModeValue(
+    "",
+    flag && DARK_IMAGES.includes(flag) ? "invert()" : "",
+  );
 
   return flag ? (
     <Tooltip content={title}>
@@ -88,9 +89,15 @@ function ClassTypes(props: { cls: Class }) {
 
   const types2 = makeFlags([
     ["repeat", "Can be repeated for credit"],
+    ["bio", "Biology"],
+    ["calc1", "Calculus 1"],
+    ["calc2", "Calculus 2"],
+    ["chem", "Chemistry"],
+    ["lab", "Institute LAB"],
+    ["partLab", "Partial LAB"],
+    ["phys1", "Physics 1"],
+    ["phys2", "Physics 2"],
     ["rest", "REST"],
-    ["Lab", "Institute Lab"],
-    ["PartLab", "Partial Institute Lab"],
     ["hassH", "HASS-H"],
     ["hassA", "HASS-A"],
     ["hassS", "HASS-S"],

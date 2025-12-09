@@ -11,15 +11,21 @@ import iapImg from "../assets/iap.gif";
 import springImg from "../assets/spring.gif";
 import summerImg from "../assets/summer.gif";
 import repeatImg from "../assets/repeat.gif";
+import bioImg from "../assets/bio.gif";
+import calc1Img from "../assets/calc1.gif";
+import calc2Img from "../assets/calc2.gif";
+import chemImg from "../assets/chem.gif";
+import labImg from "../assets/lab.gif";
+import partlabImg from "../assets/partLab.gif";
+import phys1Img from "../assets/phys1.gif";
+import phys2Img from "../assets/phys2.gif";
 import restImg from "../assets/rest.gif";
-import labImg from "../assets/Lab.gif";
-import partlabImg from "../assets/PartLab.gif";
-import cihImg from "../assets/cih.gif";
-import cihwImg from "../assets/cihw.gif";
 import hassHImg from "../assets/hassH.gif";
 import hassAImg from "../assets/hassA.gif";
 import hassSImg from "../assets/hassS.gif";
 import hassEImg from "../assets/hassE.gif";
+import cihImg from "../assets/cih.gif";
+import cihwImg from "../assets/cihw.gif";
 
 // This isn't exported intentionally. Instead of using this, can you use
 // Sections directly?
@@ -40,9 +46,15 @@ export interface Flags {
   spring: boolean;
   summer: boolean;
   repeat: boolean;
+  bio: boolean;
+  calc1: boolean;
+  calc2: boolean;
+  chem: boolean;
+  lab: boolean;
+  partLab: boolean;
+  phys1: boolean;
+  phys2: boolean;
   rest: boolean;
-  Lab: boolean;
-  PartLab: boolean;
   hass: boolean;
   hassH: boolean;
   hassA: boolean;
@@ -60,7 +72,16 @@ export interface Flags {
   limited: boolean;
 }
 
-export const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
+export const DARK_IMAGES: (keyof Flags)[] = [
+  "calc1",
+  "calc2",
+  "chem",
+  "cih",
+  "cihw",
+  "iap",
+  "repeat",
+  "rest",
+];
 
 const flagImages: { [k in keyof Flags]?: string } = {
   nonext: nonextImg,
@@ -71,9 +92,15 @@ const flagImages: { [k in keyof Flags]?: string } = {
   spring: springImg,
   summer: summerImg,
   repeat: repeatImg,
+  bio: bioImg,
+  calc1: calc1Img,
+  calc2: calc2Img,
+  chem: chemImg,
+  lab: labImg,
+  partLab: partlabImg,
+  phys1: phys1Img,
+  phys2: phys2Img,
   rest: restImg,
-  Lab: labImg,
-  PartLab: partlabImg,
   hassH: hassHImg,
   hassA: hassAImg,
   hassS: hassSImg,
@@ -349,7 +376,9 @@ export class Class {
 
   /** Hours per week, taking from evals if exists, or units if not. */
   get hours(): number {
-    return this.rawClass.hours || this.totalUnits;
+    return !this.new && this.rawClass.hours
+      ? this.rawClass.hours
+      : this.totalUnits;
   }
 
   /** The half the class lies in; 1 if first, 2 if second, else undefined. */
@@ -380,21 +409,23 @@ export class Class {
       spring: this.rawClass.terms.includes("SP"),
       summer: this.rawClass.terms.includes("SU"),
       repeat: this.rawClass.repeat,
-      rest: this.rawClass.rest,
-      Lab: this.rawClass.lab,
-      PartLab: this.rawClass.partLab,
-      hass:
-        this.rawClass.hassH ||
-        this.rawClass.hassA ||
-        this.rawClass.hassS ||
-        this.rawClass.hassE,
-      hassH: this.rawClass.hassH,
-      hassA: this.rawClass.hassA,
-      hassS: this.rawClass.hassS,
-      hassE: this.rawClass.hassE,
-      cih: this.rawClass.cih,
-      cihw: this.rawClass.cihw,
-      notcih: !this.rawClass.cih && !this.rawClass.cihw,
+      bio: this.rawClass.gir === "BIOL",
+      calc1: this.rawClass.gir === "CAL1",
+      calc2: this.rawClass.gir === "CAL2",
+      chem: this.rawClass.gir === "CHEM",
+      lab: this.rawClass.gir === "LAB",
+      partLab: this.rawClass.gir === "LAB2",
+      phys1: this.rawClass.gir === "PHY1",
+      phys2: this.rawClass.gir === "PHY2",
+      rest: this.rawClass.gir === "REST",
+      hass: this.rawClass.hass.length > 0,
+      hassH: this.rawClass.hass.includes("H"),
+      hassA: this.rawClass.hass.includes("A"),
+      hassS: this.rawClass.hass.includes("S"),
+      hassE: this.rawClass.hass.includes("E"),
+      cih: this.rawClass.comms === "CI-H",
+      cihw: this.rawClass.comms === "CI-HW",
+      notcih: !this.rawClass.comms,
       cim: !!this.rawClass.cim?.length,
       final: this.rawClass.final,
       nofinal: !this.rawClass.final,
@@ -465,7 +496,7 @@ export class Class {
       );
     }
     if (this.rawClass.isVariableUnits) {
-      if (this.rawClass.hours === 0) {
+      if (!this.rawClass.hours || this.new) {
         suffixes.push("^");
         messages.push(
           "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours.",
@@ -477,7 +508,7 @@ export class Class {
         );
       }
     } else {
-      if (this.rawClass.hours === 0) {
+      if (!this.rawClass.hours || this.new) {
         suffixes.push("*");
         messages.push(
           "* Class does not have evaluations, so its hours were set to units.",

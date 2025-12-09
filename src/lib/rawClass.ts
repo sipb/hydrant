@@ -36,24 +36,21 @@ export interface RawClass {
   /** Raw design times, e.g. T9.301-11 or TR1,F2 */
   designRawSections: string[];
 
-  /** True if HASS-H */
-  hassH: boolean;
-  /** True if HASS-A */
-  hassA: boolean;
-  /** True if HASS-S */
-  hassS: boolean;
-  /** True if HASS-E */
-  hassE: boolean;
-  /** True if CI-H */
-  cih: boolean;
-  /** True if CI-HW */
-  cihw: boolean;
-  /** True if REST */
-  rest: boolean;
-  /** True if institute lab */
-  lab: boolean;
-  /** True if partial institute lab */
-  partLab: boolean;
+  /** Contains type of HASS (if any) */
+  hass: ("H" | "A" | "S" | "E")[];
+  /** Type of CI class (if any) */
+  comms: "CI-H" | "CI-HW" | "";
+  /** Type of GIR (if any) */
+  gir:
+    | "BIOL"
+    | "CAL1"
+    | "CAL2"
+    | "CHEM"
+    | "LAB"
+    | "LAB2"
+    | "PHY1"
+    | "PHY2"
+    | "REST";
 
   /** Array of programs (free text) for which this class is a CI-M */
   cim?: string[];
