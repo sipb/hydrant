@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
-import { useColorMode } from "./ui/color-mode";
+import { useColorModeValue } from "./ui/color-mode";
 
 import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
@@ -346,7 +346,11 @@ function ClassFlags(props: {
       return result;
     });
   };
-  const { colorMode } = useColorMode();
+
+  const filter = useColorModeValue(
+    (_flags: keyof Flags) => "",
+    (flag: keyof Flags) => (DARK_IMAGES.includes(flag) ? "invert()" : ""),
+  );
 
   const renderGroup = (group: FilterGroup) => {
     return (
@@ -377,11 +381,7 @@ function ClassFlags(props: {
                 <Image
                   src={image}
                   alt={label}
-                  filter={
-                    colorMode === "dark" && DARK_IMAGES.includes(flag)
-                      ? "invert()"
-                      : ""
-                  }
+                  filter={filter(flag as keyof Flags)}
                 />
               </LabelledButton>
             ) : (
