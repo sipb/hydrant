@@ -1,0 +1,12 @@
+#:schema ../override-schema.json
+
+["21G.S02"]
+hass = ["H"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+level = "U"
+prereqs = "non"
+description = "This course introduces students to Swahili, the most widely spoken African language in the world. It belongs to the elite class of the world’s top dozen international languages. The course aims to have every student develop proficiency and literacy in the Swahili language. Students will encounter the history of Eastern African and the Indian Ocean through Swahili and its diverse traditions noting it’s cultural hybridity borne out of a history of a great diversity of people, most of them Africans, that call both sea and land, home. Swahili culture is seamless in word and thought both maritime and agricultural. Swahili is a great example of what an ubuntu cosmopolitan ethos is like.  The course provides the opportunity for learning a new language African style, where a class that begins with complete strangers becomes a community of learners -talkative and with substance. Karibu!"
+name = "Introduction to Swahili Language and Culture"
+inCharge = "Judith Mmari"
