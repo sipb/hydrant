@@ -1,0 +1,12 @@
+#:schema ./override-schema.json
+
+["8.18"]
+lectureUnits = 1
+labUnits = 0
+preparationUnits = 0
+isVariableUnits = false
+level = "U"
+prereqs = "Students are expected to be familiar with basic programming concepts (variables, arrays, flow-control, loops, classes and objects)."
+description = "This course introduces the core tools used daily by working physicists: interactive computing, version control, statistical analysis, visualization, parallel computing, and Bayesian inference. Students will work through real research workflows, learn how to develop and debug code efficiently, and build confidence in using Python as a powerful scientific instrument. By the end of the course, students will know how to load and clean data, visualize results, perform rigorous statistical analyses, accelerate slow computations, and infer model parameters from noisy measurements using Markov Chain Monte Carlo (MCMC). All work will be performed and submitted through GitHub, mirroring real scientific collaboration."
+name = "Python Tools for Research in Physics"
+inCharge = "A. Lamman"
