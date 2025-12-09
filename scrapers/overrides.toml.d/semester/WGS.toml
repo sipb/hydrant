@@ -1,4 +1,4 @@
-#:schema ./override-schema.json
+#:schema ../override-schema.json
 
 ["WGS.S30"]
 name = "Global South Feminisms"

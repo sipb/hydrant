@@ -1,0 +1,48 @@
+#:schema ../override-schema.json
+
+["CMS.S62"]
+lectureUnits = 4
+labUnits = 0
+preparationUnits = 2
+level = "U"
+meets = "CMS.S98"
+description = "This course explores the creation of new learning experiences through the lens of the STEAM Learning Architecture, a framework developed by the MIT pK-12 team to guide approaches to teaching and learning for educational innovation. The framework prioritizes student-centered, hands-on learning, rooted in the Constructionist theory that the most powerful learning occurs through discovery, exploration, and creation. Guest speakers will provide context for final projects that produce innovative learning experiences for learners in early childhood through high school."
+name = "Special Subject: Education by Design: Building for Impact"
+inCharge = "Claudia Urrea"
+url = "https://cmsw.mit.edu/steam-learning-architecture-a-framework-for-educational-innovation/"
+new = true
+
+["CMS.S98"]
+lectureUnits = 4
+labUnits = 0
+preparationUnits = 2
+level = "G"
+meets = "CMS.S62"
+description = "This course explores the creation of new learning experiences through the lens of the STEAM Learning Architecture, a framework developed by the MIT pK-12 team to guide approaches to teaching and learning for educational innovation. The framework prioritizes student-centered, hands-on learning, rooted in the Constructionist theory that the most powerful learning occurs through discovery, exploration, and creation. Guest speakers will provide context for final projects that produce innovative learning experiences for learners in early childhood through high school."
+name = "Special Subject: Education by Design: Building for Impact"
+url = "https://cmsw.mit.edu/steam-learning-architecture-a-framework-for-educational-innovation/"
+new = true
+
+["CMS.S63"]
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 1
+level = "U"
+meets = "CMS.S99"
+description = "A detective superhero who stops at nothing to reveal a monstrous truth, and a kid seeking monsters to speak truth. A conned con man out to settle up, a lost artist and a hothead in Neo-Tokyo, and a time-displaced survivor of invasion. Dive into comics, the speculative medium of post-industrial bodies—where sci-fi, fantasy, mystery, melodrama, and the funnies collide with “anything goes” gusto. This one-week IAP offering examines comics from the lens of several genres, to explore how a medium once dismissed as “juvenile lit” offers a space for subversive questions; and what is gained or lost, as the medium de-marginalizes with the proliferation of the graphic novel. Students will do a close reading of the superhero classic Watchmen, with in-class excerpts from Calvin and Hobbes; Parker: The Hunter; Fun Home; Akira; and El Eternauta. During the week, students complete an independent study of a comics text of their choice (examples may include Saga, Monstrous, The Good Asian, Captain Marvel, The Dark Knight Returns, The Far Side) and prepare a final class presentation and short essay on their critical study. Limited to 10."
+name = "IAP Special Subject: American Comics and the Graphic Novel"
+inCharge = "Sajan Saini"
+url = "https://cmsw.mit.edu/iap-special-subject-american-comics-and-the-graphic-novel/"
+new = true
+
+["CMS.S99"]
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 1
+level = "G"
+meets = "CMS.S63"
+description = "A detective superhero who stops at nothing to reveal a monstrous truth, and a kid seeking monsters to speak truth. A conned con man out to settle up, a lost artist and a hothead in Neo-Tokyo, and a time-displaced survivor of invasion. Dive into comics, the speculative medium of post-industrial bodies—where sci-fi, fantasy, mystery, melodrama, and the funnies collide with “anything goes” gusto. This one-week IAP offering examines comics from the lens of several genres, to explore how a medium once dismissed as “juvenile lit” offers a space for subversive questions; and what is gained or lost, as the medium de-marginalizes with the proliferation of the graphic novel. Students will do a close reading of the superhero classic Watchmen, with in-class excerpts from Calvin and Hobbes; Parker: The Hunter; Fun Home; Akira; and El Eternauta. During the week, students complete an independent study of a comics text of their choice (examples may include Saga, Monstrous, The Good Asian, Captain Marvel, The Dark Knight Returns, The Far Side) and prepare a final class presentation and short essay on their critical study. Limited to 10."
+name = "IAP Special Subject: American Comics and the Graphic Novel"
+inCharge = "Sajan Saini"
+url = "https://cmsw.mit.edu/iap-special-subject-american-comics-and-the-graphic-novel/"
+new = true

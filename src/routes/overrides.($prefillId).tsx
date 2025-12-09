@@ -101,10 +101,12 @@ export default function App({ loaderData }: Route.ComponentProps) {
   );
 
   const overridesCollection = createListCollection({
-    items: Object.entries(overrideNames).map(([name]) => ({
-      label: name,
-      value: name,
-    })),
+    items: Object.entries(overrideNames)
+      .map(([name]) => ({
+        label: name,
+        value: name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label)),
   });
 
   // TODO IN NEXT COMMIT: Make ui schema match what it did before :(
