@@ -116,50 +116,38 @@
           "type": "string"
         }
       },
-      "hassH": {
-        "type": "boolean",
-        "title": "HASS-H",
-        "description": "True if HASS-H"
+      "hass": {
+        "type": "array",
+        "title": "HASS",
+        "description": "HASS designation (if any)",
+        "items": {
+          "type": "string",
+          "enum": ["H", "A", "S", "E"]
+        },
+        "uniqueItems": true
       },
-      "hassA": {
-        "type": "boolean",
-        "title": "HASS-A",
-        "description": "True if HASS-A"
-      },
-      "hassS": {
-        "type": "boolean",
-        "title": "HASS-S",
-        "description": "True if HASS-S"
-      },
-      "hassE": {
-        "type": "boolean",
-        "title": "HASS-E",
-        "description": "True if HASS-E"
-      },
-      "cih": {
-        "type": "boolean",
+      "comms": {
+        "type": "string",
         "title": "CI-H",
-        "description": "True if CI-H"
+        "description": "Communications Intensive designation",
+        "enum": ["", "CI-H", "CI-HW"]
       },
-      "cihw": {
-        "type": "boolean",
-        "title": "CI-HW",
-        "description": "True if CI-HW"
-      },
-      "rest": {
-        "type": "boolean",
-        "title": "REST",
-        "description": "True if REST"
-      },
-      "lab": {
-        "type": "boolean",
-        "title": "Lab",
-        "description": "True if institute lab"
-      },
-      "partLab": {
-        "type": "boolean",
-        "title": "Partial Lab",
-        "description": "True if partial institute lab"
+      "gir": {
+        "type": "string",
+        "title": "GIR",
+        "description": "GIR designation",
+        "enum": [
+          "",
+          "BIOL",
+          "CAL1",
+          "CAL2",
+          "CHEM",
+          "LAB",
+          "LAB2",
+          "PHY1",
+          "PHY2",
+          "REST"
+        ]
       },
       "cim": {
         "type": "array",

@@ -89,8 +89,8 @@ function ClassTypes(props: { cls: Class }) {
   const types2 = makeFlags([
     ["repeat", "Can be repeated for credit"],
     ["rest", "REST"],
-    ["Lab", "Institute Lab"],
-    ["PartLab", "Partial Institute Lab"],
+    ["lab", "Institute Lab"],
+    ["partLab", "Partial Institute Lab"],
     ["hassH", "HASS-H"],
     ["hassA", "HASS-A"],
     ["hassS", "HASS-S"],
