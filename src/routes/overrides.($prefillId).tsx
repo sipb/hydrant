@@ -90,6 +90,8 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   return { overrideNames, prefillData, prefillId };
 }
 
+clientLoader.hydrate = true as const;
+
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
   const { overrideNames, prefillData, prefillId } = loaderData;
@@ -401,7 +403,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           experimental_defaultFormStateBehavior={{
             arrayMinItems: { populate: "requiredOnly" },
             emptyObjectFields: "populateRequiredDefaults",
-            mergeDefaultsIntoFormData: "useDefaultIfFormDataUndefined",
+            mergeDefaultsIntoFormData: "useFormDataIfPresent",
           }}
           liveOmit={"onChange"}
           omitExtraData={true}
