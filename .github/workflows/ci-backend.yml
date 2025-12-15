@@ -1,8 +1,5 @@
 name: CI checks for the backend
 
-env:
-  python-version: 3.8
-
 on:
   push:
     branches: [main]
@@ -24,6 +21,9 @@ on:
       - ".prettierignore"
       - "{package,package-lock,tsconfig}.json"
       - "scrapers/overrides.toml.d/override-schema.json"
+
+env:
+  python-version: 3.8
 
 jobs:
   black:
