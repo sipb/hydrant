@@ -36,6 +36,7 @@ public/i26.json
 __pycache__
 .mypy_cache
 scrapers/.mypy_cache
+src/Hydrant.egg-info
 
 # deploy script
 deploy.sh
