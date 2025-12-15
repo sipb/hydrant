@@ -22,9 +22,6 @@ on:
       - "{package,package-lock,tsconfig}.json"
       - "scrapers/overrides.toml.d/override-schema.json"
 
-env:
-  python-version: 3.7
-
 jobs:
   black:
     name: Black
@@ -37,10 +34,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version-file: ".python-version"
           cache: "pip"
       - name: Install dependencies
         run: |
@@ -55,10 +52,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version-file: ".python-version"
           cache: "pip"
       - name: Install dependencies
         run: |
@@ -75,7 +72,7 @@ jobs:
       - name: Set up Python 3.7
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version-file: ".python-version"
           cache: "pip"
       - name: Install dependencies
         run: |
