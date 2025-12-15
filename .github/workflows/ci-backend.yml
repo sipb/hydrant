@@ -31,13 +31,13 @@ jobs:
       - uses: psf/black@stable
   pylint:
     name: Pylint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version-file: ".python-version"
+          python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
         run: |
@@ -49,13 +49,13 @@ jobs:
           pylint $(git ls-files '*.py')
   pytest:
     name: Pytest
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version-file: ".python-version"
+          python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
         run: |
@@ -66,13 +66,13 @@ jobs:
         run: pytest --doctest-modules
   integration:
     name: Test for valid JSON output
-    runs-on: ubuntu-20.04 #NOTE: python 3.8 is NOT supported on ubuntu-latest
+    runs-on: ubuntu-latest #NOTE: python 3.8 is NOT supported on ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version-file: ".python-version"
+          python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
         run: |
