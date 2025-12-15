@@ -1,0 +1,27 @@
+[project]
+name = "Hydrant"
+version = "1.0.0"
+description = "MIT semester course planning app"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE.txt" }
+requires-python = ">=3.8"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "lxml>=6.0.2",
+    "tomli>=2.3.0; python_version < '3.11'",
+    "nltk>=3.9.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.5", "pylint>=3.2.7", "black>=24.8.0"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
+
+[tool.pylint.main]
+max-line-length = 88
+py-version = "3.8"

@@ -118,7 +118,7 @@ def get_rows():
     with urlopen("https://math.mit.edu/academics/classes.html", timeout=1) as response:
         soup = BeautifulSoup(response.read().decode("utf-8"), features="lxml")
     course_list: Tag = soup.find("ul", {"class": "course-list"})  # type: ignore
-    rows = course_list.findAll("li", recursive=False)
+    rows = course_list.find_all("li", recursive=False)
     return rows
 
 
@@ -168,7 +168,7 @@ def parse_row(
     subjects = parse_subject(subject)
 
     where_when: Tag = row.find("div", {"class": "where-when"})  # type: ignore
-    when, where = where_when.findAll("div", recursive=False)
+    when, where = where_when.find_all("div", recursive=False)
     where = where.text
     when = when.text
     if ";" in when:
