@@ -22,7 +22,6 @@ git pull -q
 
 # The scripts machine we use has Python 3.8, so use that.
 # This updates $OUT_FILE.
-python3.8 -m pip install .
 python3.8 -m scrapers
 OUT_FILE="$REPO_DIR/public/*.json"
 
