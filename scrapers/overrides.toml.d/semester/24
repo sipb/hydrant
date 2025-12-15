@@ -1,0 +1,11 @@
+#:schema ../override-schema.json
+
+["24.S95"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+level = "G"
+prereqs = "Open to undergraduates and to graduate students from other departments, if they have taken a linguistics course or have the instructors’ approval."
+description = "This seminar is offered in the context of the MIT Linguistics initiative to introduce high school students to language science. A major objective of the initiative is to design lessons and activities that will excite students about the scientific study of human language. We will pursue our work with this objective in mind, using the class as a course design and teaching laboratory. "
+name = "Linguistics in K-12 Education"
+inCharge = "M. Honda, C. Lesure"
