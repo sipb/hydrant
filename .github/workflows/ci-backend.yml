@@ -40,10 +40,7 @@ jobs:
           python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pylint
+        run: pip install .[dev]
       - name: Analysing the code with pylint
         run: |
           pylint $(git ls-files '*.py')
@@ -58,10 +55,7 @@ jobs:
           python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest
+        run: pip install .[dev]
       - name: Run tests with pytest (including doctests)
         run: pytest --doctest-modules
   integration:
@@ -75,10 +69,7 @@ jobs:
           python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pylint
+        run: pip install .
       - name: Run scrapers
         run: python3 -m scrapers
       - name: Check existence of public/latest.json
