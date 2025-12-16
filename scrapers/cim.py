@@ -21,15 +21,16 @@ from __future__ import annotations
 import json
 import os.path
 import socket
-from collections import OrderedDict
 from collections.abc import Iterable
 from urllib.error import URLError
 from urllib.request import urlopen
 
 from bs4 import BeautifulSoup, Tag
 
-# pylint: disable=line-too-long
-CIM_URL = "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject"
+CIM_URL = (
+    "https://registrar.mit.edu/registration-academics/"
+    "academic-requirements/communication-requirement/ci-m-subjects/subject"
+)
 
 
 def get_sections() -> Iterable[Tag]:
@@ -54,7 +55,7 @@ def get_sections() -> Iterable[Tag]:
     )
 
 
-def get_courses(section: Tag) -> OrderedDict[str, set[str]]:
+def get_courses(section: Tag) -> dict[str, set[str]]:
     """
     Extracts the courses contained in a section and their corresponding CI-M
     subjects.
@@ -63,13 +64,16 @@ def get_courses(section: Tag) -> OrderedDict[str, set[str]]:
         section (bs4.element.Tag): from get_sections()
 
     Returns:
-        OrderedDict[str, set[str]]: A mapping from each course (major) contained
+        dict[str, set[str]]: A mapping from each course (major) contained
             within the given section to the set of subject numbers (classes) that may
             satisfy the CI-M requirement for that course number.
     """
-    courses: OrderedDict[str, set[str]] = OrderedDict()
+    courses: dict[str, set[str]] = {}
     for subsec in section.select(".ci-m__section"):
-        title = subsec.select_one(".ci-m__section-title").text.strip().replace("*", "")  # type: ignore
+        section_title = subsec.select_one(".ci-m__section-title")
+        assert section_title is not None
+
+        title = section_title.get_text(strip=True).replace("*", "")
 
         # If no title, add to the previous subsection
         if title:
@@ -78,7 +82,7 @@ def get_courses(section: Tag) -> OrderedDict[str, set[str]]:
             title, subjects = courses.popitem()
 
         subjects |= {
-            subj.text.strip() for subj in subsec.select(".ci-m__subject-number")
+            subj.get_text(strip=True) for subj in subsec.select(".ci-m__subject-number")
         }
         courses[title] = subjects
     return courses
@@ -101,16 +105,16 @@ def run() -> None:
         return
 
     # This maps each course number to a set of CI-M subjects for that course
-    courses: OrderedDict[str, set[str]] = OrderedDict()
+    courses: dict[str, set[str]] = {}
     for section in sections:
         new_courses = get_courses(section)
-        assert new_courses.keys().isdisjoint(courses.keys())
+        assert set(new_courses.keys()).isdisjoint(set(courses.keys()))
         courses.update(new_courses)
 
     # This maps each subject to a list of courses for which it is a CI-M
     subjects: dict[str, dict[str, list[str]]] = {}
-    for course in courses:
-        for subj in courses[course]:
+    for course, course_subjects in courses.items():
+        for subj in course_subjects:
             for number in subj.replace("J", "").split("/"):
                 subjects.setdefault(number, {"cim": []})["cim"].append(course)
 
