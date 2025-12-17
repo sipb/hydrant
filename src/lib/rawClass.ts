@@ -113,31 +113,51 @@ export type RawSection = [RawTimeslot[], string];
  * Communications Intensive designation
  */
 export enum CI {
-  CIH = "CI-H",
-  CIHW = "CI-HW",
+  /** Not CI-H */
   EMPTY = "",
+  /** CI-H */
+  CIH = "CI-H",
+  /** CI-HW */
+  CIHW = "CI-HW",
 }
 
 /**
  * GIR designation
  */
 export enum GIR {
-  BIOL = "BIOL",
-  CAL1 = "CAL1",
-  CAL2 = "CAL2",
-  CHEM = "CHEM",
+  /** Not a GIR */
   EMPTY = "",
+  /** Biology */
+  BIOL = "BIOL",
+  /** Calculus 1 */
+  CAL1 = "CAL1",
+  /** Calculus 2 */
+  CAL2 = "CAL2",
+  /** Chemistry */
+  CHEM = "CHEM",
+  /** Institute Lab */
   LAB = "LAB",
+  /** Partial Lab */
   LAB2 = "LAB2",
+  /** Physics 1 */
   PHY1 = "PHY1",
+  /** Physics 2 */
   PHY2 = "PHY2",
+  /** REST */
   REST = "REST",
 }
 
+/**
+ * HASS designation
+ */
 export enum HASS {
+  /** HASS-H */
   H = "H",
+  /** HASS-A */
   A = "A",
+  /** HASS-S */
   S = "S",
+  /** HASS-E */
   E = "E",
 }
 
@@ -145,15 +165,19 @@ export enum HASS {
  * Subject level ("U" or "G")
  */
 export enum Level {
+  /** Undergraduate */
   U = "U",
+  /** Graduate */
   G = "G",
 }
 
+/** Information about start and end month + days of the quarter. */
 export interface QuarterInfo {
   start?: [number, number];
   end?: [number, number];
 }
 
+/** Kinds of sections */
 export enum SectionKind {
   LECTURE = "lecture",
   RECITATION = "recitation",
@@ -161,9 +185,14 @@ export enum SectionKind {
   DESIGN = "design",
 }
 
+/** Term codes */
 export enum TermCode {
+  /** Fall */
   FA = "FA",
+  /** January (IAP) */
   JA = "JA",
+  /** Spring */
   SP = "SP",
+  /** Summer */
   SU = "SU",
 }
