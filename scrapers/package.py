@@ -100,6 +100,29 @@ def merge_data(
                 result[key].update(dataset[key])
     return result
 
+def get_include(dirs: list[str]) -> set[str]:
+    """
+    Check if "include.txt" file is present. If so, treat is
+    as a list of classes that must be included on the final packages .json file.
+
+    Args:
+        dirs (list[str]): The directories to check for "include.txt".
+
+    Returns:
+        set[str]: The set of classes to include
+    """
+
+    classes = set()
+
+    for dir in dirs:
+        include_path = os.path.join(package_dir, dir, "include.txt")
+        if os.path.isfile(include_path):
+            with open(include_path, mode="r", encoding="utf-8") as include_file:
+                classes |= set(line.strip() for line in include_file if line.strip())
+
+    return classes
+
+
 
 def run() -> None:
     """
@@ -126,8 +149,7 @@ def run() -> None:
         courses = merge_data(
             datasets=[fireroad_sem, catalog, cim, overrides_all, overrides_sem],
             keys_to_keep=(set(fireroad_sem) & set(catalog))
-            # REMOVE THIS ONCE ES.7016 IS IN CATALOG
-            | {"ES.7016"},
+            | get_include(["overrides.toml.d", os.path.join("overrides.toml.d", sem)])
         )
 
         term_info = get_term_info(sem)
