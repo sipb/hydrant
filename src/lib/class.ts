@@ -218,10 +218,10 @@ export class Sections {
         return "lec";
       case SectionKind.RECITATION:
         return "rec";
-      case SectionKind.DESIGN:
-        return "des";
       case SectionKind.LAB:
         return "lab";
+      case SectionKind.DESIGN:
+        return "des";
     }
   }
 
@@ -231,9 +231,9 @@ export class Sections {
         return 0;
       case SectionKind.RECITATION:
         return 1;
-      case SectionKind.DESIGN:
-        return 2;
       case SectionKind.LAB:
+        return 2;
+      case SectionKind.DESIGN:
         return 3;
     }
   }
@@ -245,10 +245,10 @@ export class Sections {
         return "Lecture";
       case SectionKind.RECITATION:
         return "Recitation";
-      case SectionKind.DESIGN:
-        return "Design";
       case SectionKind.LAB:
         return "Lab";
+      case SectionKind.DESIGN:
+        return "Design";
     }
   }
 
@@ -314,19 +314,19 @@ export class Class {
               rawClass.recitationRawSections,
               rawClass.recitationSections,
             );
-          case SectionKind.DESIGN:
-            return new Sections(
-              this,
-              SectionKind.DESIGN,
-              rawClass.designRawSections,
-              rawClass.designSections,
-            );
           case SectionKind.LAB:
             return new Sections(
               this,
               SectionKind.LAB,
               rawClass.labRawSections,
               rawClass.labSections,
+            );
+          case SectionKind.DESIGN:
+            return new Sections(
+              this,
+              SectionKind.DESIGN,
+              rawClass.designRawSections,
+              rawClass.designSections,
             );
         }
       })

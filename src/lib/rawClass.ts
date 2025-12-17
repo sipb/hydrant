@@ -135,18 +135,18 @@ export enum GIR {
 }
 
 export enum HASS {
-  A = "A",
-  E = "E",
   H = "H",
+  A = "A",
   S = "S",
+  E = "E",
 }
 
 /**
  * Subject level ("U" or "G")
  */
 export enum Level {
-  G = "G",
   U = "U",
+  G = "G",
 }
 
 export interface QuarterInfo {
@@ -155,10 +155,10 @@ export interface QuarterInfo {
 }
 
 export enum SectionKind {
-  DESIGN = "design",
-  LAB = "lab",
   LECTURE = "lecture",
   RECITATION = "recitation",
+  LAB = "lab",
+  DESIGN = "design",
 }
 
 export enum TermCode {
