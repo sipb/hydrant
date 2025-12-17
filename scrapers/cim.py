@@ -14,6 +14,11 @@ run() scrapes this data and writes it to cim.json, in the format:
             ]
         }
     }
+
+Functions:
+    get_sections()
+    get_courses(section)
+    run()
 """
 
 from __future__ import annotations

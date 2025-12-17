@@ -18,7 +18,7 @@ Functions:
     parse_prereqs(course)
     get_course_data(courses, course, term)
     get_raw_data()
-    run(is_semester_term)
+    run(sem_term)
 """
 
 from __future__ import annotations
@@ -204,8 +204,7 @@ def parse_quarter_info(
         dates can appear as either "4/4" or "apr 4".
 
     Args:
-        course (Mapping[str, CourseValues]):
-            The course object.
+        course (Mapping[str, CourseValues]): The course object.
 
     Returns:
         dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
@@ -242,8 +241,7 @@ def parse_attributes(
     Parses attributes of the course.
 
     Args:
-        course (Mapping[str, CourseValues]):
-            The course object.
+        course (Mapping[str, CourseValues]): The course object.
 
     Returns:
         dict[str, str | list[str]]: The attributes of the course.
@@ -267,8 +265,7 @@ def parse_terms(
     Parses the terms of the course.
 
     Args:
-        course (Mapping[str, CourseValues]):
-            The course object.
+        course (Mapping[str, CourseValues]): The course object.
 
     Returns:
         dict[str, list[str]]: The parsed terms, stored in the key "terms".
@@ -293,8 +290,7 @@ def parse_prereqs(
     Parses prerequisites from the course.
 
     Args:
-        course (Mapping[str, CourseValues]):
-            The course object.
+        course (Mapping[str, CourseValues]): The course object.
 
     Returns:
         dict[str, str]: The parsed prereqs, in the key "prereqs".

@@ -4,7 +4,6 @@ Was used to generate the math overrides in package.py; currently unnecessary.
 
 Functions:
     parse_when(when)
-    test_parse_when()
     parse_many_timeslots(days, times)
     make_raw_sections(days, times, room):
     make_section_override(timeslots, room)
@@ -34,6 +33,15 @@ def parse_when(when: str) -> tuple[str, str]:
 
     Returns:
         tuple[str, str]: A parsed version of this string.
+
+    >>> parse_when("F10:30-12")
+    ('F', '10.30-12')
+
+    >>> parse_when("MW1")
+    ('MW', '1')
+
+    >>> parse_when("MWF11")
+    ('MWF', '11')
     """
     # special casing is good enough (otherwise this could be a for loop)
     if when[1].isdigit():
@@ -48,15 +56,6 @@ def parse_when(when: str) -> tuple[str, str]:
     # fireroad.py wants dots instead of colons
     times = times.replace(":", ".")
     return days, times
-
-
-def test_parse_when() -> None:
-    """
-    Test cases for parse_when
-    """
-    assert parse_when("F10:30-12") == ("F", "10.30-12")
-    assert parse_when("MW1") == ("MW", "1")
-    assert parse_when("MWF11") == ("MWF", "11")
 
 
 def parse_many_timeslots(days: str, times: str) -> Iterable[tuple[int, int]]:
@@ -213,5 +212,4 @@ def run() -> dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]
 
 
 if __name__ == "__main__":
-    test_parse_when()
     pprint(run())

@@ -36,9 +36,6 @@ import hassEImg from "../assets/hassE.gif";
 import cihImg from "../assets/cih.gif";
 import cihwImg from "../assets/cihw.gif";
 
-// This isn't exported intentionally. Instead of using this, can you use
-// Sections directly?
-
 /** Flags. */
 export interface Flags {
   nonext: boolean;

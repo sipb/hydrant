@@ -1,7 +1,7 @@
 """
 Utility data and functions for the scrapers folder.
 
-Data:
+Constants:
     GIR_REWRITE: dict[str, str]
     TIMESLOTS: int
     DAYS: dict[str, int]
@@ -13,7 +13,8 @@ Functions:
     find_timeslot(day, slot, pm)
     zip_strict(*iterables)
     grouper(iterable, n)
-    get_term_info()
+    get_term_info(sem_term)
+    url_name_to_term(url_name)
 """
 
 from __future__ import annotations

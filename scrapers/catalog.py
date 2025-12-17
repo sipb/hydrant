@@ -15,6 +15,10 @@ run() scrapes this data and writes it to catalog.json, in the format:
         }
     }
 
+Constants:
+    BASE_URL: str
+    LIMITED_REGEX: re.Pattern[str]
+
 Functions:
     is_not_offered_this_year(html)
     is_not_offered_next_year(html)
@@ -23,23 +27,14 @@ Functions:
     has_final(html)
     get_half(html)
     is_limited(html)
+    is_new(html)
     get_course_data(filtered_html)
     get_home_catalog_links()
     get_all_catalog_links(initial_hrefs)
     get_anchors_with_classname(element)
+    get_classes_content(html)
     scrape_courses_from_page(courses, href)
     run()
-
-Constants:
-    BASE_URL
-    LIMITED_REGEX
-
-Dependencies:
-    json
-    os.path
-    re
-    requests
-    bs4
 """
 
 from __future__ import annotations
