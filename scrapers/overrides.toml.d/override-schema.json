@@ -158,24 +158,27 @@
         }
       },
       "lectureUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Lecture units",
-        "description": "Lecture or recitation units"
+        "description": "Lecture or recitation units",
+        "minimum": 0
       },
       "labUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Lab units",
-        "description": "Lab or field work units"
+        "description": "Lab or field work units",
+        "minimum": 0
       },
       "preparationUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Preparation units",
-        "description": "Outside class units"
+        "description": "Outside class units",
+        "minimum": 0
       },
       "isVariableUnits": {
         "type": "boolean",
         "title": "Units arranged",
-        "description": "Does this class have an arranged number of units?\nIf true, lectureUnits, labUnits, preparationUnits are set to zero."
+        "description": "Does this class have an arranged number of units? If true, lectureUnits, labUnits, preparationUnits are set to zero."
       },
       "level": {
         "type": "string",
@@ -256,7 +259,7 @@
         "description": "1 or 2 if first / second half",
         "oneOf": [
           {
-            "type": "number",
+            "type": "integer",
             "enum": [1, 2]
           },
           {
@@ -278,17 +281,24 @@
       "rating": {
         "type": "number",
         "title": "Rating",
-        "description": "Rating (out of 7.0) from evals"
+        "description": "Rating (out of 7.0) from evals",
+        "multipleOf": 0.01,
+        "minimum": 0,
+        "maximum": 7
       },
       "hours": {
         "type": "number",
         "title": "Hours",
-        "description": "Hours per week from evals"
+        "description": "Hours per week from evals",
+        "multipleOf": 0.01,
+        "minimum": 0
       },
       "size": {
         "type": "number",
         "title": "Size",
-        "description": "Class size from evals"
+        "description": "Class size from evals",
+        "multipleOf": 0.01,
+        "minimum": 0
       },
       "quarterInfo": {
         "title": "Quarter Info",
@@ -303,20 +313,8 @@
             "additionalProperties": false,
             "properties": {
               "start": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
+                "$ref": "#/$defs/quarterDate"
               }
-            },
-            "default": {
-              "start": [0, 0]
             }
           },
           {
@@ -324,20 +322,8 @@
             "additionalProperties": false,
             "properties": {
               "end": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
+                "$ref": "#/$defs/quarterDate"
               }
-            },
-            "default": {
-              "end": [0, 0]
             }
           },
           {
@@ -345,33 +331,11 @@
             "additionalProperties": false,
             "properties": {
               "start": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
+                "$ref": "#/$defs/quarterDate"
               },
               "end": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
+                "$ref": "#/$defs/quarterDate"
               }
-            },
-            "default": {
-              "start": [0, 0],
-              "end": [0, 0]
             }
           }
         ]
@@ -385,13 +349,17 @@
       "description": "Raw timeslot format: [start slot, length of timeslot].",
       "items": [
         {
-          "type": "number"
+          "type": "integer",
+          "minimum": 0,
+          "exclusiveMaximum": 170
         },
         {
-          "type": "number"
+          "type": "integer",
+          "minimum": 0
         }
       ],
-      "minItems": 2
+      "minItems": 2,
+      "maxItems": 2
     },
     "rawSection": {
       "type": "array",
@@ -408,7 +376,27 @@
           "type": "string"
         }
       ],
-      "minItems": 2
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "quarterDate": {
+      "type": "array",
+      "title": "Quarter date",
+      "description": "Date format for calendar day: [month, day].",
+      "items": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 31
+        }
+      ],
+      "minItems": 2,
+      "maxItems": 2
     }
   }
 }
