@@ -101,13 +101,13 @@ def merge_data(
     return result
 
 
-def get_include(dirs: list[str]) -> set[str]:
+def get_include(include_dirs: list[str]) -> set[str]:
     """
     Check if "include.txt" file is present. If so, treat is
     as a list of classes that must be included on the final packages .json file.
 
     Args:
-        dirs (list[str]): The directories to check for "include.txt".
+        include_dirs (list[str]): The directories to check for "include.txt".
 
     Returns:
         set[str]: The set of classes to include
@@ -115,8 +115,8 @@ def get_include(dirs: list[str]) -> set[str]:
 
     classes = set()
 
-    for dir in dirs:
-        include_path = os.path.join(package_dir, dir, "include.txt")
+    for include_dir in include_dirs:
+        include_path = os.path.join(package_dir, include_dir, "include.txt")
         if os.path.isfile(include_path):
             with open(include_path, mode="r", encoding="utf-8") as include_file:
                 classes |= set(line.strip() for line in include_file if line.strip())
