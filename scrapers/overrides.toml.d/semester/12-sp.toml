@@ -1,0 +1,36 @@
+#:schema ../override-schema.json
+
+["12.S492"]
+name = "Special Seminar in Geobiology — Tracking the microbial cycling of carbon through time using isotopes"
+description = "Sedimentary organic carbon is a major reservoir of carbon on Earth’s surface, with a >3.5-billion-year history. Fractionations of stable carbon are used to reconstruct the contributions of different carbon-fixation and carbon-recycling pathways to this reservoir. In this seminar, we’ll discuss the seminal literature and recent advances on the basics of carbon isotope fractionation in the cell, examine how different carbon fixation and metabolic recycling mechanisms fractionate carbon isotopes, and assess isotope-based evidence for specific microbial metabolisms and interactions in fossil organic carbon and specific carbon compounds. This seminar will involve weekly meetings and discussions of the literature."
+inCharge = "T. Bosak"
+level = "G"
+isVariableUnits = true
+new = true
+
+["12.S590"]
+name = "Special Seminar in Geophysics — Energy Transition: Geoenergy and Geosolutions"
+description = "This interdisciplinary course explores the geological, economic, and policy dimensions of subsurface resources central to the global energy transition. Students will gain a rigorous foundation in the science, engineering, and societal contexts of geothermal energy, carbon sequestration, geological hydrogen, and critical minerals. The class integrates lectures, modeling exercises, policy discussions, and a field trip focused on real-world applications. Recommended experience in earth science, environmental science, or engineering. Interest in energy systems, sustainability, or policy."
+inCharge = "O. Jagoutz, S. Ono, M. Peč, B. Holtzman"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+new = true
+
+["12.S594"]
+name = "Special Seminar in EAPS — Snowball Earth: Geology, geochemistry, geobiology, and climate dynamics of extreme climate states"
+description = "The geologic record indicates that during several long-lived intervals of the Proterozoic, ice sheets at sea level stabilized at tropical latitudes, suggesting alterations between snowball and greenhouse climate states. By reviewing literature from the initial hypotheses of global glaciation through the most recent advances in understanding of Earth’s long-term climate history, this course will explore the geologic evidence for extraordinary climate fluctuations, the climate dynamics of these extreme states, and the geochemical and geobiological causes and consequences of the most severe episodes of climate change in Earth history."
+inCharge = "L. Nelson"
+level = "G"
+isVariableUnits = true
+new = true
+
+["12.S681"]
+name = "Special Seminar in Planetary Science — Cosmochemistry and planetary formation"
+description = "Explores the chemical perspectives of planetary formation, differentiation, and evolution. Introduces the principles of isotope geochemistry and their applications to understanding the origin of the Solar System and the building blocks of planets. Topics include nucleosynthetic anomalies as tracers of nebular and pre-Solar materials; stable isotope fractionation as a probe of physical and chemical processes; the causes of volatile element depletion in planetary bodies; and the magmatic differentiation histories of rocky planetary bodies. Discusses how geochemical observations from meteorites, planetary samples, and spacecraft missions constrain models of accretion, core–mantle-crust differentiation, and the origin of volatiles on terrestrial planets."
+inCharge = "N. Nie"
+level = "G"
+isVariableUnits = true
+new = true
