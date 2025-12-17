@@ -1,0 +1,12 @@
+#:schema ../override-schema.json
+
+["12.S594"]
+name = "Special Seminar in EAPS — Auditory Perception of Natural Data, Part I (Direct Sonification of Oscillatory Signals)"
+description = "Most of the wave-like phenomena in nature are far outside of the range of our direct perception, above and below, in spatial and temporal scales. Data representing such processes comes from sensors with often sparse, incomplete information. Usually, as scientists, we look at these signals and then design processing schemes to make inferences. However, our visual perception is not necessarily optimized for extracting meaning from waves. Often, we can gain significant, complementary or deeper insight by listening to it. So why don’t we? Sonification is the process of turning data of any kind into an audible representation. Any oscillatory signal can be frequency-shifted into our audible range and played as a sound. Our auditory perception has better temporal resolution than our visual perception, and is particularly attuned to interpretation of dynamics, including cause and effect, forcing and response. Combining visual and auditory representations of data can help us understand complex spatial-temporal interactions among events.\nIn this short, project-based course, we will first provide methods for sonification of oscillatory data (in python), and discuss simple to increasingly complex implementations (filtering, time compression/expansion), and spatialized audio for listening to multiple sensors simultaneously. We will also discuss when these methods break down (for non-oscillatory, non-stationary data). During the first two class sessions, we will explain and illustrate these methods with some of our current work on the wide range of length and time scales of earthquakes in a range of settings (including volcanoes, geothermal heat mines, tectonic faults, and the laboratory). Most of the class (days 3-5) will be for student projects. Please bring ideas for your own datasets to sonify, from your research or otherwise, from any domain. I can also provide datasets. At the end of the week, everyone will present their sounds, explain the phenomenon, the sensing method, and the research questions being explored through their sonification, and discuss questions generated in the process of making and listening. "
+inCharge = "B. Holtzman"
+level = "G"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 0
+isVariableUnits = false
+new = true
