@@ -100,6 +100,7 @@ def merge_data(
                 result[key].update(dataset[key])
     return result
 
+
 def get_include(dirs: list[str]) -> set[str]:
     """
     Check if "include.txt" file is present. If so, treat is
@@ -121,7 +122,6 @@ def get_include(dirs: list[str]) -> set[str]:
                 classes |= set(line.strip() for line in include_file if line.strip())
 
     return classes
-
 
 
 def run() -> None:
@@ -149,7 +149,7 @@ def run() -> None:
         courses = merge_data(
             datasets=[fireroad_sem, catalog, cim, overrides_all, overrides_sem],
             keys_to_keep=(set(fireroad_sem) & set(catalog))
-            | get_include(["overrides.toml.d", os.path.join("overrides.toml.d", sem)])
+            | get_include(["overrides.toml.d", os.path.join("overrides.toml.d", sem)]),
         )
 
         term_info = get_term_info(sem)
