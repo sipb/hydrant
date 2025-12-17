@@ -1,7 +1,16 @@
 import { Timeslot, Event } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
-import type { RawClass, RawSection } from "./rawClass";
+import {
+  CI,
+  GIR,
+  HASS,
+  Level,
+  SectionKind,
+  TermCode,
+  type RawClass,
+  type RawSection,
+} from "./rawClass";
 
 import nonextImg from "../assets/nonext.gif";
 import underImg from "../assets/under.gif";
@@ -29,12 +38,6 @@ import cihwImg from "../assets/cihw.gif";
 
 // This isn't exported intentionally. Instead of using this, can you use
 // Sections directly?
-enum SectionKind {
-  LECTURE,
-  RECITATION,
-  LAB,
-  DESIGN,
-}
 
 /** Flags. */
 export interface Flags {
@@ -222,6 +225,19 @@ export class Sections {
     }
   }
 
+  get priority(): number {
+    switch (this.kind) {
+      case SectionKind.LECTURE:
+        return 0;
+      case SectionKind.RECITATION:
+        return 1;
+      case SectionKind.DESIGN:
+        return 2;
+      case SectionKind.LAB:
+        return 3;
+    }
+  }
+
   /** Name for the kind of sections these are. */
   get name(): string {
     switch (this.kind) {
@@ -284,28 +300,28 @@ export class Class {
     this.sections = rawClass.sectionKinds
       .map((kind) => {
         switch (kind) {
-          case "lecture":
+          case SectionKind.LECTURE:
             return new Sections(
               this,
               SectionKind.LECTURE,
               rawClass.lectureRawSections,
               rawClass.lectureSections,
             );
-          case "recitation":
+          case SectionKind.RECITATION:
             return new Sections(
               this,
               SectionKind.RECITATION,
               rawClass.recitationRawSections,
               rawClass.recitationSections,
             );
-          case "design":
+          case SectionKind.DESIGN:
             return new Sections(
               this,
               SectionKind.DESIGN,
               rawClass.designRawSections,
               rawClass.designSections,
             );
-          case "lab":
+          case SectionKind.LAB:
             return new Sections(
               this,
               SectionKind.LAB,
@@ -314,7 +330,7 @@ export class Class {
             );
         }
       })
-      .sort((a, b) => a.kind - b.kind);
+      .sort((a, b) => a.priority - b.priority);
     this.backgroundColor = fallbackColor(colorScheme);
   }
 
@@ -402,29 +418,29 @@ export class Class {
   get flags(): Flags {
     return {
       nonext: this.rawClass.nonext,
-      under: this.rawClass.level === "U",
-      grad: this.rawClass.level === "G",
-      fall: this.rawClass.terms.includes("FA"),
-      iap: this.rawClass.terms.includes("JA"),
-      spring: this.rawClass.terms.includes("SP"),
-      summer: this.rawClass.terms.includes("SU"),
+      under: this.rawClass.level === Level.U,
+      grad: this.rawClass.level === Level.G,
+      fall: this.rawClass.terms.includes(TermCode.FA),
+      iap: this.rawClass.terms.includes(TermCode.JA),
+      spring: this.rawClass.terms.includes(TermCode.SP),
+      summer: this.rawClass.terms.includes(TermCode.SU),
       repeat: this.rawClass.repeat,
-      bio: this.rawClass.gir === "BIOL",
-      calc1: this.rawClass.gir === "CAL1",
-      calc2: this.rawClass.gir === "CAL2",
-      chem: this.rawClass.gir === "CHEM",
-      lab: this.rawClass.gir === "LAB",
-      partLab: this.rawClass.gir === "LAB2",
-      phys1: this.rawClass.gir === "PHY1",
-      phys2: this.rawClass.gir === "PHY2",
-      rest: this.rawClass.gir === "REST",
+      bio: this.rawClass.gir === GIR.BIOL,
+      calc1: this.rawClass.gir === GIR.CAL1,
+      calc2: this.rawClass.gir === GIR.CAL2,
+      chem: this.rawClass.gir === GIR.CHEM,
+      lab: this.rawClass.gir === GIR.LAB,
+      partLab: this.rawClass.gir === GIR.LAB2,
+      phys1: this.rawClass.gir === GIR.PHY1,
+      phys2: this.rawClass.gir === GIR.PHY2,
+      rest: this.rawClass.gir === GIR.REST,
       hass: this.rawClass.hass.length > 0,
-      hassH: this.rawClass.hass.includes("H"),
-      hassA: this.rawClass.hass.includes("A"),
-      hassS: this.rawClass.hass.includes("S"),
-      hassE: this.rawClass.hass.includes("E"),
-      cih: this.rawClass.comms === "CI-H",
-      cihw: this.rawClass.comms === "CI-HW",
+      hassH: this.rawClass.hass.includes(HASS.H),
+      hassA: this.rawClass.hass.includes(HASS.A),
+      hassS: this.rawClass.hass.includes(HASS.S),
+      hassE: this.rawClass.hass.includes(HASS.E),
+      cih: this.rawClass.comms === CI.CIH,
+      cihw: this.rawClass.comms === CI.CIHW,
       notcih: !this.rawClass.comms,
       cim: !!this.rawClass.cim?.length,
       final: this.rawClass.final,

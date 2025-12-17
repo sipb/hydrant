@@ -1,22 +1,24 @@
+import { TermCode } from "./rawClass";
+
 /** Dictionary of semester-name related constants. */
 const SEMESTER_NAMES = {
   f: {
-    catalog: "FA",
+    catalog: TermCode.FA,
     full: "fall",
     fullCaps: "Fall",
   },
   s: {
-    catalog: "SP",
+    catalog: TermCode.SP,
     full: "spring",
     fullCaps: "Spring",
   },
   i: {
-    catalog: "JA",
+    catalog: TermCode.JA,
     full: "iap",
     fullCaps: "IAP",
   },
   m: {
-    catalog: "SU",
+    catalog: TermCode.SU,
     full: "summer",
     fullCaps: "Summer",
   },

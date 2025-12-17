@@ -1,9 +1,3 @@
-/** Raw timeslot format: [start slot, length of timeslot]. */
-export type RawTimeslot = [number, number];
-
-/** Raw section format: [[[10, 2], [70, 2]], "34-101"]. */
-export type RawSection = [RawTimeslot[], string];
-
 /** The raw class format produced by the scraper. */
 export interface RawClass {
   /** Class number, e.g. "6.3900" */
@@ -18,7 +12,7 @@ export interface RawClass {
   tba: boolean;
 
   /** Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist */
-  sectionKinds: ("lecture" | "recitation" | "lab" | "design")[];
+  sectionKinds: SectionKind[];
   /** Lecture timeslots and rooms */
   lectureSections: RawSection[];
   /** Recitation timeslots and rooms */
@@ -37,20 +31,11 @@ export interface RawClass {
   designRawSections: string[];
 
   /** Contains type of HASS (if any) */
-  hass: ("H" | "A" | "S" | "E")[];
+  hass: HASS[];
   /** Type of CI class (if any) */
-  comms: "CI-H" | "CI-HW" | "";
+  comms: CI;
   /** Type of GIR (if any) */
-  gir:
-    | "BIOL"
-    | "CAL1"
-    | "CAL2"
-    | "CHEM"
-    | "LAB"
-    | "LAB2"
-    | "PHY1"
-    | "PHY2"
-    | "REST";
+  gir: GIR;
 
   /** Array of programs (free text) for which this class is a CI-M */
   cim?: string[];
@@ -68,7 +53,7 @@ export interface RawClass {
   isVariableUnits: boolean;
 
   /** Level: "U" undergrad, "G" grad */
-  level: "U" | "G";
+  level: Level;
   /**
    * Comma-separated list of classes with same number, e.g.
    * "21A.103, WGS.225"
@@ -78,7 +63,7 @@ export interface RawClass {
   meets: string;
 
   /** Terms class is offered */
-  terms: ("FA" | "JA" | "SP" | "SU")[];
+  terms: TermCode[];
   /** Prereqs, no specific format (but usually contains class numbers) */
   prereqs: string;
 
@@ -115,5 +100,70 @@ export interface RawClass {
   size: number;
 
   /** Record with start and end time information */
-  quarterInfo?: Partial<Record<"start" | "end", [number, number]>>;
+  quarterInfo?: QuarterInfo;
+}
+
+/** Raw timeslot format: [start slot, length of timeslot]. */
+export type RawTimeslot = [number, number];
+
+/** Raw section format: [[[10, 2], [70, 2]], "34-101"]. */
+export type RawSection = [RawTimeslot[], string];
+
+/**
+ * Communications Intensive designation
+ */
+export enum CI {
+  CIH = "CI-H",
+  CIHW = "CI-HW",
+  EMPTY = "",
+}
+
+/**
+ * GIR designation
+ */
+export enum GIR {
+  BIOL = "BIOL",
+  CAL1 = "CAL1",
+  CAL2 = "CAL2",
+  CHEM = "CHEM",
+  EMPTY = "",
+  LAB = "LAB",
+  LAB2 = "LAB2",
+  PHY1 = "PHY1",
+  PHY2 = "PHY2",
+  REST = "REST",
+}
+
+export enum HASS {
+  A = "A",
+  E = "E",
+  H = "H",
+  S = "S",
+}
+
+/**
+ * Subject level ("U" or "G")
+ */
+export enum Level {
+  G = "G",
+  U = "U",
+}
+
+export interface QuarterInfo {
+  start?: [number, number];
+  end?: [number, number];
+}
+
+export enum SectionKind {
+  DESIGN = "design",
+  LAB = "lab",
+  LECTURE = "lecture",
+  RECITATION = "recitation",
+}
+
+export enum TermCode {
+  FA = "FA",
+  JA = "JA",
+  SP = "SP",
+  SU = "SU",
 }
