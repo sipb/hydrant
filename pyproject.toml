@@ -1,9 +1,10 @@
 [project]
-name = "Hydrant"
+name = "scrapers"
 version = "1.0.0"
-description = "MIT semester course planning app"
-readme = { file = "README.md", content-type = "text/markdown" }
-license = { file = "LICENSE.txt" }
+description = "Scrapers for Hydrant, MIT's semester course planning app"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE.txt"]
 requires-python = ">=3.8"
 dependencies = [
     "beautifulsoup4>=4.14.3",
@@ -11,13 +12,22 @@ dependencies = [
     "tomli>=2.3.0; python_version < '3.11'",
     "nltk>=3.9.1",
 ]
+authors = [{ name = "SIPB Hydrant Team", email = "sipb-hydrant@mit.edu" }]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.3.5", "pylint>=3.2.7", "black>=24.8.0"]
 
+[project.urls]
+"Homepage" = "https://hydrant.mit.edu/"
+"Repository" = "https://github.com/sipb/hydrant/"
+"SIPB Projects Page" = "https://sipb.mit.edu/projects/#hydrant"
+
+[project.scripts]
+scrapers-run = "scrapers.__main__:run"
+
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
@@ -25,3 +35,6 @@ addopts = "--doctest-modules"
 [tool.pylint.main]
 max-line-length = 88
 py-version = "3.8"
+
+[tool.hatch.build.targets.wheel]
+packages = ["scrapers"]
