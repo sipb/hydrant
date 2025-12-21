@@ -303,42 +303,15 @@
       "quarterInfo": {
         "title": "Quarter Info",
         "type": "object",
-        "anyOf": [
-          {
-            "additionalProperties": false,
-            "properties": {}
+        "additionalProperties": false,
+        "properties": {
+          "start": {
+            "$ref": "#/$defs/quarterDate"
           },
-          {
-            "required": ["start"],
-            "additionalProperties": false,
-            "properties": {
-              "start": {
-                "$ref": "#/$defs/quarterDate"
-              }
-            }
-          },
-          {
-            "required": ["end"],
-            "additionalProperties": false,
-            "properties": {
-              "end": {
-                "$ref": "#/$defs/quarterDate"
-              }
-            }
-          },
-          {
-            "required": ["start", "end"],
-            "additionalProperties": false,
-            "properties": {
-              "start": {
-                "$ref": "#/$defs/quarterDate"
-              },
-              "end": {
-                "$ref": "#/$defs/quarterDate"
-              }
-            }
+          "end": {
+            "$ref": "#/$defs/quarterDate"
           }
-        ]
+        }
       }
     },
     "allOf": [
