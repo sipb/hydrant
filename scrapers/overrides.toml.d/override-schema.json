@@ -264,7 +264,7 @@
           },
           {
             "type": "boolean",
-            "enum": [false]
+            "const": false
           }
         ]
       },
@@ -340,7 +340,31 @@
           }
         ]
       }
-    }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "isVariableUnits": {
+              "const": true
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "lectureUnits": {
+              "maximum": 0
+            },
+            "labUnits": {
+              "maximum": 0
+            },
+            "preparationUnits": {
+              "maximum": 0
+            }
+          }
+        }
+      }
+    ]
   },
   "$defs": {
     "rawTimeSlot": {
