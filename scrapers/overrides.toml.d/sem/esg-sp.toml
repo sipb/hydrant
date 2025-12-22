@@ -138,3 +138,4 @@ rating = 0
 hours = 0
 size = 0
 new = true
+include = true

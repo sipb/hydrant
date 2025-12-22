@@ -97,13 +97,13 @@ def merge_data(
     return result
 
 
-def get_include(include_dirs: list[str]) -> set[str]:
+def get_include(overrides: dict[str, dict[str, Any]]) -> set[str]:
     """
-    Check if "include.txt" file is present. If so, treat is
-    as a list of classes that must be included on the final packages .json file.
+    For the dictionary of classes, check if the key "include" is 
+    present and if it is True. If so, add class to the resulting set.
 
     Args:
-        include_dirs (list[str]): The directories to check for "include.txt".
+        overrides (dict[str: Any]): List of override classes from files.
 
     Returns:
         set[str]: The set of classes to include
@@ -111,11 +111,9 @@ def get_include(include_dirs: list[str]) -> set[str]:
 
     classes = set()
 
-    for include_dir in include_dirs:
-        include_path = os.path.join(package_dir, include_dir, "include.txt")
-        if os.path.isfile(include_path):
-            with open(include_path, mode="r", encoding="utf-8") as include_file:
-                classes |= set(line.strip() for line in include_file if line.strip())
+    for override_class, override_vals in overrides.items():
+        if "include" in override_vals.keys() and override_vals["include"]:
+            classes.add(override_class)
 
     return classes
 
@@ -145,7 +143,7 @@ def run() -> None:
         courses = merge_data(
             datasets=[fireroad_sem, catalog, cim, overrides_all, overrides_sem],
             keys_to_keep=(set(fireroad_sem) & set(catalog))
-            | get_include(["overrides.toml.d", os.path.join("overrides.toml.d", sem)]),
+            | get_include(overrides_all) | get_include(overrides_sem),
         )
 
         term_info = get_term_info(sem)

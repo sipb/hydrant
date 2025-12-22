@@ -312,6 +312,11 @@
             "$ref": "#/$defs/quarterDate"
           }
         }
+      },
+      "include": {
+        "type": "boolean",
+        "title": "Include",
+        "description": "True if class should be included in final output, even if not in catalog"
       }
     },
     "allOf": [
@@ -321,20 +326,67 @@
             "isVariableUnits": {
               "const": true
             }
-          }
+          },
+          "required": ["isVariableUnits"]
         },
         "then": {
           "properties": {
             "lectureUnits": {
-              "maximum": 0
+              "const": 0
             },
             "labUnits": {
-              "maximum": 0
+              "const": 0
             },
             "preparationUnits": {
-              "maximum": 0
+              "const": 0
             }
-          }
+          },
+          "required": ["lectureUnits", "labUnits", "preparationUnits"]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "include": {
+              "const": true
+            }
+          },
+          "required": ["include"]
+        },
+        "then": {
+          "required": [
+            "nonext",
+            "repeat",
+            "url",
+            "final",
+            "half",
+            "limited",
+            "new",
+            "number",
+            "course",
+            "subject",
+            "terms",
+            "prereqs",
+            "sectionKinds",
+            "tba",
+            "hass",
+            "comms",
+            "gir",
+            "lectureUnits",
+            "labUnits",
+            "preparationUnits",
+            "level",
+            "isVariableUnits",
+            "same",
+            "meets",
+            "description",
+            "name",
+            "inCharge",
+            "virtualStatus",
+            "rating",
+            "hours",
+            "size"
+          ]
         }
       }
     ]

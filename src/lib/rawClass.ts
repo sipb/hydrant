@@ -3,7 +3,7 @@ export interface RawClass {
   /** Class number, e.g. "6.3900" */
   number: string;
   /** Old class number, e.g. "6.036" */
-  oldNumber: string;
+  oldNumber?: string;
   /** Course number, e.g. "6" */
   course: string;
   /** Subject number without course, e.g. "3900" */
@@ -101,6 +101,8 @@ export interface RawClass {
 
   /** Record with start and end time information */
   quarterInfo?: QuarterInfo;
+  /** Included from override despite possible not being in catalog */
+  include?: boolean;
 }
 
 /** Raw timeslot format: [start slot, length of timeslot]. */
