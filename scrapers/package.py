@@ -99,7 +99,7 @@ def merge_data(
 
 def get_include(overrides: dict[str, dict[str, Any]]) -> set[str]:
     """
-    For the dictionary of classes, check if the key "include" is 
+    For the dictionary of classes, check if the key "include" is
     present and if it is True. If so, add class to the resulting set.
 
     Args:
@@ -143,7 +143,8 @@ def run() -> None:
         courses = merge_data(
             datasets=[fireroad_sem, catalog, cim, overrides_all, overrides_sem],
             keys_to_keep=(set(fireroad_sem) & set(catalog))
-            | get_include(overrides_all) | get_include(overrides_sem),
+            | get_include(overrides_all)
+            | get_include(overrides_sem),
         )
 
         term_info = get_term_info(sem)
