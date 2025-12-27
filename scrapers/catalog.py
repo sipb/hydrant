@@ -261,7 +261,6 @@ def get_all_catalog_links(initial_hrefs: Iterable[str]) -> list[str]:
 
         # Links should be in the only table in the #contentmini div
         tables = content_mini.find_all("table")
-        hrefs.append(initial_href)
         for table in tables:
             hrefs.extend([str(ele["href"]) for ele in table.find_all("a", href=True)])
     return hrefs
