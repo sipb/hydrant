@@ -18,7 +18,7 @@ Functions:
     parse_prereqs(course)
     get_course_data(courses, course, term)
     get_raw_data()
-    run(is_semester_term)
+    run(sem_term)
 """
 
 from __future__ import annotations
@@ -26,9 +26,9 @@ from __future__ import annotations
 import json
 import os.path
 import socket
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import Mapping, MutableMapping
 from functools import lru_cache
-from typing import Any, Union
+from typing import Any, Literal, Union
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -43,6 +43,8 @@ from .utils import (
 )
 
 URL = "https://fireroad.mit.edu/courses/all?full=true"
+
+CourseValues = Union[bool, float, int, "list[str]", str]
 
 
 def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
@@ -120,7 +122,7 @@ def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
     return slots, place
 
 
-def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
+def parse_schedule(schedule: str) -> dict[str, list[str] | bool]:
     """
     Parses the schedule string, which looks like:
     "Lecture,32-123/TR/0/11/F/0/2;Recitation,2-147/MW/0/10,2-142/MW/0/11"
@@ -129,10 +131,10 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
         schedule (str): The schedule string.
 
     Returns:
-        dict[str, Union[list[str], bool]]: The parsed schedule
+        dict[str, list[str] | bool]: The parsed schedule
     """
     section_tba = False
-    result: dict[str, Union[list[str], bool]] = {}
+    result: dict[str, list[str] | bool] = {}
 
     # Kinds of sections that exist.
     result["sectionKinds"] = []
@@ -166,7 +168,7 @@ def parse_schedule(schedule: str) -> dict[str, Union[list[str], bool]]:
     return result
 
 
-def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
+def decode_quarter_date(date: str) -> tuple[int, int] | None:
     """
     Decodes a quarter date into a month and day.
 
@@ -174,7 +176,7 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
         date (str): The date in the format "4/4" or "apr 4".
 
     Returns:
-        Union[tuple[int, int], None]: The month and day.
+        tuple[int, int] | None: The month and day.
     """
     if "/" in date:
         month, day = date.split("/")
@@ -187,7 +189,7 @@ def decode_quarter_date(date: str) -> Union[tuple[int, int], None]:
 
 
 def parse_quarter_info(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    course: Mapping[str, CourseValues],
 ) -> dict[str, dict[str, tuple[int, int]]]:
     """
     Parses quarter info from the course.
@@ -202,7 +204,7 @@ def parse_quarter_info(
         dates can appear as either "4/4" or "apr 4".
 
     Args:
-        course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+        course (Mapping[str, CourseValues]): The course object.
 
     Returns:
         dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
@@ -233,14 +235,13 @@ def parse_quarter_info(
 
 
 def parse_attributes(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    course: Mapping[str, CourseValues],
 ) -> dict[str, str | list[str]]:
     """
     Parses attributes of the course.
 
     Args:
-        course (Mapping[str, Union[bool, float, int, list[str], str]]):
-            The course object.
+        course (Mapping[str, CourseValues]): The course object.
 
     Returns:
         dict[str, str | list[str]]: The attributes of the course.
@@ -258,14 +259,13 @@ def parse_attributes(
 
 
 def parse_terms(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    course: Mapping[str, CourseValues],
 ) -> dict[str, list[str]]:
     """
     Parses the terms of the course.
 
     Args:
-        course (Mapping[str, Union[bool, float, int, Sequence[str], str]]):
-            The course object.
+        course (Mapping[str, CourseValues]): The course object.
 
     Returns:
         dict[str, list[str]]: The parsed terms, stored in the key "terms".
@@ -284,13 +284,13 @@ def parse_terms(
 
 
 def parse_prereqs(
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    course: Mapping[str, CourseValues],
 ) -> dict[str, str]:
     """
     Parses prerequisites from the course.
 
     Args:
-        course (dict[str, Union[bool, float, int, list[str], str]]): The course object.
+        course (Mapping[str, CourseValues]): The course object.
 
     Returns:
         dict[str, str]: The parsed prereqs, in the key "prereqs".
@@ -304,10 +304,8 @@ def parse_prereqs(
 
 
 def get_course_data(
-    courses: MutableMapping[
-        str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
-    ],
-    course: Mapping[str, Union[bool, float, int, Sequence[str], str]],
+    courses: MutableMapping[str, Mapping[str, CourseValues]],
+    course: Mapping[str, CourseValues],
     term: Term,
 ) -> bool:
     """
@@ -316,9 +314,9 @@ def get_course_data(
     True otherwise. The `courses` variable is modified in place.
 
     Args:
-        courses (list[dict[str, Union[bool, float, int, list[str], str]]]):
+        courses (MutableMapping[str, Mapping[str, CourseValues]]):
             The list of courses.
-        course (dict[str, Union[bool, float, int, list[str], str]]):
+        course (Mapping[str, CourseValues]):
             The course in particular.
         term (Term): The current term (fall, IAP, or spring).
 
@@ -329,16 +327,14 @@ def get_course_data(
     course_num, course_class = course_code.split(".")
     raw_class: dict[
         str,
-        Union[
-            str,
-            bool,
-            float,
-            int,
-            Mapping[str, tuple[int, int]],
-            Sequence[str],
-            Mapping[str, Union[Sequence[str], bool]],
-            bool,
-        ],
+        str
+        | bool
+        | float
+        | int
+        | dict[str, tuple[int, int]]
+        | list[str]
+        | dict[str, list[str] | bool]
+        | bool,
     ] = {
         "number": course_code,
         "course": course_num,
@@ -463,17 +459,17 @@ def get_raw_data() -> Any:
     return data
 
 
-def run(is_semester_term: bool) -> None:
+def run(sem_term: Literal["sem", "presem"]) -> None:
     """
     The main entry point. All data is written to `fireroad.json`.
-    If is_semester_term = True, looks at semester term (fall/spring).
-    If is_semester_term = False, looks at pre-semester term (summer/IAP)
+    If sem_term = "sem", looks at semester term (fall/spring).
+    If sem_term = "presem", looks at pre-semester term (summer/IAP)
 
     Args:
-        is_semester_term (bool): whether to look at the semester
-            or the pre-semester term.
+        sem_term (Literal["sem", "presem"]): whether to look at the
+            semester or the pre-semester term.
     """
-    fname = "fireroad-sem.json" if is_semester_term else "fireroad-presem.json"
+    fname = f"fireroad-{sem_term}.json"
     fname = os.path.join(os.path.dirname(__file__), fname)
 
     try:
@@ -485,10 +481,8 @@ def run(is_semester_term: bool) -> None:
                 json.dump({}, fireroad_file)
         return
 
-    courses: MutableMapping[
-        str, Mapping[str, Union[bool, float, int, Sequence[str], str]]
-    ] = {}
-    term = url_name_to_term(get_term_info(is_semester_term)["urlName"])
+    courses: MutableMapping[str, Mapping[str, CourseValues]] = {}
+    term = url_name_to_term(get_term_info(sem_term)["urlName"])
     missing = 0
 
     for course in data:
@@ -503,5 +497,5 @@ def run(is_semester_term: bool) -> None:
 
 
 if __name__ == "__main__":
-    run(False)
-    run(True)
+    run("sem")
+    run("presem")

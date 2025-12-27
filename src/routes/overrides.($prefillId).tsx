@@ -31,7 +31,7 @@ const schema: RJSFSchema = {
   items: {
     ...itemSchema.additionalProperties,
     required: ["number"],
-  } as JSONSchema7Definition,
+  } as unknown as JSONSchema7Definition,
   $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
 };
 
@@ -141,10 +141,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
               {
                 "ui:row": {
                   gap: 2,
-                  templateColumns: "repeat(2, 1fr)",
+                  templateColumns: "repeat(3, 1fr)",
                   children: [
                     {
-                      "ui:columns": ["number", "name"],
+                      "ui:columns": ["number", "name", "include"],
                     },
                   ],
                 },
@@ -399,9 +399,11 @@ export default function App({ loaderData }: Route.ComponentProps) {
           showErrorList={false}
           liveValidate={"onChange"}
           experimental_defaultFormStateBehavior={{
-            arrayMinItems: { populate: "requiredOnly" },
-            emptyObjectFields: "populateRequiredDefaults",
-            mergeDefaultsIntoFormData: "useDefaultIfFormDataUndefined",
+            arrayMinItems: { populate: "all" },
+            allOf: "skipDefaults",
+            constAsDefaults: "always",
+            emptyObjectFields: "populateAllDefaults",
+            mergeDefaultsIntoFormData: "useFormDataIfPresent",
           }}
           liveOmit={"onChange"}
           omitExtraData={true}
@@ -411,7 +413,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           }}
           onSubmit={() => {
             const contents =
-              "#:schema ./override-schema.json\n\n" +
+              "#:schema ../override-schema.json\n\n" +
               TOML.stringify(
                 Object.fromEntries(
                   data.map((override) => {
