@@ -4,11 +4,10 @@ import Form from "@rjsf/chakra-ui";
 import type { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import type { JSONSchema7Definition } from "json-schema";
+import TOML from "smol-toml";
 
 import { Link as RouterLink } from "react-router";
 import type { Route } from "./+types/overrides.($prefillId)";
-
-import TOML from "smol-toml";
 
 import logo from "../assets/logo.svg";
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
@@ -35,79 +34,86 @@ const schema: RJSFSchema = {
   $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  const overrides: Record<string, () => Promise<unknown>> = import.meta.glob(
-    "../../scrapers/overrides.toml.d/**/*.toml",
-    {
+const overrides = Object.assign(
+  {},
+  ...Object.entries(
+    import.meta.glob("../../scrapers/overrides.toml.d/**/*.toml", {
       query: "raw",
       import: "default",
-    },
-  );
-  const overrideNames = Object.assign(
-    {},
-    ...Object.keys(overrides).map((key) => {
-      const newKey = key.split("/").slice(-1)[0].split(".")[0].toUpperCase();
-      return { [newKey]: overrides[key] };
     }),
-  ) as typeof overrides;
+  ).map(([key, data]) => {
+    const split = key.split("/");
+    const name = split.slice(-1)[0].split(".")[0].toUpperCase();
 
+    return { [key]: { name, data } };
+  }),
+) as Record<string, { name: string; data: () => Promise<string> }>;
+
+const overridesCollection = createListCollection({
+  items: Object.entries(overrides)
+    .map(([key, { name }]) => ({
+      label: name,
+      value: key,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label)),
+});
+
+const overrideNames = Object.entries(overrides)
+  .map(([key, val]) => [val.name.toUpperCase(), key])
+  .reduce<Record<string, string>>((accum, [k, v]) => {
+    accum[k] = v;
+    return accum;
+  }, {});
+
+const getDataFromFile = async (fileName: string) => {
+  try {
+    const textToml = await overrides[fileName].data();
+    const mod = TOML.parse(textToml);
+
+    const newData = Object.entries(mod).map(([key, value_1]) => {
+      const { number: num, ...rest } = value_1 as Record<string, unknown>;
+      return {
+        number: key,
+        ...rest,
+      };
+    });
+    return newData;
+  } catch (err) {
+    console.error("Error loading TOML file:", err);
+    return [];
+  }
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   let prefillData: Record<string, unknown>[] = [];
-  const prefillId = params.prefillId?.toUpperCase();
+  const prefillIdPrelim = params.prefillId?.toUpperCase();
+  let prefillId = "";
 
-  const getDataFromFile = async (fileName: string) => {
-    try {
-      const textToml = await (overrideNames[fileName]() as Promise<string>);
-      const mod = TOML.parse(textToml);
-
-      const newData = Object.entries(mod).map(([key, value_1]) => {
-        const { number: num, ...rest } = value_1 as Record<string, unknown>;
-        return {
-          number: key,
-          ...rest,
-        };
-      });
-      return newData;
-    } catch (err) {
-      console.error("Error loading TOML file:", err);
-      return [];
-    }
-  };
-
-  if (prefillId) {
-    if (prefillId in overrideNames) {
-      const newData = await getDataFromFile(prefillId);
+  if (prefillIdPrelim) {
+    if (Object.keys(overrideNames).includes(prefillIdPrelim)) {
+      const newData = await getDataFromFile(overrideNames[prefillIdPrelim]);
       if (newData.length > 0) {
         prefillData = newData;
+        prefillId = overrideNames[prefillIdPrelim];
       } else {
-        console.error("No data found for prefill ID:", prefillId);
+        console.error("No data found for prefill ID:", prefillIdPrelim);
       }
     } else {
-      console.error("Invalid prefill ID:", prefillId);
+      console.error("Invalid prefill ID:", prefillIdPrelim);
     }
   }
 
-  return { overrideNames, prefillData, prefillId };
+  return { prefillData, prefillId };
 }
 
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
-  const { overrideNames, prefillData, prefillId } = loaderData;
+  const { prefillData, prefillId } = loaderData;
 
   const [data, setData] = useState<Record<string, unknown>[]>(prefillData);
   const [error, setError] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string[]>(
-    prefillId && prefillId in overrideNames ? [prefillId] : [""],
-  );
-
-  const overridesCollection = createListCollection({
-    items: Object.entries(overrideNames)
-      .map(([name]) => ({
-        label: name,
-        value: name,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label)),
-  });
+  const [selected, setSelected] = useState<string[]>([prefillId]);
 
   // TODO IN NEXT COMMIT: Make ui schema match what it did before :(
   const uischema = useMemo<UiSchema>(() => {
@@ -289,7 +295,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const getDataFromFile = useCallback(
     async (fileName: string) => {
       try {
-        const textToml = await (overrideNames[fileName]() as Promise<string>);
+        const textToml = await overrides[fileName].data();
         const mod = TOML.parse(textToml);
 
         const newData = Object.entries(mod).map(([key, value_1]) => {
@@ -305,7 +311,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         return [];
       }
     },
-    [overrideNames],
+    [overrides],
   );
 
   const handleChange = (e: Select.ValueChangeDetails) => {
