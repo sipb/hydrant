@@ -322,6 +322,55 @@
     "allOf": [
       {
         "if": {
+          "anyOf": [
+            {
+              "properties": {
+                "lectureUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["lectureUnits"]
+            },
+            {
+              "properties": {
+                "labUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["labUnits"]
+            },
+            {
+              "properties": {
+                "preparationUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["preparationUnits"]
+            }
+          ]
+        },
+        "then": {
+          "properties": {
+            "isVariableUnits": {
+              "const": false
+            }
+          },
+          "required": [
+            "lectureUnits",
+            "labUnits",
+            "preparationUnits",
+            "isVariableUnits"
+          ]
+        }
+      },
+      {
+        "if": {
           "properties": {
             "isVariableUnits": {
               "const": true

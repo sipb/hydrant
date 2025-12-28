@@ -3,6 +3,8 @@
 ["15.S05"]
 lectureUnits = 3
 preparationUnits = 6
+labUnits = 0
+isVariableUnits = false
 level = "G"
 description = "This seminar builds on study of energy, power grid, and consumer market dynamics to collaboratively consider promising new Strategic Pathways, with group proposals and support from guests including AI-Power nexus thought leaders, and business leaders.\n\nEnergy Management provides what the market needs from energy in a cleaner, lower cost, and better functioning way for businesses and consumers. Energy Management's component technologies, analytics, financing, and services have grown in aggregate to be a larger industry than energy supply, reducing consumer costs, emissions and aggregate energy demand, but always transformative with opportunities for innovation. \n\nA new era for Energy Management is now here, driven by AI with great promise for today’s power grid and climate needs. Power grid dynamics are also in dramatic transition - as the result of electrification and data centers, after decades of load reduction largely the result of energy management’s successes. This year’s Energy Management Strategies seminar therefore puts focus on recent and next-wave Agentic AI-enabled innovations and market forces, including:\n\n    State-of-the-art building and power grid dynamics, with cases of next wave Innovative Leader companies and technologies.\n    Energy Efficiency and Building Automation technologies, services and financing; with cases of AI-enabled business processes.\n    Next Gen Site Solar and Storage, Community microgrids, Virtual Power Plants, building-to-grid energy retailers and load management.\n    AI-enabled paths in Building Automation, Analytics, and Machine Learning -  with focus on Agentic AI specifically.\n\nNote: Classes biweekly in H3, but Thursday Only in H4. T, Th 1-2:30 E62-450. "
 name = "Energy Management and AI: Strategies for a Sustainable Future"
@@ -11,6 +13,8 @@ inCharge = "Harvey Michaels"
 ["15.S16"]
 lectureUnits = 3
 preparationUnits = 3
+labUnits = 0
+isVariableUnits = false
 level = "G"
 description = "Disrupting Wholesale Finance examines how entrepreneurs from around the world are disrupting and disintermediating large global financial institutions providing services to institutional clients. Designed for students interested in the dramatic rise of alternative firms, we’ll explore how these firms are seizing clients, capital, talent and market share from incumbents. Through the course, students will learn how these disruptions occur, what opportunities exist going forward and how incumbents seek to defend their businesses, all in the context of a complex and dynamic global financial market environment. Successful disruption stems from the ability innovators to serve unmet needs of consumers. In the case of wholesale finance – disrupters found institutional investors, corporate clients and other end users looking for higher risk adjusted returns, more efficient technologies, or more trusted and nimble counterparties. Innovators, often former employees of the incumbents, have formed businesses and attracted best in class talent to meet these needs, using different funding, operating, and technological models. We will review these disruptive forces and the opportunities they present across five sub sectors of wholesale finance: private equity, private credit, hedge funds, principal trading firms, and boutique investment banks. This new course has been developed and will be taught in collaboration by Gary Gensler and Peter Weinberg (Founding Partner & Chairman, Perella Weinberg https://pwpartners.com/team/peter-a-weinberg/ )"
 name = "Disrupting Wholesale Finance: The Rise of Alternative Firms and What’s Next?"
@@ -20,6 +24,8 @@ new = true
 ["15.S19"]
 lectureUnits = 3
 preparationUnits = 6
+labUnits = 0
+isVariableUnits = false
 level = "G"
 prereqs = "15.814 or 15.8141"
 name = "Advertising and Promotions"
