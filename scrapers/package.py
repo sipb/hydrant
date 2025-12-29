@@ -112,7 +112,7 @@ def get_include(overrides: dict[str, dict[str, Any]]) -> set[str]:
     classes = set()
 
     for override_class, override_vals in overrides.items():
-        if "include" in override_vals.keys() and override_vals["include"]:
+        if override_vals.get("include", False):
             classes.add(override_class)
 
     return classes
