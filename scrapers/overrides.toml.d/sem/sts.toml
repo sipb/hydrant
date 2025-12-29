@@ -4,6 +4,7 @@
 lectureUnits = 3
 labUnits = 3
 preparationUnits = 3
+isVariableUnits = false
 level = "U"
 description = "This hands-on studio investigates how artistic, architectural and historiological methodologies can shape ecological and civic systems through the collaborative adaptation and construction of two mobile, site-specific chicken coops. Cross listed and co-taught by Justin Brazier (Arch 4.181) Nida Sinnokrot (ACT 4.373 and Kate Brown (STS.S20), the course connects critical histories of urban farming in Boston with practical skills in community-responsive design and fabrication. Students will work to develop adaptive proposals for Eastie Farms and Common Good Co-Op that merge form, function, and narrative, while interrogating how food systems, civic infrastructures, and public space can be reimagined through creative, operational aesthetics."
 name = "Resilient Urbanism: Coop Culture, Co-Ops, and Commoning"

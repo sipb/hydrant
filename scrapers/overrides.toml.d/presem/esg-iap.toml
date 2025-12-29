@@ -2,6 +2,9 @@
 
 ["ES.S20"]
 lectureUnits = 1
+labUnits = 0
+preparationUnits = 0
+isVariableUnits = false
 level = "U"
 prereqs = "Single-variable calculus"
 description = "What does linear algebra have to do with the differential equations and difference equations\nthat describe the behavior of a wide variety of phenomena across science and engineering? How might we\nuse feedback to control these systems? And what the heck do eigenvalues even mean?"
@@ -11,6 +14,9 @@ new = true
 
 ["ES.S31"]
 lectureUnits = 1
+labUnits = 0
+preparationUnits = 0
+isVariableUnits = false
 level = "U"
 prereqs = "none"
 description = "Digital signal processing (DSP) makes the world go round. In ES.S31, you’ll learn DSP on the fly by working through fun audio and image processing projects in Python. Ever wondered how to smooth noisy data? Or how to boost the bass in a song? Or how to unblur an image? DSP is the answer. By the end, you’ll be able to apply your new found DSP know-how in all future projects you work on."

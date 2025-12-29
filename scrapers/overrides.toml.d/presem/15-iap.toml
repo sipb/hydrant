@@ -2,6 +2,9 @@
 
 ["15.S50"]
 lectureUnits = 3
+labUnits = 0
+preparationUnits = 0
+isVariableUnits = false
 level = "G"
 description = "Please join us for a long standing IAP tradition in which leaders of the MIT Poker Club guide us through an exploration of the theory (and practice) of poker. (meets Tue/Thu 1/6-1/29, 1-2:30p, E51-376)"
 name = "How to Win at Texas Hold'em Poker (meets Tue/Thu 1/6-1/29, 1-2:30p, E51-376)"

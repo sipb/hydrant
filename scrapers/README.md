@@ -1,3 +1,5 @@
+# Scrapers
+
 ## About
 
 This folder contains several files. The files tracked by git are:
@@ -9,11 +11,9 @@ This folder contains several files. The files tracked by git are:
 - `fireroad.py`
 - `math_dept.py`
 - `package.py`
-- `update.py`
-- `utils.py`
 - `README.md` - this very file!
-- `.pylintrc`
-- `overrides.json` - to override scraped data; currently empty
+- `utils.py`
+- `overrides.toml.d/` - to override scraped data; see README there.
 
 The files intentionally left out of git are:
 
@@ -21,7 +21,7 @@ The files intentionally left out of git are:
 - `cim.json`
 - `fireroad.json`
 - `fireroad-presem.json`
-- `__pycache__`
+- `__pycache__/`
 - `.DS_Store`
 
 ## Usage
@@ -30,8 +30,8 @@ Run `python3 -m scrapers` from the root directory to execute the code. In produc
 
 This program gets its data from MIT classes from two sources:
 
-- the official catalog: http://student.mit.edu/catalog/index.cgi
-- the Fireroad API: https://fireroad.mit.edu/courses/all?full=true
+- the official catalog: <http://student.mit.edu/catalog/index.cgi>
+- the Fireroad API: <https://fireroad.mit.edu/courses/all?full=true>
 
 It is mainly intended to serve as a data source for the frontend, which is the real deal. This is just the backend.
 
@@ -48,6 +48,6 @@ It is mainly intended to serve as a data source for the frontend, which is the r
 
 ## Contributing
 
-This folder is actually a subfolder of a larger git repository. If you want to contribute to this repository, submit a pull request to https://github.com/sipb/hydrant and we'll merge it if it looks good.
+This folder is actually a subfolder of a larger git repository. If you want to contribute to this repository, submit a pull request to <https://github.com/sipb/hydrant> and we'll merge it if it looks good.
 
 Depending on how you work, you might find `pylint` and/or running individual programs one at a time and then playing around with the Python shell to be helpful.
