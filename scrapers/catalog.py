@@ -353,7 +353,10 @@ def scrape_courses_from_page(
         filtered_html = BeautifulSoup()
         filtered_html.extend(content)
         course_data = get_course_data(filtered_html)
-        if not is_not_offered_this_year(filtered_html):
+        # For multi-course entries, don't skip based on is_not_offered_this_year
+        # because the "not offered" indicator might only apply to one of the courses
+        # (see https://github.com/sipb/hydrant/issues/267)
+        if len(course_nums) > 1 or not is_not_offered_this_year(filtered_html):
             for course_num in course_nums:
                 courses[course_num] = course_data
 
