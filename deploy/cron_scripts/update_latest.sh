@@ -17,7 +17,7 @@ cd "$REPO_DIR"
 
 # -q means quietly; don't report anything in stdout or stderr.
 # make sure we're in the right branch:
-git checkout -f deploy -q
+git checkout -q -f deploy
 git pull -q
 
 # The scripts machine we use has Python 3.8, so use that.
