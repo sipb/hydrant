@@ -402,13 +402,13 @@ export default function App({ loaderData }: Route.ComponentProps) {
           uiSchema={uischema}
           validator={validator}
           formData={data}
-          showErrorList={false}
+          showErrorList={"top"}
           liveValidate={"onChange"}
           experimental_defaultFormStateBehavior={{
-            arrayMinItems: { populate: "all" },
+            arrayMinItems: { populate: "never" },
             allOf: "skipDefaults",
             constAsDefaults: "always",
-            emptyObjectFields: "populateAllDefaults",
+            emptyObjectFields: "populateRequiredDefaults",
             mergeDefaultsIntoFormData: "useFormDataIfPresent",
           }}
           liveOmit={"onChange"}

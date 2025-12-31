@@ -303,12 +303,13 @@
       "quarterInfo": {
         "title": "Quarter Info",
         "type": "object",
-        "additionalProperties": false,
         "properties": {
           "start": {
+            "title": "Start Date",
             "$ref": "#/$defs/quarterDate"
           },
           "end": {
+            "title": "End Date",
             "$ref": "#/$defs/quarterDate"
           }
         }
@@ -481,6 +482,7 @@
       "type": "array",
       "title": "Quarter date",
       "description": "Date format for calendar day: [month, day].",
+      "additionalItems": false,
       "items": [
         {
           "type": "integer",
