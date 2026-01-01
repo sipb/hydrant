@@ -22,7 +22,7 @@ jobs:
       - name: Run build
         run: npm run build
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: built-site
           path: |
