@@ -199,6 +199,10 @@ export const deleteSchedule = async (authToken: string, id: string) => {
   }
 
   const result = (await response.json()) as DeleteScheduleResult;
+  if (!result.success) {
+    throw new Error("Failed to delete schedule: " + result.error);
+  }
+
   return result;
 };
 
