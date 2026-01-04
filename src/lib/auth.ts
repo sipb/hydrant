@@ -28,9 +28,10 @@ export const { getSession, commitSession, destroySession } =
     cookie: {
       name: "__session",
       path: "/",
-      sameSite: "lax",
+      sameSite: "strict",
       secure: import.meta.env.PROD,
-      secrets: ["secret:3"],
+      // since we don't send auth cookies to a server (since its all client-side), we don't need to sign them
+      secrets: [],
     },
   });
 
@@ -39,6 +40,13 @@ export const SessionContext = createContext<Awaited<
 > | null>(null);
 
 // API FUNCTION CALLS
+
+type GetFavoriteResponse =
+  | {
+      success: false;
+      error: string;
+    }
+  | { success: true; favorites: string[] };
 
 export const getFavoriteCourses = async (authToken: string) => {
   const response = await fetch(`${FIREROAD_URL}/prefs/favorites/`, {
@@ -51,19 +59,20 @@ export const getFavoriteCourses = async (authToken: string) => {
     throw new Error("Failed to fetch favorite courses");
   }
 
-  const result = (await response.json()) as
-    | {
-        success: false;
-        error: string;
-      }
-    | { success: true; favorites: string[] };
-
+  const result = (await response.json()) as GetFavoriteResponse;
   if (!result.success) {
     throw new Error("Failed to fetch favorite courses: " + result.error);
   }
 
   return result.favorites;
 };
+
+type SetFavoriteResponse =
+  | {
+      success: false;
+      error: string;
+    }
+  | { success: true };
 
 export const setFavoriteCourses = async (
   authToken: string,
@@ -82,13 +91,7 @@ export const setFavoriteCourses = async (
     throw new Error("Failed to set favorite courses");
   }
 
-  const result = (await response.json()) as
-    | {
-        success: false;
-        error: string;
-      }
-    | { success: true };
-
+  const result = (await response.json()) as SetFavoriteResponse;
   if (!result.success) {
     throw new Error("Failed to set favorite courses: " + result.error);
   }
@@ -114,6 +117,33 @@ interface ScheduleContents {
   }[];
 }
 
+type GetSchedulesWithIdResult =
+  | {
+      success: false;
+      error: string;
+    }
+  | {
+      success: true;
+      file: {
+        name: string;
+        id: string;
+        changed: string;
+        downloaded: string;
+        agent: string;
+        contents: ScheduleContents;
+      };
+    };
+
+type GetSchedulesWithoutIdResult =
+  | {
+      success: false;
+      error: string;
+    }
+  | {
+      success: true;
+      files: Record<string, { name: string; changed: string; agent: string }>;
+    };
+
 export const getSchedules = async (authToken: string, id?: string) => {
   const response = await fetch(
     `${FIREROAD_URL}/sync/schedules/${id ? `?id=${id}` : ""}`,
@@ -130,23 +160,7 @@ export const getSchedules = async (authToken: string, id?: string) => {
 
   if (typeof id == "string") {
     // id specified, return single schedule
-    const result = (await response.json()) as
-      | {
-          success: false;
-          error: string;
-        }
-      | {
-          success: true;
-          file: {
-            name: string;
-            id: string;
-            changed: string;
-            downloaded: string;
-            agent: string;
-            contents: ScheduleContents;
-          };
-        };
-
+    const result = (await response.json()) as GetSchedulesWithIdResult;
     if (!result.success) {
       throw new Error("Failed to fetch schedule: " + result.error);
     }
@@ -154,19 +168,7 @@ export const getSchedules = async (authToken: string, id?: string) => {
     return result.file;
   } else {
     // no id specified, return all schedules
-    const result = (await response.json()) as
-      | {
-          success: false;
-          error: string;
-        }
-      | {
-          success: true;
-          files: Record<
-            string,
-            { name: string; changed: string; agent: string }
-          >;
-        };
-
+    const result = (await response.json()) as GetSchedulesWithoutIdResult;
     if (!result.success) {
       throw new Error("Failed to fetch schedules: " + result.error);
     }
@@ -174,6 +176,13 @@ export const getSchedules = async (authToken: string, id?: string) => {
     return result.files;
   }
 };
+
+type DeleteScheduleResult =
+  | {
+      success: false;
+      error: string;
+    }
+  | { success: true };
 
 export const deleteSchedule = async (authToken: string, id: string) => {
   const response = await fetch(`${FIREROAD_URL}/delete_schedule/`, {
@@ -188,15 +197,35 @@ export const deleteSchedule = async (authToken: string, id: string) => {
     throw new Error("Failed to delete schedule");
   }
 
-  const result = (await response.json()) as
-    | {
-        success: false;
-        error: string;
-      }
-    | { success: true };
-
+  const result = (await response.json()) as DeleteScheduleResult;
   return result;
 };
+
+type SyncScheduleResult =
+  | {
+      success: false;
+      error: string;
+    }
+  | { success: true; result: "no_change"; changed: string }
+  | { success: true; result: "update_remote"; changed: string }
+  | {
+      success: true;
+      result: "update_local";
+      contents: ScheduleContents;
+      name: string;
+      id: string;
+      downloaded: string;
+    }
+  | {
+      success: true;
+      result: "conflict";
+      other_name: string;
+      other_agent: string;
+      other_date: string;
+      other_contents: ScheduleContents | "";
+      this_agent: string;
+      this_date: string;
+    };
 
 export const syncSchedule = async (
   authToken: string,
@@ -228,32 +257,7 @@ export const syncSchedule = async (
     throw new Error("Failed to sync schedule");
   }
 
-  const result = (await response.json()) as
-    | {
-        success: false;
-        error: string;
-      }
-    | { success: true; result: "no_change"; changed: string }
-    | { success: true; result: "update_remote"; changed: string }
-    | {
-        success: true;
-        result: "update_local";
-        contents: ScheduleContents;
-        name: string;
-        id: string;
-        downloaded: string;
-      }
-    | {
-        success: true;
-        result: "conflict";
-        other_name: string;
-        other_agent: string;
-        other_date: string;
-        other_contents: ScheduleContents | "";
-        this_agent: string;
-        this_date: string;
-      };
-
+  const result = (await response.json()) as SyncScheduleResult;
   if (!result.success) {
     throw new Error("Failed to sync schedule: " + result.error);
   }
