@@ -23,7 +23,7 @@ on:
       - "scrapers/overrides.toml.d/override-schema.json"
 
 env:
-  python-version: 3.7
+  python-version: 3.8
 
 jobs:
   black:
@@ -34,54 +34,45 @@ jobs:
       - uses: psf/black@stable
   pylint:
     name: Pylint
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python-version }}
           cache: "pip"
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pylint
+        run: pip install .[dev]
       - name: Analysing the code with pylint
         run: |
           pylint $(git ls-files '*.py')
   pytest:
     name: Pytest
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python-version }}
           cache: "pip"
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest
+        run: pip install .[dev]
       - name: Run tests with pytest (including doctests)
         run: pytest --doctest-modules
   integration:
     name: Test for valid JSON output
-    runs-on: ubuntu-22.04 #NOTE: python 3.7 is NOT supported on ubuntu-latest
+    runs-on: ubuntu-24.04 #NOTE: python 3.8 is NOT supported on ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python-version }}
           cache: "pip"
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pylint
+        run: pip install .
       - name: Run scrapers
         run: python3 -m scrapers
       - name: Check existence of public/latest.json

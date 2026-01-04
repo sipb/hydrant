@@ -1,4 +1,4 @@
-#:schema ./override-schema.json
+#:schema ../override-schema.json
 
 ["8.18"]
 lectureUnits = 1

@@ -31,6 +31,7 @@ import {
   Button,
   ButtonGroup,
   InputGroup,
+  CloseButton,
 } from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
@@ -148,6 +149,7 @@ function ClassInput(props: {
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
   const searchResults = useRef<
@@ -208,6 +210,17 @@ function ClassInput(props: {
     }
   };
 
+  const clearButton = classInput ? (
+    <CloseButton
+      size="xs"
+      onClick={() => {
+        onClassInputChange("");
+        inputRef.current?.focus();
+      }}
+      me="-2"
+    />
+  ) : undefined;
+
   return (
     <Flex justify="center">
       <form
@@ -217,13 +230,18 @@ function ClassInput(props: {
         }}
         style={{ width: "100%", maxWidth: "30em" }}
       >
-        <InputGroup startElement={<LuSearch />} width="fill-available">
+        <InputGroup
+          startElement={<LuSearch />}
+          endElement={clearButton}
+          width="fill-available"
+        >
           <Input
             type="search"
             aria-label="Search for a class"
             id="class-search"
             placeholder="Class number, name, or instructor"
             value={classInput}
+            ref={inputRef}
             onChange={(e) => {
               onClassInputChange(e.target.value);
             }}

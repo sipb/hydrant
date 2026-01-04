@@ -1,0 +1,6 @@
+#:schema ../override-schema.json
+
+["5.S75"]
+name = "Special Subject in Chemistry: Chemical Biology of Glycans"
+description = "This course, designed for graduate students and advanced undergraduates, will provide an in-depth exploration of the fundamental principles and emerging concepts in glycoscience, the study of the structure, biosynthesis, and function of glycans (glycoproteins, glycolipids, and polysaccharides). The material will examine the chemical and structural diversity of glycans, the enzymatic pathways governing their assembly and modification, and the molecular mechanisms through which glycans mediate biological recognition and signaling. The course will also highlight the roles of glycans in health and disease, including their impact on infection, the microbiome, immunity, and cancer, as well as their applications in biotechnology. The course will integrate primary literature, selected readings, and lecture discussions to provide a conceptual and methodological foundation for research in chemical biology, biochemistry, and related disciplines."
+new = true

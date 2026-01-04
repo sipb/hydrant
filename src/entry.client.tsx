@@ -1,10 +1,15 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { StrictMode, startTransition } from "react";
+import { hydrateRoot } from "react-dom/client";
 import { HydratedRouter } from "react-router/dom";
+import { ClientCacheProvider } from "./emotion/emotion-client";
 
-ReactDOM.hydrateRoot(
-  document,
-  <React.StrictMode>
-    <HydratedRouter />
-  </React.StrictMode>,
-);
+startTransition(() => {
+  hydrateRoot(
+    document,
+    <StrictMode>
+      <ClientCacheProvider>
+        <HydratedRouter />
+      </ClientCacheProvider>
+    </StrictMode>,
+  );
+});

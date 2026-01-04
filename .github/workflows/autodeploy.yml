@@ -5,6 +5,9 @@ on:
     branches:
       - deploy
 
+env:
+  node-version: 20
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,15 +17,16 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v6
         with:
-          node-version: lts/*
+          node-version: ${{ env.node-version }}
+          cache: "npm"
       - name: Install node dependencies
-        run: npm install
+        run: npm ci
       - name: Checks types
         run: npm run typecheck
       - name: Run build
         run: npm run build
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: built-site
           path: |

@@ -3,14 +3,10 @@ We combine the data from the Fireroad API and the data we scrape from the
 catalog, into the format specified by src/lib/rawClass.ts.
 
 Functions:
-    load_json_data(jsonfile): Loads data from the provided JSON file
-    merge_data(datasets, keys_to_keep): Combines the datasets.
-    run(): The main entry point.
-
-Dependencies:
-    datetime
-    json
-    utils (within this folder)
+    load_json_data(json_path)
+    merge_data(datasets, keys_to_keep)
+    get_include(include_dirs)
+    run()
 """
 
 from __future__ import annotations
@@ -21,7 +17,7 @@ import os
 import os.path
 import sys
 from collections.abc import Iterable
-from typing import Any, Union
+from typing import Any
 
 from .utils import get_term_info
 
@@ -101,69 +97,75 @@ def merge_data(
     return result
 
 
-# pylint: disable=too-many-locals
+def get_include(overrides: dict[str, dict[str, Any]]) -> set[str]:
+    """
+    For the dictionary of classes, check if the key "include" is
+    present and if it is True. If so, add class to the resulting set.
+
+    Args:
+        overrides (dict[str: Any]): List of override classes from files.
+
+    Returns:
+        set[str]: The set of classes to include
+    """
+
+    classes = set()
+
+    for override_class, override_vals in overrides.items():
+        if override_vals.get("include", False):
+            classes.add(override_class)
+
+    return classes
+
+
 def run() -> None:
     """
     The main entry point.
     Takes data from fireroad.json and catalog.json; outputs latest.json.
     There are no arguments and no return value.
     """
-    fireroad_presem = load_json_data("fireroad-presem.json")
-    fireroad_sem = load_json_data("fireroad-sem.json")
+
+    sem_types = ("presem", "sem")  # presem = summer/IAP, sem = fall/spring
+
     catalog = load_json_data("catalog.json")
     cim = load_json_data("cim.json")
-
     overrides_all = load_toml_data("overrides.toml.d")
-    overrides_presem = load_toml_data("overrides.toml.d", "presemester")
-    overrides_semester = load_toml_data("overrides.toml.d", "semester")
 
-    # The key needs to be in BOTH fireroad and catalog to make it:
-    # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
-    # If it's not in catalog, it's not offered this year.
-    courses_presem = merge_data(
-        datasets=[fireroad_presem, catalog, cim, overrides_all, overrides_presem],
-        keys_to_keep=(set(fireroad_presem) & set(catalog))
-        | set(overrides_all)
-        | set(overrides_presem),
-    )
-    courses_sem = merge_data(
-        datasets=[fireroad_sem, catalog, cim, overrides_all, overrides_semester],
-        keys_to_keep=(set(fireroad_sem) & set(catalog))
-        # kind of sketchy? but needed to add a custom class :(
-        | set(overrides_all) | set(overrides_semester),
-    )
-
-    term_info_presem = get_term_info(False)
-    url_name_presem = term_info_presem["urlName"]
-    term_info_sem = get_term_info(True)
-    url_name_sem = term_info_sem["urlName"]
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    obj_presem: dict[str, Union[dict[str, Any], str, dict[Any, dict[str, Any]]]] = {
-        "termInfo": term_info_presem,
-        "lastUpdated": now,
-        "classes": courses_presem,
-    }
-    obj_sem: dict[str, Union[dict[str, Any], str, dict[Any, dict[str, Any]]]] = {
-        "termInfo": term_info_sem,
-        "lastUpdated": now,
-        "classes": courses_sem,
-    }
+    for sem in sem_types:
+        fireroad_sem = load_json_data(f"fireroad-{sem}.json")
+        overrides_sem = load_toml_data("overrides.toml.d", sem)
 
-    with open(
-        os.path.join(package_dir, f"../public/{url_name_presem}.json"),
-        mode="w",
-        encoding="utf-8",
-    ) as presem_file:
-        json.dump(obj_presem, presem_file, separators=(",", ":"))
+        # The key needs to be in BOTH fireroad and catalog to make it:
+        # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
+        # If it's not in catalog, it's not offered this year.
+        courses = merge_data(
+            datasets=[fireroad_sem, catalog, cim, overrides_all, overrides_sem],
+            keys_to_keep=(set(fireroad_sem) & set(catalog))
+            | get_include(overrides_all)
+            | get_include(overrides_sem),
+        )
 
-    with open(
-        os.path.join(package_dir, "../public/latest.json"), mode="w", encoding="utf-8"
-    ) as latest_file:
-        json.dump(obj_sem, latest_file, separators=(",", ":"))
+        term_info = get_term_info(sem)
+        url_name = term_info["urlName"]
 
-    print(f"{url_name_presem}: got {len(courses_presem)} courses")
-    print(f"{url_name_sem}: got {len(courses_sem)} courses")
+        obj: dict[str, dict[str, Any] | str | dict[Any, dict[str, Any]]] = {
+            "termInfo": term_info,
+            "lastUpdated": now,
+            "classes": courses,
+        }
+
+        with open(
+            os.path.join(
+                package_dir, f"../public/{'latest' if sem == 'sem' else url_name}.json"
+            ),
+            mode="w",
+            encoding="utf-8",
+        ) as file:
+            json.dump(obj, file, separators=(",", ":"))
+
+        print(f"{url_name}: got {len(courses)} courses")
 
 
 if __name__ == "__main__":
