@@ -411,7 +411,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
             allOf: "skipDefaults",
             constAsDefaults: "always",
             emptyObjectFields: "populateRequiredDefaults",
-            mergeDefaultsIntoFormData: "useDefaultIfFormDataUndefined",
+            mergeDefaultsIntoFormData: "useFormDataIfPresent",
           }}
           liveOmit={"onChange"}
           omitExtraData={true}
