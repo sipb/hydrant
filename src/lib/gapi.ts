@@ -1,7 +1,6 @@
 import type { ICalEventData } from "ical-generator";
 import { ICalCalendar } from "ical-generator";
 import { RRule, RRuleSet } from "rrule";
-
 import { tzlib_get_ical_block } from "timezones-ical-library";
 
 import type { Activity } from "./activity";
