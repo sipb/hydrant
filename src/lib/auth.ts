@@ -28,7 +28,8 @@ export const { getSession, commitSession, destroySession } =
     cookie: {
       name: "__session",
       path: "/",
-      sameSite: "strict",
+      sameSite: "lax",
+      httpOnly: import.meta.env.PROD,
       secure: import.meta.env.PROD,
       // since we don't send auth cookies to a server (since its all client-side), we don't need to sign them
       secrets: [],
