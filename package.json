@@ -43,7 +43,8 @@
     "format": "prettier . --write",
     "ci-prettier": "prettier . --check --ignore-unknown",
     "ci-eslint": "eslint .",
-    "test": "vitest",
+    "test": "vitest --run --reporter=verbose",
+    "test-watch": "vitest --reporter=verbose",
     "ci-all": "npm run typecheck && npm test && npm run ci-eslint && npm run ci-prettier"
   },
   "engines": {
@@ -55,6 +56,7 @@
     "@eslint/js": "^9.39.2",
     "@react-router/dev": "^7.12.0",
     "@react-router/fs-routes": "^7.12.0",
+    "@types/jsdom": "^27.0.0",
     "@types/node": "^20",
     "@types/react": "^19.2.8",
     "@types/react-dom": "19.2.3",

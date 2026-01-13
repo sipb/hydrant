@@ -109,7 +109,7 @@ describe("classNumberMatch", () => {
     expect(classNumberMatch("1.35", "1.357", false)).toBe(true);
   });
 
-  test("searchString contains period, classNumber matches, exact = false", () => {
+  test("searchString contains period, classNumber doesn't match, exact = false", () => {
     expect(classNumberMatch("1.35", "2.46", false)).toBe(false);
   });
 
@@ -125,7 +125,7 @@ describe("classNumberMatch", () => {
     expect(classNumberMatch("1A35", "1A.357", false)).toBe(true);
   });
 
-  test("searchString without period, classNumber matches, exact = false", () => {
+  test("searchString without period, classNumber doesn't match, exact = false", () => {
     expect(classNumberMatch("1A35", "2B.46", false)).toBe(false);
   });
 });
