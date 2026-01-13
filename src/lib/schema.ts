@@ -1,6 +1,9 @@
 import type { Activity } from "./activity";
 import type { ColorScheme } from "./colors";
 
+/** The date the content of the banner was last changed. */
+export const BANNER_LAST_CHANGED = new Date("2025-11-24T17:15:00Z").valueOf();
+
 /** A save has an ID and a name. */
 export interface Save {
   id: string;
@@ -13,7 +16,8 @@ export interface Preferences {
   roundedCorners: boolean;
   showEventTimes: boolean;
   defaultScheduleId: string | null;
-  showFeedback: boolean;
+  showBanner: boolean;
+  showBannerChanged?: number;
 }
 
 /** The default user preferences. */
@@ -22,7 +26,8 @@ export const DEFAULT_PREFERENCES: Preferences = {
   roundedCorners: false,
   showEventTimes: false,
   defaultScheduleId: null,
-  showFeedback: true,
+  showBanner: true,
+  showBannerChanged: undefined,
 };
 
 /** React state. */

@@ -1,7 +1,16 @@
 import { Timeslot, Event } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
-import type { RawClass, RawSection } from "./rawClass";
+import {
+  CI,
+  GIR,
+  HASS,
+  Level,
+  SectionKind,
+  TermCode,
+  type RawClass,
+  type RawSection,
+} from "./rawClass";
 
 import nonextImg from "../assets/nonext.gif";
 import underImg from "../assets/under.gif";
@@ -11,24 +20,21 @@ import iapImg from "../assets/iap.gif";
 import springImg from "../assets/spring.gif";
 import summerImg from "../assets/summer.gif";
 import repeatImg from "../assets/repeat.gif";
+import bioImg from "../assets/bio.gif";
+import calc1Img from "../assets/calc1.gif";
+import calc2Img from "../assets/calc2.gif";
+import chemImg from "../assets/chem.gif";
+import labImg from "../assets/lab.gif";
+import partlabImg from "../assets/partLab.gif";
+import phys1Img from "../assets/phys1.gif";
+import phys2Img from "../assets/phys2.gif";
 import restImg from "../assets/rest.gif";
-import labImg from "../assets/Lab.gif";
-import partlabImg from "../assets/PartLab.gif";
-import cihImg from "../assets/cih.gif";
-import cihwImg from "../assets/cihw.gif";
 import hassHImg from "../assets/hassH.gif";
 import hassAImg from "../assets/hassA.gif";
 import hassSImg from "../assets/hassS.gif";
 import hassEImg from "../assets/hassE.gif";
-
-// This isn't exported intentionally. Instead of using this, can you use
-// Sections directly?
-enum SectionKind {
-  LECTURE,
-  RECITATION,
-  LAB,
-  DESIGN,
-}
+import cihImg from "../assets/cih.gif";
+import cihwImg from "../assets/cihw.gif";
 
 /** Flags. */
 export interface Flags {
@@ -40,9 +46,15 @@ export interface Flags {
   spring: boolean;
   summer: boolean;
   repeat: boolean;
+  bio: boolean;
+  calc1: boolean;
+  calc2: boolean;
+  chem: boolean;
+  lab: boolean;
+  partLab: boolean;
+  phys1: boolean;
+  phys2: boolean;
   rest: boolean;
-  Lab: boolean;
-  PartLab: boolean;
   hass: boolean;
   hassH: boolean;
   hassA: boolean;
@@ -60,7 +72,16 @@ export interface Flags {
   limited: boolean;
 }
 
-export const DARK_IMAGES = ["cih", "iap", "repeat", "rest"];
+export const DARK_IMAGES: (keyof Flags)[] = [
+  "calc1",
+  "calc2",
+  "chem",
+  "cih",
+  "cihw",
+  "iap",
+  "repeat",
+  "rest",
+];
 
 const flagImages: { [k in keyof Flags]?: string } = {
   nonext: nonextImg,
@@ -71,9 +92,15 @@ const flagImages: { [k in keyof Flags]?: string } = {
   spring: springImg,
   summer: summerImg,
   repeat: repeatImg,
+  bio: bioImg,
+  calc1: calc1Img,
+  calc2: calc2Img,
+  chem: chemImg,
+  lab: labImg,
+  partLab: partlabImg,
+  phys1: phys1Img,
+  phys2: phys2Img,
   rest: restImg,
-  Lab: labImg,
-  PartLab: partlabImg,
   hassH: hassHImg,
   hassA: hassAImg,
   hassS: hassSImg,
@@ -188,10 +215,23 @@ export class Sections {
         return "lec";
       case SectionKind.RECITATION:
         return "rec";
-      case SectionKind.DESIGN:
-        return "des";
       case SectionKind.LAB:
         return "lab";
+      case SectionKind.DESIGN:
+        return "des";
+    }
+  }
+
+  get priority(): number {
+    switch (this.kind) {
+      case SectionKind.LECTURE:
+        return 0;
+      case SectionKind.RECITATION:
+        return 1;
+      case SectionKind.LAB:
+        return 2;
+      case SectionKind.DESIGN:
+        return 3;
     }
   }
 
@@ -202,10 +242,10 @@ export class Sections {
         return "Lecture";
       case SectionKind.RECITATION:
         return "Recitation";
-      case SectionKind.DESIGN:
-        return "Design";
       case SectionKind.LAB:
         return "Lab";
+      case SectionKind.DESIGN:
+        return "Design";
     }
   }
 
@@ -257,37 +297,37 @@ export class Class {
     this.sections = rawClass.sectionKinds
       .map((kind) => {
         switch (kind) {
-          case "lecture":
+          case SectionKind.LECTURE:
             return new Sections(
               this,
               SectionKind.LECTURE,
               rawClass.lectureRawSections,
               rawClass.lectureSections,
             );
-          case "recitation":
+          case SectionKind.RECITATION:
             return new Sections(
               this,
               SectionKind.RECITATION,
               rawClass.recitationRawSections,
               rawClass.recitationSections,
             );
-          case "design":
-            return new Sections(
-              this,
-              SectionKind.DESIGN,
-              rawClass.designRawSections,
-              rawClass.designSections,
-            );
-          case "lab":
+          case SectionKind.LAB:
             return new Sections(
               this,
               SectionKind.LAB,
               rawClass.labRawSections,
               rawClass.labSections,
             );
+          case SectionKind.DESIGN:
+            return new Sections(
+              this,
+              SectionKind.DESIGN,
+              rawClass.designRawSections,
+              rawClass.designSections,
+            );
         }
       })
-      .sort((a, b) => a.kind - b.kind);
+      .sort((a, b) => a.priority - b.priority);
     this.backgroundColor = fallbackColor(colorScheme);
   }
 
@@ -349,7 +389,9 @@ export class Class {
 
   /** Hours per week, taking from evals if exists, or units if not. */
   get hours(): number {
-    return this.rawClass.hours || this.totalUnits;
+    return !this.new && this.rawClass.hours
+      ? this.rawClass.hours
+      : this.totalUnits;
   }
 
   /** The half the class lies in; 1 if first, 2 if second, else undefined. */
@@ -373,28 +415,30 @@ export class Class {
   get flags(): Flags {
     return {
       nonext: this.rawClass.nonext,
-      under: this.rawClass.level === "U",
-      grad: this.rawClass.level === "G",
-      fall: this.rawClass.terms.includes("FA"),
-      iap: this.rawClass.terms.includes("JA"),
-      spring: this.rawClass.terms.includes("SP"),
-      summer: this.rawClass.terms.includes("SU"),
+      under: this.rawClass.level === Level.U,
+      grad: this.rawClass.level === Level.G,
+      fall: this.rawClass.terms.includes(TermCode.FA),
+      iap: this.rawClass.terms.includes(TermCode.JA),
+      spring: this.rawClass.terms.includes(TermCode.SP),
+      summer: this.rawClass.terms.includes(TermCode.SU),
       repeat: this.rawClass.repeat,
-      rest: this.rawClass.rest,
-      Lab: this.rawClass.lab,
-      PartLab: this.rawClass.partLab,
-      hass:
-        this.rawClass.hassH ||
-        this.rawClass.hassA ||
-        this.rawClass.hassS ||
-        this.rawClass.hassE,
-      hassH: this.rawClass.hassH,
-      hassA: this.rawClass.hassA,
-      hassS: this.rawClass.hassS,
-      hassE: this.rawClass.hassE,
-      cih: this.rawClass.cih,
-      cihw: this.rawClass.cihw,
-      notcih: !this.rawClass.cih && !this.rawClass.cihw,
+      bio: this.rawClass.gir === GIR.BIOL,
+      calc1: this.rawClass.gir === GIR.CAL1,
+      calc2: this.rawClass.gir === GIR.CAL2,
+      chem: this.rawClass.gir === GIR.CHEM,
+      lab: this.rawClass.gir === GIR.LAB,
+      partLab: this.rawClass.gir === GIR.LAB2,
+      phys1: this.rawClass.gir === GIR.PHY1,
+      phys2: this.rawClass.gir === GIR.PHY2,
+      rest: this.rawClass.gir === GIR.REST,
+      hass: this.rawClass.hass.length > 0,
+      hassH: this.rawClass.hass.includes(HASS.H),
+      hassA: this.rawClass.hass.includes(HASS.A),
+      hassS: this.rawClass.hass.includes(HASS.S),
+      hassE: this.rawClass.hass.includes(HASS.E),
+      cih: this.rawClass.comms === CI.CIH,
+      cihw: this.rawClass.comms === CI.CIHW,
+      notcih: !this.rawClass.comms,
       cim: !!this.rawClass.cim?.length,
       final: this.rawClass.final,
       nofinal: !this.rawClass.final,
@@ -465,7 +509,7 @@ export class Class {
       );
     }
     if (this.rawClass.isVariableUnits) {
-      if (this.rawClass.hours === 0) {
+      if (!this.rawClass.hours || this.new) {
         suffixes.push("^");
         messages.push(
           "^ This class has an arranged number of units and no evaluations, so it was not counted towards total units or hours.",
@@ -477,7 +521,7 @@ export class Class {
         );
       }
     } else {
-      if (this.rawClass.hours === 0) {
+      if (!this.rawClass.hours || this.new) {
         suffixes.push("*");
         messages.push(
           "* Class does not have evaluations, so its hours were set to units.",

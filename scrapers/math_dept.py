@@ -4,7 +4,6 @@ Was used to generate the math overrides in package.py; currently unnecessary.
 
 Functions:
     parse_when(when)
-    test_parse_when()
     parse_many_timeslots(days, times)
     make_raw_sections(days, times, room):
     make_section_override(timeslots, room)
@@ -18,7 +17,6 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
 from pprint import pprint
-from typing import Union
 from urllib.request import urlopen
 
 from bs4 import BeautifulSoup, Tag
@@ -35,6 +33,15 @@ def parse_when(when: str) -> tuple[str, str]:
 
     Returns:
         tuple[str, str]: A parsed version of this string.
+
+    >>> parse_when("F10:30-12")
+    ('F', '10.30-12')
+
+    >>> parse_when("MW1")
+    ('MW', '1')
+
+    >>> parse_when("MWF11")
+    ('MWF', '11')
     """
     # special casing is good enough (otherwise this could be a for loop)
     if when[1].isdigit():
@@ -49,15 +56,6 @@ def parse_when(when: str) -> tuple[str, str]:
     # fireroad.py wants dots instead of colons
     times = times.replace(":", ".")
     return days, times
-
-
-def test_parse_when() -> None:
-    """
-    Test cases for parse_when
-    """
-    assert parse_when("F10:30-12") == ("F", "10.30-12")
-    assert parse_when("MW1") == ("MW", "1")
-    assert parse_when("MWF11") == ("MWF", "11")
 
 
 def parse_many_timeslots(days: str, times: str) -> Iterable[tuple[int, int]]:
@@ -108,7 +106,7 @@ def make_section_override(
     # return [[section, room] for section in timeslots]
 
 
-def get_rows():
+def get_rows() -> list[Tag]:
     """
     Scrapes rows from https://math.mit.edu/academics/classes.html
 
@@ -117,8 +115,10 @@ def get_rows():
     """
     with urlopen("https://math.mit.edu/academics/classes.html", timeout=1) as response:
         soup = BeautifulSoup(response.read().decode("utf-8"), features="lxml")
-    course_list: Tag = soup.find("ul", {"class": "course-list"})  # type: ignore
-    rows = course_list.findAll("li", recursive=False)
+    course_list = soup.find("ul", {"class": "course-list"})
+    assert course_list is not None
+
+    rows = course_list.find_all("li", recursive=False)
     return rows
 
 
@@ -149,7 +149,7 @@ def parse_subject(subject: str) -> list[str]:
 
 def parse_row(
     row: Tag,
-) -> dict[str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]]:
+) -> dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]]:
     """
     Parses the provided row
 
@@ -157,20 +157,23 @@ def parse_row(
         row (bs4.element.Tag): The row that needs to be parsed.
 
     Returns:
-        dict[str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]]:
+        dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]]:
             The parsed row
     """
-    result: dict[
-        str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]
-    ] = {}
+    result: dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]] = {}
 
-    subject: str = row.find("div", {"class": "subject"}).text  # type: ignore
+    subject_row = row.find("div", {"class": "subject-row"})
+    assert subject_row is not None
+
+    subject = subject_row.string or ""
     subjects = parse_subject(subject)
 
-    where_when: Tag = row.find("div", {"class": "where-when"})  # type: ignore
-    when, where = where_when.findAll("div", recursive=False)
-    where = where.text
-    when = when.text
+    where_when = row.find("div", {"class": "where-when"})
+    assert where_when is not None
+
+    when, where = where_when.find_all("div", recursive=False)
+    where = where.string or ""
+    when = when.string or ""
     if ";" in when:
         # Don't want to handle special case - calculus, already right
         return {}
@@ -188,19 +191,17 @@ def parse_row(
     return result
 
 
-def run() -> (
-    dict[str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]]
-):
+def run() -> dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]]:
     """
     The main entry point
 
     Returns:
-        dict[str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]]:
+        dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]]:
             All the schedules
     """
     rows = get_rows()
     overrides: dict[
-        str, dict[str, Union[str, tuple[tuple[Sequence[Sequence[int]], str]]]]
+        str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]
     ] = {}
 
     for row in rows:
@@ -211,5 +212,4 @@ def run() -> (
 
 
 if __name__ == "__main__":
-    test_parse_when()
     pprint(run())

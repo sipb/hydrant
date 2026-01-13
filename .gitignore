@@ -30,16 +30,18 @@ scrapers/fireroad-sem.json
 scrapers/fireroad-presem.json
 scrapers/cim.json
 public/latest.json
-public/m25.json
+public/i26.json
 
 # python
 __pycache__
+.mypy_cache
+scrapers/.mypy_cache
 
 # deploy script
 deploy.sh
 
 #virtual env
-hydrant-venv
+.venv
 
 # router
 .react-router

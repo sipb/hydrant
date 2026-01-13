@@ -1,0 +1,9 @@
+#:schema ../override-schema.json
+
+["17.S917"]
+name = "AI Alignment: Moral, Political, and Computational Foundations"
+description = "This seminar draws on political theory, political science, and computational methods to prepare students to critically assess how well AI systems reflect moral and political values, and what it would take to ensure a better fit."
+
+["17.S918"]
+name = "Democratic Backsliding and Breakdown"
+description = "This class explores why democracies endure or collapse. The cases covered are wide-ranging, but special attention will be paid to Interwar Europe, particularly Germany; former British colonies from 1960-2010; recent cases of backsliding or breakdown that were either successfully opposed (South Korea, Poland, Brazil) or that led to a non-democratic regime (Hungary, Turkey, and India); and the political future of the United States."

@@ -1,7 +1,6 @@
-import { IconButton, Flex, Text } from "@chakra-ui/react";
-
-import { CloseButton } from "./ui/close-button";
 import { useContext, useState } from "react";
+
+import { IconButton, Flex, Text, CloseButton } from "@chakra-ui/react";
 
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { HydrantContext } from "../lib/hydrant";

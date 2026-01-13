@@ -12,7 +12,7 @@ import type { RawClass, RawTimeslot } from "./rawClass";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
-import { DEFAULT_PREFERENCES } from "./schema";
+import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -304,12 +304,17 @@ export class State {
       .filter((cls): cls is Class => cls !== undefined);
   }
 
-  get showFeedback(): boolean {
-    return this.preferences.showFeedback;
+  get showBanner(): boolean {
+    return (
+      this.preferences.showBanner ||
+      this.preferences.showBannerChanged === undefined ||
+      this.preferences.showBannerChanged < BANNER_LAST_CHANGED
+    );
   }
 
-  set showFeedback(show: boolean) {
-    this.preferences.showFeedback = show;
+  set showBanner(show: boolean) {
+    this.preferences.showBanner = show;
+    this.preferences.showBannerChanged = new Date().valueOf();
     this.updateState();
   }
 

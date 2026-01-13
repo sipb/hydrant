@@ -1,22 +1,24 @@
+import { TermCode } from "./rawClass";
+
 /** Dictionary of semester-name related constants. */
 const SEMESTER_NAMES = {
   f: {
-    catalog: "FA",
+    catalog: TermCode.FA,
     full: "fall",
     fullCaps: "Fall",
   },
   s: {
-    catalog: "SP",
+    catalog: TermCode.SP,
     full: "spring",
     fullCaps: "Spring",
   },
   i: {
-    catalog: "JA",
+    catalog: TermCode.JA,
     full: "iap",
     fullCaps: "IAP",
   },
   m: {
-    catalog: "SU",
+    catalog: TermCode.SU,
     full: "summer",
     fullCaps: "Summer",
   },
@@ -388,8 +390,6 @@ export class Term {
   /** Dates that a given slot *doesn't* run on. */
   exDatesFor(slot: Slot): Date[] {
     const res = this.holidays.filter((date) => date.getDay() === slot.weekday);
-    // ex dates can't be empty, so add an extra one:
-    res.push(new Date("2000-01-01"));
     const resDates = res.map((date) => slot.onDate(date));
 
     // remove the tuesday for monday schedule

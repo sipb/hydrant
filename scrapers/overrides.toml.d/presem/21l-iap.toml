@@ -1,0 +1,7 @@
+#:schema ../override-schema.json
+
+["21L.600"]
+lectureUnits = 2
+labUnits = 2
+preparationUnits = 8
+isVariableUnits = false

@@ -23,11 +23,19 @@ import {
   type Module,
 } from "ag-grid-community";
 
-import { Box, Flex, Image, Input, Button, ButtonGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Image,
+  Input,
+  Button,
+  ButtonGroup,
+  InputGroup,
+  CloseButton,
+} from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
-import { InputGroup } from "./ui/input-group";
 import { LabelledButton } from "./ui/button";
-import { useColorMode } from "./ui/color-mode";
+import { useColorModeValue } from "./ui/color-mode";
 
 import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
@@ -141,6 +149,7 @@ function ClassInput(props: {
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
   const searchResults = useRef<
@@ -201,6 +210,17 @@ function ClassInput(props: {
     }
   };
 
+  const clearButton = classInput ? (
+    <CloseButton
+      size="xs"
+      onClick={() => {
+        onClassInputChange("");
+        inputRef.current?.focus();
+      }}
+      me="-2"
+    />
+  ) : undefined;
+
   return (
     <Flex justify="center">
       <form
@@ -210,13 +230,18 @@ function ClassInput(props: {
         }}
         style={{ width: "100%", maxWidth: "30em" }}
       >
-        <InputGroup startElement={<LuSearch />} width="fill-available">
+        <InputGroup
+          startElement={<LuSearch />}
+          endElement={clearButton}
+          width="fill-available"
+        >
           <Input
             type="search"
             aria-label="Search for a class"
             id="class-search"
             placeholder="Class number, name, or instructor"
             value={classInput}
+            ref={inputRef}
             onChange={(e) => {
               onClassInputChange(e.target.value);
             }}
@@ -264,7 +289,7 @@ const CLASS_FLAGS_3: FilterGroup = [
 /** Third row of hidden filter IDs. */
 const CLASS_FLAGS_4: FilterGroup = [
   ["rest", "REST", getFlagImg("rest")],
-  ["Lab", "Institute Lab", getFlagImg("Lab")],
+  ["lab", "Institute Lab", getFlagImg("lab")],
   ["hassA", "HASS-A", getFlagImg("hassA")],
   ["hassH", "HASS-H", getFlagImg("hassH")],
   ["hassS", "HASS-S", getFlagImg("hassS")],
@@ -339,7 +364,11 @@ function ClassFlags(props: {
       return result;
     });
   };
-  const { colorMode } = useColorMode();
+
+  const filter = useColorModeValue(
+    (_flags: keyof Flags) => "",
+    (flag: keyof Flags) => (DARK_IMAGES.includes(flag) ? "invert()" : ""),
+  );
 
   const renderGroup = (group: FilterGroup) => {
     return (
@@ -370,11 +399,7 @@ function ClassFlags(props: {
                 <Image
                   src={image}
                   alt={label}
-                  filter={
-                    colorMode === "dark" && DARK_IMAGES.includes(flag)
-                      ? "invert()"
-                      : ""
-                  }
+                  filter={filter(flag as keyof Flags)}
                 />
               </LabelledButton>
             ) : (

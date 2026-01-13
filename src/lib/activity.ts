@@ -77,16 +77,16 @@ export class Event {
   /** All slots of the event. */
   slots: Timeslot[];
   /** The room of the event. */
-  room: string | undefined;
+  room?: string;
   /** If defined, 1 -> first half; 2 -> second half. */
-  half: number | undefined;
+  half?: number;
 
   constructor(
     activity: Activity,
     name: string,
     slots: Timeslot[],
-    room: string | undefined = undefined,
-    half: number | undefined = undefined,
+    room?: string,
+    half?: number,
   ) {
     this.activity = activity;
     this.name = name;

@@ -13,33 +13,25 @@
         "type": "string",
         "title": "Number",
         "description": "Class number",
-        "examples": [
-          "6.3900"
-        ]
+        "examples": ["6.3900"]
       },
       "oldNumber": {
         "type": "string",
         "title": "Formerly known as",
         "description": "Old class number",
-        "examples": [
-          "6.036"
-        ]
+        "examples": ["6.036"]
       },
       "course": {
         "type": "string",
         "title": "Course",
         "description": "Course number",
-        "examples": [
-          "6"
-        ]
+        "examples": ["6"]
       },
       "subject": {
         "type": "string",
         "title": "Subject",
         "description": "Subject number without course",
-        "examples": [
-          "3900"
-        ]
+        "examples": ["3900"]
       },
       "tba": {
         "type": "boolean",
@@ -53,12 +45,7 @@
         "description": "Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist",
         "items": {
           "type": "string",
-          "enum": [
-            "lecture",
-            "recitation",
-            "lab",
-            "design"
-          ]
+          "enum": ["lecture", "recitation", "lab", "design"]
         }
       },
       "lectureSections": {
@@ -97,10 +84,7 @@
         "type": "array",
         "title": "Lecture sections (raw)",
         "description": "Raw lecture times",
-        "examples": [
-          "T9.301-11",
-          "TR1,F2"
-        ],
+        "examples": ["T9.301-11", "TR1,F2"],
         "items": {
           "type": "string"
         }
@@ -109,10 +93,7 @@
         "type": "array",
         "title": "Recitation sections (raw)",
         "description": "Raw recitation times",
-        "examples": [
-          "T9.301-11",
-          "TR1,F2"
-        ],
+        "examples": ["T9.301-11", "TR1,F2"],
         "items": {
           "type": "string"
         }
@@ -121,10 +102,7 @@
         "type": "array",
         "title": "Lab sections (raw)",
         "description": "Raw lab times",
-        "examples": [
-          "T9.301-11",
-          "TR1,F2"
-        ],
+        "examples": ["T9.301-11", "TR1,F2"],
         "items": {
           "type": "string"
         }
@@ -133,58 +111,43 @@
         "type": "array",
         "title": "Design sections (raw)",
         "description": "Raw design times",
-        "examples": [
-          "T9.301-11",
-          "TR1,F2"
-        ],
+        "examples": ["T9.301-11", "TR1,F2"],
         "items": {
           "type": "string"
         }
       },
-      "hassH": {
-        "type": "boolean",
-        "title": "HASS-H",
-        "description": "True if HASS-H"
+      "hass": {
+        "type": "array",
+        "title": "HASS",
+        "description": "HASS designation (if any)",
+        "items": {
+          "type": "string",
+          "enum": ["H", "A", "S", "E"]
+        },
+        "uniqueItems": true
       },
-      "hassA": {
-        "type": "boolean",
-        "title": "HASS-A",
-        "description": "True if HASS-A"
-      },
-      "hassS": {
-        "type": "boolean",
-        "title": "HASS-S",
-        "description": "True if HASS-S"
-      },
-      "hassE": {
-        "type": "boolean",
-        "title": "HASS-E",
-        "description": "True if HASS-E"
-      },
-      "cih": {
-        "type": "boolean",
+      "comms": {
+        "type": "string",
         "title": "CI-H",
-        "description": "True if CI-H"
+        "description": "Communications Intensive designation",
+        "enum": ["", "CI-H", "CI-HW"]
       },
-      "cihw": {
-        "type": "boolean",
-        "title": "CI-HW",
-        "description": "True if CI-HW"
-      },
-      "rest": {
-        "type": "boolean",
-        "title": "REST",
-        "description": "True if REST"
-      },
-      "lab": {
-        "type": "boolean",
-        "title": "Lab",
-        "description": "True if institute lab"
-      },
-      "partLab": {
-        "type": "boolean",
-        "title": "Partial Lab",
-        "description": "True if partial institute lab"
+      "gir": {
+        "type": "string",
+        "title": "GIR",
+        "description": "GIR designation",
+        "enum": [
+          "",
+          "BIOL",
+          "CAL1",
+          "CAL2",
+          "CHEM",
+          "LAB",
+          "LAB2",
+          "PHY1",
+          "PHY2",
+          "REST"
+        ]
       },
       "cim": {
         "type": "array",
@@ -195,41 +158,39 @@
         }
       },
       "lectureUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Lecture units",
-        "description": "Lecture or recitation units"
+        "description": "Lecture or recitation units",
+        "minimum": 0
       },
       "labUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Lab units",
-        "description": "Lab or field work units"
+        "description": "Lab or field work units",
+        "minimum": 0
       },
       "preparationUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Preparation units",
-        "description": "Outside class units"
+        "description": "Outside class units",
+        "minimum": 0
       },
       "isVariableUnits": {
         "type": "boolean",
         "title": "Units arranged",
-        "description": "Does this class have an arranged number of units?\nIf true, lectureUnits, labUnits, preparationUnits are set to zero."
+        "description": "Does this class have an arranged number of units? If true, lectureUnits, labUnits, preparationUnits are set to zero."
       },
       "level": {
         "type": "string",
         "title": "Level",
         "description": "Subject level (\"U\" or \"G\")",
-        "enum": [
-          "U",
-          "G"
-        ]
+        "enum": ["U", "G"]
       },
       "same": {
         "type": "string",
         "title": "Same as",
         "description": "Comma-separated list of classes with same number",
-        "examples": [
-          "21A.103, WGS.225"
-        ]
+        "examples": ["21A.103, WGS.225"]
       },
       "meets": {
         "type": "string",
@@ -242,12 +203,7 @@
         "description": "Terms class is offered",
         "items": {
           "type": "string",
-          "enum": [
-            "FA",
-            "JA",
-            "SP",
-            "SU"
-          ]
+          "enum": ["FA", "JA", "SP", "SU"]
         }
       },
       "prereqs": {
@@ -264,17 +220,13 @@
         "type": "string",
         "title": "Name",
         "description": "Name of class",
-        "examples": [
-          "Algebra I"
-        ]
+        "examples": ["Algebra I"]
       },
       "inCharge": {
         "type": "string",
         "title": "Instructors",
         "description": "(Person) in-charge",
-        "examples": [
-          "Alyssa Hacker"
-        ]
+        "examples": ["Alyssa Hacker"]
       },
       "virtualStatus": {
         "type": "boolean",
@@ -307,17 +259,12 @@
         "description": "1 or 2 if first / second half",
         "oneOf": [
           {
-            "type": "number",
-            "enum": [
-              1,
-              2
-            ]
+            "type": "integer",
+            "enum": [1, 2]
           },
           {
             "type": "boolean",
-            "enum": [
-              false
-            ]
+            "const": false
           }
         ]
       },
@@ -334,124 +281,165 @@
       "rating": {
         "type": "number",
         "title": "Rating",
-        "description": "Rating (out of 7.0) from evals"
+        "description": "Rating (out of 7.0) from evals",
+        "multipleOf": 0.01,
+        "minimum": 0,
+        "maximum": 7
       },
       "hours": {
         "type": "number",
         "title": "Hours",
-        "description": "Hours per week from evals"
+        "description": "Hours per week from evals",
+        "multipleOf": 0.01,
+        "minimum": 0
       },
       "size": {
         "type": "number",
         "title": "Size",
-        "description": "Class size from evals"
+        "description": "Class size from evals",
+        "multipleOf": 0.01,
+        "minimum": 0
       },
       "quarterInfo": {
         "title": "Quarter Info",
         "type": "object",
-        "anyOf": [
-          {
-            "additionalProperties": false,
-            "properties": {}
+        "properties": {
+          "start": {
+            "title": "Start Date",
+            "$ref": "#/$defs/quarterDate"
           },
-          {
-            "required": [
-              "start"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "start": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
-              }
-            },
-            "default": {
-              "start": [
-                0,
-                0
-              ]
-            }
-          },
-          {
-            "required": [
-              "end"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "end": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
-              }
-            },
-            "default": {
-              "end": [
-                0,
-                0
-              ]
-            }
-          },
-          {
-            "required": [
-              "start",
-              "end"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "start": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
-              },
-              "end": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
-              }
-            },
-            "default": {
-              "start": [
-                0,
-                0
-              ],
-              "end": [
-                0,
-                0
-              ]
-            }
+          "end": {
+            "title": "End Date",
+            "$ref": "#/$defs/quarterDate"
           }
-        ]
+        }
+      },
+      "include": {
+        "type": "boolean",
+        "title": "Include",
+        "description": "True if class should be included in final output, even if not in catalog"
       }
-    }
+    },
+    "allOf": [
+      {
+        "if": {
+          "anyOf": [
+            {
+              "properties": {
+                "lectureUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["lectureUnits"]
+            },
+            {
+              "properties": {
+                "labUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["labUnits"]
+            },
+            {
+              "properties": {
+                "preparationUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["preparationUnits"]
+            }
+          ]
+        },
+        "then": {
+          "properties": {
+            "isVariableUnits": {
+              "const": false
+            }
+          },
+          "required": [
+            "lectureUnits",
+            "labUnits",
+            "preparationUnits",
+            "isVariableUnits"
+          ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "isVariableUnits": {
+              "const": true
+            }
+          },
+          "required": ["isVariableUnits"]
+        },
+        "then": {
+          "properties": {
+            "lectureUnits": {
+              "const": 0
+            },
+            "labUnits": {
+              "const": 0
+            },
+            "preparationUnits": {
+              "const": 0
+            }
+          },
+          "required": ["lectureUnits", "labUnits", "preparationUnits"]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "include": {
+              "const": true
+            }
+          },
+          "required": ["include"]
+        },
+        "then": {
+          "required": [
+            "nonext",
+            "repeat",
+            "url",
+            "final",
+            "half",
+            "limited",
+            "new",
+            "number",
+            "course",
+            "subject",
+            "terms",
+            "prereqs",
+            "sectionKinds",
+            "tba",
+            "hass",
+            "comms",
+            "gir",
+            "lectureUnits",
+            "labUnits",
+            "preparationUnits",
+            "level",
+            "isVariableUnits",
+            "same",
+            "meets",
+            "description",
+            "name",
+            "inCharge",
+            "virtualStatus",
+            "rating",
+            "hours",
+            "size"
+          ]
+        }
+      }
+    ]
   },
   "$defs": {
     "rawTimeSlot": {
@@ -460,13 +448,17 @@
       "description": "Raw timeslot format: [start slot, length of timeslot].",
       "items": [
         {
-          "type": "number"
+          "type": "integer",
+          "minimum": 0,
+          "exclusiveMaximum": 170
         },
         {
-          "type": "number"
+          "type": "integer",
+          "minimum": 0
         }
       ],
-      "minItems": 2
+      "minItems": 2,
+      "maxItems": 2
     },
     "rawSection": {
       "type": "array",
@@ -483,7 +475,28 @@
           "type": "string"
         }
       ],
-      "minItems": 2
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "quarterDate": {
+      "type": "array",
+      "title": "Quarter date",
+      "description": "Date format for calendar day: [month, day].",
+      "additionalItems": false,
+      "items": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 31
+        }
+      ],
+      "minItems": 2,
+      "maxItems": 2
     }
   }
 }

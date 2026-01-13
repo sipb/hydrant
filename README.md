@@ -4,14 +4,14 @@
 
 Install:
 
-- Python 3, at least Python 3.7.
+- Python 3, at least Python 3.8.
 - Node.js, at least Node.js 20.
   - One way to manage Node versions is using [nvm](https://github.com/nvm-sh/nvm).
-- [Black](https://black.readthedocs.io/en/stable/index.html), if you plan on contributing changes to the Python backend.
 
 In the root directory, run:
 
-- `pip install -r requirements.txt` to install dependencies.
+- `pip install -e .[dev]` to install dependencies.
+  - This will generate a `Hydrant.egg-info` folder in `src`, feel free to delete it.
 - `npm install` to install dependencies.
 
 ## Updating
@@ -60,13 +60,13 @@ _I want to change..._
 
 - _...the data available to Hydrant._
   - The entry point is `scrapers/update.py`.
-  - This goes through the client loader in `src/routes/Index.tsx`, which looks for the data.
+  - This goes through the client loader in `src/routes/_index.tsx`, which looks for the data.
   - The exit point is through the constructor of `State` in `src/lib/state.ts`.
 - _...the way Hydrant behaves._
   - The entry point is `src/lib/state.ts`.
-  - The exit point is through `src/routes/Index.tsx`, which constructs `hydrant` and adds it to a reusable context.
+  - The exit point is through `src/routes/_index.tsx`, which constructs `hydrant` and adds it to a reusable context.
 - _...the way Hydrant looks._
-  - The entry point is `src/routes/Index.tsx`.
+  - The entry point is `src/routes/_index.tsx`.
   - We use [Chakra UI](https://chakra-ui.com/) as our component library. Avoid writing CSS.
 - _...routes available in Hydrant._
   - Routes are stored in `src/routes.ts` and can be modified there.
@@ -79,6 +79,6 @@ Try not to introduce new technologies that must be separately understood to keep
 - some MIT class teaches how to use it
   - e.g. web.lab teaches React, 6.102 teaches Typescript
 - it's tiny and used in only a small part of the app
-  - e.g. msgpack-lite is only used for URL encoding, nanoid is only used to make IDs
+  - e.g. msgpack is only used for URL encoding, nanoid is only used to make IDs
 - it's a big, popular, well-documented project that's been around for several years
   - e.g. FullCalendar has been around since 2010, Chakra UI has a large community
