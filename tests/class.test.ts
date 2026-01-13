@@ -1,7 +1,15 @@
 import { expect, test } from "vitest";
-import { type Flags, getFlagImg, Class, Sections } from "../src/lib/class.js";
-import type { RawClass } from "../src/lib/rawClass.js";
-import { COLOR_SCHEME_LIGHT } from "../src/lib/colors.js";
+import { type Flags, getFlagImg, Class, Sections } from "../src/lib/class";
+import {
+  CI,
+  GIR,
+  HASS,
+  Level,
+  SectionKind,
+  TermCode,
+  type RawClass,
+} from "../src/lib/rawClass";
+import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 
 // auxiliary object for testing getFlagImg; change as needed
 const flagNameValidity: [keyof Flags, boolean][] = [
@@ -14,8 +22,8 @@ const flagNameValidity: [keyof Flags, boolean][] = [
   ["nofinal", false],
   ["nopreq", false],
   ["notcih", false],
-  ["Lab", true],
-  ["PartLab", true],
+  ["lab", true],
+  ["partLab", true],
   ["cih", true],
   ["cihw", true],
   ["fall", true],
@@ -47,7 +55,7 @@ const myRawClass: RawClass = {
   number: "21H.143",
   course: "21H",
   subject: "143",
-  sectionKinds: ["lecture"],
+  sectionKinds: [SectionKind.LECTURE],
   lectureRawSections: ["56-191/MW/0/11-12.30"],
   lectureSections: [
     [
@@ -59,21 +67,17 @@ const myRawClass: RawClass = {
     ],
   ],
   tba: false,
-  hassH: true,
-  hassA: false,
-  hassS: false,
-  hassE: false,
-  rest: false,
-  lab: false,
-  partLab: false,
+  hass: [HASS.H],
+  gir: GIR.EMPTY,
+  comms: CI.EMPTY,
   lectureUnits: 3,
   labUnits: 0,
   preparationUnits: 9,
-  level: "U",
+  level: Level.U,
   isVariableUnits: false,
   same: "21G.056",
   meets: "21G.356",
-  terms: ["FA"],
+  terms: [TermCode.FA],
   prereqs: "None",
   description:
     "Provides an overview of European history from 1789 to the present. Explores how the ideas of 'European' and 'modern' have been defined over time. Explores major events and the evolution of major tensions and issues that consumed Europe and Europeans through the period, including questions of identity, inclusion/exclusion, religion, and equality. Places major emphasis on the fiction, visual culture, and films of the century as the products and evidence of political, social and cultural change. Taught in English.",
@@ -96,8 +100,6 @@ const myRawClass: RawClass = {
   recitationRawSections: [],
   labRawSections: [],
   designRawSections: [],
-  cih: false,
-  cihw: false,
   new: false,
 };
 
@@ -107,7 +109,7 @@ const myOtherRawClass: RawClass = {
   course: "21H",
   subject: "143",
   tba: false,
-  sectionKinds: ["lecture"],
+  sectionKinds: [SectionKind.LECTURE],
   lectureRawSections: ["56-191/MW/0/11-12.30"],
   lectureSections: [
     [
@@ -124,23 +126,17 @@ const myOtherRawClass: RawClass = {
   recitationRawSections: [],
   labRawSections: [],
   designRawSections: [],
-  hassH: true,
-  hassA: false,
-  hassS: false,
-  hassE: false,
-  cih: false,
-  cihw: false,
-  rest: false,
-  lab: false,
-  partLab: false,
+  hass: [HASS.H],
+  gir: GIR.EMPTY,
+  comms: CI.EMPTY,
   lectureUnits: 3,
   labUnits: 0,
   preparationUnits: 9,
   isVariableUnits: false,
-  level: "U",
+  level: Level.U,
   same: "21G.056",
   meets: "21G.356",
-  terms: ["FA"],
+  terms: [TermCode.FA],
   prereqs: "None",
   description:
     "Provides an overview of European history from 1789 to the present. Explores how the ideas of 'European' and 'modern' have been defined over time. Explores major events and the evolution of major tensions and issues that consumed Europe and Europeans through the period, including questions of identity, inclusion/exclusion, religion, and equality. Places major emphasis on the fiction, visual culture, and films of the century as the products and evidence of political, social and cultural change. Taught in English.",
@@ -252,7 +248,7 @@ describe("Class", () => {
     expect(myClass.new).toEqual(false);
   });
 
-  test.skip("Class.events");
+  test.todo("Class.events");
 
   test("Class.flags", () => {
     const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
@@ -266,8 +262,8 @@ describe("Class", () => {
       summer: false,
       repeat: false,
       rest: false,
-      Lab: false,
-      PartLab: false,
+      lab: false,
+      partLab: false,
       hass: true,
       hassH: true,
       hassA: false,
@@ -283,6 +279,12 @@ describe("Class", () => {
       le9units: false,
       half: false,
       limited: false,
+      bio: false,
+      calc1: false,
+      calc2: false,
+      chem: false,
+      phys1: false,
+      phys2: false,
     };
     expect(myClass.flags).toStrictEqual(expectedFlags);
   });
