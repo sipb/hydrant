@@ -81,24 +81,58 @@ describe("Term", () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
    */
-  test("Term.constructor", () => {
-    const myTerm: Term = new Term({
-      urlName: "f42", // arbitrary values
-      startDate: "2042-04-20",
-      h1EndDate: "2042-04-21",
-      h2StartDate: "2042-04-22",
-      mondayScheduleDate: "2042-04-23",
-      holidayDates: ["2042-04-24"],
-      endDate: "2042-04-25",
+  describe("Term.constructor", () => {
+    test("half", () => {
+      const myTerm: Term = new Term({
+        urlName: "f42", // arbitrary values
+        startDate: "2042-04-20",
+        h1EndDate: "2042-04-21",
+        h2StartDate: "2042-04-22",
+        mondayScheduleDate: "2042-04-23",
+        holidayDates: ["2042-04-24"],
+        endDate: "2042-04-25",
+      });
+      expect(myTerm.year).toBe("42");
+      expect(myTerm.semester).toBe("f");
+      expect(myTerm.start).toStrictEqual(new Date(2042, 3, 20, 0));
+      expect(myTerm.h1End).toStrictEqual(new Date(2042, 3, 21, 0));
+      expect(myTerm.h2Start).toStrictEqual(new Date(2042, 3, 22, 0));
+      expect(myTerm.mondaySchedule).toStrictEqual(new Date(2042, 3, 23, 0));
+      expect(myTerm.holidays).toStrictEqual([new Date(2042, 3, 24, 0)]);
+      expect(myTerm.end).toStrictEqual(new Date(2042, 3, 25, 0));
     });
-    expect(myTerm.year).toBe("42");
-    expect(myTerm.semester).toBe("f");
-    expect(myTerm.start).toStrictEqual(new Date(2042, 3, 20, 0));
-    expect(myTerm.h1End).toStrictEqual(new Date(2042, 3, 21, 0));
-    expect(myTerm.h2Start).toStrictEqual(new Date(2042, 3, 22, 0));
-    expect(myTerm.mondaySchedule).toStrictEqual(new Date(2042, 3, 23, 0));
-    expect(myTerm.holidays).toStrictEqual([new Date(2042, 3, 24, 0)]);
-    expect(myTerm.end).toStrictEqual(new Date(2042, 3, 25, 0));
+
+    test("no half", () => {
+      const myTerm: Term = new Term({
+        urlName: "f42", // arbitrary values
+        startDate: "2042-04-20",
+        mondayScheduleDate: "2042-04-23",
+        holidayDates: ["2042-04-24"],
+        endDate: "2042-04-25",
+      });
+      expect(myTerm.year).toBe("42");
+      expect(myTerm.semester).toBe("f");
+      expect(myTerm.start).toStrictEqual(new Date(2042, 3, 20, 0));
+      expect(myTerm.h1End).toBeUndefined();
+      expect(myTerm.h2Start).toBeUndefined();
+      expect(myTerm.mondaySchedule).toStrictEqual(new Date(2042, 3, 23, 0));
+      expect(myTerm.holidays).toStrictEqual([new Date(2042, 3, 24, 0)]);
+      expect(myTerm.end).toStrictEqual(new Date(2042, 3, 25, 0));
+    });
+
+    test("no optional dates", () => {
+      const myTerm: Term = new Term({
+        urlName: "f42", // arbitrary values
+      });
+      expect(myTerm.year).toBe("42");
+      expect(myTerm.semester).toBe("f");
+      expect(myTerm.start).toStrictEqual(new Date(2042, 0, 1, 0));
+      expect(myTerm.h1End).toBeUndefined();
+      expect(myTerm.h2Start).toBeUndefined();
+      expect(myTerm.mondaySchedule).toBeUndefined();
+      expect(myTerm.holidays).toStrictEqual([]);
+      expect(myTerm.end).toStrictEqual(new Date(2042, 11, 31, 0));
+    });
   });
 
   test("Term.fullRealYear", () => {

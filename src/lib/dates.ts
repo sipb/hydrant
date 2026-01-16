@@ -300,10 +300,10 @@ export class Term {
 
   constructor({
     urlName,
-    startDate = "",
+    startDate,
     h1EndDate,
     h2StartDate,
-    endDate = "",
+    endDate,
     mondayScheduleDate,
     holidayDates = [],
   }: Partial<TermInfo> & { urlName: string }) {
@@ -311,10 +311,14 @@ export class Term {
     const { year, semester } = parseUrlName(urlName);
     this.year = year;
     this.semester = semester;
-    this.start = midnight(startDate);
+    this.start = startDate
+      ? midnight(startDate)
+      : new Date(Number(`20${year}`), 0, 1);
     this.h1End = h1EndDate ? midnight(h1EndDate) : undefined;
     this.h2Start = h2StartDate ? midnight(h2StartDate) : undefined;
-    this.end = midnight(endDate);
+    this.end = endDate
+      ? midnight(endDate)
+      : new Date(Number(`20${year}`), 11, 31);
     this.mondaySchedule = mondayScheduleDate
       ? midnight(mondayScheduleDate)
       : undefined;
