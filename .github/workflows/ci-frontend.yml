@@ -21,7 +21,7 @@ on:
       - "scrapers/overrides.toml.d/override-schema.json"
 
 env:
-  node-version: 20
+  node-version: 22
 
 jobs:
   prettier:

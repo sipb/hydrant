@@ -48,7 +48,7 @@
     "ci-all": "npm run typecheck && npm test && npm run ci-eslint && npm run ci-prettier"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^3.31.0",
@@ -57,7 +57,7 @@
     "@react-router/dev": "^7.12.0",
     "@react-router/fs-routes": "^7.12.0",
     "@types/jsdom": "^27.0.0",
-    "@types/node": "^20.19.30",
+    "@types/node": "^22.19.7",
     "@types/react": "^19.2.8",
     "@types/react-dom": "19.2.3",
     "@vitest/eslint-plugin": "^1.6.6",

@@ -6,7 +6,7 @@ on:
       - deploy
 
 env:
-  node-version: 20
+  node-version: 22
 
 jobs:
   build:

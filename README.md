@@ -5,7 +5,7 @@
 Install:
 
 - Python 3, at least Python 3.8.
-- Node.js, at least Node.js 20.
+- Node.js, at least Node.js 22.
   - One way to manage Node versions is using [nvm](https://github.com/nvm-sh/nvm).
 
 In the root directory, run:
