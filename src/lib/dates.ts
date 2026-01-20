@@ -288,9 +288,9 @@ export class Term {
   /** First day of classes, inclusive. */
   public start: Date;
   /** Last day of H1 classes, inclusive. */
-  public h1End: Date;
+  public h1End?: Date;
   /** First day of H2 classes, inclusive. */
-  public h2Start: Date;
+  public h2Start?: Date;
   /** Last day of classes, inclusive. */
   public end: Date;
   /** A Tuesday which runs on Monday schedule, if it exists. */
@@ -300,10 +300,10 @@ export class Term {
 
   constructor({
     urlName,
-    startDate = "",
-    h1EndDate = "",
-    h2StartDate = "",
-    endDate = "",
+    startDate,
+    h1EndDate,
+    h2StartDate,
+    endDate,
     mondayScheduleDate,
     holidayDates = [],
   }: Partial<TermInfo> & { urlName: string }) {
@@ -311,10 +311,14 @@ export class Term {
     const { year, semester } = parseUrlName(urlName);
     this.year = year;
     this.semester = semester;
-    this.start = midnight(startDate);
-    this.h1End = midnight(h1EndDate);
-    this.h2Start = midnight(h2StartDate);
-    this.end = midnight(endDate);
+    this.start = startDate
+      ? midnight(startDate)
+      : new Date(Number(`20${year}`), 0, 1);
+    this.h1End = h1EndDate ? midnight(h1EndDate) : undefined;
+    this.h2Start = h2StartDate ? midnight(h2StartDate) : undefined;
+    this.end = endDate
+      ? midnight(endDate)
+      : new Date(Number(`20${year}`), 11, 31);
     this.mondaySchedule = mondayScheduleDate
       ? midnight(mondayScheduleDate)
       : undefined;
@@ -357,9 +361,23 @@ export class Term {
     secondHalf = false,
     startDay?: [number, number],
   ): Date {
-    const date = new Date((secondHalf ? this.h2Start : this.start).getTime());
+    const date = new Date(
+      (secondHalf && this.h2Start ? this.h2Start : this.start).getTime(),
+    );
 
-    if (startDay !== undefined) {
+    const startDayValid =
+      // is defined
+      startDay !== undefined &&
+      // valid date
+      startDay[0] >= 1 &&
+      startDay[0] <= 12 &&
+      startDay[1] >= 1 &&
+      startDay[1] <= 31 &&
+      // before end date
+      new Date(date.getFullYear(), startDay[0] - 1, startDay[1]).getTime() <
+        this.end.getTime();
+
+    if (startDayValid) {
       date.setMonth(startDay[0] - 1);
       date.setDate(startDay[1]);
     }
@@ -372,9 +390,23 @@ export class Term {
 
   /** The date a slot ends on, plus an extra day. */
   endDateFor(slot: Slot, firstHalf = false, endDay?: [number, number]): Date {
-    const date = new Date((firstHalf ? this.h1End : this.end).getTime());
+    const date = new Date(
+      (firstHalf && this.h1End ? this.h1End : this.end).getTime(),
+    );
 
-    if (endDay !== undefined) {
+    const endDayValid =
+      // is defined
+      endDay !== undefined &&
+      // valid date
+      endDay[0] >= 1 &&
+      endDay[0] <= 12 &&
+      endDay[1] >= 1 &&
+      endDay[1] <= 31 &&
+      // after start date
+      new Date(date.getFullYear(), endDay[0] - 1, endDay[1]).getTime() >
+        this.start.getTime();
+
+    if (endDayValid) {
       date.setMonth(endDay[0] - 1);
       date.setDate(endDay[1]);
     }
