@@ -32,6 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: psf/black@stable
+        with:
+          use_pyproject: true
   pylint:
     name: Pylint
     runs-on: ubuntu-24.04
