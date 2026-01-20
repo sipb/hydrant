@@ -84,7 +84,8 @@ def is_not_offered_this_year(
         html (BeautifulSoup): the input webpage
         course_nums (list[str]): the course numbers associated with the class
     Returns:
-        dict[str, bool]: A dictionary mapping course numbers to whether they are not offered this year
+        dict[str, bool]: A dictionary mapping course numbers to
+            whether they are not offered this year
     """
 
     multi = len(course_nums) > 1
@@ -101,7 +102,9 @@ def is_not_offered_this_year(
         if not multi:
             results[course_num] = possible_not_offered
         elif possible_not_offered:
-            schedule_info = bool(html.find("b", string=f"{course_num}:"))  # type: ignore
+            schedule_info = bool(
+                html.find("b", string=f"{course_num}:")  # type: ignore
+            )
             results[course_num] = not schedule_info
         else:
             results[course_num] = False
@@ -368,14 +371,13 @@ def scrape_courses_from_page(
     for course_nums, content in zip(course_nums_list, contents):
         filtered_html = BeautifulSoup()
         filtered_html.extend(content)
-        course_data = get_course_data(filtered_html)
 
         # see https://github.com/sipb/hydrant/issues/267
         for course_num, not_offered in is_not_offered_this_year(
             filtered_html, course_nums
         ).items():
             if not not_offered:
-                courses[course_num] = course_data
+                courses[course_num] = get_course_data(filtered_html)
 
 
 def run() -> None:
