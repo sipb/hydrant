@@ -35,7 +35,7 @@ jobs:
         with:
           python-version: ${{ env.python-version }}
           cache: "pip"
-      - uses: psf/black@stable
+      - uses: psf/black@24.8.0  # pinned due to python 8 support
         with:
           use_pyproject: true
   pylint:
