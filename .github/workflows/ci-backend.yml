@@ -28,10 +28,14 @@ env:
 jobs:
   black:
     name: Black
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - uses: psf/black@stable
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python-version }}
+          cache: "pip"
+      - uses: psf/black@24.8.0 # pinned due to python 8 support
   pylint:
     name: Pylint
     runs-on: ubuntu-24.04

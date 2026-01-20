@@ -45,7 +45,24 @@
         "description": "Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist",
         "items": {
           "type": "string",
-          "enum": ["lecture", "recitation", "lab", "design"]
+          "oneOf": [
+            {
+              "const": "lecture",
+              "title": "Lecture"
+            },
+            {
+              "const": "recitation",
+              "title": "Recitation"
+            },
+            {
+              "const": "lab",
+              "title": "Lab"
+            },
+            {
+              "const": "design",
+              "title": "Design"
+            }
+          ]
         }
       },
       "lectureSections": {
@@ -122,7 +139,24 @@
         "description": "HASS designation (if any)",
         "items": {
           "type": "string",
-          "enum": ["H", "A", "S", "E"]
+          "oneOf": [
+            {
+              "const": "H",
+              "title": "HASS-H"
+            },
+            {
+              "const": "A",
+              "title": "HASS-A"
+            },
+            {
+              "const": "S",
+              "title": "HASS-S"
+            },
+            {
+              "const": "E",
+              "title": "HASS-E"
+            }
+          ]
         },
         "uniqueItems": true
       },
@@ -130,23 +164,66 @@
         "type": "string",
         "title": "CI-H",
         "description": "Communications Intensive designation",
-        "enum": ["", "CI-H", "CI-HW"]
+        "oneOf": [
+          {
+            "const": "",
+            "title": "Not a CI"
+          },
+          {
+            "const": "CI-H",
+            "title": "CI-H"
+          },
+          {
+            "const": "CI-HW",
+            "title": "CI-HW"
+          }
+        ]
       },
       "gir": {
         "type": "string",
         "title": "GIR",
         "description": "GIR designation",
-        "enum": [
-          "",
-          "BIOL",
-          "CAL1",
-          "CAL2",
-          "CHEM",
-          "LAB",
-          "LAB2",
-          "PHY1",
-          "PHY2",
-          "REST"
+        "oneOf": [
+          {
+            "const": "",
+            "title": "Not a GIR"
+          },
+          {
+            "const": "BIOL",
+            "title": "Biology"
+          },
+          {
+            "const": "CAL1",
+            "title": "Calculus 1"
+          },
+          {
+            "const": "CAL2",
+            "title": "Calculus 2"
+          },
+          {
+            "const": "CHEM",
+            "title": "Chemistry"
+          },
+          {
+            "const": "LAB",
+            "title": "Institute Lab"
+          },
+          {
+            "const": "LAB2",
+            "title": "Partial Lab"
+          },
+          {
+            "const": "PHY1",
+            "title": "Physics 1"
+          },
+          {
+            "const": "PHY2",
+            "title": "Physics 2"
+          },
+          {
+            "const": "REST",
+            "title": "REST"
+          }
         ]
       },
       "cim": {
@@ -184,7 +261,16 @@
         "type": "string",
         "title": "Level",
         "description": "Subject level (\"U\" or \"G\")",
-        "enum": ["U", "G"]
+        "oneOf": [
+          {
+            "const": "U",
+            "title": "Undergraduate"
+          },
+          {
+            "const": "G",
+            "title": "Graduate"
+          }
+        ]
       },
       "same": {
         "type": "string",
@@ -203,7 +289,24 @@
         "description": "Terms class is offered",
         "items": {
           "type": "string",
-          "enum": ["FA", "JA", "SP", "SU"]
+          "oneOf": [
+            {
+              "const": "FA",
+              "title": "Fall"
+            },
+            {
+              "const": "JA",
+              "title": "January (IAP)"
+            },
+            {
+              "const": "SP",
+              "title": "Spring"
+            },
+            {
+              "const": "SU",
+              "title": "Summer"
+            }
+          ]
         }
       },
       "prereqs": {
@@ -260,11 +363,18 @@
         "oneOf": [
           {
             "type": "integer",
-            "enum": [1, 2]
+            "const": 1,
+            "title": "First Half"
+          },
+          {
+            "type": "integer",
+            "const": 2,
+            "title": "Second Half"
           },
           {
             "type": "boolean",
-            "const": false
+            "const": false,
+            "title": "Full Semester"
           }
         ]
       },
@@ -303,12 +413,13 @@
       "quarterInfo": {
         "title": "Quarter Info",
         "type": "object",
-        "additionalProperties": false,
         "properties": {
           "start": {
+            "title": "Start Date",
             "$ref": "#/$defs/quarterDate"
           },
           "end": {
+            "title": "End Date",
             "$ref": "#/$defs/quarterDate"
           }
         }
@@ -481,6 +592,7 @@
       "type": "array",
       "title": "Quarter date",
       "description": "Date format for calendar day: [month, day].",
+      "additionalItems": false,
       "items": [
         {
           "type": "integer",

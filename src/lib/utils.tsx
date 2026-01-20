@@ -97,9 +97,19 @@ export function sum(arr: number[]): number {
 }
 
 export function urlencode(obj: unknown): string {
-  return pack(obj).toString("base64");
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64
+  // return pack(obj).toBase64();
+  return btoa(String.fromCharCode(...pack(obj)));
 }
 
 export function urldecode(obj: string): unknown {
-  return unpack(Buffer.from(obj, "base64"));
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64
+  // return unpack(Uint8Array.fromBase64(obj));
+  return unpack(
+    Uint8Array.from(
+      atob(obj)
+        .split("")
+        .map((c) => c.charCodeAt(0)),
+    ),
+  );
 }
