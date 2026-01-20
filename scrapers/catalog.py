@@ -74,23 +74,39 @@ LIMITED_REGEX = re.compile(
 )
 
 
-def is_not_offered_this_year(html: BeautifulSoup) -> bool:
+def is_not_offered_this_year(
+    html: BeautifulSoup, course_nums: list[str]
+) -> dict[str, bool]:
     """
     Checks if the class is not offered this year.
 
     Args:
         html (BeautifulSoup): the input webpage
-
+        course_nums (list[str]): the course numbers associated with the class
     Returns:
-        bool: True if the class is not offered this year
+        dict[str, bool]: A dictionary mapping course numbers to whether they are not offered this year
     """
-    if html.find(attrs={"src": "/icns/nooffer.gif"}):
-        return True
-    if html.find(
+
+    multi = len(course_nums) > 1
+    results: dict[str, bool] = {}
+
+    icon_not_offered = html.find(attrs={"src": "/icns/nooffer.gif"})
+    not_offered_regularly = html.find(
         string=re.compile("not offered regularly; consult department", re.IGNORECASE)
-    ):
-        return True
-    return False
+    )
+
+    possible_not_offered = bool(icon_not_offered) or bool(not_offered_regularly)
+
+    for course_num in course_nums:
+        if not multi:
+            results[course_num] = possible_not_offered
+        elif possible_not_offered:
+            schedule_info = bool(html.find("b", string=f"{course_num}:"))  # type: ignore
+            results[course_num] = not schedule_info
+        else:
+            results[course_num] = False
+
+    return results
 
 
 def is_not_offered_next_year(html: BeautifulSoup) -> bool:
@@ -353,11 +369,12 @@ def scrape_courses_from_page(
         filtered_html = BeautifulSoup()
         filtered_html.extend(content)
         course_data = get_course_data(filtered_html)
-        # For multi-course entries, don't skip based on is_not_offered_this_year
-        # because the "not offered" indicator might only apply to one of the courses
-        # (see https://github.com/sipb/hydrant/issues/267)
-        if len(course_nums) > 1 or not is_not_offered_this_year(filtered_html):
-            for course_num in course_nums:
+
+        # see https://github.com/sipb/hydrant/issues/267
+        for course_num, not_offered in is_not_offered_this_year(
+            filtered_html, course_nums
+        ).items():
+            if not not_offered:
                 courses[course_num] = course_data
 
 
