@@ -1,29 +1,22 @@
-import { useState, useContext } from "react";
-
-import { Center, Flex, Group, Button, ButtonGroup } from "@chakra-ui/react";
-import { Tooltip } from "../components/ui/tooltip";
-import { ActivityDescription } from "../components/ActivityDescription";
+import { Center, Flex, Group, Tabs } from "@chakra-ui/react";
 import { Calendar } from "../components/Calendar";
-import { ClassTable } from "../components/ClassTable";
 import { LeftFooter } from "../components/Footers";
 import { Header, PreferencesDialog } from "../components/Header";
 import { ScheduleOption } from "../components/ScheduleOption";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
-import { SelectedActivities } from "../components/SelectedActivities";
 import { TermSwitcher } from "../components/TermSwitcher";
 import { Banner } from "../components/Banner";
-import { MatrixLink } from "../components/MatrixLink";
-import { PreregLink } from "../components/PreregLink";
-import { LuCalendarArrowDown } from "react-icons/lu";
+import { CLASS_TYPE_COMPONENTS } from "~/components/ClassTypes";
 
 import { State } from "../lib/state";
 import { Term } from "../lib/dates";
-import { useICSExport } from "../lib/gapi";
 import type { SemesterData } from "../lib/hydrant";
 import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 
 import type { Route } from "./+types/_index";
+import { useContext } from "react";
+import type { ClassType } from "~/lib/schema";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
@@ -72,18 +65,6 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 function HydrantApp() {
   const { state } = useContext(HydrantContext);
 
-  const [isExporting, setIsExporting] = useState(false);
-  // TODO: fix gcal export
-  const onICSExport = useICSExport(
-    state,
-    () => {
-      setIsExporting(false);
-    },
-    () => {
-      setIsExporting(false);
-    },
-  );
-
   return (
     <>
       <Banner />
@@ -104,31 +85,44 @@ function HydrantApp() {
               <PreferencesDialog />
             </Group>
           </Center>
-          <Center>
-            <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
-              <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
-                <Button
-                  colorPalette="blue"
-                  variant="solid"
-                  size="sm"
-                  loading={isExporting}
-                  loadingText="Loading..."
-                  onClick={() => {
-                    setIsExporting(true);
-                    onICSExport();
+          <Tabs.Root
+            lazyMount
+            unmountOnExit
+            fitted
+            variant="enclosed"
+            value={state.currentClassType}
+            onValueChange={(e) => {
+              state.currentClassType = e.value as ClassType;
+            }}
+          >
+            <Tabs.List>
+              {Object.entries(CLASS_TYPE_COMPONENTS).map(([key, [Icon]]) => (
+                <Tabs.Trigger value={key as ClassType} key={key}>
+                  <Icon />
+                  {key}
+                </Tabs.Trigger>
+              ))}
+              <Tabs.Indicator />
+            </Tabs.List>
+            {Object.entries(CLASS_TYPE_COMPONENTS).map(
+              ([key, [_, Component]]) => (
+                <Tabs.Content
+                  value={key as ClassType}
+                  key={key}
+                  _open={{
+                    animationName: "fade-in, scale-in",
+                    animationDuration: "300ms",
+                  }}
+                  _closed={{
+                    animationName: "fade-out, scale-out",
+                    animationDuration: "120ms",
                   }}
                 >
-                  <LuCalendarArrowDown />
-                  Export calendar
-                </Button>
-              </Tooltip>
-              <PreregLink />
-              <MatrixLink />
-            </ButtonGroup>
-          </Center>
-          <SelectedActivities />
-          <ClassTable />
-          <ActivityDescription />
+                  <Component />
+                </Tabs.Content>
+              ),
+            )}
+          </Tabs.Root>
         </Flex>
       </Flex>
     </>

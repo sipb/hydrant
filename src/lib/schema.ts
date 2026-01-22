@@ -1,6 +1,11 @@
 import type { Activity } from "./activity";
 import type { ColorScheme } from "./colors";
 
+export enum ClassType {
+  ACADEMIC = "Academic",
+  PEW = "PE & Wellness",
+}
+
 /** The date the content of the banner was last changed. */
 export const BANNER_LAST_CHANGED = new Date("2025-11-24T17:15:00Z").valueOf();
 
@@ -42,6 +47,7 @@ export interface HydrantState {
   saveId: string;
   saves: Save[];
   preferences: Preferences;
+  classType: ClassType;
 }
 
 /** Default React state. */
@@ -56,4 +62,5 @@ export const DEFAULT_STATE: HydrantState = {
   saveId: "",
   saves: [],
   preferences: DEFAULT_PREFERENCES,
+  classType: ClassType.ACADEMIC,
 };
