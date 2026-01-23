@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { type Flags, getFlagImg, Class, Sections } from "../src/lib/class";
+import { type Flags, getFlagImg, Class, ClassSections } from "../src/lib/class";
 import {
   CI,
   GIR,
@@ -584,8 +584,8 @@ describe("Class", () => {
 
     test("has unlocked sections", () => {
       const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
-      const mySections: Sections | undefined = myClass.sections.at(0);
-      assert(mySections instanceof Sections);
+      const mySections: ClassSections | undefined = myClass.sections.at(0);
+      assert(mySections instanceof ClassSections);
       mySections.locked = true;
       const expectedDeflated: Deflated = ["21H.143", [""], -1];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
@@ -595,8 +595,9 @@ describe("Class", () => {
         COLOR_SCHEME_LIGHT,
       );
       myOtherClass.inflate(expectedDeflated);
-      const myOtherSections: Sections | undefined = myOtherClass.sections.at(0);
-      assert(myOtherSections instanceof Sections);
+      const myOtherSections: ClassSections | undefined =
+        myOtherClass.sections.at(0);
+      assert(myOtherSections instanceof ClassSections);
       // If you don't change this, it is `undefined` (TODO: fix!)
       myOtherSections.selected = null;
       expect(myClass).toStrictEqual(myOtherClass);
@@ -618,8 +619,8 @@ describe("Class", () => {
 
     test("has section room override", () => {
       const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
-      const mySections: Sections | undefined = myClass.sections.at(0);
-      assert(mySections instanceof Sections);
+      const mySections: ClassSections | undefined = myClass.sections.at(0);
+      assert(mySections instanceof ClassSections);
       mySections.roomOverride = "lorem";
       const expectedDeflated: Deflated = ["21H.143", ["lorem"]];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);

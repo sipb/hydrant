@@ -284,7 +284,7 @@ export class Class implements Activity {
    */
   readonly rawClass: RawClass;
   /** The sections associated with this class. */
-  readonly sections: Sections[];
+  readonly sections: ClassSections[];
   /** The background color for the class, used for buttons and calendar. */
   backgroundColor: string;
   /** Is the color set by the user (as opposed to chosen automatically?) */
