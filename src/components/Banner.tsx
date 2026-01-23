@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import { HydrantContext } from "../lib/hydrant";
+import { BANNER_MESSAGE } from "~/lib/schema";
 
 export const Banner = () => {
   const { state } = useContext(HydrantContext);
@@ -37,9 +38,7 @@ export const Banner = () => {
         >
           <Flex align="center" textStyle="sm">
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
-              {/* Update BANNER_LAST_CHANGED in schema.ts whenever changing */}
-              Q3 Physical Education and Wellness classes are now available on
-              Hydrant! Registration opens Jan 30 on the PE&W website.
+              {BANNER_MESSAGE}
             </Text>
             <CloseButton
               hideFrom="sm"
