@@ -6,11 +6,13 @@ import type { RawClass } from "../lib/rawClass";
 import type { HydrantState } from "../lib/schema";
 import { DEFAULT_STATE } from "../lib/schema";
 import type { State } from "../lib/state";
+import type { RawPEClass } from "./rawPEClass";
 
 export interface SemesterData {
   classes: Record<string, RawClass>;
   lastUpdated: string;
   termInfo: TermInfo;
+  pe?: RawPEClass[];
 }
 
 /** Fetch from the url, which is JSON of type T. */

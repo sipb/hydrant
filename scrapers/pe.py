@@ -404,7 +404,7 @@ def run():
         fname = os.path.join(os.path.dirname(__file__), f"pe-q{quarter}.json")
 
         with open(fname, "w", encoding="utf-8") as pe_output_file:
-            json.dump(quarter_data, pe_output_file, ensure_ascii=False, indent=4)
+            json.dump(quarter_data, pe_output_file)
 
     return pe_data
 
