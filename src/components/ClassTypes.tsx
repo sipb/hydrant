@@ -13,10 +13,16 @@ export const PEandW = () => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const CLASS_TYPE_COMPONENTS: Record<
-  ClassType,
-  [IconType, React.ComponentType]
-> = {
-  [ClassType.ACADEMIC]: [LuGraduationCap, Academic],
-  [ClassType.PEW]: [LuVolleyball, PEandW],
-};
+export function classTypeComponents(termKeys: string[]) {
+  const obj = {} as Record<ClassType, [IconType, React.ComponentType]>;
+
+  if (termKeys.includes("academic")) {
+    obj[ClassType.ACADEMIC] = [LuGraduationCap, Academic];
+  }
+
+  if (termKeys.includes("pe")) {
+    obj[ClassType.PEW] = [LuVolleyball, PEandW];
+  }
+
+  return obj;
+}

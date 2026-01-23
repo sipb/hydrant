@@ -14,6 +14,7 @@ import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES, ClassType } from "./schema";
 import { PEClass } from "./pe";
+import type { RawPEClass } from "./rawPEClass";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -22,6 +23,8 @@ import { PEClass } from "./pe";
 export class State {
   /** Map from class number to Class object. */
   classes: Map<string, Class>;
+  /** Map from class number to PEClass object. */
+  peClasses: Map<string, PEClass>;
   /** Possible section choices. */
   options: Section[][] = [[]];
   /** Current number of schedule conflicts. */
@@ -66,6 +69,7 @@ export class State {
 
   constructor(
     rawClasses: Map<string, RawClass>,
+    rawPEClasses: Map<string, RawPEClass>,
     /** The current term object. */
     public readonly term: Term,
     /** String representing last update time. */
@@ -74,9 +78,13 @@ export class State {
     public readonly latestUrlName: string,
   ) {
     this.classes = new Map();
+    this.peClasses = new Map();
     this.store = new Store(term.toString());
     rawClasses.forEach((cls, number) => {
       this.classes.set(number, new Class(cls, this.colorScheme));
+    });
+    rawPEClasses.forEach((cls, number) => {
+      this.peClasses.set(number, new PEClass(cls, this.colorScheme));
     });
     this.initState();
   }

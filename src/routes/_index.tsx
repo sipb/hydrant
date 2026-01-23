@@ -12,7 +12,7 @@ import {
   PreregLink,
   ExportCalendar,
 } from "../components/ButtonsLinks";
-import { CLASS_TYPE_COMPONENTS } from "../components/ClassTypes";
+import { classTypeComponents } from "../components/ClassTypes";
 
 import { State } from "../lib/state";
 import { Term } from "../lib/dates";
@@ -53,14 +53,16 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
     window.location.search = searchParams.toString();
   }
 
-  const { classes, lastUpdated, termInfo } = await fetchNoCache<SemesterData>(
-    `/${termToFetch}.json`,
-  );
+  const { classes, lastUpdated, termInfo, pe } =
+    await fetchNoCache<SemesterData>(`/${termToFetch}.json`);
+
   const classesMap = new Map(Object.entries(classes));
+  const peClassesMap = new Map(Object.entries(pe?.[0] ?? {}));
 
   return {
     globalState: new State(
       classesMap,
+      peClassesMap,
       new Term(termInfo),
       lastUpdated,
       latestTerm.semester.urlName,
@@ -71,6 +73,11 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 /** The application entry. */
 function HydrantApp() {
   const { state } = useContext(HydrantContext);
+
+  const tabs = classTypeComponents([
+    ...(state.classes.size > 0 ? ["academic"] : []),
+    ...(state.peClasses.size > 0 ? ["pe"] : []),
+  ]);
 
   return (
     <>
@@ -109,7 +116,7 @@ function HydrantApp() {
             }}
           >
             <Tabs.List>
-              {Object.entries(CLASS_TYPE_COMPONENTS).map(([key, [Icon]]) => (
+              {Object.entries(tabs).map(([key, [Icon]]) => (
                 <Tabs.Trigger value={key as ClassType} key={key}>
                   <Icon />
                   {key}
@@ -117,24 +124,22 @@ function HydrantApp() {
               ))}
               <Tabs.Indicator />
             </Tabs.List>
-            {Object.entries(CLASS_TYPE_COMPONENTS).map(
-              ([key, [_, Component]]) => (
-                <Tabs.Content
-                  value={key as ClassType}
-                  key={key}
-                  _open={{
-                    animationName: "fade-in, scale-in",
-                    animationDuration: "300ms",
-                  }}
-                  _closed={{
-                    animationName: "fade-out, scale-out",
-                    animationDuration: "120ms",
-                  }}
-                >
-                  <Component />
-                </Tabs.Content>
-              ),
-            )}
+            {Object.entries(tabs).map(([key, [_, Component]]) => (
+              <Tabs.Content
+                value={key as ClassType}
+                key={key}
+                _open={{
+                  animationName: "fade-in, scale-in",
+                  animationDuration: "300ms",
+                }}
+                _closed={{
+                  animationName: "fade-out, scale-out",
+                  animationDuration: "120ms",
+                }}
+              >
+                <Component />
+              </Tabs.Content>
+            ))}
           </Tabs.Root>
           <ActivityDescription />
         </Flex>

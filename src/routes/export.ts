@@ -33,12 +33,14 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   const term = urlName === latestTerm.semester.urlName ? "latest" : urlName;
 
-  const { classes, lastUpdated, termInfo } = await fetchNoCache<SemesterData>(
-    `/${term}.json`,
-  );
+  const { classes, lastUpdated, termInfo, pe } =
+    await fetchNoCache<SemesterData>(`/${term}.json`);
   const classesMap = new Map(Object.entries(classes));
+  const peClassesMap = new Map(Object.entries(pe?.[0] ?? {}));
+
   const hydrantObj = new State(
     classesMap,
+    peClassesMap,
     new Term(termInfo),
     lastUpdated,
     latestTerm.semester.urlName,
