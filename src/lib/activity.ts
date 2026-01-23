@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import type { ColorScheme } from "./colors";
 import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
-import type { RawTimeslot } from "./raw";
+import type { RawSection, RawTimeslot } from "./raw";
 import { sum } from "./utils";
 
 /** A period of time, spanning several Slots. */
@@ -233,11 +233,54 @@ export interface Sections {
   lockSection(sec: SectionLockOption): void;
 }
 
-export interface Section {
+/**
+ * A section is an array of timeslots that meet in the same room for the same
+ * purpose. Sections can be lectures, recitations, or labs, for a given class.
+ * All instances of Section belong to a Sections.
+ */
+export class Section {
+  /** Group of sections this section belongs to */
   secs: Sections;
+  /** Timeslots this section meets */
   timeslots: Timeslot[];
+  /** String representing raw timeslots, e.g. MW9-11 or T2,F1. */
   rawTime: string;
+  /** Room this section meets in */
   room: string;
-  parsedTime: string;
-  countConflicts(currentSlots: Timeslot[]): number;
+
+  /** @param section - raw section info (timeslot and room) */
+  constructor(secs: Sections, rawTime: string, section: RawSection) {
+    this.secs = secs;
+    this.rawTime = rawTime;
+    const [rawSlots, room] = section;
+    this.timeslots = rawSlots.map((slot) => new Timeslot(...slot));
+    this.room = room;
+  }
+
+  /** Get the parsed time for this section in a format similar to the Registrar. */
+  get parsedTime(): string {
+    const [room, days, eveningBool, times] = this.rawTime.split("/");
+
+    const isEvening = eveningBool === "1";
+
+    if (isEvening) {
+      return `${days} EVE (${times}) (${room})`;
+    }
+
+    return `${days}${times} (${room})`;
+  }
+
+  /**
+   * @param currentSlots - array of timeslots currently occupied
+   * @returns number of conflicts this section has with currentSlots
+   */
+  countConflicts(currentSlots: Timeslot[]): number {
+    let conflicts = 0;
+    for (const slot of this.timeslots) {
+      for (const otherSlot of currentSlots) {
+        conflicts += slot.conflicts(otherSlot) ? 1 : 0;
+      }
+    }
+    return conflicts;
+  }
 }

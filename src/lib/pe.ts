@@ -1,10 +1,9 @@
 import {
-  Timeslot,
+  Section,
   type Activity,
-  type Section,
   type Sections,
   LockOption,
-  type TLockOption,
+  type SectionLockOption,
 } from "./activity";
 import { TermCode, type RawSection, type RawPEClass } from "./raw";
 import { Event } from "./activity";
@@ -37,62 +36,13 @@ export const QUARTERS: Record<number, TermCode> = {
   5: TermCode.JA,
 };
 
-export type PESectionLockOption = PESection | TLockOption;
-
-export class PESection implements Section {
-  /** Group of sections this section belongs to */
-  secs: PESections;
-  /** Timeslots this section meets */
-  timeslots: Timeslot[];
-  /** String representing raw timeslots, e.g. MW9-11 or T2,F1. */
-  rawTime: string;
-  /** Room this section meets in */
-  room: string;
-
-  /** @param section - raw section info (timeslot and room) */
-  constructor(secs: PESections, rawTime: string, section: RawSection) {
-    this.secs = secs;
-    this.rawTime = rawTime;
-    const [rawSlots, room] = section;
-    this.timeslots = rawSlots.map((slot) => new Timeslot(...slot));
-    this.room = room;
-  }
-
-  /** Get the parsed time for this section in a format similar to the Registrar. */
-  get parsedTime(): string {
-    const [room, days, eveningBool, times] = this.rawTime.split("/");
-
-    const isEvening = eveningBool === "1";
-
-    if (isEvening) {
-      return `${days} EVE (${times}) (${room})`;
-    }
-
-    return `${days}${times} (${room})`;
-  }
-
-  /**
-   * @param currentSlots - array of timeslots currently occupied
-   * @returns number of conflicts this section has with currentSlots
-   */
-  countConflicts(currentSlots: Timeslot[]): number {
-    let conflicts = 0;
-    for (const slot of this.timeslots) {
-      for (const otherSlot of currentSlots) {
-        conflicts += slot.conflicts(otherSlot) ? 1 : 0;
-      }
-    }
-    return conflicts;
-  }
-}
-
 export class PESections implements Sections {
   cls: PEClass;
-  sections: PESection[];
+  sections: Section[];
   /** Are these sections locked? None counts as locked. */
   locked: boolean;
   /** Currently selected section out of these. None is null. */
-  selected: PESection | null;
+  selected: Section | null;
   /** Overridden location for this particular section. */
   roomOverride = "";
 
@@ -101,10 +51,10 @@ export class PESections implements Sections {
     rawTimes: string[],
     secs: RawSection[],
     locked?: boolean,
-    selected?: PESection | null,
+    selected?: Section | null,
   ) {
     this.cls = cls;
-    this.sections = secs.map((sec, i) => new PESection(this, rawTimes[i], sec));
+    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
     this.locked = locked ?? false;
     this.selected = selected ?? null;
   }
@@ -130,7 +80,7 @@ export class PESections implements Sections {
   }
 
   /** Lock a specific section of this class. Does not validate. */
-  lockSection(sec: PESectionLockOption): void {
+  lockSection(sec: SectionLockOption): void {
     if (sec === LockOption.Auto) {
       this.locked = false;
     } else if (sec === LockOption.None) {

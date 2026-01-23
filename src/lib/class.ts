@@ -1,11 +1,10 @@
 import {
-  Timeslot,
   Event,
   type Activity,
   type Sections,
   LockOption,
-  type Section,
-  type TLockOption,
+  Section,
+  type SectionLockOption,
 } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
@@ -121,60 +120,6 @@ export const getFlagImg = (flag: keyof Flags): string => {
   return flagImages[flag] ?? "";
 };
 
-export type ClassSectionLockOption = ClassSection | TLockOption;
-
-/**
- * A section is an array of timeslots that meet in the same room for the same
- * purpose. Sections can be lectures, recitations, or labs, for a given class.
- * All instances of Section belong to a Sections.
- */
-export class ClassSection implements Section {
-  /** Group of sections this section belongs to */
-  secs: ClassSections;
-  /** Timeslots this section meets */
-  timeslots: Timeslot[];
-  /** String representing raw timeslots, e.g. MW9-11 or T2,F1. */
-  rawTime: string;
-  /** Room this section meets in */
-  room: string;
-
-  /** @param section - raw section info (timeslot and room) */
-  constructor(secs: ClassSections, rawTime: string, section: RawSection) {
-    this.secs = secs;
-    this.rawTime = rawTime;
-    const [rawSlots, room] = section;
-    this.timeslots = rawSlots.map((slot) => new Timeslot(...slot));
-    this.room = room;
-  }
-
-  /** Get the parsed time for this section in a format similar to the Registrar. */
-  get parsedTime(): string {
-    const [room, days, eveningBool, times] = this.rawTime.split("/");
-
-    const isEvening = eveningBool === "1";
-
-    if (isEvening) {
-      return `${days} EVE (${times}) (${room})`;
-    }
-
-    return `${days}${times} (${room})`;
-  }
-
-  /**
-   * @param currentSlots - array of timeslots currently occupied
-   * @returns number of conflicts this section has with currentSlots
-   */
-  countConflicts(currentSlots: Timeslot[]): number {
-    let conflicts = 0;
-    for (const slot of this.timeslots) {
-      for (const otherSlot of currentSlots) {
-        conflicts += slot.conflicts(otherSlot) ? 1 : 0;
-      }
-    }
-    return conflicts;
-  }
-}
-
 /**
  * A group of {@link Section}s, all the same kind (like lec, rec, or lab). At
  * most one of these can be selected at a time, and that selection is possibly
@@ -183,11 +128,11 @@ export class ClassSection implements Section {
 export class ClassSections implements Sections {
   cls: Class;
   kind: SectionKind;
-  sections: ClassSection[];
+  sections: Section[];
   /** Are these sections locked? None counts as locked. */
   locked: boolean;
   /** Currently selected section out of these. None is null. */
-  selected: ClassSection | null;
+  selected: Section | null;
   /** Overridden location for this particular section. */
   roomOverride = "";
 
@@ -197,13 +142,11 @@ export class ClassSections implements Sections {
     rawTimes: string[],
     secs: RawSection[],
     locked?: boolean,
-    selected?: ClassSection | null,
+    selected?: Section | null,
   ) {
     this.cls = cls;
     this.kind = kind;
-    this.sections = secs.map(
-      (sec, i) => new ClassSection(this, rawTimes[i], sec),
-    );
+    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
     this.locked = locked ?? false;
     this.selected = selected ?? null;
   }
@@ -264,7 +207,7 @@ export class ClassSections implements Sections {
   }
 
   /** Lock a specific section of this class. Does not validate. */
-  lockSection(sec: ClassSectionLockOption): void {
+  lockSection(sec: SectionLockOption): void {
     if (sec === LockOption.Auto) {
       this.locked = false;
     } else if (sec === LockOption.None) {
