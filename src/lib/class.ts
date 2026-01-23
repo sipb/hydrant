@@ -235,6 +235,7 @@ export class ClassSections implements Sections {
     }
   }
 
+  // TODO move this logic to Sections
   /** Name for the kind of sections these are. */
   get name(): string {
     switch (this.kind) {

@@ -111,7 +111,7 @@ export class PESections implements Sections {
   }
 
   /** Short name for the kind of sections these are. */
-  readonly shortName = "";
+  readonly shortName = "pe";
 
   readonly priority = -1;
 
@@ -123,7 +123,7 @@ export class PESections implements Sections {
     return this.selected
       ? new Event(
           this.cls,
-          `${this.cls.id} ${this.shortName}`,
+          this.cls.id, // TODO display section ID
           this.selected.timeslots,
           this.roomOverride || this.selected.room,
         )
@@ -170,6 +170,14 @@ export class PEClass implements Activity {
 
   get buttonName(): string {
     return this.rawClass.number;
+  }
+
+  get startDate() {
+    return new Date(this.rawClass.startDate);
+  }
+
+  get endDate() {
+    return new Date(this.rawClass.endDate);
   }
 
   /** Fee, in dollars */

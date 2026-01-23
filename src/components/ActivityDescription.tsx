@@ -273,11 +273,70 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
   );
 }
 
-/** Full PE&W class activity */
-function PEClassDescription(props: { activity: PEClass }) {
-  const { activity } = props;
+/** Full PE&W class description */
+function PEClassDescription(props: { cls: PEClass }) {
+  const { cls } = props;
+  const { fee, startDate, endDate } = cls;
+  const {
+    number,
+    name,
+    classSize,
+    points,
+    swimGIR,
+    prereqs,
+    equipment,
+    description,
+  } = cls.rawClass;
 
-  return <>{activity.rawClass.name}</>;
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+
+  const start = fmt.format(startDate);
+  const end = fmt.format(endDate);
+
+  return (
+    <Flex direction="column" gap={4}>
+      <Heading size="md">
+        {number}: {name}
+      </Heading>
+      <Flex direction="column" gap={0.5}>
+        <Flex gap={4}>
+          <Text>Class size: {classSize}</Text>
+          <Text>Awards {points} PE points</Text>
+          {swimGIR && <Text>Satisfies swim GIR</Text>}
+        </Flex>
+        {fee ? <Text>${fee.toFixed(2)} enrollment fee</Text> : null}
+        <Text>
+          Begins {start}, ends {end}.
+        </Text>
+      </Flex>
+      <ClassButtons cls={cls} />
+      <Flex direction="column" gap={2}>
+        <Text>
+          <Span fontWeight="medium">
+            Prereq:
+          </Span>{" "}
+          <Span fontWeight={prereqs.toLowerCase() === "none" ? "bold" : "normal"}>
+            {prereqs}
+          </Span>
+        </Text>
+        <Text>
+          <Span fontWeight="medium">
+            Equipment:
+          </Span>{" "}
+          <Span fontWeight={equipment.toLowerCase() === "none" ? "bold" : "normal"}>
+            {equipment}
+          </Span>
+        </Text>
+        <Text lang="en" style={{ hyphens: "auto", whiteSpace: "pre-wrap" }}>
+          {description}
+        </Text>
+      </Flex>
+    </Flex>
+  );
 }
 
 /** Activity description, whether class or non-class. */
@@ -292,7 +351,7 @@ export function ActivityDescription() {
     return <ClassDescription cls={activity} />;
   }
   if (activity instanceof PEClass) {
-    return <PEClassDescription activity={activity} />;
+    return <PEClassDescription cls={activity} />;
   }
   if (activity instanceof CustomActivity) {
     return <CustomActivityDescription activity={activity} />;

@@ -166,7 +166,6 @@ export class State {
       this.selectedPEClasses = this.selectedPEClasses.filter(
         (activity_) => activity_.id !== activity.id,
       );
-      this.setViewedActivity(undefined);
     } else {
       this.selectedCustomActivities = this.selectedCustomActivities.filter(
         (activity_) => activity_.id !== activity.id,

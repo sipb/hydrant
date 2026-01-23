@@ -33,6 +33,7 @@ import {
   type SectionLockOption,
 } from "../lib/activity";
 import type { Class } from "../lib/class";
+import type { PEClass } from "../lib/pe";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
@@ -112,10 +113,10 @@ function OverrideLocations(props: { secs: Sections }) {
 }
 
 /** Div containing section manual selection interface. */
-function ClassManualSections(props: { cls: Class }) {
+function ClassManualSections(props: { cls: Class | PEClass }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
-  const genSelected = (cls: Class) =>
+  const genSelected = (cls: Class | PEClass) =>
     cls.sections.map((sections) =>
       sections.locked
         ? sections.selected
@@ -144,7 +145,7 @@ function ClassManualSections(props: { cls: Class }) {
         {cls.sections.map((secs, sectionIndex) => {
           const options = [LockOption.Auto, LockOption.None, ...secs.sections];
           return (
-            <Field key={secs.kind} label={secs.name}>
+            <Field key={secs.shortName} label={secs.name}>
               <RadioGroup
                 orientation="vertical"
                 value={selected[sectionIndex]}
@@ -250,7 +251,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
 }
 
 /** Buttons in class description to add/remove class, and lock sections. */
-export function ClassButtons(props: { cls: Class }) {
+export function ClassButtons(props: { cls: Class | PEClass }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
   const [showManual, setShowManual] = useState(false);
