@@ -11,7 +11,7 @@ import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
 
 export interface PEFlags {
-  wizard: boolean;
+  wellness: boolean;
   pirate: boolean;
   nofee: boolean;
   nopreq: boolean;
@@ -225,7 +225,7 @@ export class PEClass implements Activity {
 
   get flags(): PEFlags {
     return {
-      wizard: this.id.startsWith("PE.05") || this.id.startsWith("PE.4"),
+      wellness: this.id.startsWith("PE.05") || this.id.startsWith("PE.4"),
       pirate: PIRATES.includes(this.id),
       nofee: this.rawClass.fee == "$0.00",
       nopreq: this.rawClass.prereqs == "None",

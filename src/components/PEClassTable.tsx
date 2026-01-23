@@ -220,7 +220,7 @@ const CLASS_FLAGS_1: FilterGroup = [
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
 const CLASS_FLAGS_2: FilterGroup = [
-  ["wizard", "🔮 Wellness Wizard"],
+  ["wellness", "🔮 Wellness Wizard"],
   ["pirate", "🏴‍☠️ Pirate Certificate"],
 ];
 
@@ -384,15 +384,15 @@ export function PEClassTable() {
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns
-  const columnDefs: ColDef<ClassTableRow>[] = useMemo(() => {
+  const columnDefs: ColDef<ClassTableRow, string | number>[] = useMemo(() => {
     const initialSort = "asc" as const;
     const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     const numberSortProps = {
       // sort by number, N/A is infinity, tiebreak with class number
       comparator: (
-        valueA: string | undefined | null,
-        valueB: string | undefined | null,
+        valueA: string | number | undefined | null,
+        valueB: string | number | undefined | null,
         nodeA: IRowNode<ClassTableRow>,
         nodeB: IRowNode<ClassTableRow>,
       ) => {
@@ -449,6 +449,8 @@ export function PEClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
+        valueFormatter: (params) =>
+          `${params.data?.class.flags.wellness ? "🔮 " : ""}${params.data?.class.flags.pirate ? "🏴‍☠️ " : ""}${params.value?.toString() ?? ""}`,
       },
     ];
   }, [state]);
