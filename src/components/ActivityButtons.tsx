@@ -24,10 +24,15 @@ import { Checkbox } from "./ui/checkbox";
 import { Field } from "./ui/field";
 import { Radio, RadioGroup } from "./ui/radio";
 
-import type { Activity, CustomActivity } from "../lib/activity";
-import { Timeslot } from "../lib/activity";
-import type { Class, SectionLockOption, Sections } from "../lib/class";
-import { LockOption } from "../lib/class";
+import {
+  Timeslot,
+  LockOption,
+  type Activity,
+  type CustomActivity,
+  type Sections,
+  type SectionLockOption,
+} from "../lib/activity";
+import type { Class } from "../lib/class";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
