@@ -1,7 +1,5 @@
-import { ButtonGroup, Center, Stack } from "@chakra-ui/react";
-import { ActivityDescription } from "./ActivityDescription";
+import { Stack } from "@chakra-ui/react";
 import { ClassTable } from "./ClassTable";
-import { MatrixLink, PreregLink, ExportCalendar } from "./ButtonsLinks";
 import { SelectedActivities } from "./SelectedActivities";
 import { ClassType } from "~/lib/schema";
 import { LuGraduationCap, LuVolleyball } from "react-icons/lu";
@@ -10,16 +8,8 @@ import type { IconType } from "react-icons/lib";
 export const Academic = () => {
   return (
     <Stack gap={6}>
-      <Center>
-        <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
-          <ExportCalendar />
-          <PreregLink />
-          <MatrixLink />
-        </ButtonGroup>
-      </Center>
       <SelectedActivities />
       <ClassTable />
-      <ActivityDescription />
     </Stack>
   );
 };

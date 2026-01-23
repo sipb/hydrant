@@ -1,4 +1,4 @@
-import { Center, Flex, Group, Tabs } from "@chakra-ui/react";
+import { Center, Flex, Group, Tabs, ButtonGroup } from "@chakra-ui/react";
 import { Calendar } from "../components/Calendar";
 import { LeftFooter } from "../components/Footers";
 import { Header, PreferencesDialog } from "../components/Header";
@@ -6,7 +6,12 @@ import { ScheduleOption } from "../components/ScheduleOption";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
 import { TermSwitcher } from "../components/TermSwitcher";
 import { Banner } from "../components/Banner";
-import { CLASS_TYPE_COMPONENTS } from "~/components/ClassTypes";
+import {
+  MatrixLink,
+  PreregLink,
+  ExportCalendar,
+} from "../components/ButtonsLinks";
+import { CLASS_TYPE_COMPONENTS } from "../components/ClassTypes";
 
 import { State } from "../lib/state";
 import { Term } from "../lib/dates";
@@ -17,6 +22,7 @@ import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 import type { Route } from "./+types/_index";
 import { useContext } from "react";
 import type { ClassType } from "~/lib/schema";
+import { ActivityDescription } from "~/components/ActivityDescription";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
@@ -85,6 +91,13 @@ function HydrantApp() {
               <PreferencesDialog />
             </Group>
           </Center>
+          <Center>
+            <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
+              <ExportCalendar />
+              <PreregLink />
+              <MatrixLink />
+            </ButtonGroup>
+          </Center>
           <Tabs.Root
             lazyMount
             unmountOnExit
@@ -123,6 +136,7 @@ function HydrantApp() {
               ),
             )}
           </Tabs.Root>
+          <ActivityDescription />
         </Flex>
       </Flex>
     </>
