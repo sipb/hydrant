@@ -1,6 +1,6 @@
 import { redirect } from "react-router";
 
-import { fetchNoCache, type SemesterData } from "../lib/hydrant";
+import { fetchNoCache, type SemesterData, getStateMaps } from "../lib/hydrant";
 import { getClosestUrlName, Term, type LatestTermInfo } from "../lib/dates";
 import { State } from "../lib/state";
 import { Class } from "../lib/class";
@@ -35,8 +35,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   const { classes, lastUpdated, termInfo, pe } =
     await fetchNoCache<SemesterData>(`/${term}.json`);
-  const classesMap = new Map(Object.entries(classes));
-  const peClassesMap = new Map(Object.entries(pe?.[0] ?? {}));
+  const { classesMap, peClassesMap } = getStateMaps(classes, pe);
 
   const hydrantObj = new State(
     classesMap,

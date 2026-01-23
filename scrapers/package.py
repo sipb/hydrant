@@ -19,7 +19,7 @@ import sys
 from collections.abc import Iterable
 from typing import Any
 
-from scrapers.pe import get_pe_files
+from scrapers.pe import get_pe_quarters
 from scrapers.utils import get_term_info
 
 if sys.version_info >= (3, 11):
@@ -150,11 +150,12 @@ def run() -> None:
 
         term_info = get_term_info(sem)
         url_name = term_info["urlName"]
-
-        pe_data = []
-        for pe_file in get_pe_files(url_name):
+    
+        pe_data = {}
+        for quarter in get_pe_quarters(url_name):
+            pe_file = f"pe-q{quarter}.json"
             if os.path.isfile(os.path.join(package_dir, pe_file)):
-                pe_data.append(load_json_data(pe_file))
+                pe_data[quarter] = load_json_data(pe_file)
 
         with open(
             os.path.join(

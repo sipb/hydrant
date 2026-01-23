@@ -69,7 +69,7 @@ export class State {
 
   constructor(
     rawClasses: Map<string, RawClass>,
-    rawPEClasses: Map<string, RawPEClass>,
+    rawPEClasses: Record<number, Map<string, RawPEClass>>,
     /** The current term object. */
     public readonly term: Term,
     /** String representing last update time. */
@@ -83,8 +83,10 @@ export class State {
     rawClasses.forEach((cls, number) => {
       this.classes.set(number, new Class(cls, this.colorScheme));
     });
-    rawPEClasses.forEach((cls, number) => {
-      this.peClasses.set(number, new PEClass(cls, this.colorScheme));
+    Object.values(rawPEClasses).forEach((map) => {
+      map.forEach((cls, number) => {
+        this.peClasses.set(number, new PEClass(cls, this.colorScheme));
+      });
     });
     this.initState();
   }
@@ -136,9 +138,11 @@ export class State {
     if (this.isSelectedActivity(toAdd)) return;
     if (toAdd instanceof Class) {
       this.selectedClasses.push(toAdd);
-    } else if (toAdd instanceof PEClass) {
+    }
+    if (toAdd instanceof PEClass) {
       this.selectedPEClasses.push(toAdd);
-    } else {
+    }
+    if (toAdd instanceof CustomActivity) {
       this.selectedCustomActivities.push(toAdd);
     }
     this.updateActivities();

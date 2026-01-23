@@ -16,7 +16,7 @@ import { ClassTypesSwitcher } from "../components/ClassTypes";
 
 import { State } from "../lib/state";
 import { Term } from "../lib/dates";
-import type { SemesterData } from "../lib/hydrant";
+import { type SemesterData, getStateMaps } from "../lib/hydrant";
 import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 
@@ -53,9 +53,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   const { classes, lastUpdated, termInfo, pe } =
     await fetchNoCache<SemesterData>(`/${termToFetch}.json`);
-
-  const classesMap = new Map(Object.entries(classes));
-  const peClassesMap = new Map(Object.entries(pe?.[0] ?? {}));
+  const { classesMap, peClassesMap } = getStateMaps(classes, pe);
 
   return {
     globalState: new State(

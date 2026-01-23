@@ -353,7 +353,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
     return results
 
 
-def get_pe_files(url_name: str) -> list[str]:
+def get_pe_quarters(url_name: str) -> list[str]:
     """
     Gets the list of parsed PE files for a given urlName.
 
@@ -361,27 +361,23 @@ def get_pe_files(url_name: str) -> list[str]:
         url_name (str): The urlName to get PE files for
 
     Returns:
-        list[str]: The list of PE files for the term
+        list[str]: The list of PE quarters for the term
 
-    >>> get_pe_files("f26")
-    ['pe-q1.json', 'pe-q2.json']
+    >>> get_pe_quarters("f26")
+    [1, 2]
 
-    >>> get_pe_files("i26")
-    ['pe-q5.json']
+    >>> get_pe_quarters("i26")
+    [5]
     """
 
     assert url_name[0] in ("f", "i", "s", "m"), "Invalid urlName format"
 
-    quarter = {
+    return {
         "f": [1, 2],  # Fall
         "s": [3, 4],  # Spring
         "i": [5],  # IAP
         "m": [],  # Summer
     }[url_name[0]]
-
-    files = [f"pe-q{q}.json" for q in quarter]
-
-    return files
 
 
 def run():

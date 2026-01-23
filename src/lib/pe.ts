@@ -2,6 +2,15 @@ import type { Activity } from "./activity";
 import type { RawPEClass } from "./rawPEClass";
 import type { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
+import { TermCode } from "./rawClass";
+
+export const QUARTERS: Record<number, TermCode> = {
+  1: TermCode.FA,
+  2: TermCode.FA,
+  3: TermCode.SP,
+  4: TermCode.SP,
+  5: TermCode.JA,
+};
 
 /**
  * PE&W activity placeholder
