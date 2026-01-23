@@ -10,8 +10,8 @@ export interface RawPEClass {
   sections: RawSection[];
   /** Raw (FireRoad format) section locations/times */
   rawSections: string[];
-  /** Capacity per section */
-  capacity: number;
+  /** Class size (for each section) */
+  classSize: number;
 
   /** Start date, in ISO 8601 format */
   startDate: string;

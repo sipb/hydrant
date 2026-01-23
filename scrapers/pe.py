@@ -56,7 +56,7 @@ class PEWSchema(TypedDict):
     name: str
     sections: list[tuple[list[tuple[int, int]], str]]
     rawSections: list[str]
-    capacity: int
+    classSize: int
     startDate: str
     endDate: str
     points: int
@@ -301,7 +301,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
         if current_results:
             # ensure all data in current_results (except for section info) are the same
             assert current_results["name"] == pe_row["title"]
-            assert current_results["capacity"] == pe_row["capacity"]
+            assert current_results["classSize"] == pe_row["capacity"]
             assert current_results["points"] == pe_row["gir_points"]
             assert current_results["swimGIR"] == pe_row["swim_gir"]
             assert current_results["prereqs"] == pe_row["prerequisites"] or (
@@ -337,7 +337,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
                 "name": pe_row["title"],
                 "sections": [section],
                 "rawSections": [raw_section],
-                "capacity": pe_row["capacity"],
+                "classSize": pe_row["capacity"],
                 "startDate": parse_date(pe_row["start_date"]).isoformat(),
                 "endDate": parse_date(pe_row["end_date"]).isoformat(),
                 "points": pe_row["gir_points"],
