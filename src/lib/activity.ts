@@ -71,6 +71,10 @@ export interface Activity {
   manualColor: boolean;
   hours: number;
   buttonName: string;
+  warnings?: {
+    suffix: string;
+    messages: string[];
+  };
   events: Event[];
   start?: [number, number];
   end?: [number, number];

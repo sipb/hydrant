@@ -165,10 +165,25 @@ export class PEClass implements Activity {
   }
 
   /** Hours per week. */
-  readonly hours = 2;
+  get hours(): number {
+    return this.rawClass.points;
+  }
 
+  get warnings(): {
+    suffix: string;
+    messages: string[];
+  } {
+    return {
+      suffix: "%",
+      messages: [
+        "% PE classes don't have evaluations, so hours were set to PE point values.",
+      ],
+    };
+  }
+
+  /** Name that appears when it's on a button. */
   get buttonName(): string {
-    return this.rawClass.number;
+    return `${this.rawClass.number}${this.warnings.suffix}`;
   }
 
   get startDate() {
