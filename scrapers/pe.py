@@ -14,13 +14,13 @@ from typing import Literal, TypedDict
 from scrapers.fireroad import parse_section
 from scrapers.utils import Term
 
-QUARTERS: dict[str, tuple[Term, Literal[1, 2] | None]] = {
-    "1": (Term.FA, 1),
-    "2": (Term.FA, 2),
-    "3": (Term.JA, None),
-    "4": (Term.SP, 1),
-    "5": (Term.SP, 2),
-    "6": (Term.SU, None),
+# ask DAPER how they represent summer...
+QUARTERS: dict[int, tuple[Term, Literal[1, 2] | None]] = {
+    1: (Term.FA, 1),
+    2: (Term.FA, 2),
+    3: (Term.SP, 1),
+    4: (Term.SP, 2),
+    5: (Term.JA, None),
 }
 
 
@@ -65,6 +65,7 @@ class PEWSchema(TypedDict):
     equipment: str
     fee: str
     description: str
+    quarter: int
 
 
 def parse_bool(value: str) -> bool:
@@ -125,6 +126,35 @@ def read_pew_file(filepath: str) -> list[PEWFile]:
     return pew_data
 
 
+def get_year_quarter(term_str: str) -> tuple[int, int]:
+    """
+    Extracts the quarter from a term string.
+
+    Args:
+        term_str (str): The term string in the format "YYYYQ"
+
+    Returns:
+        tuple[int, int]: The year and quarter extracted from the term string
+
+    Raises:
+        ValueError: If the term string format is invalid
+
+    >>> get_year_quarter("2026Q2")
+    (2026, 2)
+
+    >>> get_year_quarter("2026Q3")
+    (2026, 3)
+    """
+
+    # Validate term string format
+    if len(term_str) != 6 or term_str[4] != "Q" or int(term_str[5]) not in QUARTERS:
+        raise ValueError(f"Invalid term string format: {term_str}")
+
+    year = int(term_str[:4])
+    quarter = int(term_str[5])
+    return year, quarter
+
+
 def term_to_semester_year(term_str: str) -> tuple[int, Term, Literal[1, 2] | None]:
     """
     Converts a term string to a Term enum and semester half
@@ -138,9 +168,6 @@ def term_to_semester_year(term_str: str) -> tuple[int, Term, Literal[1, 2] | Non
         tuple[int, Term, Literal[1, 2] | None]: A tuple containing
             the year, Term enum, and semester half
 
-    Raises:
-        ValueError: If the term string format is invalid
-
     >>> term_to_semester_year("2026Q2")
     (2025, <Term.FA: 'fall'>, 2)
 
@@ -151,12 +178,7 @@ def term_to_semester_year(term_str: str) -> tuple[int, Term, Literal[1, 2] | Non
     (2026, <Term.SP: 'spring'>, 1)
     """
 
-    # Validate term string format
-    if len(term_str) != 6 or term_str[4] != "Q" or term_str[5] not in QUARTERS:
-        raise ValueError(f"Invalid term string format: {term_str}")
-
-    year = int(term_str[:4])
-    quarter = term_str[5]
+    year, quarter = get_year_quarter(term_str)
     term, semester = QUARTERS[quarter]
 
     if term == Term.FA:
@@ -252,7 +274,7 @@ def parse_times_to_raw_section(
     return f"{location}/{days}/{evening}/{start_raw_time}-{end_raw_time}"
 
 
-def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[str, PEWSchema]:
+def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]:
     """
     Converts PEWFile dictionaries to a standardized schema dictionary.
 
@@ -260,13 +282,21 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[str, PEWSchema]:
         pe_file (PEWFile): The PEWFile dictionary to convert
 
     Returns:
-        dict: A dictionary representing the standardized schema
+        dict: A dictionary representing the standardized schema,
+            keyed by quarter and subject number
     """
-    results: dict[str, PEWSchema] = {}
+    results: dict[int, dict[str, PEWSchema]] = {}
 
     for pe_row in pe_rows:
+        _, quarter = get_year_quarter(pe_row["term"])
+
+        term_results = results.get(quarter)
+        if term_results is None:
+            term_results = {}
+            results[quarter] = term_results
+
         subject_num, _ = split_section_code(pe_row["section"])
-        current_results = results.get(subject_num)
+        current_results = term_results.get(subject_num)
 
         if current_results:
             # ensure all data in current_results (except for section info) are the same
@@ -290,7 +320,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[str, PEWSchema]:
             current_results["rawSections"].append(raw_section)
             current_results["sections"].append(section)
 
-            results[subject_num] = current_results
+            term_results[subject_num] = current_results
         else:
             raw_section = parse_times_to_raw_section(
                 pe_row["start_time"],
@@ -300,7 +330,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[str, PEWSchema]:
             )
             section = parse_section(raw_section)
 
-            results[subject_num] = {
+            term_results[subject_num] = {
                 "number": subject_num,
                 "name": pe_row["title"],
                 "sections": [section],
@@ -314,9 +344,42 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[str, PEWSchema]:
                 "equipment": pe_row["equipment"],
                 "fee": pe_row["fee_amount"],
                 "description": pe_row["description"],
+                "quarter": quarter,
             }
+        results[quarter] = term_results
 
     return results
+
+
+def get_pe_files(url_name: str) -> list[str]:
+    """
+    Gets the list of parsed PE files for a given urlName.
+
+    Args:
+        url_name (str): The urlName to get PE files for
+
+    Returns:
+        list[str]: The list of PE files for the term
+
+    >>> get_pe_files("f26")
+    ['pe-q1.json', 'pe-q2.json']
+
+    >>> get_pe_files("i26")
+    ['pe-q3.json']
+    """
+
+    assert url_name[0] in ("f", "i", "s", "m"), "Invalid urlName format"
+
+    quarter = {
+        "f": [1, 2],  # Fall
+        "s": [3, 4],  # Spring
+        "i": [5],  # IAP
+        "m": [],  # Summer
+    }[url_name[0]]
+
+    files = [f"pe-q{q}.json" for q in quarter]
+
+    return files
 
 
 def run():
@@ -336,9 +399,12 @@ def run():
 
     pe_data = pe_rows_to_schema(pe_files_data)
 
-    fname = os.path.join(os.path.dirname(__file__), "pe.json")
-    with open(fname, "w", encoding="utf-8") as pe_output_file:
-        json.dump(pe_data, pe_output_file, ensure_ascii=False, indent=4)
+    for quarter, quarter_data in pe_data.items():
+        print(f"Processed PE data for quarter {quarter}: {len(quarter_data)} subjects")
+        fname = os.path.join(os.path.dirname(__file__), f"pe-q{quarter}.json")
+
+        with open(fname, "w", encoding="utf-8") as pe_output_file:
+            json.dump(quarter_data, pe_output_file, ensure_ascii=False, indent=4)
 
     return pe_data
 

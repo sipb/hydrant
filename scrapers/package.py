@@ -19,7 +19,8 @@ import sys
 from collections.abc import Iterable
 from typing import Any
 
-from .utils import get_term_info
+from scrapers.pe import get_pe_files
+from scrapers.utils import get_term_info
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -150,11 +151,10 @@ def run() -> None:
         term_info = get_term_info(sem)
         url_name = term_info["urlName"]
 
-        obj: dict[str, dict[str, Any] | str | dict[Any, dict[str, Any]]] = {
-            "termInfo": term_info,
-            "lastUpdated": now,
-            "classes": courses,
-        }
+        pe_data = []
+        for pe_file in get_pe_files(url_name):
+            if os.path.isfile(os.path.join(package_dir, pe_file)):
+                pe_data.append(load_json_data(pe_file))
 
         with open(
             os.path.join(
@@ -163,7 +163,16 @@ def run() -> None:
             mode="w",
             encoding="utf-8",
         ) as file:
-            json.dump(obj, file, separators=(",", ":"))
+            json.dump(
+                {
+                    "termInfo": term_info,
+                    "lastUpdated": now,
+                    "classes": courses,
+                    "pe": pe_data,
+                },
+                file,
+                separators=(",", ":"),
+            )
 
         print(f"{url_name}: got {len(courses)} courses")
 
