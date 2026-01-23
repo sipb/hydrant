@@ -11,6 +11,25 @@ import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
 import { TermCode, type RawSection } from "./rawClass";
 
+export interface PEFlags {
+  wizard: boolean;
+  pirate: boolean;
+  nofee: boolean;
+  nopreq: boolean;
+}
+
+const PIRATES = [
+  // ARCHERY
+  "PE.0600",
+  "PE.0639",
+  // FENCING
+  "PE.0602",
+  "PE.0654",
+  "PE.0603",
+  // SAILING
+  "PE.0904",
+];
+
 export const QUARTERS: Record<number, TermCode> = {
   1: TermCode.FA,
   2: TermCode.FA,
@@ -169,7 +188,16 @@ export class PEClass implements Activity {
     return [endDate.getMonth() + 1, endDate.getDate()];
   }
 
-   /** Deflate a class to something JSONable. */
+  get flags(): PEFlags {
+    return {
+      wizard: this.id.startsWith("PE.05"),
+      pirate: PIRATES.includes(this.id),
+      nofee: this.rawClass.fee == "$0.00",
+      nopreq: this.rawClass.prereqs == "None",
+    };
+  }
+
+  /** Deflate a class to something JSONable. */
   deflate() {
     const sections = this.sections.map((secs) =>
       !secs.locked

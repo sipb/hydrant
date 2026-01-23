@@ -27,7 +27,6 @@ import {
 import {
   Box,
   Flex,
-  Image,
   Input,
   Button,
   ButtonGroup,
@@ -35,12 +34,8 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
-import { LabelledButton } from "./ui/button";
-import { useColorModeValue } from "./ui/color-mode";
 
-import type { Flags } from "../lib/class";
-import type { PEClass } from "../lib/pe";
-import { DARK_IMAGES } from "../lib/class";
+import type { PEFlags, PEClass } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
@@ -140,7 +135,9 @@ function ClassInput(props: {
           row.inCharge.includes(simplifyInput),
       );
       const index = new Set(searchResults.current.map((row) => row.number));
-      setInputFilter(() => (cls?: PEClass) => index.has(cls?.rawClass.number ?? ""));
+      setInputFilter(
+        () => (cls?: PEClass) => index.has(cls?.rawClass.number ?? ""),
+      );
     } else {
       setInputFilter(null);
     }
@@ -205,17 +202,12 @@ function ClassInput(props: {
   );
 }
 
-const filters = {
+const filtersNonFlags = {
   fits: (state, cls) => state.fitsSchedule(cls),
   starred: (state, cls) => state.isPEClassStarred(cls),
-  // TODO move these to flags in src/lib/pe.ts
-  nofee: (_state, cls) => cls.rawClass.fee == "$0.00",
-  nopreq: (_state, cls) => cls.rawClass.prereqs == "None",
-  wizard: (_state, _cls) => true, // FIXME
-  pirate: (_state, _cls) => true, // FIXME
 } satisfies Record<string, (state: State, cls: PEClass) => boolean>;
 
-type Filter = keyof typeof filters;
+type Filter = keyof PEFlags | keyof typeof filtersNonFlags;
 type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
@@ -279,8 +271,14 @@ function ClassFlags(props: {
       newFlags.forEach((value, flag) => {
         if (
           value &&
-          flag in filters &&
-          !filters[flag](state, cls)
+          flag in filtersNonFlags &&
+          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+        ) {
+          result = false;
+        } else if (
+          value &&
+          !(flag in filtersNonFlags) &&
+          !cls.flags[flag as keyof typeof cls.flags]
         ) {
           result = false;
         }
@@ -288,11 +286,6 @@ function ClassFlags(props: {
       return result;
     });
   };
-
-  const filter = useColorModeValue(
-    (_flags: keyof Flags) => "",
-    (flag: keyof Flags) => (DARK_IMAGES.includes(flag) ? "invert()" : ""),
-  );
 
   const renderGroup = (group: FilterGroup) => {
     return (
@@ -310,35 +303,17 @@ function ClassFlags(props: {
           }
 
           return image ? (
-            typeof image === "string" ? (
-              // if image is a string, it's a path to an image
-              <LabelledButton
-                key={flag}
-                onClick={() => {
-                  onChange(flag, !checked);
-                }}
-                title={label}
-                variant={checked ? "solid" : "outline"}
-              >
-                <Image
-                  src={image}
-                  alt={label}
-                  filter={filter(flag as keyof Flags)}
-                />
-              </LabelledButton>
-            ) : (
-              // image is a react element, like an icon
-              <Button
-                key={flag}
-                onClick={() => {
-                  onChange(flag, !checked);
-                }}
-                aria-label={label}
-                variant={checked ? "solid" : "outline"}
-              >
-                {image}
-              </Button>
-            )
+            // image is a react element, like an icon
+            <Button
+              key={flag}
+              onClick={() => {
+                onChange(flag, !checked);
+              }}
+              aria-label={label}
+              variant={checked ? "solid" : "outline"}
+            >
+              {image}
+            </Button>
           ) : (
             <Button
               key={flag}
