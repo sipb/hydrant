@@ -7,7 +7,7 @@ export enum ClassType {
 }
 
 /** The date the content of the banner was last changed. */
-export const BANNER_LAST_CHANGED = new Date("2025-11-24T17:15:00Z").valueOf();
+export const BANNER_LAST_CHANGED = new Date("2026-01-23T12:00:00Z").valueOf();
 
 /** A save has an ID and a name. */
 export interface Save {
