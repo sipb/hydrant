@@ -5,7 +5,7 @@ import type { Event } from "./activity";
 /**
  * PE&W activity placeholder
  */
-export class PEandWellness implements ActivityClass {
+export class PEClass implements ActivityClass {
   id: string;
   backgroundColor: string;
   manualColor = false;
