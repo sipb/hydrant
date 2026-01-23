@@ -13,7 +13,7 @@ import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES, ClassType } from "./schema";
-import { PEandWellness } from "./pe";
+import { PEClass } from "./pe";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -42,8 +42,8 @@ export class State {
   private viewedActivity: Activity | undefined;
   /** Selected class activities. */
   private selectedClasses: Class[] = [];
-  /** Selected PE and Wellness activities. */
-  private selectedPEandWellness: PEandWellness[] = [];
+  /** Selected PE and Wellness classes. */
+  private selectedPEClasses: PEClass[] = [];
   /** Selected custom activities. */
   private selectedCustomActivities: CustomActivity[] = [];
   /** Selected schedule option; zero-indexed. */
@@ -85,7 +85,7 @@ export class State {
   get selectedActivities(): Activity[] {
     return [
       ...this.selectedClasses,
-      ...this.selectedPEandWellness,
+      ...this.selectedPEClasses,
       ...this.selectedCustomActivities,
     ];
   }
@@ -128,8 +128,8 @@ export class State {
     if (this.isSelectedActivity(toAdd)) return;
     if (toAdd instanceof Class) {
       this.selectedClasses.push(toAdd);
-    } else if (toAdd instanceof PEandWellness) {
-      this.selectedPEandWellness.push(toAdd);
+    } else if (toAdd instanceof PEClass) {
+      this.selectedPEClasses.push(toAdd);
     } else {
       this.selectedCustomActivities.push(toAdd);
     }
@@ -143,8 +143,8 @@ export class State {
       this.selectedClasses = this.selectedClasses.filter(
         (activity_) => activity_.id !== activity.id,
       );
-    } else if (activity instanceof PEandWellness) {
-      this.selectedPEandWellness = this.selectedPEandWellness.filter(
+    } else if (activity instanceof PEClass) {
+      this.selectedPEClasses = this.selectedPEClasses.filter(
         (activity_) => activity_.id !== activity.id,
       );
       this.setViewedActivity(undefined);

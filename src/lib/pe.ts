@@ -6,7 +6,7 @@ import { fallbackColor, type ColorScheme } from "./colors";
 /**
  * PE&W activity placeholder
  */
-export class PEandWellness implements ActivityClass {
+export class PEClass implements ActivityClass {
   backgroundColor: string;
   manualColor = false;
   readonly rawClass: RawPEClass;

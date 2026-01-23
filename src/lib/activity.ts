@@ -7,7 +7,7 @@ import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
 import type { RawTimeslot } from "./rawClass";
 import { sum } from "./utils";
-import type { PEandWellness } from "./pe";
+import type { PEClass } from "./pe";
 
 /** A period of time, spanning several Slots. */
 export class Timeslot {
@@ -204,4 +204,4 @@ export class CustomActivity implements ActivityClass {
 }
 
 /** Shared interface for Class and non-classes. */
-export type Activity = Class | CustomActivity | PEandWellness;
+export type Activity = Class | CustomActivity | PEClass;
