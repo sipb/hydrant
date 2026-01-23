@@ -21,6 +21,7 @@ import { HydrantContext } from "../lib/hydrant";
 
 import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 import { LuExternalLink } from "react-icons/lu";
+import { PEandWellness } from "~/lib/pe";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function TypeSpan(props: { flag?: keyof Flags; title: string }) {
@@ -272,6 +273,13 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
   );
 }
 
+/** Full PE&W class activity */
+function PEandWellnessDescription(props: { activity: PEandWellness }) {
+  const { activity } = props;
+
+  return <>{activity.rawClass.name}</>;
+}
+
 /** Activity description, whether class or non-class. */
 export function ActivityDescription() {
   const { hydrantState } = useContext(HydrantContext);
@@ -282,6 +290,8 @@ export function ActivityDescription() {
 
   return activity instanceof Class ? (
     <ClassDescription cls={activity} />
+  ) : activity instanceof PEandWellness ? (
+    <PEandWellnessDescription activity={activity} />
   ) : (
     <CustomActivityDescription activity={activity} />
   );

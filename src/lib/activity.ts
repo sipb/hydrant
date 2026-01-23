@@ -7,6 +7,7 @@ import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
 import type { RawTimeslot } from "./rawClass";
 import { sum } from "./utils";
+import type { PEandWellness } from "./pe";
 
 /** A period of time, spanning several Slots. */
 export class Timeslot {
@@ -65,6 +66,17 @@ export class Timeslot {
   }
 }
 
+export interface ActivityClass {
+  id: string;
+  backgroundColor: string;
+  manualColor: boolean;
+  hours: number;
+  buttonName: string;
+  events: Event[];
+  start?: [number, number];
+  end?: [number, number];
+}
+
 /**
  * A group of events to be rendered in a calendar, all of the same name, room,
  * and color.
@@ -112,7 +124,7 @@ export class Event {
 }
 
 /** A non-class activity. */
-export class CustomActivity {
+export class CustomActivity implements ActivityClass {
   /** ID unique over all Activities. */
   readonly id: string;
   name = "New Activity";
@@ -192,4 +204,4 @@ export class CustomActivity {
 }
 
 /** Shared interface for Class and non-classes. */
-export type Activity = Class | CustomActivity;
+export type Activity = Class | CustomActivity | PEandWellness;

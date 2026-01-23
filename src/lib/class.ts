@@ -1,4 +1,4 @@
-import { Timeslot, Event } from "./activity";
+import { Timeslot, Event, type ActivityClass } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
 import {
@@ -277,7 +277,7 @@ export class Sections {
 }
 
 /** An entire class, e.g. 6.036, and its selected sections. */
-export class Class {
+export class Class implements ActivityClass {
   /**
    * The RawClass being wrapped around. Nothing outside Class should touch
    * this; instead use the Class getters like cls.id, cls.number, etc.
@@ -409,6 +409,14 @@ export class Class {
     return this.sections
       .map((secs) => secs.event)
       .filter((event): event is Event => event instanceof Event);
+  }
+
+  get start(): [number, number] | undefined {
+    return this.rawClass.quarterInfo?.start;
+  }
+
+  get end(): [number, number] | undefined {
+    return this.rawClass.quarterInfo?.end;
   }
 
   /** Object of boolean properties of class, used for filtering. */

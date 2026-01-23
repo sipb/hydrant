@@ -4,9 +4,7 @@ import { LuGraduationCap, LuVolleyball } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
 
 export const Academic = () => {
-  return (
-    <ClassTable />
-  );
+  return <ClassTable />;
 };
 
 export const PEandW = () => {

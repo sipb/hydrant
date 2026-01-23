@@ -121,7 +121,9 @@ describe("Timeslot", () => {
 });
 
 test("Event.eventInputs", () => {
-  const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT_CONTRAST);
+  const myCustomActivity: CustomActivity = new CustomActivity(
+    COLOR_SCHEME_LIGHT_CONTRAST,
+  );
   const myHexCode = "#611917"; // randomly generated hex code
   const myTitle = "y8g0i81"; // random keysmashes
   const myRoom = "ahouttoanhontjanota";
@@ -162,25 +164,33 @@ describe("CustomActivity", () => {
     const nanoidRegex = /^[A-Za-z0-9-_]{8}$/;
 
     test("COLOR_SCHEME_LIGHT", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
       expect(myCustomActivity.backgroundColor).toBe("#4A5568");
     });
 
     test("COLOR_SCHEME_DARK", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_DARK);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_DARK,
+      );
       expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
       expect(myCustomActivity.backgroundColor).toBe("#CBD5E0");
     });
 
     test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT_CONTRAST);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT_CONTRAST,
+      );
       expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
       expect(myCustomActivity.backgroundColor).toBe("#4A5568");
     });
 
     test("COLOR_SCHEME_DARK_CONTRAST", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_DARK_CONTRAST);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_DARK_CONTRAST,
+      );
       expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
       expect(myCustomActivity.backgroundColor).toBe("#CBD5E0");
     });
@@ -189,11 +199,15 @@ describe("CustomActivity", () => {
   describe("CustomActivity.buttonName", () => {
     /** Partition on this.name: changed, not changed */
     test("CustomActivity.name not changed", () => {
-      expect(new CustomActivity(COLOR_SCHEME_LIGHT).buttonName).toBe("New Activity");
+      expect(new CustomActivity(COLOR_SCHEME_LIGHT).buttonName).toBe(
+        "New Activity",
+      );
     });
 
     test("CustomActivity.name changed", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myString = "lorem ipsum dolor sit amet";
       myCustomActivity.name = myString;
       expect(myCustomActivity.buttonName).toBe(myString);
@@ -207,13 +221,17 @@ describe("CustomActivity", () => {
     });
 
     test("1 timeslot", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       myCustomActivity.timeslots = [new Timeslot(4, 5)];
       expect(myCustomActivity.hours).toBe(5 / 2);
     });
 
     test("multiple timeslots", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       myCustomActivity.timeslots = [new Timeslot(2, 7), new Timeslot(11, 5)];
       expect(myCustomActivity.hours).toBe(6);
     });
@@ -229,7 +247,9 @@ describe("CustomActivity", () => {
     ];
     const myRoom = "ahuotiyuwiq";
     // constructing and testing `myCustomActivity`
-    const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_DARK);
+    const myCustomActivity: CustomActivity = new CustomActivity(
+      COLOR_SCHEME_DARK,
+    );
     myCustomActivity.name = myName;
     myCustomActivity.timeslots = myTimeslots;
     myCustomActivity.room = myRoom;
@@ -245,14 +265,18 @@ describe("CustomActivity", () => {
      * - slot is valid, adds
      */
     test("adds valid slot", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myTimeslot: Timeslot = new Timeslot(1, 1);
       myCustomActivity.addTimeslot(myTimeslot);
       expect(myCustomActivity.timeslots).toStrictEqual([myTimeslot]);
     });
 
     test("doesn't add existing slot", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myTimeslot: Timeslot = new Timeslot(4, 6);
       myCustomActivity.timeslots = [myTimeslot];
       myCustomActivity.addTimeslot(myTimeslot);
@@ -260,7 +284,9 @@ describe("CustomActivity", () => {
     });
 
     test("doesn't add multi-day slot", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       myCustomActivity.addTimeslot(new Timeslot(42, 69));
       expect(myCustomActivity.timeslots).toStrictEqual([]);
     });
@@ -272,13 +298,17 @@ describe("CustomActivity", () => {
      * - CustomActivity.timeslots (before call): empty, nonempty with match, nonempty without match
      */
     test("removing timeslot from empty CustomActivity", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       myCustomActivity.removeTimeslot(new Timeslot(1, 1));
       expect(myCustomActivity.timeslots).toStrictEqual([]);
     });
 
     test("remove matching timeslot from nonempty CustomActivity", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myTimeslots: Timeslot[] = [
         new Timeslot(1, 2),
         new Timeslot(4, 3),
@@ -293,7 +323,9 @@ describe("CustomActivity", () => {
     });
 
     test("remove non-matching timeslot from nonempty CustomActivity", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myTimeslots: Timeslot[] = [
         new Timeslot(1, 2),
         new Timeslot(4, 3),
@@ -320,7 +352,9 @@ describe("CustomActivity", () => {
     });
 
     test("timeslots empty, room defined", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       myCustomActivity.room = "lorem ipsum";
       expect(myCustomActivity.deflate()).toStrictEqual([
         [],
@@ -331,7 +365,9 @@ describe("CustomActivity", () => {
     });
 
     test("timeslots nonempty, room undefined", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       myCustomActivity.timeslots = [new Timeslot(10, 2)];
       expect(myCustomActivity.deflate()).toStrictEqual([
         [[10, 2]],
@@ -347,7 +383,9 @@ describe("CustomActivity", () => {
      * Partition on first item: empty, nonempty
      */
     test("first item empty", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       myCustomActivity.inflate([[], "alpha", "#123456", "beta"]);
 
       expect(myCustomActivity.timeslots).toStrictEqual([]);
@@ -357,7 +395,9 @@ describe("CustomActivity", () => {
     });
 
     test("first item nonempty", () => {
-      const myCustomActivity: CustomActivity = new CustomActivity(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       myCustomActivity.inflate([
         [
           [1, 2],

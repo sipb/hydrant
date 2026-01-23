@@ -13,6 +13,7 @@ import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES, ClassType } from "./schema";
+import { PEandWellness } from "./pe";
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -41,6 +42,8 @@ export class State {
   private viewedActivity: Activity | undefined;
   /** Selected class activities. */
   private selectedClasses: Class[] = [];
+  /** Selected PE and Wellness activities. */
+  private selectedPEandWellness: PEandWellness[] = [];
   /** Selected custom activities. */
   private selectedCustomActivities: CustomActivity[] = [];
   /** Selected schedule option; zero-indexed. */
@@ -80,7 +83,11 @@ export class State {
 
   /** All activities. */
   get selectedActivities(): Activity[] {
-    return [...this.selectedClasses, ...this.selectedCustomActivities];
+    return [
+      ...this.selectedClasses,
+      ...this.selectedPEandWellness,
+      ...this.selectedCustomActivities,
+    ];
   }
 
   /** The color scheme. */
@@ -121,6 +128,8 @@ export class State {
     if (this.isSelectedActivity(toAdd)) return;
     if (toAdd instanceof Class) {
       this.selectedClasses.push(toAdd);
+    } else if (toAdd instanceof PEandWellness) {
+      this.selectedPEandWellness.push(toAdd);
     } else {
       this.selectedCustomActivities.push(toAdd);
     }
@@ -134,6 +143,11 @@ export class State {
       this.selectedClasses = this.selectedClasses.filter(
         (activity_) => activity_.id !== activity.id,
       );
+    } else if (activity instanceof PEandWellness) {
+      this.selectedPEandWellness = this.selectedPEandWellness.filter(
+        (activity_) => activity_.id !== activity.id,
+      );
+      this.setViewedActivity(undefined);
     } else {
       this.selectedCustomActivities = this.selectedCustomActivities.filter(
         (activity_) => activity_.id !== activity.id,
@@ -182,7 +196,10 @@ export class State {
   }
 
   /** Changes the room for a given non-class. */
-  relocateCustomActivity(customActivity: CustomActivity, room: string | undefined): void {
+  relocateCustomActivity(
+    customActivity: CustomActivity,
+    room: string | undefined,
+  ): void {
     const customActivity_ = this.selectedCustomActivities.find(
       (customActivity_) => customActivity_.id === customActivity.id,
     );
@@ -251,7 +268,10 @@ export class State {
    */
   updateActivities(save = true): void {
     chooseColors(this.selectedActivities, this.colorScheme);
-    const result = scheduleSlots(this.selectedClasses, this.selectedCustomActivities);
+    const result = scheduleSlots(
+      this.selectedClasses,
+      this.selectedCustomActivities,
+    );
     this.options = result.options;
     this.conflicts = result.conflicts;
     this.selectOption();
@@ -345,7 +365,9 @@ export class State {
     return [
       this.selectedClasses.map((cls) => cls.deflate()),
       this.selectedCustomActivities.length > 0
-        ? this.selectedCustomActivities.map((customActivity) => customActivity.deflate())
+        ? this.selectedCustomActivities.map((customActivity) =>
+            customActivity.deflate(),
+          )
         : null,
       this.selectedOption,
     ];
