@@ -74,6 +74,8 @@ export interface Activity {
   events: Event[];
   start?: [number, number];
   end?: [number, number];
+  deflate(): unknown;
+  inflate?(parsed: unknown): void;
 }
 
 /**

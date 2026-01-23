@@ -166,4 +166,52 @@ export class PEClass implements Activity {
     const endDate = new Date(this.rawClass.endDate);
     return [endDate.getMonth() + 1, endDate.getDate()];
   }
+
+   /** Deflate a class to something JSONable. */
+  deflate() {
+    const sections = this.sections.map((secs) =>
+      !secs.locked
+        ? null
+        : secs.sections.findIndex((sec) => sec === secs.selected),
+    );
+    const sectionLocs = this.sections.map((secs) => secs.roomOverride);
+    while (sections.at(-1) === null) sections.pop();
+    return [
+      this.id,
+      ...(this.manualColor ? [this.backgroundColor] : []), // string
+      ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
+      ...(sections.length > 0 ? (sections as number[]) : []), // number
+    ];
+  }
+
+  inflate(parsed: string | (string | number | string[])[]): void {
+    if (typeof parsed === "string") {
+      // just the class id, ignore
+      return;
+    }
+    // we ignore parsed[0] as that has the class id
+    let offset = 1;
+    if (typeof parsed[1] === "string") {
+      offset += 1;
+      this.backgroundColor = parsed[1];
+      this.manualColor = true;
+    }
+    let sectionLocs: (string | number | string[])[] | null = null;
+    if (Array.isArray(parsed[offset])) {
+      sectionLocs = parsed[offset] as string[];
+      offset += 1;
+    }
+    this.sections.forEach((secs, i) => {
+      if (sectionLocs && typeof sectionLocs[i] === "string") {
+        secs.roomOverride = sectionLocs[i];
+      }
+      const parse = parsed[i + offset];
+      if (!parse && parse !== 0) {
+        secs.locked = false;
+      } else {
+        secs.locked = true;
+        secs.selected = secs.sections[parse as number];
+      }
+    });
+  }
 }
