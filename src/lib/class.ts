@@ -18,7 +18,7 @@ import {
   TermCode,
   type RawClass,
   type RawSection,
-} from "./rawClass";
+} from "./raw";
 
 import nonextImg from "../assets/nonext.gif";
 import underImg from "../assets/under.gif";

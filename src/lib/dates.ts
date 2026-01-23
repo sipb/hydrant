@@ -1,4 +1,4 @@
-import { TermCode } from "./rawClass";
+import { TermCode } from "./raw";
 
 /** Dictionary of semester-name related constants. */
 const SEMESTER_NAMES = {

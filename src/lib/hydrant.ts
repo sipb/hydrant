@@ -2,11 +2,10 @@ import { createContext, useEffect, useRef, useState } from "react";
 import { useColorMode } from "../components/ui/color-mode";
 
 import type { TermInfo } from "../lib/dates";
-import type { RawClass } from "../lib/rawClass";
+import type { RawClass, RawPEClass } from "./raw";
 import type { HydrantState } from "../lib/schema";
 import { DEFAULT_STATE } from "../lib/schema";
 import type { State } from "../lib/state";
-import type { RawPEClass } from "./rawPEClass";
 
 export interface SemesterData {
   classes: Record<string, RawClass>;

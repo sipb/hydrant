@@ -13,13 +13,12 @@ import { Class } from "./class";
 import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
 import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
-import type { RawClass, RawTimeslot } from "./rawClass";
+import type { RawClass, RawTimeslot, RawPEClass } from "./raw";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES, ClassType } from "./schema";
 import { PEClass } from "./pe";
-import type { RawPEClass } from "./rawPEClass";
 
 /**
  * Global State object. Maintains global program state (selected classes,

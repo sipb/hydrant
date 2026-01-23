@@ -6,10 +6,9 @@ import {
   LockOption,
   type TLockOption,
 } from "./activity";
-import type { RawPEClass } from "./rawPEClass";
+import { TermCode, type RawSection, type RawPEClass } from "./raw";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
-import { TermCode, type RawSection } from "./rawClass";
 
 export interface PEFlags {
   wizard: boolean;

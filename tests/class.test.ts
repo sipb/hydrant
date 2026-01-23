@@ -8,7 +8,7 @@ import {
   SectionKind,
   TermCode,
   type RawClass,
-} from "../src/lib/rawClass";
+} from "../src/lib/raw";
 import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 
 // auxiliary object for testing getFlagImg; change as needed

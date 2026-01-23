@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import type { ColorScheme } from "./colors";
 import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
-import type { RawTimeslot } from "./rawClass";
+import type { RawTimeslot } from "./raw";
 import { sum } from "./utils";
 
 /** A period of time, spanning several Slots. */
