@@ -415,6 +415,7 @@ export class State {
           )
         : null,
       this.selectedOption,
+      this.selectedPEClasses.map((cls) => cls.deflate()),
     ];
   }
 
@@ -431,10 +432,11 @@ export class State {
   ): void {
     if (!obj) return;
     this.reset();
-    const [classes, customActivities, selectedOption] = obj as [
+    const [classes, customActivities, selectedOption, peClasses] = obj as [
       (string | number | string[])[][],
       (string | RawTimeslot[])[][] | null,
       number | undefined,
+      (string | number | string[])[][]
     ];
     for (const deflated of classes) {
       const cls =
@@ -453,6 +455,15 @@ export class State {
       }
     }
     this.selectedOption = selectedOption ?? 0;
+    for (const deflated of peClasses) {
+      const cls =
+        typeof deflated === "string"
+          ? this.peClasses.get(deflated)
+          : this.peClasses.get((deflated as string[])[0]);
+      if (!cls) continue;
+      cls.inflate(deflated);
+      this.selectedPEClasses.push(cls);
+    }
     this.saveId = "";
     this.updateActivities(false);
   }
