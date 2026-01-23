@@ -1,4 +1,12 @@
-import { Timeslot, Event, type Activity } from "./activity";
+import {
+  Timeslot,
+  Event,
+  type Activity,
+  type Sections,
+  LockOption,
+  type Section,
+  type TLockOption,
+} from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
 import {
@@ -113,14 +121,16 @@ export const getFlagImg = (flag: keyof Flags): string => {
   return flagImages[flag] ?? "";
 };
 
+export type ClassSectionLockOption = ClassSection | TLockOption;
+
 /**
  * A section is an array of timeslots that meet in the same room for the same
  * purpose. Sections can be lectures, recitations, or labs, for a given class.
  * All instances of Section belong to a Sections.
  */
-export class Section {
+export class ClassSection implements Section {
   /** Group of sections this section belongs to */
-  secs: Sections;
+  secs: ClassSections;
   /** Timeslots this section meets */
   timeslots: Timeslot[];
   /** String representing raw timeslots, e.g. MW9-11 or T2,F1. */
@@ -129,7 +139,7 @@ export class Section {
   room: string;
 
   /** @param section - raw section info (timeslot and room) */
-  constructor(secs: Sections, rawTime: string, section: RawSection) {
+  constructor(secs: ClassSections, rawTime: string, section: RawSection) {
     this.secs = secs;
     this.rawTime = rawTime;
     const [rawSlots, room] = section;
@@ -165,31 +175,19 @@ export class Section {
   }
 }
 
-/** The non-section options for a manual section time. */
-export const LockOption = {
-  Auto: "Auto",
-  None: "None",
-} as const;
-
-/** The type of {@link LockOption}. */
-export type TLockOption = (typeof LockOption)[keyof typeof LockOption];
-
-/** All section options for a manual section time. */
-export type SectionLockOption = Section | TLockOption;
-
 /**
  * A group of {@link Section}s, all the same kind (like lec, rec, or lab). At
  * most one of these can be selected at a time, and that selection is possibly
  * locked.
  */
-export class Sections {
+export class ClassSections implements Sections {
   cls: Class;
   kind: SectionKind;
-  sections: Section[];
+  sections: ClassSection[];
   /** Are these sections locked? None counts as locked. */
   locked: boolean;
   /** Currently selected section out of these. None is null. */
-  selected: Section | null;
+  selected: ClassSection | null;
   /** Overridden location for this particular section. */
   roomOverride = "";
 
@@ -199,11 +197,13 @@ export class Sections {
     rawTimes: string[],
     secs: RawSection[],
     locked?: boolean,
-    selected?: Section | null,
+    selected?: ClassSection | null,
   ) {
     this.cls = cls;
     this.kind = kind;
-    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
+    this.sections = secs.map(
+      (sec, i) => new ClassSection(this, rawTimes[i], sec),
+    );
     this.locked = locked ?? false;
     this.selected = selected ?? null;
   }
@@ -263,7 +263,7 @@ export class Sections {
   }
 
   /** Lock a specific section of this class. Does not validate. */
-  lockSection(sec: SectionLockOption): void {
+  lockSection(sec: ClassSectionLockOption): void {
     if (sec === LockOption.Auto) {
       this.locked = false;
     } else if (sec === LockOption.None) {
@@ -298,28 +298,28 @@ export class Class implements Activity {
       .map((kind) => {
         switch (kind) {
           case SectionKind.LECTURE:
-            return new Sections(
+            return new ClassSections(
               this,
               SectionKind.LECTURE,
               rawClass.lectureRawSections,
               rawClass.lectureSections,
             );
           case SectionKind.RECITATION:
-            return new Sections(
+            return new ClassSections(
               this,
               SectionKind.RECITATION,
               rawClass.recitationRawSections,
               rawClass.recitationSections,
             );
           case SectionKind.LAB:
-            return new Sections(
+            return new ClassSections(
               this,
               SectionKind.LAB,
               rawClass.labRawSections,
               rawClass.labSections,
             );
           case SectionKind.DESIGN:
-            return new Sections(
+            return new ClassSections(
               this,
               SectionKind.DESIGN,
               rawClass.designRawSections,

@@ -1,6 +1,6 @@
-import type { CustomActivity, Timeslot } from "./activity";
-import type { Section, Sections, Class } from "./class";
-import type { PEClass, PESection, PESections } from "./pe";
+import type { CustomActivity, Timeslot, Section, Sections } from "./activity";
+import type { Class } from "./class";
+import type { PEClass } from "./pe";
 
 /**
  * Helper function for selectSlots. Implements backtracking: we try to place
@@ -15,20 +15,20 @@ import type { PEClass, PESection, PESections } from "./pe";
  * @returns Object with best options found so far and number of conflicts
  */
 function selectHelper(
-  freeSections: (Sections | PESections)[],
+  freeSections: Sections[],
   filledSlots: Timeslot[],
-  foundOptions: (Section | PESection)[],
+  foundOptions: Section[],
   curConflicts: number,
   foundMinConflicts: number,
 ): {
-  options: (Section | PESection)[][];
+  options: Section[][];
   minConflicts: number;
 } {
   if (freeSections.length === 0) {
     return { options: [foundOptions], minConflicts: curConflicts };
   }
 
-  let options: (Section | PESection)[][] = [];
+  let options: Section[][] = [];
   let minConflicts: number = foundMinConflicts;
 
   const [secs, ...remainingSections] = freeSections;
@@ -74,13 +74,13 @@ export function scheduleSlots(
   selectedPEClasses: PEClass[],
   selectedCustomActivities: CustomActivity[],
 ): {
-  options: (Section | PESection)[][];
+  options: Section[][];
   conflicts: number;
 } {
-  const lockedSections: (Sections | PESections)[] = [];
-  const lockedOptions: (Section | PESection)[] = [];
+  const lockedSections: Sections[] = [];
+  const lockedOptions: Section[] = [];
   const initialSlots: Timeslot[] = [];
-  const freeSections: (Sections | PESections)[] = [];
+  const freeSections: Sections[] = [];
 
   for (const cls of selectedClasses) {
     for (const secs of cls.sections) {

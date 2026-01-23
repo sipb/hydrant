@@ -1,9 +1,14 @@
 import { nanoid } from "nanoid";
 
-import type { Timeslot, Activity } from "./activity";
+import type {
+  Timeslot,
+  Activity,
+  Section,
+  SectionLockOption,
+  Sections,
+} from "./activity";
 import { CustomActivity } from "./activity";
 import { scheduleSlots } from "./calendarSlots";
-import type { Section, SectionLockOption, Sections } from "./class";
 import { Class } from "./class";
 import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
@@ -13,7 +18,7 @@ import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES, ClassType } from "./schema";
-import { PEClass, type PESection } from "./pe";
+import { PEClass } from "./pe";
 import type { RawPEClass } from "./rawPEClass";
 
 /**
@@ -26,7 +31,7 @@ export class State {
   /** Map from class number to PEClass object. */
   peClasses: Map<string, PEClass>;
   /** Possible section choices. */
-  options: (Section | PESection)[][] = [[]];
+  options: Section[][] = [[]];
   /** Current number of schedule conflicts. */
   conflicts = 0;
   /** Browser-specific saved state. */

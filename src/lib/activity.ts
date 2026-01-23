@@ -201,3 +201,37 @@ export class CustomActivity implements Activity {
     }
   }
 }
+
+/** The non-section options for a manual section time. */
+export const LockOption = {
+  Auto: "Auto",
+  None: "None",
+} as const;
+
+/** The type of {@link LockOption}. */
+export type TLockOption = (typeof LockOption)[keyof typeof LockOption];
+
+/** All section options for a manual section time. */
+export type SectionLockOption = Section | TLockOption;
+
+export interface Sections {
+  cls: Activity;
+  sections: Section[];
+  locked: boolean;
+  selected: Section | null;
+  roomOverride: string;
+  shortName: string;
+  priority: number;
+  name: string;
+  event: Event | null;
+  lockSection(sec: SectionLockOption): void;
+}
+
+export interface Section {
+  secs: Sections;
+  timeslots: Timeslot[];
+  rawTime: string;
+  room: string;
+  parsedTime: string;
+  countConflicts(currentSlots: Timeslot[]): number;
+}

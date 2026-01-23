@@ -1,9 +1,15 @@
-import { Timeslot, type Activity } from "./activity";
+import {
+  Timeslot,
+  type Activity,
+  type Section,
+  type Sections,
+  LockOption,
+  type TLockOption,
+} from "./activity";
 import type { RawPEClass } from "./rawPEClass";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
 import { TermCode, type RawSection } from "./rawClass";
-import { LockOption, type TLockOption } from "./class";
 
 export const QUARTERS: Record<number, TermCode> = {
   1: TermCode.FA,
@@ -15,7 +21,7 @@ export const QUARTERS: Record<number, TermCode> = {
 
 export type PESectionLockOption = PESection | TLockOption;
 
-export class PESection {
+export class PESection implements Section {
   /** Group of sections this section belongs to */
   secs: PESections;
   /** Timeslots this section meets */
@@ -62,7 +68,7 @@ export class PESection {
   }
 }
 
-export class PESections {
+export class PESections implements Sections {
   cls: PEClass;
   sections: PESection[];
   /** Are these sections locked? None counts as locked. */
