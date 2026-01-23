@@ -304,7 +304,9 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
             assert current_results["capacity"] == pe_row["capacity"]
             assert current_results["points"] == pe_row["gir_points"]
             assert current_results["swimGIR"] == pe_row["swim_gir"]
-            assert current_results["prereqs"] == pe_row["prerequisites"]
+            assert current_results["prereqs"] == pe_row["prerequisites"] or (
+                current_results["prereqs"] == "None" and pe_row["prerequisites"] == ""
+            )
             assert current_results["equipment"] == pe_row["equipment"]
             assert current_results["fee"] == pe_row["fee_amount"]
             assert current_results["description"] == pe_row["description"]
@@ -340,7 +342,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
                 "endDate": parse_date(pe_row["end_date"]).isoformat(),
                 "points": pe_row["gir_points"],
                 "swimGIR": pe_row["swim_gir"],
-                "prereqs": pe_row["prerequisites"],
+                "prereqs": pe_row["prerequisites"] or "None",
                 "equipment": pe_row["equipment"],
                 "fee": pe_row["fee_amount"],
                 "description": pe_row["description"],
