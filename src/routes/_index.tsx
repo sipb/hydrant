@@ -2,6 +2,7 @@ import { Center, Flex, Group, Tabs, ButtonGroup } from "@chakra-ui/react";
 import { Calendar } from "../components/Calendar";
 import { LeftFooter } from "../components/Footers";
 import { Header, PreferencesDialog } from "../components/Header";
+import { SelectedActivities } from "../components/SelectedActivities";
 import { ScheduleOption } from "../components/ScheduleOption";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
 import { TermSwitcher } from "../components/TermSwitcher";
@@ -98,6 +99,7 @@ function HydrantApp() {
               <MatrixLink />
             </ButtonGroup>
           </Center>
+          <SelectedActivities />
           <Tabs.Root
             lazyMount
             unmountOnExit

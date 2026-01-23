@@ -1,6 +1,5 @@
 import { Stack } from "@chakra-ui/react";
 import { ClassTable } from "./ClassTable";
-import { SelectedActivities } from "./SelectedActivities";
 import { ClassType } from "~/lib/schema";
 import { LuGraduationCap, LuVolleyball } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
@@ -8,7 +7,6 @@ import type { IconType } from "react-icons/lib";
 export const Academic = () => {
   return (
     <Stack gap={6}>
-      <SelectedActivities />
       <ClassTable />
     </Stack>
   );
