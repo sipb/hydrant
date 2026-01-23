@@ -436,7 +436,7 @@ export class State {
       (string | number | string[])[][],
       (string | RawTimeslot[])[][] | null,
       number | undefined,
-      (string | number | string[])[][]
+      (string | number | string[])[][] | undefined, // undefined for backwards compatability
     ];
     for (const deflated of classes) {
       const cls =
@@ -455,7 +455,7 @@ export class State {
       }
     }
     this.selectedOption = selectedOption ?? 0;
-    for (const deflated of peClasses) {
+    for (const deflated of (peClasses ?? [])) {
       const cls =
         typeof deflated === "string"
           ? this.peClasses.get(deflated)
