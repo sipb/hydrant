@@ -50,18 +50,7 @@ export const ClassTypesSwitcher = () => {
           <Tabs.Indicator />
         </Tabs.List>
         {Object.entries(tabs).map(([key, [_, Component]]) => (
-          <Tabs.Content
-            value={key as ClassType}
-            key={key}
-            _open={{
-              animationName: "fade-in, scale-in",
-              animationDuration: "300ms",
-            }}
-            _closed={{
-              animationName: "fade-out, scale-out",
-              animationDuration: "120ms",
-            }}
-          >
+          <Tabs.Content value={key as ClassType} key={key}>
             <Component />
           </Tabs.Content>
         ))}
