@@ -172,6 +172,19 @@ export class PEClass implements Activity {
     return this.rawClass.number;
   }
 
+  /** Fee, in dollars */
+  get fee(): number {
+    const fee = this.rawClass.fee;
+    if (!fee.startsWith("$")) {
+      console.error("Fee not in dollars:", fee);
+    }
+    const feeAmt = Number(fee.slice(1));
+    if (isNaN(feeAmt)) {
+      console.error("Non-numerical fee:", fee);
+    }
+    return feeAmt;
+  }
+
   get events(): Event[] {
     return this.sections
       .map((secs) => secs.event)

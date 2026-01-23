@@ -27,7 +27,7 @@ export interface RawPEClass {
   prereqs: string;
   /** Equipment, no specific format */
   equipment: string;
-  /** Fee, in dollars */
+  /** Fee */
   fee: string;
   /** Description, no specific format */
   description: string;

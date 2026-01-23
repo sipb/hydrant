@@ -388,6 +388,23 @@ export function PEClassTable() {
     const initialSort = "asc" as const;
     const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
+    const numberSortProps = {
+      // sort by number, N/A is infinity, tiebreak with class number
+      comparator: (
+        valueA: string | undefined | null,
+        valueB: string | undefined | null,
+        nodeA: IRowNode<ClassTableRow>,
+        nodeB: IRowNode<ClassTableRow>,
+      ) => {
+        if (!nodeA.data || !nodeB.data) return 0;
+        const numberA = valueA === "N/A" || !valueA ? Infinity : Number(valueA);
+        const numberB = valueB === "N/A" || !valueB ? Infinity : Number(valueB);
+        return numberA !== numberB
+          ? numberA - numberB
+          : classSort(nodeA.data.number, nodeB.data.number);
+      },
+      ...sortProps,
+    };
     return [
       {
         headerName: "",
@@ -420,13 +437,13 @@ export function PEClassTable() {
         field: "classSize",
         headerName: "Size",
         maxWidth: 93,
-        ...sortProps,
-        // ...numberSortProps,
+        ...numberSortProps,
       },
       {
         field: "fee",
         maxWidth: 93,
-        ...sortProps, // TODO numberSortProps
+        ...numberSortProps,
+        valueFormatter: (params) => "$" + Number(params.value).toFixed(2),
       },
       {
         field: "name",
@@ -448,7 +465,7 @@ export function PEClassTable() {
       Array.from(peClasses.values(), (cls) => ({
         number: cls.rawClass.number,
         classSize: cls.rawClass.classSize,
-        fee: cls.rawClass.fee,
+        fee: cls.fee.toString(),
         name: cls.rawClass.name,
         class: cls,
         inCharge: "Jack Florey", // FIXME
