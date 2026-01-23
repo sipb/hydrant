@@ -12,7 +12,7 @@ export interface SemesterData {
   classes: Record<string, RawClass>;
   lastUpdated: string;
   termInfo: TermInfo;
-  pe?: RawPEClass[];
+  pe?: Record<string, RawPEClass>[];
 }
 
 /** Fetch from the url, which is JSON of type T. */
