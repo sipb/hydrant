@@ -455,7 +455,7 @@ export class State {
       }
     }
     this.selectedOption = selectedOption ?? 0;
-    for (const deflated of (peClasses ?? [])) {
+    for (const deflated of peClasses ?? []) {
       const cls =
         typeof deflated === "string"
           ? this.peClasses.get(deflated)
