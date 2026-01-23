@@ -13,7 +13,7 @@ import {
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
-import type { CustomActivity } from "../lib/activity";
+import { CustomActivity } from "../lib/activity";
 import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
@@ -288,11 +288,15 @@ export function ActivityDescription() {
     return null;
   }
 
-  return activity instanceof Class ? (
-    <ClassDescription cls={activity} />
-  ) : activity instanceof PEClass ? (
-    <PEClassDescription activity={activity} />
-  ) : (
-    <CustomActivityDescription activity={activity} />
-  );
+  if (activity instanceof Class) {
+    return <ClassDescription cls={activity} />;
+  }
+  if (activity instanceof PEClass) {
+    return <PEClassDescription activity={activity} />;
+  }
+  if (activity instanceof CustomActivity) {
+    return <CustomActivityDescription activity={activity} />;
+  }
+  
+  return null;
 }
