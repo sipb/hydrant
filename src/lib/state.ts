@@ -13,7 +13,7 @@ import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
 import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES, ClassType } from "./schema";
-import { PEClass } from "./pe";
+import { PEClass, type PESection } from "./pe";
 import type { RawPEClass } from "./rawPEClass";
 
 /**
@@ -26,7 +26,7 @@ export class State {
   /** Map from class number to PEClass object. */
   peClasses: Map<string, PEClass>;
   /** Possible section choices. */
-  options: Section[][] = [[]];
+  options: (Section | PESection)[][] = [[]];
   /** Current number of schedule conflicts. */
   conflicts = 0;
   /** Browser-specific saved state. */
@@ -282,6 +282,7 @@ export class State {
     chooseColors(this.selectedActivities, this.colorScheme);
     const result = scheduleSlots(
       this.selectedClasses,
+      this.selectedPEClasses,
       this.selectedCustomActivities,
     );
     this.options = result.options;
@@ -296,14 +297,16 @@ export class State {
    * Used for the "fits schedule" filter in ClassTable. Might be slow; careful
    * with using this too frequently.
    */
-  fitsSchedule(cls: Class): boolean {
+  fitsSchedule(cls: Class | PEClass): boolean {
     return (
       !this.isSelectedActivity(cls) &&
       (cls.sections.length === 0 ||
         (this.selectedClasses.length === 0 &&
+          this.selectedPEClasses.length === 0 &&
           this.selectedCustomActivities.length === 0) ||
         scheduleSlots(
-          this.selectedClasses.concat([cls]),
+          this.selectedClasses.concat(cls instanceof Class ? [cls] : []),
+          this.selectedPEClasses.concat(cls instanceof PEClass ? [cls] : []),
           this.selectedCustomActivities,
         ).conflicts === this.conflicts)
     );

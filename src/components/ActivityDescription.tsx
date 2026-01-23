@@ -297,6 +297,6 @@ export function ActivityDescription() {
   if (activity instanceof CustomActivity) {
     return <CustomActivityDescription activity={activity} />;
   }
-  
+
   return null;
 }

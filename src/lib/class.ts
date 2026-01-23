@@ -172,7 +172,7 @@ export const LockOption = {
 } as const;
 
 /** The type of {@link LockOption}. */
-type TLockOption = (typeof LockOption)[keyof typeof LockOption];
+export type TLockOption = (typeof LockOption)[keyof typeof LockOption];
 
 /** All section options for a manual section time. */
 export type SectionLockOption = Section | TLockOption;
