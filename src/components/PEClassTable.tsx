@@ -409,33 +409,16 @@ export function PEClassTable() {
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns
-  const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
+  const columnDefs: ColDef<ClassTableRow>[] = useMemo(() => {
     const initialSort = "asc" as const;
     const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
-    const numberSortProps = {
-      // sort by number, N/A is infinity, tiebreak with class number
-      comparator: (
-        valueA: string | undefined | null,
-        valueB: string | undefined | null,
-        nodeA: IRowNode<ClassTableRow>,
-        nodeB: IRowNode<ClassTableRow>,
-      ) => {
-        if (!nodeA.data || !nodeB.data) return 0;
-        const numberA = valueA === "N/A" || !valueA ? Infinity : Number(valueA);
-        const numberB = valueB === "N/A" || !valueB ? Infinity : Number(valueB);
-        return numberA !== numberB
-          ? numberA - numberB
-          : classSort(nodeA.data.number, nodeB.data.number);
-      },
-      ...sortProps,
-    };
     return [
       {
         headerName: "",
         field: "number",
         maxWidth: 49,
-        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
+        cellRenderer: (params: { data: ClassTableRow }) => (
           <StarButton
             cls={params.data.class}
             onStarToggle={() => {
@@ -462,7 +445,8 @@ export function PEClassTable() {
         field: "classSize",
         headerName: "Size",
         maxWidth: 93,
-        ...numberSortProps,
+        ...sortProps,
+        // ...numberSortProps,
       },
       {
         field: "fee",
