@@ -8,8 +8,7 @@ import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
 import { HydrantContext } from "~/lib/hydrant";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export function classTypeComponents(termKeys: ClassType[]) {
+function classTypeComponents(termKeys: ClassType[]) {
   const obj = {} as Record<ClassType, [IconType, React.ComponentType]>;
 
   if (termKeys.includes(ClassType.ACADEMIC)) {
