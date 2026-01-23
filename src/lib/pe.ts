@@ -225,7 +225,7 @@ export class PEClass implements Activity {
 
   get flags(): PEFlags {
     return {
-      wizard: this.id.startsWith("PE.05"),
+      wizard: this.id.startsWith("PE.05") || this.id.startsWith("PE.4"),
       pirate: PIRATES.includes(this.id),
       nofee: this.rawClass.fee == "$0.00",
       nopreq: this.rawClass.prereqs == "None",
