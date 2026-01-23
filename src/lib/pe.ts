@@ -92,7 +92,7 @@ export class PESections implements Sections {
   }
 
   /** Short name for the kind of sections these are. */
-  readonly shortName = "pe";
+  readonly shortName = "";
 
   readonly priority = -1;
 
@@ -154,7 +154,9 @@ export class PEClass implements Activity {
   }
 
   get events(): Event[] {
-    return [];
+    return this.sections
+      .map((secs) => secs.event)
+      .filter((event): event is Event => event instanceof Event);
   }
 
   get start(): [number, number] {
