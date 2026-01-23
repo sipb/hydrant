@@ -31,4 +31,6 @@ export interface RawPEClass {
   fee: number;
   /** Description, no specific format */
   description: string;
+  /** Quarter of class */
+  quarter: number;
 }
