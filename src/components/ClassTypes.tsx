@@ -1,8 +1,7 @@
 import { Button, ButtonGroup, Center, Stack } from "@chakra-ui/react";
 import { ActivityDescription } from "./ActivityDescription";
 import { ClassTable } from "./ClassTable";
-import { MatrixLink } from "./MatrixLink";
-import { PreregLink } from "./PreregLink";
+import { MatrixLink, PreregLink } from "./ButtonsLinks";
 import { SelectedActivities } from "./SelectedActivities";
 import { Tooltip } from "./ui/tooltip";
 import { useContext, useState } from "react";
