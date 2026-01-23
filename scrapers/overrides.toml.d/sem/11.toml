@@ -50,6 +50,7 @@ preparationUnits = 4
 isVariableUnits = false
 level = "G"
 meets = "11.S195 / 1.C01/51"
+prereqs = "6.C01/51"
 description = "Building on core material in 6.C01/51, emphasizes the design and operation of sustainable systems and the application of machine learning to real-world planning and policy challenges. Students learn to leverage data from urban services, cities, and the environment to evaluate and/or improve sustainability solutions. Projects focus on using machine learning to identify new insights or decisions that advance equity and sustainability in societal-scale systems. This (H4) course meets together with 1.C01/51. Students cannot receive credit without completion of the core subject (H3) 6.C01/51."
 name = "Machine Learning for Sustainable Systems"
 inCharge = "Cong Cong, Saurabh Amin"
