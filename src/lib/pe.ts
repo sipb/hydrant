@@ -1,27 +1,30 @@
 import type { ActivityClass } from "./activity";
 import type { RawPEClass } from "./rawPEClass";
 import type { Event } from "./activity";
+import { fallbackColor, type ColorScheme } from "./colors";
 
 /**
  * PE&W activity placeholder
  */
 export class PEandWellness implements ActivityClass {
-  id: string;
   backgroundColor: string;
   manualColor = false;
   readonly rawClass: RawPEClass;
 
-  constructor(id: string, backgroundColor: string, rawClass: RawPEClass) {
-    this.id = id;
-    this.backgroundColor = backgroundColor;
+  constructor(rawClass: RawPEClass, colorScheme: ColorScheme) {
     this.rawClass = rawClass;
+    this.backgroundColor = fallbackColor(colorScheme);
+  }
+
+  get id(): string {
+    return this.rawClass.number;
   }
 
   /** Hours per week. */
   readonly hours = 2;
 
   get buttonName(): string {
-    return this.rawClass.name;
+    return this.rawClass.number;
   }
 
   get events(): Event[] {
