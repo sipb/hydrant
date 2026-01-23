@@ -335,6 +335,9 @@ function PEClassDescription(props: { cls: PEClass }) {
       </Flex>
       <ClassButtons cls={cls} />
       <Flex direction="column" gap={2}>
+        <Text lang="en" style={{ hyphens: "auto", whiteSpace: "pre-wrap" }}>
+          {description}
+        </Text>
         <Text>
           <Span fontWeight="medium">Prereq:</Span>{" "}
           <Span
@@ -350,9 +353,6 @@ function PEClassDescription(props: { cls: PEClass }) {
           >
             {equipment}
           </Span>
-        </Text>
-        <Text lang="en" style={{ hyphens: "auto", whiteSpace: "pre-wrap" }}>
-          {description}
         </Text>
       </Flex>
       <Flex gap={4}>

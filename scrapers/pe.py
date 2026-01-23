@@ -10,9 +10,16 @@ import os
 import time as time_c
 from datetime import date, time
 from typing import Literal, TypedDict
+from urllib.request import Request, urlopen
+
+from bs4 import BeautifulSoup
 
 from scrapers.fireroad import parse_section
 from scrapers.utils import Term
+
+PE_CATALOG = (
+    "https://physicaleducationandwellness.mit.edu/options-for-points/course-catalog/"
+)
 
 # ask DAPER how they represent summer...
 QUARTERS: dict[int, tuple[Term, Literal[1, 2] | None]] = {
@@ -39,7 +46,6 @@ class PEWFile(TypedDict):
     location: str
     start_date: str
     end_date: str
-    description: str
     prerequisites: str
     equipment: str
     gir_points: int
@@ -115,7 +121,6 @@ def read_pew_file(filepath: str) -> list[PEWFile]:
                     "location": row["Location"],
                     "start_date": row["Start Date"],
                     "end_date": row["End Date"],
-                    "description": row["Description"],
                     "prerequisites": row["Prerequisites"],
                     "equipment": row["Equipment"],
                     "gir_points": int(row["GIR Points"]),
@@ -285,6 +290,8 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
         dict: A dictionary representing the standardized schema,
             keyed by quarter and subject number
     """
+
+    description_data = scrape_pe_catalog_descriptions()
     results: dict[int, dict[str, PEWSchema]] = {}
 
     for pe_row in pe_rows:
@@ -309,7 +316,6 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
             )
             assert current_results["equipment"] == pe_row["equipment"]
             assert current_results["fee"] == pe_row["fee_amount"]
-            assert current_results["description"] == pe_row["description"]
 
             raw_section = parse_times_to_raw_section(
                 pe_row["start_time"],
@@ -345,12 +351,46 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
                 "prereqs": pe_row["prerequisites"] or "None",
                 "equipment": pe_row["equipment"],
                 "fee": pe_row["fee_amount"],
-                "description": pe_row["description"],
+                "description": description_data.get(subject_num, ""),
                 "quarter": quarter,
             }
         results[quarter] = term_results
 
     return results
+
+
+def scrape_pe_catalog_descriptions() -> dict[str, str]:
+    """
+    Scrapes PE&W course descriptions from the DAPER PE&W catalog.
+
+    Returns:
+        dict[str, str]: A dictionary mapping course numbers to their descriptions.
+    """
+
+    request = Request(PE_CATALOG)
+    request.add_header("User-Agent", "Mozilla/5.0 (compatible; HydrantBot/1.0)")
+    with urlopen(request, timeout=15) as response:
+        soup = BeautifulSoup(response.read().decode("utf-8"), features="lxml")
+
+    accordions = soup.select("div.accordion")
+    descriptions: dict[str, str] = {}
+
+    for accordion in accordions:
+        header = accordion.find(class_="header")
+        assert header
+        header_small = header.find("small")
+        assert header_small
+        header_text = header_small.get_text(strip=True)
+
+        description = accordion.find(class_="accoridon-content")
+        assert description
+        description_p = description.find("p")
+        assert description_p
+        description_text = description_p.get_text(strip=True)
+
+        descriptions[header_text] = description_text
+
+    return descriptions
 
 
 def get_pe_quarters(url_name: str) -> list[str]:
