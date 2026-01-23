@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { ClassTable } from "./ClassTable";
 import { PEClassTable } from "./PEClassTable";
 import { ClassType } from "~/lib/schema";
-import { LuGraduationCap, LuVolleyball } from "react-icons/lu";
+import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
 import { HydrantContext } from "~/lib/hydrant";
 
@@ -17,7 +17,7 @@ export function classTypeComponents(termKeys: ClassType[]) {
   }
 
   if (termKeys.includes(ClassType.PEW)) {
-    obj[ClassType.PEW] = [LuVolleyball, PEClassTable];
+    obj[ClassType.PEW] = [LuDumbbell, PEClassTable];
   }
 
   return obj;

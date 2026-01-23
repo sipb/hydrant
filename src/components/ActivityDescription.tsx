@@ -297,6 +297,25 @@ function PEClassDescription(props: { cls: PEClass }) {
   const start = fmt.format(startDate);
   const end = fmt.format(endDate);
 
+  const urls = [
+    {
+      label: "PE&W registration",
+      url: "https://physicaleducationandwellness.mit.edu/registration-information/registration/",
+    },
+    {
+      label: "Waitlist info",
+      url: "https://physicaleducationandwellness.mit.edu/registration-information/registration/waitlist/",
+    },
+    {
+      label: "Student history",
+      url: "https://physicaleducationandwellness.mit.edu/my-gir/student-course-history/",
+    },
+    {
+      label: "PE&W FAQs",
+      url: "https://physicaleducationandwellness.mit.edu/faqs/",
+    },
+  ];
+
   return (
     <Flex direction="column" gap={4}>
       <Heading size="md">
@@ -309,31 +328,44 @@ function PEClassDescription(props: { cls: PEClass }) {
           {swimGIR && <Text>Satisfies swim GIR</Text>}
         </Flex>
         {fee ? <Text>${fee.toFixed(2)} enrollment fee</Text> : null}
-        <Text>
-          Begins {start}, ends {end}.
-        </Text>
+        <Text>Begins {start}, ends {end}.</Text>
+        <Text>Schedule subject to change once online registration opens.</Text>
       </Flex>
       <ClassButtons cls={cls} />
       <Flex direction="column" gap={2}>
         <Text>
-          <Span fontWeight="medium">
-            Prereq:
-          </Span>{" "}
-          <Span fontWeight={prereqs.toLowerCase() === "none" ? "bold" : "normal"}>
+          <Span fontWeight="medium">Prereq:</Span>{" "}
+          <Span
+            fontWeight={prereqs.toLowerCase() === "none" ? "bold" : "normal"}
+          >
             {prereqs}
           </Span>
         </Text>
         <Text>
-          <Span fontWeight="medium">
-            Equipment:
-          </Span>{" "}
-          <Span fontWeight={equipment.toLowerCase() === "none" ? "bold" : "normal"}>
+          <Span fontWeight="medium">Equipment:</Span>{" "}
+          <Span
+            fontWeight={equipment.toLowerCase() === "none" ? "bold" : "normal"}
+          >
             {equipment}
           </Span>
         </Text>
         <Text lang="en" style={{ hyphens: "auto", whiteSpace: "pre-wrap" }}>
           {description}
         </Text>
+      </Flex>
+      <Flex gap={4}>
+        {urls.map(({ label, url }) => (
+          <Link
+            key={label}
+            href={url}
+            target="_blank"
+            colorPalette="blue"
+            display="inline-block"
+            flexGrow={1}
+          >
+            {label} <LuExternalLink style={{ display: "inline" }} />
+          </Link>
+        ))}
       </Flex>
     </Flex>
   );
