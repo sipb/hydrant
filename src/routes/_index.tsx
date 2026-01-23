@@ -102,7 +102,6 @@ function HydrantApp() {
           <SelectedActivities />
           <Tabs.Root
             lazyMount
-            unmountOnExit
             fitted
             variant="enclosed"
             value={state.currentClassType}

@@ -1,4 +1,5 @@
 import { ClassTable } from "./ClassTable";
+import { PEClassTable } from "./PEClassTable";
 import { ClassType } from "~/lib/schema";
 import { LuGraduationCap, LuVolleyball } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
@@ -8,7 +9,7 @@ export const Academic = () => {
 };
 
 export const PEandW = () => {
-  return <></>;
+  return <PEClassTable />;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
