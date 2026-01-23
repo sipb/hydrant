@@ -37,7 +37,8 @@ export const Banner = () => {
         >
           <Flex align="center" textStyle="sm">
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
-              IAP and Spring 2026 classes are now available! ❄️🌹
+              Q3 Physical Education and Wellness classes are now available on
+              Hydrant! Registration opens Jan 30 on the PE&W website.
             </Text>
             <CloseButton
               hideFrom="sm"
