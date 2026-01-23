@@ -38,10 +38,10 @@ import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
 
-import type { Class, Flags } from "../lib/class";
+import type { Flags } from "../lib/class";
+import type { PEClass } from "../lib/pe";
 import { DARK_IMAGES } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import type { TSemester } from "../lib/dates";
 import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
@@ -68,25 +68,26 @@ const GRID_MODULES: Module[] = [
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-enum ColorEnum {
-  Muted = "ag-cell-muted-text",
-  Success = "ag-cell-success-text",
-  Warning = "ag-cell-warning-text",
-  Error = "ag-cell-error-text",
-  Normal = "ag-cell-normal-text",
-}
+// TODO colors
+// enum ColorEnum {
+//   Muted = "ag-cell-muted-text",
+//   Success = "ag-cell-success-text",
+//   Warning = "ag-cell-warning-text",
+//   Error = "ag-cell-error-text",
+//   Normal = "ag-cell-normal-text",
+// }
 
 /** A single row in the class table. */
 interface ClassTableRow {
   number: string;
-  size: string;
+  classSize: number;
   fee: string;
   name: string;
-  class: Class;
+  class: PEClass;
   inCharge: string;
 }
 
-type ClassFilter = (cls?: Class) => boolean;
+type ClassFilter = (cls?: PEClass) => boolean;
 /** Type of filter on class list; null if no filter. */
 type SetClassFilter = Dispatch<SetStateAction<ClassFilter | null>>;
 
@@ -110,22 +111,18 @@ function ClassInput(props: {
   // Search results for classes.
   const searchResults = useRef<
     {
-      numbers: string[];
+      number: string;
       name: string;
-      class: Class;
+      class: PEClass;
     }[]
   >(undefined);
 
   const processedRows = useMemo(
     () =>
       rowData.map((data) => {
-        const numbers = [data.number];
-        const [, otherNumber, realName] =
-          /^\[(.*)\] (.*)$/.exec(data.name) ?? [];
-        if (otherNumber) numbers.push(otherNumber);
         return {
-          numbers,
-          name: simplifyString(realName || data.name),
+          number: data.number,
+          name: simplifyString(data.name),
           class: data.class,
           inCharge: simplifyString(data.inCharge),
         };
@@ -138,12 +135,12 @@ function ClassInput(props: {
       const simplifyInput = simplifyString(input);
       searchResults.current = processedRows.filter(
         (row) =>
-          row.numbers.some((number) => classNumberMatch(input, number)) ||
+          classNumberMatch(input, row.number) ||
           row.name.includes(simplifyInput) ||
           row.inCharge.includes(simplifyInput),
       );
-      const index = new Set(searchResults.current.map((cls) => cls.numbers[0]));
-      setInputFilter(() => (cls?: Class) => index.has(cls?.number ?? ""));
+      const index = new Set(searchResults.current.map((row) => row.number));
+      setInputFilter(() => (cls?: PEClass) => index.has(cls?.rawClass.number ?? ""));
     } else {
       setInputFilter(null);
     }
@@ -151,17 +148,17 @@ function ClassInput(props: {
   };
 
   const onEnter = () => {
-    const { numbers, class: cls } = searchResults.current?.[0] ?? {};
+    const { number, class: cls } = searchResults.current?.[0] ?? {};
     if (
       searchResults.current?.length === 1 ||
-      numbers?.some((number) => classNumberMatch(number, classInput, true))
+      (number && classNumberMatch(number, classInput, true))
     ) {
       // first check if the first result matches
       state.toggleActivity(cls);
       onClassInputChange("");
-    } else if (state.classes.has(classInput)) {
+    } else if (state.peClasses.has(classInput)) {
       // else check if this number exists exactly
-      const cls = state.classes.get(classInput);
+      const cls = state.peClasses.get(classInput);
       state.toggleActivity(cls);
     }
   };
@@ -208,26 +205,29 @@ function ClassInput(props: {
   );
 }
 
-const filtersNonFlags = {
+const filters = {
   fits: (state, cls) => state.fitsSchedule(cls),
-  starred: (state, cls) => state.isClassStarred(cls),
-  new: (_, cls) => cls.new,
-} satisfies Record<string, (state: State, cls: Class) => boolean>;
+  starred: (state, cls) => state.isPEClassStarred(cls),
+  // TODO move these to flags in src/lib/pe.ts
+  nofee: (_state, cls) => cls.rawClass.fee == "$0.00",
+  nopreq: (_state, cls) => cls.rawClass.prereqs == "None",
+  wizard: (_state, _cls) => true, // FIXME
+  pirate: (_state, _cls) => true, // FIXME
+} satisfies Record<string, (state: State, cls: PEClass) => boolean>;
 
-type Filter = keyof Flags | keyof typeof filtersNonFlags;
+type Filter = keyof typeof filters;
 type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
   ["starred", "Starred", <LuStar fill="currentColor" />],
   ["nofee", "No fee"],
+  ["nopreq", "No prereq"],
   ["fits", "Fits schedule"],
-  ["new", "✨ New!"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
 const CLASS_FLAGS_2: FilterGroup = [
-  ["nopreq", "No prereq"],
   ["wizard", "🔮 Wellness Wizard"],
   ["pirate", "🏴‍☠️ Pirate Certificate"],
 ];
@@ -273,20 +273,14 @@ function ClassFlags(props: {
 
     // careful! we have to wrap it with a () => because otherwise React will
     // think it's an updater function instead of the actual function.
-    setFlagsFilter(() => (cls?: Class) => {
+    setFlagsFilter(() => (cls?: PEClass) => {
       if (!cls) return false;
       let result = true;
       newFlags.forEach((value, flag) => {
         if (
           value &&
-          flag in filtersNonFlags &&
-          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
-        ) {
-          result = false;
-        } else if (
-          value &&
-          !(flag in filtersNonFlags) &&
-          !cls.flags[flag as keyof typeof cls.flags]
+          flag in filters &&
+          !filters[flag](state, cls)
         ) {
           result = false;
         }
@@ -309,7 +303,7 @@ function ClassFlags(props: {
           // hide starred button if no classes starred
           if (
             flag === "starred" &&
-            state.getStarredClasses().length === 0 &&
+            state.getStarredPEClasses().length === 0 &&
             !checked
           ) {
             return null;
@@ -385,17 +379,17 @@ const StarButton = ({
   cls,
   onStarToggle,
 }: {
-  cls: Class;
+  cls: PEClass;
   onStarToggle?: () => void;
 }) => {
   const { state } = useContext(HydrantContext);
-  const isStarred = state.isClassStarred(cls);
+  const isStarred = state.isPEClassStarred(cls);
 
   return (
     <Button
       onClick={(e) => {
         e.stopPropagation();
-        state.toggleStarClass(cls);
+        state.toggleStarPEClass(cls);
         onStarToggle?.();
       }}
       variant="plain"
@@ -410,7 +404,7 @@ const StarButton = ({
 /** The table of all classes, along with searching and filtering with flags. */
 export function PEClassTable() {
   const { state } = useContext(HydrantContext);
-  const { classes } = state;
+  const { peClasses } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
@@ -465,21 +459,20 @@ export function PEClassTable() {
         ...sortProps,
       },
       {
-        field: "size",
-        maxWidth: 99,
+        field: "classSize",
+        headerName: "Size",
+        maxWidth: 93,
         ...numberSortProps,
       },
       {
         field: "fee",
-        maxWidth: 97,
-        ...numberSortProps,
+        maxWidth: 93,
+        ...sortProps, // TODO numberSortProps
       },
       {
         field: "name",
         sortable: false,
         flex: 1,
-        valueFormatter: (params) =>
-          `${params.data?.class.new ? "✨ " : ""}${params.value ?? ""}`,
       },
     ];
   }, [state]);
@@ -493,15 +486,16 @@ export function PEClassTable() {
   // Setup rows
   const rowData: ClassTableRow[] = useMemo(
     () =>
-      Array.from(classes.values(), (cls) => ({
-        number: cls.number,
-        size: cls.evals.rating.slice(0, 3), // remove the "/7.0" if exists
-        fee: cls.evals.hours,
-        name: cls.name,
+      Array.from(peClasses.values(), (cls) => ({
+        number: cls.rawClass.number,
+        classSize: cls.rawClass.classSize,
+        fee: cls.rawClass.fee,
+        name: cls.rawClass.name,
         class: cls,
-        inCharge: cls.description.inCharge,
+        inCharge: "Jack Florey", // FIXME
+        // TODO figure out if we get PE instructor names
       })),
-    [classes],
+    [peClasses],
   );
 
   const [inputFilter, setInputFilter] = useState<ClassFilter | null>(null);

@@ -64,6 +64,8 @@ export class State {
   private preferences: Preferences = DEFAULT_PREFERENCES;
   /** Set of starred class numbers */
   private starredClasses = new Set<string>();
+  /** Set of starred PE class numbers */
+  private starredPEClasses = new Set<string>();
   /** Current class type for UI */
   private classType = ClassType.ACADEMIC;
 
@@ -326,10 +328,10 @@ export class State {
 
   /** Star or unstar a class */
   toggleStarClass(cls: Class): void {
-    if (this.starredClasses.has(cls.number)) {
-      this.starredClasses.delete(cls.number);
+    if (this.starredClasses.has(cls.id)) {
+      this.starredClasses.delete(cls.id);
     } else {
-      this.starredClasses.add(cls.number);
+      this.starredClasses.add(cls.id);
     }
     this.store.set("starredClasses", Array.from(this.starredClasses));
     this.updateState();
@@ -337,14 +339,37 @@ export class State {
 
   /** Check if a class is starred */
   isClassStarred(cls: Class): boolean {
-    return this.starredClasses.has(cls.number);
+    return this.starredClasses.has(cls.id);
   }
 
   /** Get all starred classes */
   getStarredClasses(): Class[] {
     return Array.from(this.starredClasses)
-      .map((number) => this.classes.get(number))
+      .map((id) => this.classes.get(id))
       .filter((cls): cls is Class => cls !== undefined);
+  }
+
+  /** Star or unstar a class */
+  toggleStarPEClass(cls: PEClass): void {
+    if (this.starredPEClasses.has(cls.id)) {
+      this.starredPEClasses.delete(cls.id);
+    } else {
+      this.starredPEClasses.add(cls.id);
+    }
+    this.store.set("starredPEClasses", Array.from(this.starredPEClasses));
+    this.updateState();
+  }
+
+  /** Check if a class is starred */
+  isPEClassStarred(cls: PEClass): boolean {
+    return this.starredPEClasses.has(cls.id);
+  }
+
+  /** Get all starred classes */
+  getStarredPEClasses(): PEClass[] {
+    return Array.from(this.starredPEClasses)
+      .map((id) => this.peClasses.get(id))
+      .filter((cls): cls is PEClass => cls !== undefined);
   }
 
   get showBanner(): boolean {
