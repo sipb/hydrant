@@ -328,7 +328,9 @@ function PEClassDescription(props: { cls: PEClass }) {
           {swimGIR && <Text>Satisfies swim GIR</Text>}
         </Flex>
         {fee ? <Text>${fee.toFixed(2)} enrollment fee</Text> : null}
-        <Text>Begins {start}, ends {end}.</Text>
+        <Text>
+          Begins {start}, ends {end}.
+        </Text>
         <Text>Schedule subject to change once online registration opens.</Text>
       </Flex>
       <ClassButtons cls={cls} />
