@@ -1,4 +1,4 @@
-import { Center, Flex, Group, Tabs, ButtonGroup } from "@chakra-ui/react";
+import { Center, Flex, Group, ButtonGroup } from "@chakra-ui/react";
 import { Calendar } from "../components/Calendar";
 import { LeftFooter } from "../components/Footers";
 import { Header, PreferencesDialog } from "../components/Header";
@@ -12,7 +12,7 @@ import {
   PreregLink,
   ExportCalendar,
 } from "../components/ButtonsLinks";
-import { classTypeComponents } from "../components/ClassTypes";
+import { ClassTypesSwitcher } from "../components/ClassTypes";
 
 import { State } from "../lib/state";
 import { Term } from "../lib/dates";
@@ -21,8 +21,6 @@ import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 
 import type { Route } from "./+types/_index";
-import { useContext } from "react";
-import type { ClassType } from "~/lib/schema";
 import { ActivityDescription } from "~/components/ActivityDescription";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -72,13 +70,6 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
 /** The application entry. */
 function HydrantApp() {
-  const { state } = useContext(HydrantContext);
-
-  const tabs = classTypeComponents([
-    ...(state.classes.size > 0 ? ["academic"] : []),
-    ...(state.peClasses.size > 0 ? ["pe"] : []),
-  ]);
-
   return (
     <>
       <Banner />
@@ -107,40 +98,7 @@ function HydrantApp() {
             </ButtonGroup>
           </Center>
           <SelectedActivities />
-          <Tabs.Root
-            fitted
-            variant="enclosed"
-            value={state.currentClassType}
-            onValueChange={(e) => {
-              state.currentClassType = e.value as ClassType;
-            }}
-          >
-            <Tabs.List>
-              {Object.entries(tabs).map(([key, [Icon]]) => (
-                <Tabs.Trigger value={key as ClassType} key={key}>
-                  <Icon />
-                  {key}
-                </Tabs.Trigger>
-              ))}
-              <Tabs.Indicator />
-            </Tabs.List>
-            {Object.entries(tabs).map(([key, [_, Component]]) => (
-              <Tabs.Content
-                value={key as ClassType}
-                key={key}
-                _open={{
-                  animationName: "fade-in, scale-in",
-                  animationDuration: "300ms",
-                }}
-                _closed={{
-                  animationName: "fade-out, scale-out",
-                  animationDuration: "120ms",
-                }}
-              >
-                <Component />
-              </Tabs.Content>
-            ))}
-          </Tabs.Root>
+          <ClassTypesSwitcher />
           <ActivityDescription />
         </Flex>
       </Flex>

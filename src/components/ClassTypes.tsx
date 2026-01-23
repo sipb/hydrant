@@ -1,8 +1,12 @@
+import { Tabs } from "@chakra-ui/react";
+import { useContext } from "react";
+
 import { ClassTable } from "./ClassTable";
 import { PEClassTable } from "./PEClassTable";
 import { ClassType } from "~/lib/schema";
 import { LuGraduationCap, LuVolleyball } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
+import { HydrantContext } from "~/lib/hydrant";
 
 export const Academic = () => {
   return <ClassTable />;
@@ -13,16 +17,64 @@ export const PEandW = () => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export function classTypeComponents(termKeys: string[]) {
+export function classTypeComponents(termKeys: ClassType[]) {
   const obj = {} as Record<ClassType, [IconType, React.ComponentType]>;
 
-  if (termKeys.includes("academic")) {
+  if (termKeys.includes(ClassType.ACADEMIC)) {
     obj[ClassType.ACADEMIC] = [LuGraduationCap, Academic];
   }
 
-  if (termKeys.includes("pe")) {
+  if (termKeys.includes(ClassType.PEW)) {
     obj[ClassType.PEW] = [LuVolleyball, PEandW];
   }
 
   return obj;
 }
+
+export const ClassTypesSwitcher = () => {
+  const { state } = useContext(HydrantContext);
+
+  const tabs = classTypeComponents([
+    ...(state.classes.size > 0 ? [ClassType.ACADEMIC] : []),
+    ...(state.peClasses.size > 0 ? [ClassType.PEW] : []),
+  ]);
+
+  if (Object.keys(tabs).length > 1) return (
+    <Tabs.Root
+      fitted
+      variant="enclosed"
+      value={state.currentClassType}
+      onValueChange={(e) => {
+        state.currentClassType = e.value as ClassType;
+      }}
+    >
+      <Tabs.List>
+        {Object.entries(tabs).map(([key, [Icon]]) => (
+          <Tabs.Trigger value={key as ClassType} key={key}>
+            <Icon />
+            {key}
+          </Tabs.Trigger>
+        ))}
+        <Tabs.Indicator />
+      </Tabs.List>
+      {Object.entries(tabs).map(([key, [_, Component]]) => (
+        <Tabs.Content
+          value={key as ClassType}
+          key={key}
+          _open={{
+            animationName: "fade-in, scale-in",
+            animationDuration: "300ms",
+          }}
+          _closed={{
+            animationName: "fade-out, scale-out",
+            animationDuration: "120ms",
+          }}
+        >
+          <Component />
+        </Tabs.Content>
+      ))}
+    </Tabs.Root>
+  ) 
+
+  return Object.entries(tabs).map(([_k, [_i, Component]]) => <Component />)
+};
