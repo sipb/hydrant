@@ -28,7 +28,7 @@ export interface RawPEClass {
   /** Equipment, no specific format */
   equipment: string;
   /** Fee, in dollars */
-  fee: number;
+  fee: string;
   /** Description, no specific format */
   description: string;
   /** Quarter of class */
