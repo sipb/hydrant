@@ -232,10 +232,7 @@ const CLASS_FLAGS_2: FilterGroup = [
   ["pirate", "🏴‍☠️ Pirate Certificate"],
 ];
 
-const CLASS_FLAGS = [
-  ...CLASS_FLAGS_1,
-  ...CLASS_FLAGS_2,
-];
+const CLASS_FLAGS = [...CLASS_FLAGS_1, ...CLASS_FLAGS_2];
 
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
@@ -379,11 +376,7 @@ function ClassFlags(props: {
           {allFlags ? "Less filters" : "More filters"}
         </Button>
       </Flex>
-      {allFlags && (
-        <>
-          {renderGroup(CLASS_FLAGS_2)}
-        </>
-      )}
+      {allFlags && <>{renderGroup(CLASS_FLAGS_2)}</>}
     </Flex>
   );
 }

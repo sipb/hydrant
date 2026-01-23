@@ -1,13 +1,11 @@
 import type { EventInput } from "@fullcalendar/core";
 import { nanoid } from "nanoid";
 
-import type { Class } from "./class";
 import type { ColorScheme } from "./colors";
 import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
 import type { RawTimeslot } from "./rawClass";
 import { sum } from "./utils";
-import type { PEClass } from "./pe";
 
 /** A period of time, spanning several Slots. */
 export class Timeslot {
@@ -66,7 +64,8 @@ export class Timeslot {
   }
 }
 
-export interface ActivityClass {
+/** Shared interface for classes and non-classes. */
+export interface Activity {
   id: string;
   backgroundColor: string;
   manualColor: boolean;
@@ -124,7 +123,7 @@ export class Event {
 }
 
 /** A non-class activity. */
-export class CustomActivity implements ActivityClass {
+export class CustomActivity implements Activity {
   /** ID unique over all Activities. */
   readonly id: string;
   name = "New Activity";
@@ -202,6 +201,3 @@ export class CustomActivity implements ActivityClass {
     }
   }
 }
-
-/** Shared interface for Class and non-classes. */
-export type Activity = Class | CustomActivity | PEClass;

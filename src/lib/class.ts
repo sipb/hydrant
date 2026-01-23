@@ -1,4 +1,4 @@
-import { Timeslot, Event, type ActivityClass } from "./activity";
+import { Timeslot, Event, type Activity } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
 import {
@@ -277,7 +277,7 @@ export class Sections {
 }
 
 /** An entire class, e.g. 6.036, and its selected sections. */
-export class Class implements ActivityClass {
+export class Class implements Activity {
   /**
    * The RawClass being wrapped around. Nothing outside Class should touch
    * this; instead use the Class getters like cls.id, cls.number, etc.

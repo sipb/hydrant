@@ -1,4 +1,4 @@
-import type { ActivityClass } from "./activity";
+import type { Activity } from "./activity";
 import type { RawPEClass } from "./rawPEClass";
 import type { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
@@ -6,7 +6,7 @@ import { fallbackColor, type ColorScheme } from "./colors";
 /**
  * PE&W activity placeholder
  */
-export class PEClass implements ActivityClass {
+export class PEClass implements Activity {
   backgroundColor: string;
   manualColor = false;
   readonly rawClass: RawPEClass;
