@@ -171,10 +171,10 @@ def term_to_semester_year(term_str: str) -> tuple[int, Term, Literal[1, 2] | Non
     >>> term_to_semester_year("2026Q2")
     (2025, <Term.FA: 'fall'>, 2)
 
-    >>> term_to_semester_year("2026Q3")
+    >>> term_to_semester_year("2026Q5")
     (2026, <Term.JA: 'IAP'>, None)
 
-    >>> term_to_semester_year("2026Q4")
+    >>> term_to_semester_year("2026Q3")
     (2026, <Term.SP: 'spring'>, 1)
     """
 

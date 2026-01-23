@@ -150,7 +150,7 @@ def run() -> None:
 
         term_info = get_term_info(sem)
         url_name = term_info["urlName"]
-    
+
         pe_data = {}
         for quarter in get_pe_quarters(url_name):
             pe_file = f"pe-q{quarter}.json"
