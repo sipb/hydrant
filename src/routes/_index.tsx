@@ -101,7 +101,6 @@ function HydrantApp() {
           </Center>
           <SelectedActivities />
           <Tabs.Root
-            lazyMount
             fitted
             variant="enclosed"
             value={state.currentClassType}
