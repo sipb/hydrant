@@ -24,7 +24,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Field } from "./ui/field";
 import { Radio, RadioGroup } from "./ui/radio";
 
-import type { Activity, NonClass } from "../lib/activity";
+import type { Activity, CustomActivity } from "../lib/activity";
 import { Timeslot } from "../lib/activity";
 import type { Class, SectionLockOption, Sections } from "../lib/class";
 import { LockOption } from "../lib/class";
@@ -299,7 +299,7 @@ export function ClassButtons(props: { cls: Class }) {
 }
 
 /** Form to add a timeslot to a non-class. */
-function NonClassAddTime(props: { activity: NonClass }) {
+function CustomActivityAddTime(props: { activity: CustomActivity }) {
   const { activity } = props;
   const { state } = useContext(HydrantContext);
   const [days, setDays] = useState(
@@ -397,7 +397,7 @@ function NonClassAddTime(props: { activity: NonClass }) {
 /**
  * Buttons in non-class description to rename it, or add/edit/remove timeslots.
  */
-export function NonClassButtons(props: { activity: NonClass }) {
+export function CustomActivityButtons(props: { activity: CustomActivity }) {
   const { activity } = props;
   const { state } = useContext(HydrantContext);
 
@@ -453,7 +453,7 @@ export function NonClassButtons(props: { activity: NonClass }) {
   };
 
   const onConfirmRename = () => {
-    state.renameNonClass(activity, name);
+    state.renameCustomActivity(activity, name);
     setIsRenaming(false);
   };
   const onCancelRename = () => {
@@ -461,7 +461,7 @@ export function NonClassButtons(props: { activity: NonClass }) {
   };
 
   const onConfirmRelocating = () => {
-    state.relocateNonClass(activity, room);
+    state.relocateCustomActivity(activity, room);
     setIsRelocating(false);
   };
   const onCancelRelocating = () => {
@@ -534,7 +534,7 @@ export function NonClassButtons(props: { activity: NonClass }) {
         Click and drag on an empty time in the calendar to add the times for
         your activity. Or add one manually:
       </Text>
-      <NonClassAddTime activity={activity} />
+      <CustomActivityAddTime activity={activity} />
     </Flex>
   );
 }

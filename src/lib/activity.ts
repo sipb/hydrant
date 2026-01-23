@@ -112,7 +112,7 @@ export class Event {
 }
 
 /** A non-class activity. */
-export class NonClass {
+export class CustomActivity {
   /** ID unique over all Activities. */
   readonly id: string;
   name = "New Activity";
@@ -191,5 +191,5 @@ export class NonClass {
   }
 }
 
-/** Shared interface for Class and NonClass. */
-export type Activity = Class | NonClass;
+/** Shared interface for Class and non-classes. */
+export type Activity = Class | CustomActivity;

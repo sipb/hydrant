@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 
 import type { Timeslot, Activity } from "./activity";
-import { NonClass } from "./activity";
+import { CustomActivity } from "./activity";
 import { scheduleSlots } from "./calendarSlots";
 import type { Section, SectionLockOption, Sections } from "./class";
 import { Class } from "./class";
@@ -41,8 +41,8 @@ export class State {
   private viewedActivity: Activity | undefined;
   /** Selected class activities. */
   private selectedClasses: Class[] = [];
-  /** Selected non-class activities. */
-  private selectedNonClasses: NonClass[] = [];
+  /** Selected custom activities. */
+  private selectedCustomActivities: CustomActivity[] = [];
   /** Selected schedule option; zero-indexed. */
   private selectedOption = 0;
   /** Currently loaded save slot, empty if none of them. */
@@ -80,7 +80,7 @@ export class State {
 
   /** All activities. */
   get selectedActivities(): Activity[] {
-    return [...this.selectedClasses, ...this.selectedNonClasses];
+    return [...this.selectedClasses, ...this.selectedCustomActivities];
   }
 
   /** The color scheme. */
@@ -112,17 +112,17 @@ export class State {
   /**
    * Adds an activity, selects it, and updates.
    *
-   * @param activity - Activity to be added. If null, creates a new NonClass
+   * @param activity - Activity to be added. If null, creates a new CustomActivity
    *   and adds it.
    */
   addActivity(activity?: Activity): void {
-    const toAdd = activity ?? new NonClass(this.colorScheme);
+    const toAdd = activity ?? new CustomActivity(this.colorScheme);
     this.setViewedActivity(toAdd);
     if (this.isSelectedActivity(toAdd)) return;
     if (toAdd instanceof Class) {
       this.selectedClasses.push(toAdd);
     } else {
-      this.selectedNonClasses.push(toAdd);
+      this.selectedCustomActivities.push(toAdd);
     }
     this.updateActivities();
   }
@@ -135,7 +135,7 @@ export class State {
         (activity_) => activity_.id !== activity.id,
       );
     } else {
-      this.selectedNonClasses = this.selectedNonClasses.filter(
+      this.selectedCustomActivities = this.selectedCustomActivities.filter(
         (activity_) => activity_.id !== activity.id,
       );
       this.setViewedActivity(undefined);
@@ -167,41 +167,41 @@ export class State {
   }
 
   //========================================================================
-  // NonClass handlers
+  // CustomActivity handlers
 
   /** Rename a given non-activity. */
-  renameNonClass(nonClass: NonClass, name: string): void {
-    const nonClass_ = this.selectedNonClasses.find(
-      (nonClass_) => nonClass_.id === nonClass.id,
+  renameCustomActivity(customActivity: CustomActivity, name: string): void {
+    const customActivity_ = this.selectedCustomActivities.find(
+      (customActivity_) => customActivity_.id === customActivity.id,
     );
 
-    if (!nonClass_) return;
+    if (!customActivity_) return;
 
-    nonClass_.name = name;
+    customActivity_.name = name;
     this.updateState();
   }
 
   /** Changes the room for a given non-class. */
-  relocateNonClass(nonClass: NonClass, room: string | undefined): void {
-    const nonClass_ = this.selectedNonClasses.find(
-      (nonClass_) => nonClass_.id === nonClass.id,
+  relocateCustomActivity(customActivity: CustomActivity, room: string | undefined): void {
+    const customActivity_ = this.selectedCustomActivities.find(
+      (customActivity_) => customActivity_.id === customActivity.id,
     );
 
-    if (!nonClass_) return;
+    if (!customActivity_) return;
 
-    nonClass_.room = room;
+    customActivity_.room = room;
     this.updateState();
   }
 
   /** Add the timeslot to currently viewed activity. */
-  addTimeslot(nonClass: NonClass, slot: Timeslot): void {
-    nonClass.addTimeslot(slot);
+  addTimeslot(customActivity: CustomActivity, slot: Timeslot): void {
+    customActivity.addTimeslot(slot);
     this.updateActivities();
   }
 
   /** Remove all equal timeslots from currently viewed activity. */
-  removeTimeslot(nonClass: NonClass, slot: Timeslot): void {
-    nonClass.removeTimeslot(slot);
+  removeTimeslot(customActivity: CustomActivity, slot: Timeslot): void {
+    customActivity.removeTimeslot(slot);
     this.updateActivities();
   }
 
@@ -251,7 +251,7 @@ export class State {
    */
   updateActivities(save = true): void {
     chooseColors(this.selectedActivities, this.colorScheme);
-    const result = scheduleSlots(this.selectedClasses, this.selectedNonClasses);
+    const result = scheduleSlots(this.selectedClasses, this.selectedCustomActivities);
     this.options = result.options;
     this.conflicts = result.conflicts;
     this.selectOption();
@@ -269,10 +269,10 @@ export class State {
       !this.isSelectedActivity(cls) &&
       (cls.sections.length === 0 ||
         (this.selectedClasses.length === 0 &&
-          this.selectedNonClasses.length === 0) ||
+          this.selectedCustomActivities.length === 0) ||
         scheduleSlots(
           this.selectedClasses.concat([cls]),
-          this.selectedNonClasses,
+          this.selectedCustomActivities,
         ).conflicts === this.conflicts)
     );
   }
@@ -336,7 +336,7 @@ export class State {
   /** Clear (almost) all program state. This doesn't clear class state. */
   reset(): void {
     this.selectedClasses = [];
-    this.selectedNonClasses = [];
+    this.selectedCustomActivities = [];
     this.selectedOption = 0;
   }
 
@@ -344,8 +344,8 @@ export class State {
   deflate() {
     return [
       this.selectedClasses.map((cls) => cls.deflate()),
-      this.selectedNonClasses.length > 0
-        ? this.selectedNonClasses.map((nonClass) => nonClass.deflate())
+      this.selectedCustomActivities.length > 0
+        ? this.selectedCustomActivities.map((customActivity) => customActivity.deflate())
         : null,
       this.selectedOption,
     ];
@@ -364,7 +364,7 @@ export class State {
   ): void {
     if (!obj) return;
     this.reset();
-    const [classes, nonClasses, selectedOption] = obj as [
+    const [classes, customActivities, selectedOption] = obj as [
       (string | number | string[])[][],
       (string | RawTimeslot[])[][] | null,
       number | undefined,
@@ -378,11 +378,11 @@ export class State {
       cls.inflate(deflated);
       this.selectedClasses.push(cls);
     }
-    if (nonClasses) {
-      for (const deflated of nonClasses) {
-        const nonClass = new NonClass(this.colorScheme);
-        nonClass.inflate(deflated);
-        this.selectedNonClasses.push(nonClass);
+    if (customActivities) {
+      for (const deflated of customActivities) {
+        const customActivity = new CustomActivity(this.colorScheme);
+        customActivity.inflate(deflated);
+        this.selectedCustomActivities.push(customActivity);
       }
     }
     this.selectedOption = selectedOption ?? 0;

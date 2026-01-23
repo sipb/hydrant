@@ -13,13 +13,13 @@ import {
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
-import type { NonClass } from "../lib/activity";
+import type { CustomActivity } from "../lib/activity";
 import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 
-import { ClassButtons, NonClassButtons } from "./ActivityButtons";
+import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 import { LuExternalLink } from "react-icons/lu";
 
 /** A small image indicating a flag, like Spring or CI-H. */
@@ -246,13 +246,13 @@ function ClassDescription(props: { cls: Class }) {
 }
 
 /** Full non-class activity description, from title to timeslots. */
-function NonClassDescription(props: { activity: NonClass }) {
+function CustomActivityDescription(props: { activity: CustomActivity }) {
   const { activity } = props;
   const { state } = useContext(HydrantContext);
 
   return (
     <Flex direction="column" gap={4}>
-      <NonClassButtons activity={activity} />
+      <CustomActivityButtons activity={activity} />
       <Flex direction="column" gap={2}>
         {activity.timeslots.map((t) => (
           <Flex key={t.toString()} align="center" gap={2}>
@@ -283,6 +283,6 @@ export function ActivityDescription() {
   return activity instanceof Class ? (
     <ClassDescription cls={activity} />
   ) : (
-    <NonClassDescription activity={activity} />
+    <CustomActivityDescription activity={activity} />
   );
 }

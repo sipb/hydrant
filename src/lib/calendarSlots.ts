@@ -1,4 +1,4 @@
-import type { NonClass, Timeslot } from "./activity";
+import type { CustomActivity, Timeslot } from "./activity";
 import type { Section, Sections, Class } from "./class";
 
 /**
@@ -65,12 +65,12 @@ function selectHelper(
  * @returns Object with:
  *    options - list of schedule options; each schedule option is a list of all
  *      sections in that schedule, including locked sections (but not including
- *      non-class activities.)
+ *      custom activities.)
  *    conflicts - number of conflicts in any option
  */
 export function scheduleSlots(
   selectedClasses: Class[],
-  selectedNonClasses: NonClass[],
+  selectedCustomActivities: CustomActivity[],
 ): {
   options: Section[][];
   conflicts: number;
@@ -97,7 +97,7 @@ export function scheduleSlots(
     }
   }
 
-  for (const activity of selectedNonClasses) {
+  for (const activity of selectedCustomActivities) {
     initialSlots.push(...activity.timeslots);
   }
 
