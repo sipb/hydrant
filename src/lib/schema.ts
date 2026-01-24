@@ -49,7 +49,6 @@ export interface HydrantState {
   saveId: string;
   saves: Save[];
   preferences: Preferences;
-  classType: ClassType;
 }
 
 /** Default React state. */
@@ -64,5 +63,4 @@ export const DEFAULT_STATE: HydrantState = {
   saveId: "",
   saves: [],
   preferences: DEFAULT_PREFERENCES,
-  classType: ClassType.ACADEMIC,
 };

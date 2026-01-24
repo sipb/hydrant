@@ -17,7 +17,7 @@ import type { RawClass, RawTimeslot, RawPEClass } from "./raw";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
-import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES, ClassType } from "./schema";
+import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
 import { PEClass } from "./pe";
 
 /**
@@ -65,8 +65,6 @@ export class State {
   private starredClasses = new Set<string>();
   /** Set of starred PE class numbers */
   private starredPEClasses = new Set<string>();
-  /** Current class type for UI */
-  private classType = ClassType.ACADEMIC;
 
   /** React callback to update state. */
   callback: ((state: HydrantState) => void) | undefined;
@@ -264,7 +262,6 @@ export class State {
       saveId: this.saveId,
       saves: this.saves,
       preferences: this.preferences,
-      classType: this.classType,
     });
     if (save) {
       this.storeSave(this.saveId, false);
@@ -385,15 +382,6 @@ export class State {
   set showBanner(show: boolean) {
     this.preferences.showBanner = show;
     this.preferences.showBannerChanged = new Date().valueOf();
-    this.updateState();
-  }
-
-  get currentClassType(): ClassType {
-    return this.classType;
-  }
-
-  set currentClassType(classType: ClassType) {
-    this.classType = classType;
     this.updateState();
   }
 

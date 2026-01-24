@@ -1,5 +1,5 @@
 import { Tabs } from "@chakra-ui/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { ClassTable } from "./ClassTable";
 import { PEClassTable } from "./PEClassTable";
@@ -24,6 +24,7 @@ function classTypeComponents(termKeys: ClassType[]) {
 
 export const ClassTypesSwitcher = () => {
   const { state } = useContext(HydrantContext);
+  const [currentTab, setCurrentTab] = useState(ClassType.ACADEMIC);
 
   const tabs = classTypeComponents([
     ...(state.classes.size > 0 ? [ClassType.ACADEMIC] : []),
@@ -36,9 +37,9 @@ export const ClassTypesSwitcher = () => {
         fitted
         size="sm"
         variant="subtle"
-        value={state.currentClassType}
+        value={currentTab}
         onValueChange={(e) => {
-          state.currentClassType = e.value as ClassType;
+          setCurrentTab(e.value as ClassType);
         }}
       >
         <Tabs.List>
