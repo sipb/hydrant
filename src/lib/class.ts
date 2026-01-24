@@ -155,7 +155,6 @@ export class ClassSections extends Sections {
     }
   }
 
-  // TODO move this logic to Sections
   get name(): string {
     switch (this.kind) {
       case SectionKind.LECTURE:
