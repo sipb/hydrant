@@ -10,6 +10,21 @@ export interface PEFlags {
   nopreq: boolean;
 }
 
+export const getPEFlagEmojis = (flag: keyof PEFlags): string => {
+  switch (flag) {
+    case "wellness":
+      return "🔮";
+    case "pirate":
+      return "🏴‍☠️";
+    case "nofee":
+      return "";
+    case "nopreq":
+      return "";
+    default:
+      return "";
+  }
+};
+
 const PIRATE_CLASSES = [
   // ARCHERY
   "PE.0600",
