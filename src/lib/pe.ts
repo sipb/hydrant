@@ -1,5 +1,5 @@
 import { Sections, type Activity } from "./activity";
-import { TermCode, type RawPEClass } from "./raw";
+import { type RawPEClass } from "./raw";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
 
@@ -10,7 +10,7 @@ export interface PEFlags {
   nopreq: boolean;
 }
 
-const PIRATES = [
+const PIRATE_CLASSES = [
   // ARCHERY
   "PE.0600",
   "PE.0639",
@@ -21,14 +21,6 @@ const PIRATES = [
   // SAILING
   "PE.0904",
 ];
-
-export const QUARTERS: Record<number, TermCode> = {
-  1: TermCode.FA,
-  2: TermCode.FA,
-  3: TermCode.SP,
-  4: TermCode.SP,
-  5: TermCode.JA,
-};
 
 export class PESections extends Sections {
   declare cls: PEClass;
@@ -129,7 +121,7 @@ export class PEClass implements Activity {
   get flags(): PEFlags {
     return {
       wellness: this.id.startsWith("PE.05") || this.id.startsWith("PE.4"),
-      pirate: PIRATES.includes(this.id),
+      pirate: PIRATE_CLASSES.includes(this.id),
       nofee: this.rawClass.fee == "$0.00",
       nopreq: this.rawClass.prereqs == "None",
     };
