@@ -1,11 +1,4 @@
-import {
-  Event,
-  type Activity,
-  type Sections,
-  LockOption,
-  Section,
-  type SectionLockOption,
-} from "./activity";
+import { Event, Sections, type Activity, type Section } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
 import {
@@ -120,21 +113,9 @@ export const getFlagImg = (flag: keyof Flags): string => {
   return flagImages[flag] ?? "";
 };
 
-/**
- * A group of {@link Section}s, all the same kind (like lec, rec, or lab). At
- * most one of these can be selected at a time, and that selection is possibly
- * locked.
- */
-export class ClassSections implements Sections {
-  cls: Class;
-  kind: SectionKind;
-  sections: Section[];
-  /** Are these sections locked? None counts as locked. */
-  locked: boolean;
-  /** Currently selected section out of these. None is null. */
-  selected: Section | null;
-  /** Overridden location for this particular section. */
-  roomOverride = "";
+export class ClassSections extends Sections {
+  declare cls: Class;
+  declare kind: SectionKind;
 
   constructor(
     cls: Class,
@@ -144,14 +125,10 @@ export class ClassSections implements Sections {
     locked?: boolean,
     selected?: Section | null,
   ) {
-    this.cls = cls;
+    super(cls, rawTimes, secs, kind, locked, selected);
     this.kind = kind;
-    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
-    this.locked = locked ?? false;
-    this.selected = selected ?? null;
   }
 
-  /** Short name for the kind of sections these are. */
   get shortName(): string {
     switch (this.kind) {
       case SectionKind.LECTURE:
@@ -179,7 +156,6 @@ export class ClassSections implements Sections {
   }
 
   // TODO move this logic to Sections
-  /** Name for the kind of sections these are. */
   get name(): string {
     switch (this.kind) {
       case SectionKind.LECTURE:
@@ -190,32 +166,6 @@ export class ClassSections implements Sections {
         return "Lab";
       case SectionKind.DESIGN:
         return "Design";
-    }
-  }
-
-  /** The event (possibly none) for this group of sections. */
-  get event(): Event | null {
-    return this.selected
-      ? new Event(
-          this.cls,
-          `${this.cls.number} ${this.shortName}`,
-          this.selected.timeslots,
-          this.roomOverride || this.selected.room,
-          this.cls.half,
-        )
-      : null;
-  }
-
-  /** Lock a specific section of this class. Does not validate. */
-  lockSection(sec: SectionLockOption): void {
-    if (sec === LockOption.Auto) {
-      this.locked = false;
-    } else if (sec === LockOption.None) {
-      this.locked = true;
-      this.selected = null;
-    } else {
-      this.locked = true;
-      this.selected = sec;
     }
   }
 }

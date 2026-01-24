@@ -1,11 +1,5 @@
-import {
-  Section,
-  type Activity,
-  type Sections,
-  LockOption,
-  type SectionLockOption,
-} from "./activity";
-import { TermCode, type RawSection, type RawPEClass } from "./raw";
+import { Sections, type Activity } from "./activity";
+import { TermCode, type RawPEClass } from "./raw";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
 
@@ -36,60 +30,19 @@ export const QUARTERS: Record<number, TermCode> = {
   5: TermCode.JA,
 };
 
-export class PESections implements Sections {
-  cls: PEClass;
-  sections: Section[];
-  /** Are these sections locked? None counts as locked. */
-  locked: boolean;
-  /** Currently selected section out of these. None is null. */
-  selected: Section | null;
-  /** Overridden location for this particular section. */
-  roomOverride = "";
+export class PESections extends Sections {
+  declare cls: PEClass;
 
-  constructor(
-    cls: PEClass,
-    rawTimes: string[],
-    secs: RawSection[],
-    locked?: boolean,
-    selected?: Section | null,
-  ) {
-    this.cls = cls;
-    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
-    this.locked = locked ?? false;
-    this.selected = selected ?? null;
+  private readonly _shortName = "pe";
+  public get shortName() {
+    return this._shortName;
   }
-
-  /** Short name for the kind of sections these are. */
-  readonly shortName = "pe";
 
   readonly priority = -1;
 
-  /** Name for the kind of sections these are. */
-  readonly name = "PE and Wellness";
-
-  /** The event (possibly none) for this group of sections. */
-  get event(): Event | null {
-    return this.selected
-      ? new Event(
-          this.cls,
-          this.cls.id, // TODO display section ID
-          this.selected.timeslots,
-          this.roomOverride || this.selected.room,
-        )
-      : null;
-  }
-
-  /** Lock a specific section of this class. Does not validate. */
-  lockSection(sec: SectionLockOption): void {
-    if (sec === LockOption.Auto) {
-      this.locked = false;
-    } else if (sec === LockOption.None) {
-      this.locked = true;
-      this.selected = null;
-    } else {
-      this.locked = true;
-      this.selected = sec;
-    }
+  private readonly _name = "PE and Wellness";
+  public get name() {
+    return this._name;
   }
 }
 

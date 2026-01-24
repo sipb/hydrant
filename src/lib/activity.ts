@@ -80,6 +80,7 @@ export interface Activity {
   end?: [number, number];
   deflate(): unknown;
   inflate?(parsed: unknown): void;
+  half?: number;
 }
 
 /**
@@ -208,31 +209,6 @@ export class CustomActivity implements Activity {
   }
 }
 
-/** The non-section options for a manual section time. */
-export const LockOption = {
-  Auto: "Auto",
-  None: "None",
-} as const;
-
-/** The type of {@link LockOption}. */
-export type TLockOption = (typeof LockOption)[keyof typeof LockOption];
-
-/** All section options for a manual section time. */
-export type SectionLockOption = Section | TLockOption;
-
-export interface Sections {
-  cls: Activity;
-  sections: Section[];
-  locked: boolean;
-  selected: Section | null;
-  roomOverride: string;
-  shortName: string;
-  priority: number;
-  name: string;
-  event: Event | null;
-  lockSection(sec: SectionLockOption): void;
-}
-
 /**
  * A section is an array of timeslots that meet in the same room for the same
  * purpose. Sections can be lectures, recitations, or labs, for a given class.
@@ -282,5 +258,87 @@ export class Section {
       }
     }
     return conflicts;
+  }
+}
+
+/** The non-section options for a manual section time. */
+export const LockOption = {
+  Auto: "Auto",
+  None: "None",
+} as const;
+
+/** The type of {@link LockOption}. */
+export type TLockOption = (typeof LockOption)[keyof typeof LockOption];
+
+/** All section options for a manual section time. */
+export type SectionLockOption = Section | TLockOption;
+
+/**
+ * A group of {@link Section}s, all the same kind (like lec, rec, or lab). At
+ * most one of these can be selected at a time, and that selection is possibly
+ * locked.
+ */
+export class Sections {
+  cls: Activity;
+  kind?: string;
+  sections: Section[];
+  /** Are these sections locked? None counts as locked. */
+  locked: boolean;
+  /** Currently selected section out of these. None is null. */
+  selected: Section | null;
+  /** Overridden location for this particular section. */
+  roomOverride = "";
+
+  constructor(
+    cls: Activity,
+    rawTimes: string[],
+    secs: RawSection[],
+    kind?: string,
+    locked?: boolean,
+    selected?: Section | null,
+  ) {
+    this.cls = cls;
+    this.kind = kind;
+    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
+    this.locked = locked ?? false;
+    this.selected = selected ?? null;
+  }
+
+  /** Short name for the kind of sections these are. */
+  get shortName(): string {
+    return this.kind ? this.kind.toLowerCase() : "sec";
+  }
+
+  readonly prority = 0;
+
+  /** Name for the kind of sections these are. */
+  get name(): string {
+    return this.kind ?? "Section";
+  }
+
+  /** The event (possibly none) for this group of sections. */
+  get event(): Event | null {
+    return this.selected
+      ? new Event(
+          this.cls,
+          `${this.cls.id} ${this.shortName}`,
+          this.selected.timeslots,
+          this.roomOverride || this.selected.room,
+          this.cls.half,
+        )
+      : null;
+  }
+
+  /** Lock a specific section of this class. Does not validate. */
+  lockSection(sec: SectionLockOption): void {
+    if (sec === LockOption.Auto) {
+      this.locked = false;
+    } else if (sec === LockOption.None) {
+      this.locked = true;
+      this.selected = null;
+    } else {
+      this.locked = true;
+      this.selected = sec;
+    }
   }
 }
