@@ -50,6 +50,7 @@ preparationUnits = 4
 isVariableUnits = false
 level = "G"
 meets = "11.S195 / 1.C01/51"
+prereqs = "6.C01/51"
 description = "Building on core material in 6.C01/51, emphasizes the design and operation of sustainable systems and the application of machine learning to real-world planning and policy challenges. Students learn to leverage data from urban services, cities, and the environment to evaluate and/or improve sustainability solutions. Projects focus on using machine learning to identify new insights or decisions that advance equity and sustainability in societal-scale systems. This (H4) course meets together with 1.C01/51. Students cannot receive credit without completion of the core subject (H3) 6.C01/51."
 name = "Machine Learning for Sustainable Systems"
 inCharge = "Cong Cong, Saurabh Amin"
@@ -103,3 +104,13 @@ level = "G"
 description = "Los Angeles, New York, Chicago, Oakland, Seattle, and Raleigh have all recently elected mayors on the political Left. Do the mayors share common ideologies or policy prescriptions? Were their electoral coalitions similar? How do they deliver on promises given their state and the national political climate? The course will rely heavily on newspaper, magazine, and online reports as well as readings on federalism and cities. Speakers will various cities will be invited to speak via Zoom."
 name = "Can Cities on the Left Govern?"
 inCharge = " J. Phillip Thompson"
+
+["11.S938"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+level = "G"
+description = "Class examines issues of urbanism via the interdisciplinary field of night studies, and examines and analyzes important issues in urban studies and planning and architecture--particularly governance, urban design, environmental policy and practice, transportation, economic development, and design of the public realm--by focusing on the night. Attention is also paid to issues of temporality--like Kevin Lynch did in What Time is This Place--and focuses on time as an instrument of design. Special focus is on city development through managing darkness and the night and the many rhythms of labor, leisure, and city life, especially through the emergence of the new role of night mayors that have sprung up all over the world."
+name = "The Dark City: Nocturnal Rhythms of the Urban Landscape"
+inCharge = "Garnette Cadogan"
