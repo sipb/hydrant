@@ -21,18 +21,6 @@ export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
   return peFlagEmojis[flag] ?? "";
 };
 
-const PIRATE_CLASSES = [
-  // ARCHERY
-  "PE.0600",
-  "PE.0639",
-  // FENCING
-  "PE.0602",
-  "PE.0654",
-  "PE.0603",
-  // SAILING
-  "PE.0904",
-];
-
 export class PESections extends Sections {
   declare cls: PEClass;
 
@@ -131,8 +119,8 @@ export class PEClass implements BaseActivity {
 
   get flags(): PEFlags {
     return {
-      wellness: this.id.startsWith("PE.05") || this.id.startsWith("PE.4"),
-      pirate: PIRATE_CLASSES.includes(this.id),
+      wellness: this.rawClass.wellness,
+      pirate: this.rawClass.pirate,
       swim: this.rawClass.swimGIR,
       nofee: this.rawClass.fee == "$0.00",
       nopreq: this.rawClass.prereqs == "None",

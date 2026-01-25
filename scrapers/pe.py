@@ -30,6 +30,20 @@ QUARTERS: dict[int, tuple[Term, Literal[1, 2] | None]] = {
     5: (Term.JA, None),
 }
 
+WELLNESS_PREFIXES = ["PE.05", "PE.4"]
+
+PIRATE_CLASSES = [
+    # ARCHERY
+    "PE.0600",
+    "PE.0639",
+    # FENCING
+    "PE.0602",
+    "PE.0654",
+    "PE.0603",
+    # SAILING
+    "PE.0904",
+]
+
 
 class PEWFile(TypedDict):
     """
@@ -65,6 +79,8 @@ class PEWSchema(TypedDict):
     startDate: str
     endDate: str
     points: int
+    wellness: bool
+    pirate: bool
     swimGIR: bool
     prereqs: str
     equipment: str
@@ -373,6 +389,10 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
                 "startDate": parse_date(pe_row["start_date"]).isoformat(),
                 "endDate": parse_date(pe_row["end_date"]).isoformat(),
                 "points": pe_row["gir_points"],
+                "wellness": any(
+                    subject_num.startswith(prefix) for prefix in WELLNESS_PREFIXES
+                ),
+                "pirate": subject_num in PIRATE_CLASSES,
                 "swimGIR": pe_row["swim_gir"],
                 "prereqs": pe_row["prerequisites"] or "None",
                 "equipment": pe_row["equipment"],

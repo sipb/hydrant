@@ -219,6 +219,11 @@ export interface RawPEClass {
 
   /** PE points */
   points: number;
+
+  /** Wellness Wizard eligible */
+  wellness: boolean;
+  /** Pirate Certificate eligible */
+  pirate: boolean;
   /** Satisfies swim GIR */
   swimGIR: boolean;
 
