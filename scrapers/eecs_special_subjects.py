@@ -34,6 +34,7 @@ from .utils import TIMES, EVE_TIMES
 # `requests.get()` of the WordPress page often returns only navigation chrome, so
 # this script scrapes the source-of-truth fragment directly.
 URL = "https://eecsis.mit.edu/plugins/subj_2026SP.html"
+FRONTEND_URL = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/"
 COURSE_RE = re.compile(r"\b(6\.S\d{3})\b")
 DAY_WORD = {
     "monday": "M",
@@ -299,7 +300,7 @@ def parse_row(row):
     """
     header = row.get_text(" ", strip=True)
     course, title = parse_header(header)
-    data = {"url": URL}
+    data = {"url": f'{FRONTEND_URL}#{course.replace(".", "_", 1)}'}
 
     if title:
         data["name"] = _clean(title)
