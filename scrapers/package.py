@@ -156,8 +156,14 @@ def run() -> None:
         pe_data = {}
         for quarter in get_pe_quarters(url_name):
             pe_file = f"pe-q{quarter}.json"
+            pe_overrides_file = os.path.join("pe", f"pe-q{quarter}-overrides.toml")
             if os.path.isfile(os.path.join(package_dir, pe_file)):
-                pe_data[quarter] = load_json_data(pe_file)
+                quarter_data = load_json_data(pe_file)
+                quarter_overrides = load_toml_data(pe_overrides_file)
+                pe_data[quarter] = merge_data(
+                    datasets=[quarter_data, quarter_overrides],
+                    keys_to_keep=set(quarter_data),
+                )
 
         with open(
             os.path.join(
