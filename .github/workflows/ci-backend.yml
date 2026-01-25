@@ -1,0 +1,83 @@
+name: CI checks for the backend
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.{ts,tsx,js,md,txt,toml}"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".prettierignore"
+      - "{package,package-lock,tsconfig}.json"
+      - "scrapers/overrides.toml.d/override-schema.json"
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**/*.{ts,tsx,js,md,txt,toml}"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".prettierignore"
+      - "{package,package-lock,tsconfig}.json"
+      - "scrapers/overrides.toml.d/override-schema.json"
+
+env:
+  python-version: 3.8
+
+jobs:
+  black:
+    name: Black
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python-version }}
+          cache: "pip"
+      - uses: psf/black@24.8.0 # pinned due to python 8 support
+  pylint:
+    name: Pylint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python-version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install .[dev]
+      - name: Analysing the code with pylint
+        run: |
+          pylint $(git ls-files '*.py')
+  pytest:
+    name: Pytest
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python-version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install .[dev]
+      - name: Run tests with pytest (including doctests)
+        run: pytest --doctest-modules
+  integration:
+    name: Test for valid JSON output
+    runs-on: ubuntu-24.04 #NOTE: python 3.8 is NOT supported on ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python-version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install .
+      - name: Run scrapers
+        run: python3 -m scrapers
+      - name: Check existence of public/latest.json
+        run: test -f public/latest.json || exit 1

@@ -1,26 +1,30 @@
+import { TermCode } from "./rawClass";
+
 /** Dictionary of semester-name related constants. */
 const SEMESTER_NAMES = {
   f: {
-    catalog: "FA",
+    catalog: TermCode.FA,
     full: "fall",
     fullCaps: "Fall",
   },
   s: {
-    catalog: "SP",
+    catalog: TermCode.SP,
     full: "spring",
     fullCaps: "Spring",
   },
   i: {
-    catalog: "JA",
+    catalog: TermCode.JA,
     full: "iap",
     fullCaps: "IAP",
   },
   m: {
-    catalog: "SU",
+    catalog: TermCode.SU,
     full: "summer",
     fullCaps: "Summer",
   },
 } as const;
+
+const TIMESLOTS = 34;
 
 /** Type of semester abbreviations. */
 export type TSemester = keyof typeof SEMESTER_NAMES;
@@ -29,17 +33,17 @@ export type TSemester = keyof typeof SEMESTER_NAMES;
 export const WEEKDAY_STRINGS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
 /** See {@link TIMESLOT_STRINGS}. */
-function generateTimeslotStrings(): Array<string> {
+function generateTimeslotStrings(): string[] {
   const res = [];
-  for (let i = 8; i <= 11; i++) {
-    res.push(`${i}:00 AM`);
-    res.push(`${i}:30 AM`);
+  for (let i = 6; i <= 11; i++) {
+    res.push(`${i.toString()}:00 AM`);
+    res.push(`${i.toString()}:30 AM`);
   }
   res.push("12:00 PM");
   res.push("12:30 PM");
   for (let i = 1; i <= 9; i++) {
-    res.push(`${i}:00 PM`);
-    res.push(`${i}:30 PM`);
+    res.push(`${i.toString()}:00 PM`);
+    res.push(`${i.toString()}:30 PM`);
   }
   res.push(`10:00 PM`);
   return res;
@@ -49,33 +53,34 @@ function generateTimeslotStrings(): Array<string> {
 export const TIMESLOT_STRINGS = generateTimeslotStrings();
 
 /** We maintain only one copy of each slot object. */
-const SLOT_OBJECTS: { [slot: number]: Slot } = {};
+const SLOT_OBJECTS: Record<number, Slot> = {};
 
 /**
- * A thirty-minute slot. Each day has 30 slots from 8 AM to 11 PM, times five
+ * A thirty-minute slot. Each day has 34 slots from 6 AM to 11 PM, times five
  * days a week. When treated as an instant, a slot represents its start time.
  *
- * Each slot is assigned a slot number. Monday slots are 0 to 29, Tuesday are
- * 30 to 59, etc., slot number 0 is Monday 8 AM to 8:30 AM, etc.
+ * Each slot is assigned a slot number. Monday slots are 0 to 33, Tuesday are
+ * 34 to 67, etc., slot number 0 is Monday 6 AM to 6:30 AM, etc.
  *
- * The interface ends at 9 PM, so we don't need to worry about the fencepost
+ * The interface ends at 11 PM, so we don't need to worry about the fencepost
  * problem with respect to ending slots.
  */
 export class Slot {
-  constructor(/** The slot number. */ public slot: number) {}
+  /** @param slot The slot number. */
+  constructor(public slot: number) {}
 
   static fromSlotNumber(slot: number): Slot {
-    if (!SLOT_OBJECTS[slot]) {
+    if (!(slot in SLOT_OBJECTS)) {
       SLOT_OBJECTS[slot] = new Slot(slot);
     }
     return SLOT_OBJECTS[slot];
   }
 
-  /** Converts a date, within 8 AM to 11 PM, to a slot. */
+  /** Converts a date, within 6 AM to 11 PM, to a slot. */
   static fromStartDate(date: Date): Slot {
     return new Slot(
-      30 * (date.getDay() - 1) +
-        2 * (date.getHours() - 8) +
+      TIMESLOTS * (date.getDay() - 1) +
+        2 * (date.getHours() - 6) +
         Math.floor(date.getMinutes() / 30),
     );
   }
@@ -83,7 +88,7 @@ export class Slot {
   /** Convert from WEEKDAY_STRINGS and TIMESLOT_STRINGS to slot. */
   static fromDayString(day: string, time: string): Slot {
     return Slot.fromSlotNumber(
-      30 * WEEKDAY_STRINGS.indexOf(day) + TIMESLOT_STRINGS.indexOf(time),
+      TIMESLOTS * WEEKDAY_STRINGS.indexOf(day) + TIMESLOT_STRINGS.indexOf(time),
     );
   }
 
@@ -97,7 +102,7 @@ export class Slot {
    * that date is the right day of the week.
    */
   onDate(date: Date): Date {
-    const hour = Math.floor((this.slot % 30) / 2) + 8;
+    const hour = Math.floor((this.slot % TIMESLOTS) / 2) + 6;
     const minute = (this.slot % 2) * 30;
     return new Date(
       date.getFullYear(),
@@ -121,7 +126,7 @@ export class Slot {
 
   /** The day of the week this slot falls in, as a number from 1 to 5. */
   get weekday(): number {
-    return Math.floor(this.slot / 30) + 1;
+    return Math.floor(this.slot / TIMESLOTS) + 1;
   }
 
   /** Convert a slot number to a day string. */
@@ -131,7 +136,7 @@ export class Slot {
 
   /** Convert a slot number to a time string. */
   get timeString(): string {
-    return TIMESLOT_STRINGS[this.slot % 30];
+    return TIMESLOT_STRINGS[this.slot % TIMESLOTS];
   }
 }
 
@@ -169,7 +174,7 @@ function getLastUrlName(urlName: string): string {
     case "s":
       return `i${year}`;
     case "i":
-      return `f${parseInt(year, 10) - 1}`;
+      return `f${(parseInt(year, 10) - 1).toString()}`;
   }
 }
 
@@ -184,7 +189,7 @@ function getNextUrlName(urlName: string): string {
     case "m":
       return `f${year}`;
     case "f":
-      return `i${parseInt(year, 10) + 1}`;
+      return `i${(parseInt(year, 10) + 1).toString()}`;
   }
 }
 
@@ -195,7 +200,7 @@ const EXCLUDED_URLS = ["i23", "m23", "i24", "m24"];
 const EARLIEST_URL = "f22";
 
 /** Return all urlNames before the given one. */
-export function getUrlNames(latestUrlName: string): Array<string> {
+export function getUrlNames(latestUrlName: string): string[] {
   let urlName = latestUrlName;
   const res = [];
   while (urlName !== EARLIEST_URL) {
@@ -239,7 +244,7 @@ export function getClosestUrlName(
     }
   }
 
-  const urlNamesSameSem = urlNames.filter((u) => u[0] === urlName[0]);
+  const urlNamesSameSem = urlNames.filter((u) => u.startsWith(urlName[0]));
   if (urlNamesSameSem.length > 0) {
     // Unrecognized term, but we can return the latest term of the same type of
     // semester (fall, spring, etc.)
@@ -251,25 +256,25 @@ export function getClosestUrlName(
 }
 
 /** Type of object passed to Term constructor. */
-export type TermInfo = {
+export interface TermInfo {
   urlName: string;
   startDate: string;
   h1EndDate?: string;
   h2StartDate?: string;
   endDate: string;
-  mondayScheduleDate?: string;
-  holidayDates?: Array<string>;
-};
+  mondayScheduleDate?: string | null;
+  holidayDates?: string[];
+}
 
 /**
  * Type of object parsed from latestTerm.json, including information about the
  * current semester term (fall or spring) and the associated pre-semester term
  * (summer or IAP).
  */
-export type LatestTermInfo = {
+export interface LatestTermInfo {
   preSemester: TermInfo;
   semester: Required<TermInfo>;
-};
+}
 
 /**
  * A term object, containing all information about non-class, term-specific
@@ -283,22 +288,22 @@ export class Term {
   /** First day of classes, inclusive. */
   public start: Date;
   /** Last day of H1 classes, inclusive. */
-  public h1End: Date;
+  public h1End?: Date;
   /** First day of H2 classes, inclusive. */
-  public h2Start: Date;
+  public h2Start?: Date;
   /** Last day of classes, inclusive. */
   public end: Date;
   /** A Tuesday which runs on Monday schedule, if it exists. */
   public mondaySchedule?: Date;
   /** A list of dates with no class. */
-  public holidays: Array<Date>;
+  public holidays: Date[];
 
   constructor({
     urlName,
-    startDate = "",
-    h1EndDate = "",
-    h2StartDate = "",
-    endDate = "",
+    startDate,
+    h1EndDate,
+    h2StartDate,
+    endDate,
     mondayScheduleDate,
     holidayDates = [],
   }: Partial<TermInfo> & { urlName: string }) {
@@ -306,14 +311,17 @@ export class Term {
     const { year, semester } = parseUrlName(urlName);
     this.year = year;
     this.semester = semester;
-    this.start = midnight(startDate);
-    this.h1End = midnight(h1EndDate);
-    this.h2Start = midnight(h2StartDate);
-    this.end = midnight(endDate);
-    this.mondaySchedule =
-      mondayScheduleDate === undefined
-        ? undefined
-        : midnight(mondayScheduleDate);
+    this.start = startDate
+      ? midnight(startDate)
+      : new Date(Number(`20${year}`), 0, 1);
+    this.h1End = h1EndDate ? midnight(h1EndDate) : undefined;
+    this.h2Start = h2StartDate ? midnight(h2StartDate) : undefined;
+    this.end = endDate
+      ? midnight(endDate)
+      : new Date(Number(`20${year}`), 11, 31);
+    this.mondaySchedule = mondayScheduleDate
+      ? midnight(mondayScheduleDate)
+      : undefined;
     this.holidays = holidayDates.map((date) => midnight(date));
   }
 
@@ -350,12 +358,26 @@ export class Term {
   /** The date a slot starts on. */
   startDateFor(
     slot: Slot,
-    secondHalf: boolean = false,
+    secondHalf = false,
     startDay?: [number, number],
   ): Date {
-    const date = new Date((secondHalf ? this.h2Start : this.start).getTime());
+    const date = new Date(
+      (secondHalf && this.h2Start ? this.h2Start : this.start).getTime(),
+    );
 
-    if (startDay !== undefined) {
+    const startDayValid =
+      // is defined
+      startDay !== undefined &&
+      // valid date
+      startDay[0] >= 1 &&
+      startDay[0] <= 12 &&
+      startDay[1] >= 1 &&
+      startDay[1] <= 31 &&
+      // before end date
+      new Date(date.getFullYear(), startDay[0] - 1, startDay[1]).getTime() <
+        this.end.getTime();
+
+    if (startDayValid) {
       date.setMonth(startDay[0] - 1);
       date.setDate(startDay[1]);
     }
@@ -367,14 +389,24 @@ export class Term {
   }
 
   /** The date a slot ends on, plus an extra day. */
-  endDateFor(
-    slot: Slot,
-    firstHalf: boolean = false,
-    endDay?: [number, number],
-  ): Date {
-    const date = new Date((firstHalf ? this.h1End : this.end).getTime());
+  endDateFor(slot: Slot, firstHalf = false, endDay?: [number, number]): Date {
+    const date = new Date(
+      (firstHalf && this.h1End ? this.h1End : this.end).getTime(),
+    );
 
-    if (endDay !== undefined) {
+    const endDayValid =
+      // is defined
+      endDay !== undefined &&
+      // valid date
+      endDay[0] >= 1 &&
+      endDay[0] <= 12 &&
+      endDay[1] >= 1 &&
+      endDay[1] <= 31 &&
+      // after start date
+      new Date(date.getFullYear(), endDay[0] - 1, endDay[1]).getTime() >
+        this.start.getTime();
+
+    if (endDayValid) {
       date.setMonth(endDay[0] - 1);
       date.setDate(endDay[1]);
     }
@@ -388,11 +420,16 @@ export class Term {
   }
 
   /** Dates that a given slot *doesn't* run on. */
-  exDatesFor(slot: Slot): Array<Date> {
+  exDatesFor(slot: Slot): Date[] {
     const res = this.holidays.filter((date) => date.getDay() === slot.weekday);
-    // ex dates can't be empty, so add an extra one:
-    res.push(new Date("2000-01-01"));
-    return res.map((date) => slot.onDate(date));
+    const resDates = res.map((date) => slot.onDate(date));
+
+    // remove the tuesday for monday schedule
+    if (slot.weekday === 2 && this.mondaySchedule) {
+      resDates.push(slot.onDate(this.mondaySchedule));
+    }
+
+    return resDates;
   }
 
   /** An extra date a given slot would fall on, if it exists. */

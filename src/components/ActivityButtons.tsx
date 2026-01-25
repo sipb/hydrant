@@ -1,56 +1,51 @@
 import {
-  Group,
-  createListCollection,
-  Flex,
-  Heading,
-  Input,
-  Text,
-  parseColor,
-  HStack,
-  Stack,
   Button,
   ButtonGroup,
+  ColorPicker,
+  Flex,
+  Group,
+  HStack,
+  Heading,
+  Input,
+  Portal,
+  Select,
+  Stack,
+  Text,
+  createListCollection,
+  parseColor,
 } from "@chakra-ui/react";
-import { ComponentPropsWithoutRef, FormEvent, useState } from "react";
+import type { ComponentPropsWithRef, FormEvent } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 
-import { Radio, RadioGroup } from "./ui/radio";
-import {
-  SelectContent,
-  SelectItem,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "./ui/select";
-import { Field } from "./ui/field";
-import { Checkbox } from "./ui/checkbox";
-import {
-  ColorPickerArea,
-  ColorPickerContent,
-  ColorPickerControl,
-  ColorPickerEyeDropper,
-  ColorPickerChannelSlider,
-  ColorPickerInput,
-  ColorPickerRoot,
-  ColorPickerTrigger,
-} from "./ui/color-picker";
+import { ColorPickerInput } from "./ui/colorpicker-input";
 
-import { Activity, NonClass, Timeslot } from "../lib/activity";
-import { Class, LockOption, SectionLockOption, Sections } from "../lib/class";
-import { WEEKDAY_STRINGS, TIMESLOT_STRINGS, Slot } from "../lib/dates";
-import { State } from "../lib/state";
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
+import { Checkbox } from "./ui/checkbox";
+import { Field } from "./ui/field";
+import { Radio, RadioGroup } from "./ui/radio";
+
+import type { Activity, NonClass } from "../lib/activity";
+import { Timeslot } from "../lib/activity";
+import type { Class, SectionLockOption, Sections } from "../lib/class";
+import { LockOption } from "../lib/class";
+import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
+import { HydrantContext } from "../lib/hydrant";
+
+interface ToggleButtonProps extends ComponentPropsWithRef<typeof Button> {
+  active: boolean;
+  handleClick: () => void;
+}
 
 /**
  * A button that toggles the active value, and is outlined if active, solid
  * if not.
  */
-function ToggleButton(
-  props: ComponentPropsWithoutRef<"button"> & {
-    active: boolean;
-    handleClick: () => void;
-  },
-) {
-  const { children, active, handleClick, ...otherProps } = props;
+function ToggleButton({
+  children,
+  active,
+  handleClick,
+  ...otherProps
+}: ToggleButtonProps) {
   return (
     <Button
       {...otherProps}
@@ -62,9 +57,10 @@ function ToggleButton(
   );
 }
 
-function OverrideLocations(props: { state: State; secs: Sections }) {
+function OverrideLocations(props: { secs: Sections }) {
+  const { secs } = props;
+  const { state } = useContext(HydrantContext);
   const [isOverriding, setIsOverriding] = useState(false);
-  const { state, secs } = props;
   const [room, setRoom] = useState(secs.roomOverride);
   const onRelocate = () => {
     setIsOverriding(true);
@@ -82,7 +78,16 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
     <Flex gap={1} mr={1} mt={2}>
       <Input
         value={room}
-        onChange={(e) => setRoom(e.target.value)}
+        onChange={(e) => {
+          setRoom(e.target.value);
+        }}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            onConfirm();
+          } else if (e.key === "Escape") {
+            onCancel();
+          }
+        }}
         placeholder="26-100"
       />
       <Button onClick={onConfirm}>
@@ -102,26 +107,30 @@ function OverrideLocations(props: { state: State; secs: Sections }) {
 }
 
 /** Div containing section manual selection interface. */
-function ClassManualSections(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
-  const [selected, setSelected] = useState(
+function ClassManualSections(props: { cls: Class }) {
+  const { cls } = props;
+  const { state } = useContext(HydrantContext);
+  const genSelected = (cls: Class) =>
     cls.sections.map((sections) =>
       sections.locked
         ? sections.selected
           ? sections.selected.rawTime
           : LockOption.None
         : LockOption.Auto,
-    ),
-  );
+    );
+  const [selected, setSelected] = useState(genSelected(cls));
+  useLayoutEffect(() => {
+    setSelected(genSelected(cls));
+  }, [cls]);
 
   const RenderOptions = () => {
-    const getLabel = (sec: SectionLockOption) => {
+    const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
       if (sec === LockOption.Auto) {
-        return LockOption.Auto;
+        return humanReadable ? "Auto (default)" : LockOption.Auto;
       } else if (sec === LockOption.None) {
         return LockOption.None;
       } else {
-        return sec.rawTime;
+        return humanReadable ? sec.parsedTime : sec.rawTime;
       }
     };
 
@@ -136,7 +145,7 @@ function ClassManualSections(props: { cls: Class; state: State }) {
                 value={selected[sectionIndex]}
                 onValueChange={(e) => {
                   setSelected((oldArray) => {
-                    oldArray[sectionIndex] = e.value;
+                    oldArray[sectionIndex] = e.value ?? "";
                     return oldArray;
                   });
 
@@ -162,14 +171,12 @@ function ClassManualSections(props: { cls: Class; state: State }) {
                 <Stack>
                   {options.map((sec) => (
                     <Radio key={getLabel(sec)} value={getLabel(sec)}>
-                      {getLabel(sec) === LockOption.Auto
-                        ? "Auto (default)"
-                        : getLabel(sec)}
+                      {getLabel(sec, true)}
                     </Radio>
                   ))}
                 </Stack>
               </RadioGroup>
-              <OverrideLocations secs={secs} state={state} />
+              <OverrideLocations secs={secs} />
             </Field>
           );
         })}
@@ -185,12 +192,9 @@ function ClassManualSections(props: { cls: Class; state: State }) {
 }
 
 /** Div containing color selection interface. */
-function ActivityColor(props: {
-  activity: Activity;
-  state: State;
-  onHide: () => void;
-}) {
-  const { activity, state, onHide } = props;
+function ActivityColor(props: { activity: Activity; onHide: () => void }) {
+  const { activity, onHide } = props;
+  const { state } = useContext(HydrantContext);
   const initColor = parseColor(activity.backgroundColor);
   const [color, setColor] = useState(initColor);
 
@@ -207,19 +211,29 @@ function ActivityColor(props: {
   return (
     <Flex gap={2}>
       <Flex direction="row" gap={2}>
-        <ColorPickerRoot value={color} onValueChange={(e) => setColor(e.value)}>
-          <ColorPickerControl>
+        <ColorPicker.Root
+          value={color}
+          onValueChange={(e) => {
+            setColor(e.value);
+          }}
+        >
+          <ColorPicker.HiddenInput />
+          <ColorPicker.Control>
             <ColorPickerInput autoFocus />
-            <ColorPickerTrigger />
-          </ColorPickerControl>
-          <ColorPickerContent>
-            <ColorPickerArea />
-            <HStack>
-              <ColorPickerEyeDropper />
-              <ColorPickerChannelSlider channel="hue" />
-            </HStack>
-          </ColorPickerContent>
-        </ColorPickerRoot>
+            <ColorPicker.Trigger />
+          </ColorPicker.Control>
+          <Portal>
+            <ColorPicker.Positioner>
+              <ColorPicker.Content>
+                <ColorPicker.Area />
+                <HStack>
+                  <ColorPicker.EyeDropper />
+                  <ColorPicker.ChannelSlider channel="hue" />
+                </HStack>
+              </ColorPicker.Content>
+            </ColorPicker.Positioner>
+          </Portal>
+        </ColorPicker.Root>
         <ButtonGroup>
           <Button onClick={onReset}>Reset</Button>
           <Button onClick={onCancel}>Cancel</Button>
@@ -231,8 +245,9 @@ function ActivityColor(props: {
 }
 
 /** Buttons in class description to add/remove class, and lock sections. */
-export function ClassButtons(props: { cls: Class; state: State }) {
-  const { cls, state } = props;
+export function ClassButtons(props: { cls: Class }) {
+  const { cls } = props;
+  const { state } = useContext(HydrantContext);
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -240,7 +255,11 @@ export function ClassButtons(props: { cls: Class; state: State }) {
   return (
     <Flex direction="column" gap={2}>
       <ButtonGroup wrap="wrap">
-        <Button onClick={() => state.toggleActivity(cls)}>
+        <Button
+          onClick={() => {
+            state.toggleActivity(cls);
+          }}
+        >
           {isSelected ? "Remove class" : "Add class"}
         </Button>
         {isSelected && (
@@ -266,14 +285,13 @@ export function ClassButtons(props: { cls: Class; state: State }) {
           </ToggleButton>
         )}
       </ButtonGroup>
-      {isSelected && showManual && (
-        <ClassManualSections cls={cls} state={state} />
-      )}
+      {isSelected && showManual && <ClassManualSections cls={cls} />}
       {isSelected && showColors && (
         <ActivityColor
           activity={cls}
-          state={state}
-          onHide={() => setShowColors(false)}
+          onHide={() => {
+            setShowColors(false);
+          }}
         />
       )}
     </Flex>
@@ -281,8 +299,9 @@ export function ClassButtons(props: { cls: Class; state: State }) {
 }
 
 /** Form to add a timeslot to a non-class. */
-function NonClassAddTime(props: { activity: NonClass; state: State }) {
-  const { activity, state } = props;
+function NonClassAddTime(props: { activity: NonClass }) {
+  const { activity } = props;
+  const { state } = useContext(HydrantContext);
   const [days, setDays] = useState(
     Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false])),
   );
@@ -309,7 +328,9 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
           <Checkbox
             key={day}
             checked={days[day]}
-            onCheckedChange={(e) => setDays({ ...days, [day]: !!e.checked })}
+            onCheckedChange={(e) => {
+              setDays({ ...days, [day]: !!e.checked });
+            }}
           >
             {day}
           </Checkbox>
@@ -318,30 +339,42 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
     );
   };
 
+  const timesCollection = createListCollection({
+    items: TIMESLOT_STRINGS,
+  });
+
   const renderTimeDropdown = (key: "start" | "end") => (
-    <SelectRoot
-      collection={createListCollection({
-        items: TIMESLOT_STRINGS.map((time) => ({
-          label: time,
-          value: time,
-        })),
-      })}
+    <Select.Root
+      collection={timesCollection}
       size="sm"
       width="8rem"
       value={[times[key]]}
-      onValueChange={(e) => setTimes({ ...times, [key]: e.value[0] })}
+      onValueChange={(e) => {
+        setTimes({ ...times, [key]: e.value[0] });
+      }}
     >
-      <SelectTrigger>
-        <SelectValueText />
-      </SelectTrigger>
-      <SelectContent>
-        {TIMESLOT_STRINGS.map((time) => (
-          <SelectItem item={time} key={time}>
-            {time}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </SelectRoot>
+      <Select.HiddenSelect />
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
+      </Select.Control>
+      <Portal>
+        <Select.Positioner>
+          <Select.Content>
+            {timesCollection.items.map((time) => (
+              <Select.Item item={time} key={time}>
+                {time}
+                <Select.ItemIndicator />
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Positioner>
+      </Portal>
+    </Select.Root>
   );
 
   return (
@@ -364,8 +397,9 @@ function NonClassAddTime(props: { activity: NonClass; state: State }) {
 /**
  * Buttons in non-class description to rename it, or add/edit/remove timeslots.
  */
-export function NonClassButtons(props: { activity: NonClass; state: State }) {
-  const { activity, state } = props;
+export function NonClassButtons(props: { activity: NonClass }) {
+  const { activity } = props;
+  const { state } = useContext(HydrantContext);
 
   const isSelected = state.isSelectedActivity(activity);
   const [isRenaming, setIsRenaming] = useState(false);
@@ -380,7 +414,9 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       return (
         <Input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
           fontWeight="bold"
           placeholder="New Activity"
           autoFocus
@@ -397,7 +433,9 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       return (
         <Input
           value={room}
-          onChange={(e) => setRoom(e.target.value)}
+          onChange={(e) => {
+            setRoom(e.target.value);
+          }}
           placeholder="W20-557"
           autoFocus
           onKeyUp={(e) => {
@@ -456,7 +494,11 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
     } else {
       return (
         <>
-          <Button onClick={() => state.toggleActivity(activity)}>
+          <Button
+            onClick={() => {
+              state.toggleActivity(activity);
+            }}
+          >
             {isSelected ? "Remove activity" : "Add activity"}
           </Button>
           <Button onClick={onRenameElse}>Rename activity</Button>
@@ -483,15 +525,16 @@ export function NonClassButtons(props: { activity: NonClass; state: State }) {
       {isSelected && showColors && (
         <ActivityColor
           activity={activity}
-          state={state}
-          onHide={() => setShowColors(false)}
+          onHide={() => {
+            setShowColors(false);
+          }}
         />
       )}
       <Text>
         Click and drag on an empty time in the calendar to add the times for
         your activity. Or add one manually:
       </Text>
-      <NonClassAddTime activity={activity} state={state} />
+      <NonClassAddTime activity={activity} />
     </Flex>
   );
 }

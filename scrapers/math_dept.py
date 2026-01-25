@@ -3,32 +3,45 @@ Temporary workaround to the math classes being wrong (2023).
 Was used to generate the math overrides in package.py; currently unnecessary.
 
 Functions:
-* parse_when(when)
-* test_parse_when()
-* parse_many_timeslots(days, times)
-* make_raw_sections(days, times, room):
-* make_section_override(timeslots, room)
-* get_rows()
-* parse_subject(subject)
-* parse_row(row)
-* run()
+    parse_when(when)
+    parse_many_timeslots(days, times)
+    make_raw_sections(days, times, room):
+    make_section_override(timeslots, room)
+    get_rows()
+    parse_subject(subject)
+    parse_row(row)
+    run()
 """
 
+from __future__ import annotations
+
+from collections.abc import Iterable, Sequence
 from pprint import pprint
-from bs4 import BeautifulSoup
-import requests
-from .fireroad import parse_timeslot, parse_section
+from urllib.request import urlopen
+
+from bs4 import BeautifulSoup, Tag
+
+from .fireroad import parse_section, parse_timeslot
 
 
-def parse_when(when):
+def parse_when(when: str) -> tuple[str, str]:
     """
     Parses when the class happens.
 
     Args:
-    * when (str): A string describing when the class happens.
+        when (str): A string describing when the class happens.
 
     Returns:
-    * tuple[str]: A parsed version of this string.
+        tuple[str, str]: A parsed version of this string.
+
+    >>> parse_when("F10:30-12")
+    ('F', '10.30-12')
+
+    >>> parse_when("MW1")
+    ('MW', '1')
+
+    >>> parse_when("MWF11")
+    ('MWF', '11')
     """
     # special casing is good enough (otherwise this could be a for loop)
     if when[1].isdigit():
@@ -45,90 +58,79 @@ def parse_when(when):
     return days, times
 
 
-def test_parse_when():
-    """
-    Test cases for parse_when
-
-    Args: none
-
-    Returns: none
-    """
-    assert parse_when("F10:30-12") == ("F", "10.30-12")
-    assert parse_when("MW1") == ("MW", "1")
-    assert parse_when("MWF11") == ("MWF", "11")
-
-
-def parse_many_timeslots(days, times):
+def parse_many_timeslots(days: str, times: str) -> Iterable[tuple[int, int]]:
     """
     Parses many timeslots
 
     Args:
-    * day (str): A list of days
-    * times (str): The timeslot
+        day (str): A list of days
+        times (str): The timeslot
 
     Returns:
-    * list[list[int]]: All of the parsed timeslots, as a list
+        Iterable[tuple[int, int]]: All of the parsed timeslots, as a list
     """
     # parse timeslot wants only one letter
-    return [parse_timeslot(day, times, False) for day in days]
+    return (parse_timeslot(day, times, False) for day in days)
 
 
-def make_raw_sections(days, times, room):
+def make_raw_sections(days: str, times: str, room: str) -> str:
     """
     Formats a raw section
 
     Args:
-    * room (str): The room
-    * days (str): The days
-    * times (str): The times
+        room (str): The room
+        days (str): The days
+        times (str): The times
 
     Returns:
-    * str: The room, days, and times, presented as a single string
+        str: The room, days, and times, presented as a single string
     """
     return f"{room}/{days}/0/{times}"
 
 
-def make_section_override(timeslots, room):
+def make_section_override(
+    timeslots: Sequence[Sequence[int]], room: str
+) -> tuple[tuple[Sequence[Sequence[int]], str]]:
     """
     Makes a section override
 
     Args:
-    * timeslots (list[list[int]]): The timeslots of the section
-    * room (str): The room
+        timeslots (Sequence[Sequence[int]]): The timeslots of the section
+        room (str): The room
 
     Returns:
-    * list[Union[list[list[int]], str]]: The section override
+        tuple[tuple[Sequence[Sequence[int]], str]]: The section override
     """
-    return [[timeslots, room]]
+    return ((timeslots, room),)
     # lol this is wrong
     # return [[section, room] for section in timeslots]
 
 
-def get_rows():
+def get_rows() -> list[Tag]:
     """
     Scrapes rows from https://math.mit.edu/academics/classes.html
 
-    Args: none
-
     Returns:
-    * bs4.element.ResultSet: The rows of the table listing classes
+        bs4.element.ResultSet: The rows of the table listing classes
     """
-    response = requests.get("https://math.mit.edu/academics/classes.html", timeout=1)
-    soup = BeautifulSoup(response.text, features="lxml")
+    with urlopen("https://math.mit.edu/academics/classes.html", timeout=1) as response:
+        soup = BeautifulSoup(response.read().decode("utf-8"), features="lxml")
     course_list = soup.find("ul", {"class": "course-list"})
-    rows = course_list.findAll("li", recursive=False)
+    assert course_list is not None
+
+    rows = course_list.find_all("li", recursive=False)
     return rows
 
 
-def parse_subject(subject):
+def parse_subject(subject: str) -> list[str]:
     """
     Parses the subject
 
     Args:
-    * subject (str): The subject name to parse
+        subject (str): The subject name to parse
 
     Returns:
-    * subjects (list[str]): A clean list of subjects corresponding to that subject.
+        list[str]: A clean list of subjects corresponding to that subject.
     """
     # remove "J" from joint subjects
     subject = subject.replace("J", "")
@@ -145,30 +147,38 @@ def parse_subject(subject):
     return subjects
 
 
-def parse_row(row):
+def parse_row(
+    row: Tag,
+) -> dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]]:
     """
     Parses the provided row
 
     Args:
-    * row (bs4.element.Tag): The row that needs to be parsed.
+        row (bs4.element.Tag): The row that needs to be parsed.
 
     Returns:
-    * dict[str, dict[str, list[Union[list[list[int]], str]]]]: The parsed row
+        dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]]:
+            The parsed row
     """
-    result = {}
+    result: dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]] = {}
 
-    subject = row.find("div", {"class": "subject"}).text
+    subject_row = row.find("div", {"class": "subject-row"})
+    assert subject_row is not None
+
+    subject = subject_row.string or ""
     subjects = parse_subject(subject)
 
     where_when = row.find("div", {"class": "where-when"})
-    when, where = where_when.findAll("div", recursive=False)
-    where = where.text
-    when = when.text
+    assert where_when is not None
+
+    when, where = where_when.find_all("div", recursive=False)
+    where = where.string or ""
+    when = when.string or ""
     if ";" in when:
         # Don't want to handle special case - calculus, already right
         return {}
     days, times = parse_when(when)
-    timeslots = parse_many_timeslots(days, times)
+    timeslots = list(parse_many_timeslots(days, times))
     for subject in subjects:
         lecture_raw_sections = make_raw_sections(days, times, where)
         lecture_sections = make_section_override(timeslots, where)
@@ -181,17 +191,18 @@ def parse_row(row):
     return result
 
 
-def run():
+def run() -> dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]]:
     """
     The main entry point
 
-    Args: none
-
     Returns:
-    * dict[str, dict[str, list[Union[list[list[int]], str]]]]: All the schedules
+        dict[str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]]:
+            All the schedules
     """
     rows = get_rows()
-    overrides = {}
+    overrides: dict[
+        str, dict[str, str | tuple[tuple[Sequence[Sequence[int]], str]]]
+    ] = {}
 
     for row in rows:
         parsed_row = parse_row(row)
@@ -201,5 +212,4 @@ def run():
 
 
 if __name__ == "__main__":
-    test_parse_when()
     pprint(run())

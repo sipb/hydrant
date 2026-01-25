@@ -5,24 +5,30 @@ on:
     branches:
       - deploy
 
+env:
+  node-version: 20
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: ${{ env.node-version }}
+          cache: "npm"
       - name: Install node dependencies
-        run: npm install
+        run: npm ci
+      - name: Checks types
+        run: npm run typecheck
       - name: Run build
         run: npm run build
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: built-site
           path: |
-            dist
-            !dist/latest.json
+            build/client
+            !build/client/latest.json

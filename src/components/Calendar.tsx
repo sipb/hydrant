@@ -1,27 +1,28 @@
+import { useContext, useMemo } from "react";
+
 import { Box, Text } from "@chakra-ui/react";
+import { Tooltip } from "./ui/tooltip";
+
 import FullCalendar from "@fullcalendar/react";
 import type { EventContentArg } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { Activity, NonClass, Timeslot } from "../lib/activity";
+import type { Activity } from "../lib/activity";
+import { NonClass, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
-import { State } from "../lib/state";
 import { Class } from "../lib/class";
+import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.scss";
-import { Tooltip } from "./ui/tooltip";
 
 /**
  * Calendar showing all the activities, including the buttons on top that
  * change the schedule option selected.
  */
-export function Calendar(props: {
-  selectedActivities: Array<Activity>;
-  viewedActivity: Activity | undefined;
-  state: State;
-}) {
-  const { selectedActivities, viewedActivity, state } = props;
+export function Calendar() {
+  const { state, hydrantState } = useContext(HydrantContext);
+  const { selectedActivities, viewedActivity } = hydrantState;
 
   const renderEvent = ({ event }: EventContentArg) => {
     const TitleText = () => (
@@ -59,6 +60,12 @@ export function Calendar(props: {
     );
   };
 
+  const events = useMemo(() => {
+    return selectedActivities
+      .flatMap((act) => act.events)
+      .flatMap((event) => event.eventInputs);
+  }, [selectedActivities]);
+
   return (
     <FullCalendar
       plugins={[timeGridPlugin, interactionPlugin]}
@@ -66,9 +73,7 @@ export function Calendar(props: {
       allDaySlot={false}
       dayHeaderFormat={{ weekday: "short" }}
       editable={false}
-      events={selectedActivities
-        .flatMap((act) => act.events)
-        .flatMap((event) => event.eventInputs)}
+      events={events}
       eventContent={renderEvent}
       eventClick={(e) => {
         // extendedProps: non-standard props of {@link Event.eventInputs}
@@ -84,23 +89,28 @@ export function Calendar(props: {
         return hour === 12
           ? "noon"
           : hour < 12
-            ? `${hour} AM`
-            : `${hour - 12} PM`;
+            ? `${hour.toString()} AM`
+            : `${(hour - 12).toString()} PM`;
       }}
-      slotMinTime="08:00:00"
+      slotMinTime={
+        events.some((e) => (e.start as Date).getHours() < 8)
+          ? "06:00:00"
+          : "08:00:00"
+      }
       slotMaxTime="22:00:00"
       weekends={false}
       selectable={viewedActivity instanceof NonClass}
-      select={(e) =>
-        viewedActivity instanceof NonClass &&
-        state.addTimeslot(
-          viewedActivity,
-          Timeslot.fromStartEnd(
-            Slot.fromStartDate(e.start),
-            Slot.fromStartDate(e.end),
-          ),
-        )
-      }
+      select={(e) => {
+        if (viewedActivity instanceof NonClass) {
+          state.addTimeslot(
+            viewedActivity,
+            Timeslot.fromStartEnd(
+              Slot.fromStartDate(e.start),
+              Slot.fromStartDate(e.end),
+            ),
+          );
+        }
+      }}
     />
   );
 }

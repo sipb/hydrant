@@ -1,0 +1,70 @@
+name: CI checks for the frontend
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.{py,md,txt,toml}"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".prettierignore"
+      - "scrapers/overrides.toml.d/override-schema.json"
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**/*.{py,md,txt,toml}"
+      - "{.vscode,deploy/cron_scripts,public}/**/*"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".prettierignore"
+      - "scrapers/overrides.toml.d/override-schema.json"
+
+env:
+  node-version: 20
+
+jobs:
+  prettier:
+    name: Prettier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.node-version }}
+          cache: "npm"
+      - name: Install node dependencies
+        run: npm ci
+      - name: Run Prettier
+        run: npm run ci-prettier
+  lint:
+    name: Lint + Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.node-version }}
+          cache: "npm"
+      - name: Install node dependencies
+        run: npm ci
+      - name: Check types
+        run: npm run typecheck
+      - name: Run ESLint
+        run: npm run ci-eslint
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.node-version }}
+          cache: "npm"
+      - name: Install node dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm run test

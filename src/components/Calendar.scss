@@ -10,12 +10,14 @@
 
 .fc .fc-timegrid-slot {
   border-color: var(--chakra-colors-border-emphasized);
+  border-width: 1.5px;
   border-left-color: transparent;
 }
 
-.fc-theme-standard td,
-.fc-theme-standard th {
+.fc td,
+.fc th {
   border-color: var(--chakra-colors-border-emphasized);
+  border-width: 1.5px;
 }
 
 .fc .fc-scrollgrid-section > th:nth-child(1),
@@ -32,7 +34,7 @@
 }
 
 .fc .fc-timegrid-event-harness-inset .fc-timegrid-event {
-  box-shadow: var(--chakra-colors-bg) 0px 0px 0px 1px;
+  box-shadow: var(--chakra-colors-bg) 0px 0px 0px 1.5px;
 }
 
 .fc .fc-scroller-harness {

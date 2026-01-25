@@ -1,15 +1,9 @@
-/** Raw timeslot format: [start slot, length of timeslot]. */
-export type RawTimeslot = [number, number];
-
-/** Raw section format: [[[10, 2], [70, 2]], "34-101". */
-export type RawSection = [Array<RawTimeslot>, string];
-
-/** The raw class format produced by combiner_ws.py. */
-export type RawClass = {
+/** The raw class format produced by the scraper. */
+export interface RawClass {
   /** Class number, e.g. "6.3900" */
   number: string;
   /** Old class number, e.g. "6.036" */
-  oldNumber: string;
+  oldNumber?: string;
   /** Course number, e.g. "6" */
   course: string;
   /** Subject number without course, e.g. "3900" */
@@ -18,45 +12,33 @@ export type RawClass = {
   tba: boolean;
 
   /** Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist */
-  sectionKinds: Array<"lecture" | "recitation" | "lab" | "design">;
+  sectionKinds: SectionKind[];
   /** Lecture timeslots and rooms */
-  lectureSections: Array<RawSection>;
+  lectureSections: RawSection[];
   /** Recitation timeslots and rooms */
-  recitationSections: Array<RawSection>;
+  recitationSections: RawSection[];
   /** Lab timeslots and rooms */
-  labSections: Array<RawSection>;
+  labSections: RawSection[];
   /** Design timeslots and rooms */
-  designSections: Array<RawSection>;
+  designSections: RawSection[];
   /** Raw lecture times, e.g. T9.301-11 or TR1,F2 */
-  lectureRawSections: Array<string>;
+  lectureRawSections: string[];
   /** Raw recitation times, e.g. T9.301-11 or TR1,F2 */
-  recitationRawSections: Array<string>;
+  recitationRawSections: string[];
   /** Raw lab times, e.g. T9.301-11 or TR1,F2 */
-  labRawSections: Array<string>;
+  labRawSections: string[];
   /** Raw design times, e.g. T9.301-11 or TR1,F2 */
-  designRawSections: Array<string>;
+  designRawSections: string[];
 
-  /** True if HASS-H */
-  hassH: boolean;
-  /** True if HASS-A */
-  hassA: boolean;
-  /** True if HASS-S */
-  hassS: boolean;
-  /** True if HASS-E */
-  hassE: boolean;
-  /** True if CI-H */
-  cih: boolean;
-  /** True if CI-HW */
-  cihw: boolean;
-  /** True if REST */
-  rest: boolean;
-  /** True if institute lab */
-  lab: boolean;
-  /** True if partial institute lab */
-  partLab: boolean;
+  /** Contains type of HASS (if any) */
+  hass: HASS[];
+  /** Type of CI class (if any) */
+  comms: CI;
+  /** Type of GIR (if any) */
+  gir: GIR;
 
   /** Array of programs (free text) for which this class is a CI-M */
-  cim?: Array<string>;
+  cim?: string[];
 
   /** Lecture or recitation units */
   lectureUnits: number;
@@ -71,7 +53,7 @@ export type RawClass = {
   isVariableUnits: boolean;
 
   /** Level: "U" undergrad, "G" grad */
-  level: "U" | "G";
+  level: Level;
   /**
    * Comma-separated list of classes with same number, e.g.
    * "21A.103, WGS.225"
@@ -81,7 +63,7 @@ export type RawClass = {
   meets: string;
 
   /** Terms class is offered */
-  terms: Array<"FA" | "JA" | "SP" | "SU">;
+  terms: TermCode[];
   /** Prereqs, no specific format (but usually contains class numbers) */
   prereqs: string;
 
@@ -107,6 +89,8 @@ export type RawClass = {
   half: number | false;
   /** True if limited enrollment */
   limited: boolean;
+  /** True if subject is new */
+  new: boolean;
 
   /** Rating (out of 7.0) from evals */
   rating: number;
@@ -116,5 +100,101 @@ export type RawClass = {
   size: number;
 
   /** Record with start and end time information */
-  quarterInfo?: Partial<Record<"start" | "end", [number, number]>>;
-};
+  quarterInfo?: QuarterInfo;
+  /** Included from override despite possible not being in catalog */
+  include?: boolean;
+}
+
+/** Raw timeslot format: [start slot, length of timeslot]. */
+export type RawTimeslot = [number, number];
+
+/** Raw section format: [[[10, 2], [70, 2]], "34-101"]. */
+export type RawSection = [RawTimeslot[], string];
+
+/**
+ * Communications Intensive designation
+ */
+export enum CI {
+  /** Not CI-H */
+  EMPTY = "",
+  /** CI-H */
+  CIH = "CI-H",
+  /** CI-HW */
+  CIHW = "CI-HW",
+}
+
+/**
+ * GIR designation
+ */
+export enum GIR {
+  /** Not a GIR */
+  EMPTY = "",
+  /** Biology */
+  BIOL = "BIOL",
+  /** Calculus 1 */
+  CAL1 = "CAL1",
+  /** Calculus 2 */
+  CAL2 = "CAL2",
+  /** Chemistry */
+  CHEM = "CHEM",
+  /** Institute Lab */
+  LAB = "LAB",
+  /** Partial Lab */
+  LAB2 = "LAB2",
+  /** Physics 1 */
+  PHY1 = "PHY1",
+  /** Physics 2 */
+  PHY2 = "PHY2",
+  /** REST */
+  REST = "REST",
+}
+
+/**
+ * HASS designation
+ */
+export enum HASS {
+  /** HASS-H */
+  H = "H",
+  /** HASS-A */
+  A = "A",
+  /** HASS-S */
+  S = "S",
+  /** HASS-E */
+  E = "E",
+}
+
+/**
+ * Subject level ("U" or "G")
+ */
+export enum Level {
+  /** Undergraduate */
+  U = "U",
+  /** Graduate */
+  G = "G",
+}
+
+/** Information about start and end month + days of the quarter. */
+export interface QuarterInfo {
+  start?: [number, number];
+  end?: [number, number];
+}
+
+/** Kinds of sections */
+export enum SectionKind {
+  LECTURE = "lecture",
+  RECITATION = "recitation",
+  LAB = "lab",
+  DESIGN = "design",
+}
+
+/** Term codes */
+export enum TermCode {
+  /** Fall */
+  FA = "FA",
+  /** January (IAP) */
+  JA = "JA",
+  /** Spring */
+  SP = "SP",
+  /** Summer */
+  SU = "SU",
+}

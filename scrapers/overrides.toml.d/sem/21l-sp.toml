@@ -1,0 +1,70 @@
+#:schema ../override-schema.json
+
+['21L.004']
+lectureRawSections = ["1-134/MW/0/1-2.30"]
+lectureSections = [[[[14, 3], [82, 3]], "1-134"]]
+
+["21L.024"]
+name = "Life, Death and Freedom: Literature and Existentialism"
+
+["21L.027"]
+name = "Children Co-Creating Culture: Children and Culture"
+same = "CMS.425, WGS.258"
+
+["21L.050"]
+name = "The Personal Essay: Reading Nonfiction"
+
+["21G.341"]
+name = "Resistence in French and Francophone Cinema: Contemporary French Film and Social Issues (taught in French)"
+
+["21L.419"]
+name = "Books I Grew Up With (Or Wish I Had): Books to Grow By"
+
+["21L.420"]
+name = "Oscar Wilde and His Friends: Gateway to British Literature"
+
+["21L.430"]
+name = "What is the Good Life?: Popular Culture and Narrative"
+meets = "CMS.920"
+
+["21L.435"]
+name = "Race and Horror in the Americas: Literature and Film"
+meets = "CMS.840"
+
+["21L.471"]
+name = "Novels of Mystery, Detection and Suspense: Major Novels"
+
+["21L.486"]
+name = "Gender and Performance: Modern Drama"
+same = "21T.244, WGS.285"
+
+["21L.490"]
+name = "Pre 1900: Introduction to the Classics of Russian Literature"
+
+["21L.504"]
+name = "Style in an Age of Sameness: Race and Identity in American Literature"
+same = "WGS.140"
+
+["21L.512"]
+name = "T.S. Eliot and W.H. Auden: American Authors"
+
+["21L.609"]
+name = "Greek Reading 1: Greek Readings (First Half Term Ends March 20)"
+
+["21L.610"]
+name = "Greek Reading 2: Advanced Greek Readings (Second Half Term Begins March 30)"
+
+["21L.611"]
+name = "Latin I (First Half Term Ends March 20)"
+
+["21L.612"]
+name = "Latin II (Second Half Term Begins March 30)"
+
+["21L.703"]
+name = "Stoppard, Churchill and Company: Studies in Drama"
+
+["21L.704"]
+name = "The Radical Imagination: Studies in Poetry"
+
+["21L.706"]
+name = "Indigenous Film and Television: Studies in Film"

@@ -3,135 +3,234 @@ We get some of our data from scraping the catalog site.
 
 run() scrapes this data and writes it to catalog.json, in the format:
 
-{
-    "6.3900": {
-        "nonext": true | false,
-        "repeat": true | false,
-        "url": "https://introml.mit.edu",
-        "final": true | false,
-        "half": false | 1 | 2,
-        "limited": true | false,
+.. code-block:: json
+    {
+        "6.3900": {
+            "nonext": true | false,
+            "repeat": true | false,
+            "url": "https://introml.mit.edu",
+            "final": true | false,
+            "half": false | 1 | 2,
+            "limited": true | false,
+        }
     }
-}
+
+Constants:
+    BASE_URL: str
+    LIMITED_REGEX: re.Pattern[str]
+
+Functions:
+    is_not_offered_this_year(html)
+    is_not_offered_next_year(html)
+    is_repeat_allowed(html)
+    get_url(html)
+    has_final(html)
+    get_half(html)
+    is_limited(html)
+    is_new(html)
+    get_course_data(filtered_html)
+    get_home_catalog_links()
+    get_all_catalog_links(initial_hrefs)
+    get_anchors_with_classname(element)
+    get_classes_content(html)
+    scrape_courses_from_page(courses, href)
+    run()
 """
+
+from __future__ import annotations
 
 import json
 import os.path
 import re
+import socket
+from collections.abc import Iterable, Mapping, MutableMapping
+from urllib.error import URLError
+from urllib.request import urlopen
 
-import requests
 from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString
 
 BASE_URL = "http://student.mit.edu/catalog"
 
+# various limited/restricted/etc enrollment phrases in course descriptions
+# PLEASE use regex101.com to test changes before pushing to production!!!
+# text_mining.py also helps by finding test sentences from our entire database
 
-def is_not_offered_this_year(html):
+LIMITED_REGEX = re.compile(
+    r"""(?x)
+    [Ee]nrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ])
+    (limited|restricted|by[ ]application)
+    |([Ll]imited|[Rr]estricted)[ ]
+    (enrollment|by[ ]lottery|number|\d+|to[ ]\d+)
+    |([Ll]imited|[Rr]estricted|([Pp]reference|[Pp]riority)( given| is given)?)
+    [ ]to[ ]([A-Za-z0-9-' ]+)?
+    (
+        students?|freshmen|sophomores|juniors|seniors|majors|minors
+        |concentrators|[Ff]ellows|MBAs?|undergraduates|candidates
+    )
+    |required[ ]prior[ ]to[ ]enrollment
+    |have[ ]priority
+"""
+)
+
+
+def is_not_offered_this_year(
+    html: BeautifulSoup, course_nums: list[str]
+) -> dict[str, bool]:
     """
+    Checks if the class is not offered this year.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
+        course_nums (list[str]): the course numbers associated with the class
+    Returns:
+        dict[str, bool]: A dictionary mapping course numbers to
+            whether they are not offered this year
+    """
+
+    multi = len(course_nums) > 1
+    results: dict[str, bool] = {}
+
+    icon_not_offered = html.find(attrs={"src": "/icns/nooffer.gif"})
+    not_offered_regularly = html.find(
+        string=re.compile("not offered regularly; consult department", re.IGNORECASE)
+    )
+
+    possible_not_offered = bool(icon_not_offered) or bool(not_offered_regularly)
+
+    for course_num in course_nums:
+        if not multi:
+            results[course_num] = possible_not_offered
+        elif possible_not_offered:
+            schedule_info = bool(
+                html.find("b", string=f"{course_num}:")  # type: ignore
+            )
+            results[course_num] = not schedule_info
+        else:
+            results[course_num] = False
+
+    return results
+
+
+def is_not_offered_next_year(html: BeautifulSoup) -> bool:
+    """
+    Checks if the class is not offered next year.
+
+    Args:
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: True if the class is not offered this year
-    """
-    if html.find(attrs={"src": "/icns/nooffer.gif"}):
-        return True
-    if html.find(
-        text=re.compile("not offered regularly; consult department", re.IGNORECASE)
-    ):
-        return True
-    return False
-
-
-def is_not_offered_next_year(html):
-    """
-    Args:
-    * html (BeautifulSoup): the input webpage
-
-    Returns:
-    * bool: True if the class is not offered next year
+        bool: True if the class is not offered next year
     """
     if html.find(attrs={"src": "/icns/nonext.gif"}):
         return True
     return False
 
 
-def is_repeat_allowed(html):
+def is_repeat_allowed(html: BeautifulSoup):
     """
+    Checks if you're allowed to retake the class for credit.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: Whether you're allowed to retake the class for credit
+        bool: Whether you're allowed to retake the class for credit
     """
     if html.find(attrs={"src": "/icns/repeat.gif"}):
         return True
     return False
 
 
-def get_url(html):
+def get_url(html: BeautifulSoup) -> str:
     """
+    Finds a URL on the webpage, if it exists.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * str: Some URL on the webpage, or an empty string if there isn't one
+        str: Some URL on the webpage, or an empty string if there isn't one
     """
-    url = html.find(text=re.compile("https?://(?!whereis)"))
+    url = html.find(string=re.compile("https?://(?!whereis)"))
     if url:
-        return url
+        return url.string
     return ""
 
 
-def has_final(html):
+def has_final(html: BeautifulSoup) -> bool:
     """
+    Checks if the class has a final
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: Whether the class has a final
+        bool: Whether the class has a final
     """
-    if html.find(text="+final"):
+    if html.find(string="+final"):
         return True
     return False
 
 
-def get_half(html):
+def get_half(html: BeautifulSoup) -> int | bool:
     """
-    Returns 1 for 1st half, 2 for 2nd half, False if not a half semester course
+    Checks if the class is a half-semester course.
 
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * Union[int, bool]
+        int | bool: 1 if the class is in the first half of the term,
+            2 if the class is in the second half of the term, False if it is not a half
+            semester course
     """
-    if html.find(text=re.compile("first half of term")):
+    if html.find(string=re.compile("; first half of term")):
         return 1
-    if html.find(text=re.compile("second half of term")):
+    if html.find(string=re.compile("; second half of term")):
         return 2
     return False
 
 
-def is_limited(html):
+def is_limited(html: BeautifulSoup) -> bool:
     """
+    Checks if enrollment in the class is limited.
+
     Args:
-    * html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * bool: True if enrollment in the class is limited
+        bool: True if enrollment in the class is limited
     """
-    if html.find(text=re.compile("[Ll]imited")):
+    if html.find(string=LIMITED_REGEX):
         return True
     return False
 
 
-def get_course_data(filtered_html):
+def is_new(html: BeautifulSoup) -> bool:
     """
+    Checks if the subject is new.
+
     Args:
-    * filtered_html (BeautifulSoup): the input webpage
+        html (BeautifulSoup): the input webpage
 
     Returns:
-    * dict[str, Union[bool, int, str]]: metadata about that particular class
+        bool: True if the class is new
+    """
+    if html.find(string=re.compile(r"\(New\)")):
+        return True
+    return False
+
+
+def get_course_data(filtered_html: BeautifulSoup) -> dict[str, bool | int | str]:
+    """
+    Gets the metadata about a class from the filtered HTML.
+
+    Args:
+        filtered_html (BeautifulSoup): the input webpage
+
+    Returns:
+        dict[str, bool | int | str]: metadata about that particular class
     """
     return {
         "nonext": is_not_offered_next_year(filtered_html),
@@ -140,54 +239,62 @@ def get_course_data(filtered_html):
         "final": has_final(filtered_html),
         "half": get_half(filtered_html),
         "limited": is_limited(filtered_html),
+        "new": is_new(filtered_html),
     }
 
 
-def get_home_catalog_links():
+def get_home_catalog_links() -> Iterable[str]:
     """
-    Args: none
+    Scrapes the home page of the catalog to get the
+    links to the major-specific subpages.
 
     Returns:
-    * list[str]: relative links to major-specific subpages to scrape
+        Iterable[str]: relative links to major-specific subpages to scrape
     """
-    catalog_req = requests.get(BASE_URL + "/index.cgi", timeout=3)
-    html = BeautifulSoup(catalog_req.content, "html.parser")
+    with urlopen(BASE_URL + "/index.cgi", timeout=3) as catalog_req:
+        html = BeautifulSoup(catalog_req.read(), "html.parser")
     home_list = html.select_one("td[valign=top][align=left] > ul")
-    return [a["href"] for a in home_list.find_all("a", href=True)]
+    assert home_list is not None
+    return (str(a["href"]) for a in home_list.find_all("a", href=True))
 
 
-def get_all_catalog_links(initial_hrefs):
+def get_all_catalog_links(initial_hrefs: Iterable[str]) -> list[str]:
     """
     Find all links from the headers before the subject listings
 
     Args:
-    * initial_hrefs (list[str]): initial list of relative links to subpages
+        initial_hrefs (Iterable[str]): initial list of relative links to subpages
 
     Returns:
-    * list[str]: A more complete list of relative links to subpages to scrape
+        list[str]: A more complete list of relative links to subpages to scrape
     """
-    hrefs = []
+    hrefs: list[str] = []
     for initial_href in initial_hrefs:
-        href_req = requests.get(f"{BASE_URL}/{initial_href}", timeout=3)
-        html = BeautifulSoup(href_req.content, "html.parser")
-        # Links should be in the only table in the #contentmini div
-        tables = html.find("div", id="contentmini").find_all("table")
         hrefs.append(initial_href)
+        with urlopen(f"{BASE_URL}/{initial_href}", timeout=10) as href_req:
+            html = BeautifulSoup(href_req.read(), "html.parser")
+
+        content_mini = html.find("div", id="contentmini")
+        if not content_mini:
+            continue
+
+        # Links should be in the only table in the #contentmini div
+        tables = content_mini.find_all("table")
         for table in tables:
-            hrefs.extend([ele["href"] for ele in table.findAll("a", href=True)])
+            hrefs.extend([str(ele["href"]) for ele in table.find_all("a", href=True)])
     return hrefs
 
 
-def get_anchors_with_classname(element):
+def get_anchors_with_classname(element: Tag | NavigableString) -> list[Tag] | None:
     """
     Returns the anchors with the class name if the element itself is one or
     anchors are inside of the element. Otherwise, returns None.
 
     Args:
-    * element (Tag): the input HTML tag
+        element (Tag | NavigableString): the input HTML tag
 
     Returns:
-    * Union[list[Tag], NoneType]: a list of links, or None
+        list[Tag | NavigableString] | None: a list of links, or None
     """
     anchors = None
     # This is the usualy case, where it's one element
@@ -201,35 +308,53 @@ def get_anchors_with_classname(element):
         return None
 
     # We need this because apparently there are anchors with names such as "PIP"
-    return list(filter(lambda a: re.match(r"\w+\.\w+", a["name"]), anchors))
+    return list(filter(lambda a: re.match(r"\w+\.\w+", str(a["name"])), anchors))
 
 
-def scrape_courses_from_page(courses, href):
+def get_classes_content(html: BeautifulSoup) -> Tag:
+    """
+    Gets the main content table containing class information
+    Args:
+        html (BeautifulSoup): the input webpage
+    Returns:
+        Tag: the main content table
+    """
+    classes_table = html.find("table", width="100%", border="0")
+    assert classes_table is not None
+    classes_content = classes_table.find("td")
+    assert classes_content is not None
+    return classes_content
+
+
+def scrape_courses_from_page(
+    courses: MutableMapping[str, Mapping[str, bool | int | str]], href: str
+) -> None:
     """
     Fills courses with course data from the href
 
     This function does NOT return a value. Instead, it modifies the `courses` variable.
 
     Args:
-    * courses
-    * href
-
-    Returns: none
+        courses (MutableMapping[str, Mapping[str, bool | int | str]]):
+            a dictionary to fill with course data
+        href (str): the relative link to the page to scrape
     """
-    href_req = requests.get(f"{BASE_URL}/{href}", timeout=3)
-    # The "html.parser" parses pretty badly
-    html = BeautifulSoup(href_req.content, "lxml")
-    classes_content = html.find("table", width="100%", border="0").find("td")
+    with urlopen(f"{BASE_URL}/{href}", timeout=10) as href_req:
+        # The "html.parser" parses pretty badly
+        html = BeautifulSoup(href_req.read(), "lxml")
+
+    classes_content = get_classes_content(html)
 
     # For index idx, contents[idx] corresponds to the html content for the courses in
     # course_nums_list[i]. The reason course_nums_list is a list of lists is because
     # there are courses that are ranges but have the same content
-    course_nums_list = []
-    contents = []
+    course_nums_list: list[list[str]] = []
+    contents: list[list[Tag | NavigableString]] = []
     for ele in classes_content.contents:
+        assert isinstance(ele, (Tag, NavigableString))
         anchors = get_anchors_with_classname(ele)
         if anchors:
-            new_course_nums = [anchor["name"] for anchor in anchors]
+            new_course_nums = [str(anchor["name"]) for anchor in anchors]
             # This means the course listed is a class range (e.g. 11.S196-11.S199)
             # Thus, we continue looking for content but also add an extra course_num
             if contents and not contents[-1]:
@@ -246,29 +371,37 @@ def scrape_courses_from_page(courses, href):
     for course_nums, content in zip(course_nums_list, contents):
         filtered_html = BeautifulSoup()
         filtered_html.extend(content)
-        course_data = get_course_data(filtered_html)
-        if not is_not_offered_this_year(filtered_html):
-            for course_num in course_nums:
-                courses[course_num] = course_data
+
+        # see https://github.com/sipb/hydrant/issues/267
+        for course_num, not_offered in is_not_offered_this_year(
+            filtered_html, course_nums
+        ).items():
+            if not not_offered:
+                courses[course_num] = get_course_data(filtered_html)
 
 
-def run():
+def run() -> None:
     """
     The main function! This calls all the other functions in this file.
-
-    Args: none
-
-    Returns: none
     """
-    home_hrefs = get_home_catalog_links()
-    all_hrefs = get_all_catalog_links(home_hrefs)
-    courses = {}
-    for href in all_hrefs:
-        print(f"Scraping page: {href}")
-        scrape_courses_from_page(courses, href)
+    fname = os.path.join(os.path.dirname(__file__), "catalog.json")
+
+    try:
+        home_hrefs = get_home_catalog_links()
+        all_hrefs = get_all_catalog_links(home_hrefs)
+        courses: MutableMapping[str, Mapping[str, bool | int | str]] = {}
+        for href in all_hrefs:
+            print(f"Scraping page: {href}")
+            scrape_courses_from_page(courses, href)
+    except (URLError, socket.timeout):
+        print("Unable to scrape course catalog data.")
+        if not os.path.exists(fname):
+            with open(fname, "w", encoding="utf-8") as catalog_file:
+                json.dump({}, catalog_file)
+        return
+
     print(f"Got {len(courses)} courses")
 
-    fname = os.path.join(os.path.dirname(__file__), "catalog.json")
     with open(fname, "w", encoding="utf-8") as catalog_file:
         json.dump(courses, catalog_file)
 

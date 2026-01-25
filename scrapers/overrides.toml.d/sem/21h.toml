@@ -1,0 +1,15 @@
+#:schema ../override-schema.json
+
+["21H.S01"]
+name = "The History of Computing"
+description = "Traces the global, material history of computing from the nineteenth century to the present. Uses artifacts to analyze the changing design, meaning, and purposes of computing. Develops a framework for understanding how computing technologies move across borders and shaped the modern world."
+inCharge = "B. Lindquist"
+hass = ["H"]
+url = "https://history.mit.edu/subjects/special-subject-history/"
+
+["21H.S04"]
+name = "The Global Offshore"
+description = "This course explores the history of the offshore world from the advent of the law of the sea and imperial colonization to the Panama Papers and use of CIA black sites. Students will explore the relationship between empire and globalization, the development of international law, the meaning of borders, and the rise of neoliberalism. The offshore world is a place that exists in the margins, a place of exception where the normal rules of the mainland do not apply. But what transpires there has fundamentally shaped the history of the modern world. This course will examine the economics, law, and practice of the offshore world. The history of that world is the history of globalization and global capitalism as seen from its seedy underbelly. Its story is punctuated with backroom deals, violent exploitation, tax dodging, and outright theft."
+inCharge = "I. Kumekawa"
+url = "https://history.mit.edu/subjects/special-subject-history-4/"
+hass = ["H"]

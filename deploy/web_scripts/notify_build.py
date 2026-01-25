@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 
-""" Accept a web-hook from GitHub telling us about a new built version of Hydrant. """
+"""Accept a web-hook from GitHub telling us about a new built version of Hydrant."""
 
 import json
 import traceback
 from hmac import digest
 from os import environ, path
 from sys import stdin, stdout
+from urllib.request import Request, urlopen
 from zipfile import ZipFile
-
-import requests
 
 LOCKER_DIR = "/afs/sipb.mit.edu/project/hydrant"
 
@@ -48,13 +47,13 @@ def main():
         raise ValueError("no job id")
 
     # Fetch a list of artifacts from the GitHub API
-    response = requests.get(
+    with urlopen(
         f"https://api.github.com/repos/sipb/hydrant/actions/runs/{job_id}/artifacts",
         timeout=3,
-    )
-    if not response.ok:
-        raise ValueError("bad artifact fetch response: " + str(response.status_code))
-    artifact_info = response.json()
+    ) as response:
+        if response.getcode() != 200:
+            raise ValueError("bad artifact fetch response: " + str(response.getcode()))
+        artifact_info = json.loads(response.read().decode("utf-8"))
 
     # For each known artifact:
     success = False
@@ -67,12 +66,14 @@ def main():
         if not url:
             continue
         # then fetch it.
-        response = requests.get(
-            url, headers={"Authorization": ("Bearer " + token)}, timeout=3
-        )
+        request = Request(url)
+        request.add_unredirected_header("Authorization", f"Bearer {token}")
         fname = path.join(LOCKER_DIR, "build_artifact.zip")
-        with open(fname, "wb") as file_buffer:
-            for chunk in response.iter_content(chunk_size=4096):
+        with open(fname, "wb") as file_buffer, urlopen(request, timeout=3) as response:
+            while True:
+                chunk = response.read(4096)
+                if not chunk:
+                    break
                 file_buffer.write(chunk)
         # Extract into the output directory.
         with ZipFile(fname, "r") as zfh:
