@@ -21,17 +21,18 @@ import { HydrantContext } from "../lib/hydrant";
 
 import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 import { LuExternalLink } from "react-icons/lu";
-import { PEClass } from "../lib/pe";
+import { type PEFlags } from "../lib/pe";
+import { PEClass, getPEFlagEmoji } from "../lib/pe";
 
 /** A small image indicating a flag, like Spring or CI-H. */
-function TypeSpan(props: { flag?: keyof Flags; title: string }) {
+function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {
   const { flag, title } = props;
   const filter = useColorModeValue(
     "",
-    flag && DARK_IMAGES.includes(flag) ? "invert()" : "",
+    DARK_IMAGES.includes(flag) ? "invert()" : "",
   );
 
-  return flag ? (
+  return (
     <Tooltip content={title}>
       <Image
         alt={title}
@@ -41,19 +42,28 @@ function TypeSpan(props: { flag?: keyof Flags; title: string }) {
         filter={filter}
       />
     </Tooltip>
-  ) : (
-    <>{title}</>
   );
 }
 
-/** Header for class description; contains flags and related classes. */
+/** An emoji with tooltip indicating a flag, like Wellness Wizard. */
+function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
+  const { flag, title } = props;
+
+  return (
+    <Tooltip content={title}>
+      <Span>{getPEFlagEmoji(flag)}</Span>
+    </Tooltip>
+  );
+}
+
+/** Header for class description; contains flags and units. */
 function ClassTypes(props: { cls: Class }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
   const { flags, totalUnits, units } = cls;
 
   /**
-   * Wrap a group of flags in TypeSpans.
+   * Wrap a group of flags in ClassTypeSpans.
    *
    * @param arr - Arrays with [flag name, alt text].
    */
@@ -61,7 +71,7 @@ function ClassTypes(props: { cls: Class }) {
     arr
       .filter(([flag, _]) => flags[flag])
       .map(([flag, title]) => (
-        <TypeSpan key={flag} flag={flag} title={title} />
+        <ClassTypeSpan key={flag} flag={flag} title={title} />
       ));
 
   const currentYear = parseInt(state.term.fullRealYear);
@@ -108,13 +118,11 @@ function ClassTypes(props: { cls: Class }) {
   ]);
 
   const halfType =
-    flags.half === 1 ? (
-      <TypeSpan title="; first half of term" />
-    ) : flags.half === 2 ? (
-      <TypeSpan title="; second half of term" />
-    ) : (
-      ""
-    );
+    flags.half === 1
+      ? "; first half of term"
+      : flags.half === 2
+        ? "; second half of term"
+        : "";
 
   const unitsDescription = cls.isVariableUnits
     ? "Units arranged"
@@ -132,6 +140,39 @@ function ClassTypes(props: { cls: Class }) {
       </Flex>
       <Text>{unitsDescription}</Text>
       {flags.final ? <Text>Has final</Text> : null}
+    </Flex>
+  );
+}
+
+/** Header for PE class description; contains class size, points, and flags. */
+function PEClassTypes(props: { cls: PEClass }) {
+  const { cls } = props;
+  const { flags } = cls;
+  const { classSize, points, swimGIR } = cls.rawClass;
+
+  /**
+   * Wrap a group of flags in PEClassTypeSpans.
+   *
+   * @param arr - Arrays with [flag name, tooltip text].
+   */
+  const makeFlags = (arr: [keyof PEFlags, string][]) =>
+    arr
+      .filter(([flag, _]) => flags[flag])
+      .map(([flag, title]) => (
+        <PEClassTypeSpan key={flag} flag={flag} title={title} />
+      ));
+
+  const types = makeFlags([
+    ["wellness", "Wellness Wizard eligible"],
+    ["pirate", "Pirate Certificate eligible"],
+  ]);
+
+  return (
+    <Flex gap={4} align="center">
+      <Text>Class size: {classSize}</Text>
+      <Text>Awards {points} PE points</Text>
+      {swimGIR && <Text>Satisfies swim GIR</Text>}
+      <Flex align="center">{types}</Flex>
     </Flex>
   );
 }
@@ -273,20 +314,11 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
   );
 }
 
-/** Full PE&W class description */
+/** Full PE&W class description, from title to URLs at the end. */
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
   const { fee, startDate, endDate } = cls;
-  const {
-    number,
-    name,
-    classSize,
-    points,
-    swimGIR,
-    prereqs,
-    equipment,
-    description,
-  } = cls.rawClass;
+  const { number, name, prereqs, equipment, description } = cls.rawClass;
 
   const fmt = new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -322,11 +354,7 @@ function PEClassDescription(props: { cls: PEClass }) {
         {number}: {name}
       </Heading>
       <Flex direction="column" gap={0.5}>
-        <Flex gap={4}>
-          <Text>Class size: {classSize}</Text>
-          <Text>Awards {points} PE points</Text>
-          {swimGIR && <Text>Satisfies swim GIR</Text>}
-        </Flex>
+        <PEClassTypes cls={cls} />
         {fee ? <Text>${fee.toFixed(2)} enrollment fee</Text> : null}
         <Text>
           Begins {start}, ends {end}.
@@ -391,4 +419,5 @@ export function ActivityDescription() {
   }
 
   activity satisfies never;
+  // TODO throw error, or actually eliminate this case at the type level
 }
