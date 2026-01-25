@@ -42,7 +42,6 @@ class PEWFile(TypedDict):
     capacity: int
     days: str
     start_time: str
-    end_time: str
     location: str
     start_date: str
     end_date: str
@@ -95,6 +94,45 @@ def parse_bool(value: str) -> bool:
     raise ValueError(f"Invalid boolean value: {value}")
 
 
+def augment_location(location: str) -> str:
+    """
+    Adds the building number to a location. Returns its input if there are multiple
+    locations detected, in which case an override would be more appropriate, or if no
+    suitable building could be identified.
+
+    Args:
+        location (str): The raw location to parse
+
+    Returns:
+        str: The location, with a building number possibly prepended
+
+    >>> augment_location("Du Pont T Club Lounge")
+    'W35 - Du Pont T Club Lounge'
+
+    >>> augment_location("Harvard")
+    'Harvard'
+
+    >>> augment_location("Du Pont T Club Lounge and 26-100")
+    'Du Pont T Club Lounge and 26-100'
+    """
+    buildings = {
+        "Du Pont": "W35",
+        "Zesiger": "W35",
+        "Rockwell": "W35",
+        "Johnson": "W35",
+        "Zesiger": "W35",
+    }
+
+    if " and " in location:
+        return location
+
+    for loc, building in buildings.items():
+        if location.startswith(loc):
+            return f"{building} - {location}"
+
+    return location
+
+
 def read_pew_file(filepath: str) -> list[PEWFile]:
     """
     Parses PE&W data from file according to a specific format from a CSV
@@ -116,9 +154,8 @@ def read_pew_file(filepath: str) -> list[PEWFile]:
                     "title": row["Title"],
                     "capacity": int(row["Capacity"]),
                     "days": row["Day"],
-                    "start_time": row["Start time"],
-                    "end_time": row["End time"],
-                    "location": row["Location"],
+                    "start_time": row["Time"],
+                    "location": augment_location(row["Location"]),
                     "start_date": row["Start Date"],
                     "end_date": row["End Date"],
                     "prerequisites": row["Prerequisites"],
@@ -241,14 +278,13 @@ def parse_date(date_str: str) -> date:
 
 
 def parse_times_to_raw_section(
-    start_time: str, end_time: str, days: str, location: str
+    start_time: str, days: str, location: str
 ) -> str:
     """
     Parses times from CVS to format from Fireroad, for compatibility.
 
     Args:
         start_time (str): Start time of the class
-        end_time (str): End time of the class (or empty string for default)
         days (str): Days the class meets
         location (str): Location of the class
 
@@ -257,14 +293,9 @@ def parse_times_to_raw_section(
     """
     start_c = time_c.strptime(start_time, "%I:%M %p")
     start = time(start_c.tm_hour, start_c.tm_min)
-
-    if end_time:
-        end_c = time_c.strptime(end_time, "%I:%M %p")
-        end = time(end_c.tm_hour, end_c.tm_min)
-    else:
-        end = time(
-            start.hour + 1, start.minute
-        )  # default to 1 hour if no end time given
+    end = time(
+        start.hour + 1, start.minute
+    ) # default to 1 hour, can be changed in overrides
 
     start_raw_time = (
         f"{12 - ((- start.hour) % 12)}" f"{'.30' if start.minute > 29 else ''}"
@@ -319,7 +350,6 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
 
             raw_section = parse_times_to_raw_section(
                 pe_row["start_time"],
-                pe_row["end_time"],
                 pe_row["days"],
                 pe_row["location"],
             )
@@ -332,7 +362,6 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
         else:
             raw_section = parse_times_to_raw_section(
                 pe_row["start_time"],
-                pe_row["end_time"],
                 pe_row["days"],
                 pe_row["location"],
             )

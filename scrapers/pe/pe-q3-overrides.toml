@@ -1,3 +1,9 @@
 ["PE.0201"]
+# SCUBA Diving
 sections = [[[[59, 7]], "57 and 66-160"], [[[127, 7]], "57 and 66-160"]]
 rawSections = ["57 and 66-160/T/1/6.30-10 PM", "57 and 66-160/R/1/6.30-10 PM"]
+
+["PE.0922"]
+# Parkour, Beginner
+sections = [[[[150, 4]], "W35 - Zesiger MAC Court"]]
+rawSections = ["W35 - Zesiger MAC Court/F/0/1-3"]
