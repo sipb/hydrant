@@ -254,9 +254,9 @@ export class State {
       hours: sum(this.selectedActivities.map((activity) => activity.hours)),
       warnings: Array.from(
         new Set(
-          this.selectedActivities
-            .flatMap((cls) => cls.warnings?.messages)
-            .filter((m): m is string => Boolean(m)),
+          this.selectedActivities.flatMap((cls) =>
+            "warnings" in cls ? cls.warnings.messages : [],
+          ),
         ),
       ),
       saveId: this.saveId,
