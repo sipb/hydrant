@@ -37,7 +37,7 @@ PIRATE_CLASSES = [
     "Fencing",
     "Pistol",
     "Air Pistol",
-    "Rifle", # TODO ask if air rifle is also eligible
+    "Rifle",  # TODO ask if air rifle is also eligible
     "Sailing",
 ]
 
