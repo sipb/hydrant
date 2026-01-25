@@ -35,7 +35,7 @@ import {
 } from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
-import { type PEFlags, type PEClass, getPEFlagEmojis } from "../lib/pe";
+import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
@@ -452,7 +452,7 @@ export function PEClassTable() {
         valueFormatter: (params) =>
           Object.entries(params.data?.class.flags ?? ({} as PEFlags))
             .filter(([_, val]) => val)
-            .map(([flag]) => getPEFlagEmojis(flag as keyof PEFlags))
+            .map(([flag]) => getPEFlagEmoji(flag as keyof PEFlags))
             .concat([params.value?.toString() ?? ""])
             .join(" "),
       },

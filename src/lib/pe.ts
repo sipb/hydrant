@@ -10,19 +10,13 @@ export interface PEFlags {
   nopreq: boolean;
 }
 
-export const getPEFlagEmojis = (flag: keyof PEFlags): string => {
-  switch (flag) {
-    case "wellness":
-      return "🔮";
-    case "pirate":
-      return "🏴‍☠️";
-    case "nofee":
-      return "";
-    case "nopreq":
-      return "";
-    default:
-      return "";
-  }
+const peFlagEmojis: { [k in keyof PEFlags]?: string } = {
+  wellness: "🔮",
+  pirate: "🏴‍☠️",
+};
+
+export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
+  return peFlagEmojis[flag] ?? "";
 };
 
 const PIRATE_CLASSES = [
