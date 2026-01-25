@@ -419,5 +419,4 @@ export function ActivityDescription() {
   }
 
   activity satisfies never;
-  // TODO throw error, or actually eliminate this case at the type level
 }

@@ -120,7 +120,6 @@ def augment_location(location: str) -> str:
         "Zesiger": "W35",
         "Rockwell": "W35",
         "Johnson": "W35",
-        "Zesiger": "W35",
     }
 
     if " and " in location:
@@ -277,9 +276,7 @@ def parse_date(date_str: str) -> date:
     return date(year, month, day)
 
 
-def parse_times_to_raw_section(
-    start_time: str, days: str, location: str
-) -> str:
+def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str:
     """
     Parses times from CVS to format from Fireroad, for compatibility.
 
@@ -295,7 +292,7 @@ def parse_times_to_raw_section(
     start = time(start_c.tm_hour, start_c.tm_min)
     end = time(
         start.hour + 1, start.minute
-    ) # default to 1 hour, can be changed in overrides
+    )  # default to 1 hour, can be changed in overrides
 
     start_raw_time = (
         f"{12 - ((- start.hour) % 12)}" f"{'.30' if start.minute > 29 else ''}"

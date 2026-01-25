@@ -121,6 +121,7 @@ def get_include(overrides: dict[str, dict[str, Any]]) -> set[str]:
     return classes
 
 
+# pylint: disable=too-many-locals
 def run() -> None:
     """
     The main entry point.
