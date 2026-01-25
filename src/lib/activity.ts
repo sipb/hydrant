@@ -6,6 +6,8 @@ import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
 import type { RawSection, RawTimeslot } from "./raw";
 import { sum } from "./utils";
+import type { PEClass } from "./pe";
+import type { Class } from "./class";
 
 /** A period of time, spanning several Slots. */
 export class Timeslot {
@@ -65,7 +67,7 @@ export class Timeslot {
 }
 
 /** Shared interface for classes and non-classes. */
-export interface Activity {
+export interface BaseActivity {
   id: string;
   backgroundColor: string;
   manualColor: boolean;
@@ -83,13 +85,15 @@ export interface Activity {
   half?: number;
 }
 
+export type Activity = Class | PEClass | CustomActivity;
+
 /**
  * A group of events to be rendered in a calendar, all of the same name, room,
  * and color.
  */
 export class Event {
   /** The parent activity owning the event. */
-  activity: Activity;
+  activity: BaseActivity;
   /** The name of the event. */
   name: string;
   /** All slots of the event. */
@@ -100,7 +104,7 @@ export class Event {
   half?: number;
 
   constructor(
-    activity: Activity,
+    activity: BaseActivity,
     name: string,
     slots: Timeslot[],
     room?: string,
@@ -130,7 +134,7 @@ export class Event {
 }
 
 /** A non-class activity. */
-export class CustomActivity implements Activity {
+export class CustomActivity implements BaseActivity {
   /** ID unique over all Activities. */
   readonly id: string;
   name = "New Activity";
@@ -279,7 +283,7 @@ export type SectionLockOption = Section | TLockOption;
  * locked.
  */
 export class Sections {
-  cls: Activity;
+  cls: BaseActivity;
   kind?: string;
   sections: Section[];
   /** Are these sections locked? None counts as locked. */
@@ -290,7 +294,7 @@ export class Sections {
   roomOverride = "";
 
   constructor(
-    cls: Activity,
+    cls: BaseActivity,
     rawTimes: string[],
     secs: RawSection[],
     kind?: string,

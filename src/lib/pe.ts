@@ -1,4 +1,4 @@
-import { Sections, type Activity } from "./activity";
+import { Sections, type BaseActivity } from "./activity";
 import { type RawPEClass } from "./raw";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
@@ -56,7 +56,7 @@ export class PESections extends Sections {
 /**
  * PE&W activity placeholder
  */
-export class PEClass implements Activity {
+export class PEClass implements BaseActivity {
   backgroundColor: string;
   manualColor = false;
   readonly rawClass: RawPEClass;

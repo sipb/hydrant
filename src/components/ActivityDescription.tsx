@@ -380,7 +380,6 @@ export function ActivityDescription() {
   if (!activity) {
     return null;
   }
-
   if (activity instanceof Class) {
     return <ClassDescription cls={activity} />;
   }
@@ -391,5 +390,5 @@ export function ActivityDescription() {
     return <CustomActivityDescription activity={activity} />;
   }
 
-  return null;
+  activity satisfies never;
 }

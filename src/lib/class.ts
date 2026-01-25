@@ -1,4 +1,4 @@
-import { Event, Sections, type Activity, type Section } from "./activity";
+import { Event, Sections, type BaseActivity, type Section } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
 import {
@@ -170,7 +170,7 @@ export class ClassSections extends Sections {
 }
 
 /** An entire class, e.g. 6.036, and its selected sections. */
-export class Class implements Activity {
+export class Class implements BaseActivity {
   /**
    * The RawClass being wrapped around. Nothing outside Class should touch
    * this; instead use the Class getters like cls.id, cls.number, etc.
