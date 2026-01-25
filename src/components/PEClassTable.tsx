@@ -450,10 +450,11 @@ export function PEClassTable() {
         sortable: false,
         flex: 1,
         valueFormatter: (params) =>
-          `${Object.entries(params.data?.class.flags ?? ({} as PEFlags))
+          Object.entries(params.data?.class.flags ?? ({} as PEFlags))
             .filter(([_, val]) => val)
             .map(([flag]) => getPEFlagEmojis(flag as keyof PEFlags))
-            .join(" ")}${params.value?.toString() ?? ""}`,
+            .concat([params.value?.toString() ?? ""])
+            .join(" "),
       },
     ];
   }, [state]);
