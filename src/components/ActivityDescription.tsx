@@ -148,7 +148,7 @@ function ClassTypes(props: { cls: Class }) {
 function PEClassTypes(props: { cls: PEClass }) {
   const { cls } = props;
   const { flags } = cls;
-  const { classSize, points, swimGIR } = cls.rawClass;
+  const { classSize, points } = cls.rawClass;
 
   /**
    * Wrap a group of flags in PEClassTypeSpans.
@@ -165,13 +165,13 @@ function PEClassTypes(props: { cls: PEClass }) {
   const types = makeFlags([
     ["wellness", "Wellness Wizard eligible"],
     ["pirate", "Pirate Certificate eligible"],
+    ["swim", "Satisfies swim GIR"],
   ]);
 
   return (
     <Flex gap={4} align="center">
       <Text>Class size: {classSize}</Text>
       <Text>Awards {points} PE points</Text>
-      {swimGIR && <Text>Satisfies swim GIR</Text>}
       <Flex align="center">{types}</Flex>
     </Flex>
   );

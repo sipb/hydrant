@@ -6,6 +6,7 @@ import { fallbackColor, type ColorScheme } from "./colors";
 export interface PEFlags {
   wellness: boolean;
   pirate: boolean;
+  swim: boolean;
   nofee: boolean;
   nopreq: boolean;
 }
@@ -13,6 +14,7 @@ export interface PEFlags {
 const peFlagEmojis: { [k in keyof PEFlags]?: string } = {
   wellness: "🔮",
   pirate: "🏴‍☠️",
+  swim: "🌊",
 };
 
 export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
@@ -131,6 +133,7 @@ export class PEClass implements BaseActivity {
     return {
       wellness: this.id.startsWith("PE.05") || this.id.startsWith("PE.4"),
       pirate: PIRATE_CLASSES.includes(this.id),
+      swim: this.rawClass.swimGIR,
       nofee: this.rawClass.fee == "$0.00",
       nopreq: this.rawClass.prereqs == "None",
     };
