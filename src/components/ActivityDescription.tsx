@@ -246,7 +246,7 @@ function ClassDescription(props: { cls: Class }) {
   );
 }
 
-/** Full non-class activity description, from title to timeslots. */
+/** Full custom activity description, from title to timeslots. */
 function CustomActivityDescription(props: { activity: CustomActivity }) {
   const { activity } = props;
   const { state } = useContext(HydrantContext);
@@ -373,7 +373,7 @@ function PEClassDescription(props: { cls: PEClass }) {
   );
 }
 
-/** Activity description, whether class or non-class. */
+/** Activity description, whether class, PE class, or custom activity. */
 export function ActivityDescription() {
   const { hydrantState } = useContext(HydrantContext);
   const { viewedActivity: activity } = hydrantState;

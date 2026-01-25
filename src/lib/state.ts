@@ -210,7 +210,7 @@ export class State {
     this.updateState();
   }
 
-  /** Changes the room for a given non-class. */
+  /** Changes the room for a given custom activity. */
   relocateCustomActivity(
     customActivity: CustomActivity,
     room: string | undefined,

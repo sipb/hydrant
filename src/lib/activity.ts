@@ -66,7 +66,10 @@ export class Timeslot {
   }
 }
 
-/** Shared interface for classes and non-classes. */
+/**
+ * Shared interface for all types of activities,
+ * including classes, PE classes, and custom activities.
+ */
 export interface BaseActivity {
   id: string;
   backgroundColor: string;
@@ -133,7 +136,7 @@ export class Event {
   }
 }
 
-/** A non-class activity. */
+/** A custom activity, created by the user. */
 export class CustomActivity implements BaseActivity {
   /** ID unique over all Activities. */
   readonly id: string;
@@ -166,7 +169,7 @@ export class CustomActivity implements BaseActivity {
   }
 
   /**
-   * Add a timeslot to this non-class activity spanning from startDate to
+   * Add a timeslot to this custom activity spanning from startDate to
    * endDate. Dates must be within 8 AM to 9 PM. Will not add if equal to
    * existing timeslot. Will not add if slot spans multiple days.
    */
@@ -179,7 +182,7 @@ export class CustomActivity implements BaseActivity {
     this.timeslots.push(slot);
   }
 
-  /** Remove a given timeslot from the non-class activity. */
+  /** Remove a given timeslot from the custom activity. */
   removeTimeslot(slot: Timeslot): void {
     this.timeslots = this.timeslots.filter((slot_) => !slot_.equals(slot));
   }
@@ -198,7 +201,7 @@ export class CustomActivity implements BaseActivity {
     return res;
   }
 
-  /** Inflate a non-class activity with info from the output of deflate. */
+  /** Inflate a custom activity with info from the output of deflate. */
   inflate(parsed: (RawTimeslot[] | string)[]): void {
     const [timeslots, name, backgroundColor, room] = parsed;
     this.timeslots = (timeslots as RawTimeslot[]).map(

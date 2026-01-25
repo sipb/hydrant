@@ -304,7 +304,7 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
   );
 }
 
-/** Form to add a timeslot to a non-class. */
+/** Form to add a timeslot to a custom activity. */
 function CustomActivityAddTime(props: { activity: CustomActivity }) {
   const { activity } = props;
   const { state } = useContext(HydrantContext);
@@ -401,7 +401,7 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
 }
 
 /**
- * Buttons in non-class description to rename it, or add/edit/remove timeslots.
+ * Buttons in custom activity description to rename it, or add/edit/remove timeslots.
  */
 export function CustomActivityButtons(props: { activity: CustomActivity }) {
   const { activity } = props;
