@@ -25,9 +25,9 @@ import sys
 
 from bs4 import BeautifulSoup
 import requests
+import tomli_w
 from .fireroad import parse_timeslot, parse_section
 from .utils import TIMES, EVE_TIMES
-
 
 # The EECS WordPress page renders its subject list by dynamically loading this HTML
 # fragment (see network request `.../plugins/subj_2026SP.html` in a browser).
@@ -376,11 +376,5 @@ def run():
 if __name__ == "__main__":
     result = run()
     if "--toml" in sys.argv:
-        # Print in TOML format
-        for course, data in result.items():
-            print(f"[{course!r}]")
-            for key, val in data.items():
-                print(f"{key} = {val!r}")
-            print()
-    else:
-        pprint(result)
+        result = tomli_w.dumps(result)
+    pprint(result)
