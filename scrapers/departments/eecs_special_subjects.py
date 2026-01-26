@@ -113,7 +113,9 @@ def make_raw_sections(days: str, slot: str, room: str, is_pm_int: int) -> str:
     return f"{room}/{days}/{is_pm_int}/{slot}"
 
 
-def parse_schedule(schedule_line: str) -> tuple[RawSectionFields, SectionFields]:
+def parse_schedule(
+    schedule_line: str,
+) -> tuple[RawSectionFields, SectionFields, list[str]]:
     """
     Parse a schedule value like:
       "Lectures: TR2:30-4, room 34-101"
@@ -124,7 +126,7 @@ def parse_schedule(schedule_line: str) -> tuple[RawSectionFields, SectionFields]
     * schedule_line (str): The raw schedule line
 
     Returns:
-    * (RawSectionFields, SectionFields):
+    * (RawSectionFields, SectionFields, list[str]):
       - RawSectionFields: mapping like "lectureRawSections" -> list[str]
       - SectionFields: mapping like "lectureSections" -> list[Section]
 
@@ -136,6 +138,7 @@ def parse_schedule(schedule_line: str) -> tuple[RawSectionFields, SectionFields]
     chunks = list(filter(None, schedule_line.split(";")))
     raw_fields: RawSectionFields = {}
     section_fields: SectionFields = {}
+    kinds: list[str] = []
 
     for idx, chunk in enumerate(chunks):
         m = re.match(
@@ -167,15 +170,17 @@ def parse_schedule(schedule_line: str) -> tuple[RawSectionFields, SectionFields]
         assert is_day or is_eve, (start, end)
         is_pm_int = 0 if is_day else 1
 
-        slot = f"{start}-{end}" + (" PM" if is_pm_int == 1 else "")
-
         raw = make_raw_sections(
-            normalize_days(m.group("days")), slot, m.group("room"), is_pm_int
+            normalize_days(m.group("days")),
+            f"{start}-{end}" + (" PM" if is_pm_int == 1 else ""),
+            m.group("room"),
+            is_pm_int,
         )
         raw_fields.setdefault(f"{kind}RawSections", []).append(raw)
         section_fields.setdefault(f"{kind}Sections", []).append(parse_section(raw))
+        kinds.append(kind)
 
-    return raw_fields, section_fields
+    return raw_fields, section_fields, kinds
 
 
 def get_rows() -> list[Tag]:
@@ -328,9 +333,11 @@ def parse_row(row: Tag) -> dict[str, dict[str, Any]]:
         data["prereqs"] = meta["Prereqs"]
 
     if "Schedule" in meta and meta["Schedule"] != "TBD":
-        raw_fields, section_fields = parse_schedule(meta["Schedule"])
-        data.update(raw_fields)
-        data.update(section_fields)
+        schedule_data = parse_schedule(meta["Schedule"])
+        data.update(schedule_data[0])
+        data.update(schedule_data[1])
+        if schedule_data[2]:
+            data["sectionKinds"] = schedule_data[2]
 
     desc_div = table.find_next_sibling("div")
     assert desc_div is not None, f"Missing description block for {course}"
