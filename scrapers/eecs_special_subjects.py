@@ -10,8 +10,6 @@ Functions:
 * parse_schedule(schedule_line)
 * is_header(tag, text)
 * parse_header(text)
-* is_incharge_line(text)
-* parse_incharge(text)
 * parse_many_timeslots(days, slot, is_pm_int)
 * make_raw_sections(days, slot, room, is_pm_int)
 * make_section_override(timeslots, room)
@@ -59,12 +57,6 @@ DAY_WORD = {
 }
 
 
-def _clean(text):
-    text = text.replace("\xa0", " ")
-    text = text.replace("\u2013", "-").replace("\u2014", "-")
-    return re.sub(r"\s+", " ", text)
-
-
 def normalize_days(days_raw):
     """
     Normalize day strings into Fireroad-compatible day letters (MTWRF).
@@ -73,7 +65,6 @@ def normalize_days(days_raw):
     - "TR" -> "TR"
     - "Thursdays" -> "R"
     """
-    days_raw = _clean(days_raw)
     assert days_raw, "empty day string"
 
     if days_raw.isupper():
@@ -130,10 +121,9 @@ def parse_schedule(schedule_line):
     * dict[str, list[tuple[str, str, str, int]]]: Mapping kind -> list of
       (days, slot, room, is_pm_int)
     """
-    text = _clean(schedule_line)
-    assert text and text != "TBD", text
+    assert schedule_line and schedule_line != "TBD", schedule_line
 
-    chunks = [_clean(c) for c in text.split(";") if _clean(c)]
+    chunks = list(filter(None, schedule_line.split(";")))
     out: dict[str, list[tuple[str, str, str, int]]] = {}
 
     for i, raw_chunk in enumerate(chunks):
@@ -154,7 +144,7 @@ def parse_schedule(schedule_line):
         )
         if m_kind is not None:
             kind = m_kind.group("kind").lower().rstrip("s")
-            chunk = _clean(chunk[m_kind.end() :])
+            chunk = chunk[m_kind.end() :]
         else:
             assert i == 0, "Only the first chunk may omit its kind (assumed lecture)"
 
@@ -172,7 +162,7 @@ def parse_schedule(schedule_line):
         assert m is not None, chunk
 
         days = normalize_days(m.group("days"))
-        room = _clean(m.group("room"))
+        room = m.group("room")
         assert room, chunk
 
         start = m.group("start").replace(":", ".")
@@ -220,7 +210,6 @@ def is_header(tag_name, text):
     """
     Heuristic: a header is an h2/h3/h4 (or short paragraph) that contains a 6.S###.
     """
-    text = _clean(text)
     if COURSE_RE.search(text) is None:
         return False
     if tag_name in ("h2", "h3", "h4", "h5", "h6"):
@@ -235,32 +224,12 @@ def parse_header(text):
     Returns:
     * tuple[str, str, str | None]: (course_number, title_fragment, same_csv)
     """
-    text = _clean(text)
     match = COURSE_RE.search(text)
     assert match
     course = match.group(1)
     same_as = match.group(2)
-    title = _clean(match.group(3)).lstrip(" :-–—\t").rstrip("§ ")
+    title = match.group(3).lstrip(" :-–—\t").rstrip("§ ")
     return course, title, same_as
-
-
-def is_incharge_line(text):
-    """Return True if the given line looks like an instructor/contact label."""
-    t = _clean(text).lower()
-    return (
-        t.startswith("instructor")
-        or t.startswith("instructors")
-        or t.startswith("staff")
-        or t.startswith("contact")
-    )
-
-
-def parse_incharge(text):
-    """Parse an instructor/contact line into its value (after the colon)."""
-    text = _clean(text)
-    if ":" in text:
-        return _clean(text.split(":", 1)[1])
-    return text
 
 
 def parse_units(units_str):
@@ -275,8 +244,6 @@ def parse_units(units_str):
             (lectureUnits, labUnits, preparationUnits, isVariableUnits), or None if
             can't parse.
     """
-    units_str = _clean(units_str)
-
     # Parse formats like "3-0-9"
     if "-" in units_str:
         parts = units_str.split("-")
@@ -303,7 +270,7 @@ def parse_level(level_str):
         str: "U" for undergraduate, "G" for graduate
     """
     # Note: might be both "undergraduate" and "graduate"
-    level_str = _clean(level_str).lower()
+    level_str = level_str.lower()
     if "graduate" in level_str and "undergrad" not in level_str:
         return "G"
     return "U"
@@ -324,7 +291,7 @@ def parse_row(row):
     data = {"url": f'{FRONTEND_URL}#{course.replace(".", "_", 1)}'}
 
     if title:
-        data["name"] = _clean(title)
+        data["name"] = title
     if same_as:
         data["same"] = same_as
 
@@ -342,8 +309,8 @@ def parse_row(row):
         tds = tr.find_all("td")
         if len(tds) != 2:
             continue
-        key = _clean(tds[0].get_text(" ", strip=True)).rstrip(":")
-        val = _clean(tds[1].get_text(" ", strip=True))
+        key = tds[0].get_text(" ", strip=True).rstrip(":")
+        val = tds[1].get_text(" ", strip=True)
         if key and val:
             meta[key] = val
 
@@ -385,7 +352,7 @@ def parse_row(row):
 
     desc_div = table.find_next_sibling("div")
     assert desc_div is not None, f"Missing description block for {course}"
-    data["description"] = _clean(desc_div.get_text(" ", strip=True))
+    data["description"] = desc_div.get_text(" ", strip=True)
 
     return {course: data}
 
