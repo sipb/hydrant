@@ -70,7 +70,7 @@ Data from CSV file representing PE&W subjects, as given by DAPER
 
 class PEWSchema(TypedDict):
     """
-    Information expected by the frontend (see rawPEClass.ts)
+    Information expected by the frontend (see raw.ts)
     """
 
     number: str

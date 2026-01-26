@@ -64,7 +64,7 @@ A row from the raw CSV data fetched from ArcGIS.
 
 class BuildingInfo(TypedDict):
     """
-    Information about a building, in the format expected by the frontend (see TODO)
+    Information about a building, in the format expected by the frontend (see raw.ts)
     """
 
     number: str

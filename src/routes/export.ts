@@ -35,13 +35,18 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   const term = urlName === latestTerm.semester.urlName ? "latest" : urlName;
 
-  const { classes, lastUpdated, termInfo, pe } =
+  const { classes, lastUpdated, termInfo, pe, locations } =
     await fetchNoCache<SemesterData>(`${import.meta.env.BASE_URL}${term}.json`);
-  const { classesMap, peClassesMap } = getStateMaps(classes, pe);
+  const { classesMap, peClassesMap, locationsMap } = getStateMaps(
+    classes,
+    pe,
+    locations,
+  );
 
   const hydrantObj = new State(
     classesMap,
     peClassesMap,
+    locationsMap,
     new Term(termInfo),
     lastUpdated,
     latestTerm.semester.urlName,
