@@ -1,17 +1,17 @@
 import { useContext, useMemo } from "react";
 
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Circle, Float, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
 
 import FullCalendar from "@fullcalendar/react";
-import type { EventContentArg } from "@fullcalendar/core";
+import type { EventContentArg, EventApi } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import geodesic from "geographiclib-geodesic";
 const geod = geodesic.Geodesic.WGS84;
 
-import type { Activity } from "../lib/activity";
+import type { BaseActivity, Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { Class } from "../lib/class";
@@ -27,61 +27,37 @@ export function Calendar() {
   const { state, hydrantState } = useContext(HydrantContext);
   const { selectedActivities, viewedActivity } = hydrantState;
 
-  const renderEvent = ({ event }: EventContentArg) => {
-    const TitleText = () => (
-      <Text
-        fontSize="sm"
-        fontWeight="medium"
-        overflow="hidden"
-        textOverflow="clip"
-        whiteSpace="nowrap"
-      >
-        {event.title}
-      </Text>
-    );
-
-    return (
-      <Box
-        color={event.textColor}
-        p={0.5}
-        lineHeight={1.3}
-        cursor="pointer"
-        height="100%"
-      >
-        {event.extendedProps.activity instanceof Class ? (
-          <Tooltip
-            content={event.extendedProps.activity.name}
-            portalled
-            positioning={{ placement: "top" }}
-            children={TitleText()}
-          />
-        ) : (
-          <TitleText />
-        )}
-        <Text fontSize="xs">{event.extendedProps.room}</Text>
-      </Box>
-    );
-  };
-
   const events = useMemo(() => {
     return selectedActivities
       .flatMap((act) => act.events)
       .flatMap((event) => event.eventInputs);
   }, [selectedActivities]);
 
-  // TODO make this visible in the calendar UI
-  for (const event1 of events) {
+  /**
+   * Check if event1 ends at the same time that some other event starts. If
+   * this is the case and the commute distance between the two events' locations
+   * is more than 500 metres, return an appropriate warning message. Otherwise,
+   * return undefined.
+   */
+  const getDistanceWarning = (event1: EventApi) => {
+    const room1 = event1.extendedProps.room as string | undefined;
+    if (!event1.end || !room1) {
+      return undefined;
+    }
+
     for (const event2 of events) {
+      if (!event2.start || !event2.room) {
+        continue;
+      }
       if (event1.end.getTime() != event2.start.getTime()) {
         continue;
       }
-      if (!event1.room || !event2.room) {
-        continue;
-      }
-      const building1 = event1.room.split("-")[0].trim();
+
+      // Extract building numbers from room numbers
+      const building1 = room1.split("-")[0].trim();
       const building2 = event2.room.split("-")[0].trim();
 
-      // Coordinates of each building
+      // Get coordinates of each building
       const location1 = state.locations.get(building1);
       const location2 = state.locations.get(building2);
 
@@ -106,11 +82,65 @@ export function Calendar() {
           ? `${distance.toFixed(0)} m`
           : `${(distance / 1000).toFixed(2)} km`;
 
-      console.log(
-        `Warning: distance from ${building1} to ${building2} is ${formattedDistance}`,
-      );
+      return `Warning: distance from ${building1} to ${building2} is ${formattedDistance}`;
     }
+    return undefined;
   }
+
+  const renderEvent = ({ event }: EventContentArg) => {
+    const TitleText = () => (
+      <Text
+        fontSize="sm"
+        fontWeight="medium"
+        overflow="hidden"
+        textOverflow="clip"
+        whiteSpace="nowrap"
+      >
+        {event.title}
+      </Text>
+    );
+
+    const room = event.extendedProps.room as string | undefined;
+    const activity = event.extendedProps.activity as BaseActivity;
+    const distanceWarning = getDistanceWarning(event);
+
+    return (
+      <Box
+        color={event.textColor}
+        p={0.5}
+        lineHeight={1.3}
+        cursor="pointer"
+        height="100%"
+        position="relative"
+      >
+        {activity instanceof Class ? (
+          <Tooltip
+            content={activity.name}
+            portalled
+            positioning={{ placement: "top" }}
+            children={TitleText()}
+          />
+        ) : (
+          <TitleText />
+        )}
+        <Text fontSize="xs">{room}</Text>
+        {distanceWarning ? (
+        <Float placement="bottom-end">
+          <Tooltip
+            content={distanceWarning}
+            portalled
+            positioning={{ placement: "top" }}
+          >
+            <Circle size="5" bg="fg.warning" color="white" boxShadow="lg">
+              !
+            </Circle>
+          </Tooltip>
+        </Float>
+        ) : null
+        }
+      </Box>
+    );
+  };
 
   return (
     <FullCalendar

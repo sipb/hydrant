@@ -29,6 +29,10 @@
   background: var(--chakra-colors-bg);
 }
 
+.fc .fc-timegrid-event-harness-inset {
+  z-index: auto !important;
+}
+
 .fc .fc-timegrid-event-harness-inset .fc-timegrid-event {
   box-shadow: var(--chakra-colors-bg) 0px 0px 0px 1.5px;
 }
