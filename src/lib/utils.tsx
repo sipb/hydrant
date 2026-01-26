@@ -25,12 +25,17 @@ const CLASS_REGEX = new RegExp(
 
 /** Three-way comparison for class numbers. */
 export function classSort(
-  a: string | null | undefined,
-  b: string | null | undefined,
+  a: string | number | null | undefined,
+  b: string | number | null | undefined,
 ) {
   if (!a && !b) return 0;
   if (!a) return 1;
   if (!b) return -1;
+  if (typeof a === "number" && typeof b === "number") {
+    return a - b;
+  }
+  a = String(a);
+  b = String(b);
   const aGroups = CLASS_REGEX.exec(a)?.groups;
   const bGroups = CLASS_REGEX.exec(b)?.groups;
   if (!aGroups || !bGroups) return 0;

@@ -69,11 +69,7 @@ function AboutDialog() {
                   <Text>
                     We'd like to thank CJ Quines '23 for creating Hydrant and
                     Edward Fan '19 for creating{" "}
-                    <ChakraLink
-                      href="https://firehose.guide/"
-                      colorPalette="blue"
-                      asChild
-                    >
+                    <ChakraLink colorPalette="blue" asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -83,11 +79,7 @@ function AboutDialog() {
                       </Link>
                     </ChakraLink>
                     , the basis for Hydrant. We'd also like to thank the{" "}
-                    <ChakraLink
-                      href="https://fireroad.mit.edu/"
-                      colorPalette="blue"
-                      asChild
-                    >
+                    <ChakraLink colorPalette="blue" asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -96,7 +88,17 @@ function AboutDialog() {
                         FireRoad
                       </Link>
                     </ChakraLink>{" "}
-                    team for collaborating with us.
+                    team and{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://physicaleducationandwellness.mit.edu/"
+                      >
+                        DAPER
+                      </Link>
+                    </ChakraLink>{" "}
+                    for collaborating with us.
                   </Text>
                 </Flex>
               </Dialog.Body>

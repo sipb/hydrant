@@ -24,7 +24,7 @@ import { HydrantContext } from "../lib/hydrant";
 import logo from "../assets/logo.svg";
 import logoDark from "../assets/logo-dark.svg";
 import hydraAnt from "../assets/hydraAnt.png";
-import { SIPBLogo } from "./SIPBLogo";
+import { SIPBLogo } from "./ButtonsLinks";
 
 export function PreferencesDialog() {
   const { state, hydrantState } = useContext(HydrantContext);
