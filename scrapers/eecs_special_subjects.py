@@ -254,31 +254,19 @@ def parse_units(units_str):
     """
     units_str = _clean(units_str)
 
-    # Check for "Arranged" or variable units
-    if "arranged" in units_str.lower():
-        return (0, 0, 0, True)
-
     # Parse formats like "3-0-9"
     if "-" in units_str:
         parts = units_str.split("-")
         if len(parts) == 3:
-            try:
-                return (int(parts[0]), int(parts[1]), int(parts[2]), False)
-            except ValueError:
-                return None
+            return (int(parts[0]), int(parts[1]), int(parts[2]), False)
+        raise ValueError(f"Invalid units string: {units_str}")
 
-    # Single number like "12" - convert to standard format
+    # Single number like "12" - variable units
     if units_str.isdigit():
-        total = int(units_str)
-        if total == 12:
-            return (3, 0, 9, False)
-        # For other totals, try to infer distribution
-        lecture = total // 3
-        prep = total - lecture
-        return (lecture, 0, prep, False)
+        return (0, 0, 0, True)
 
-    # Can't parse - return None
-    return None
+    # Can't parse
+    raise ValueError(f"Invalid units string: {units_str}")
 
 
 def parse_level(level_str):
