@@ -41,9 +41,11 @@ import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { TSemester } from "../lib/dates";
-import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
+
+import "./ClassTable.scss";
+import colorClasses from "./colors.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -67,20 +69,20 @@ const GRID_MODULES: Module[] = [
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-enum ColorEnum {
-  Muted = "ag-cell-muted-text",
-  Success = "ag-cell-success-text",
-  Warning = "ag-cell-warning-text",
-  Error = "ag-cell-error-text",
-  Normal = "ag-cell-normal-text",
-}
+const COLORS = {
+  Muted: colorClasses.muted,
+  Success: colorClasses.success,
+  Warning: colorClasses.warning,
+  Error: colorClasses.error,
+  Normal: colorClasses.normal,
+} as const;
 
 const getRatingColor = (rating?: string | null) => {
-  if (!rating || rating === "N/A") return ColorEnum.Muted;
+  if (!rating || rating === "N/A") return COLORS.Muted;
   const ratingNumber = Number(rating);
-  if (ratingNumber >= 6) return ColorEnum.Success;
-  if (ratingNumber >= 5) return ColorEnum.Warning;
-  return ColorEnum.Error;
+  if (ratingNumber >= 6) return COLORS.Success;
+  if (ratingNumber >= 5) return COLORS.Warning;
+  return COLORS.Error;
 };
 
 const getHoursColor = (
@@ -89,9 +91,9 @@ const getHoursColor = (
   term: TSemester,
   half: number | undefined,
 ) => {
-  if (!hours || hours === "N/A") return ColorEnum.Muted;
-  if (totalUnits === undefined) return ColorEnum.Muted;
-  if (totalUnits === 0) return ColorEnum.Normal;
+  if (!hours || hours === "N/A") return COLORS.Muted;
+  if (totalUnits === undefined) return COLORS.Muted;
+  if (totalUnits === 0) return COLORS.Normal;
 
   const hoursNumber = Number(hours);
   let weeksInTerm = 0;
@@ -115,9 +117,9 @@ const getHoursColor = (
   const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
   const proportion = hoursNumber / expectedHours;
 
-  if (proportion < 0.8) return ColorEnum.Success;
-  if (proportion >= 0.8 && proportion <= 1.2) return ColorEnum.Warning;
-  return ColorEnum.Error;
+  if (proportion < 0.8) return COLORS.Success;
+  if (proportion >= 0.8 && proportion <= 1.2) return COLORS.Warning;
+  return COLORS.Error;
 };
 
 /** A single row in the class table. */

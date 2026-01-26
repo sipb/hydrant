@@ -37,9 +37,11 @@ import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
 import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
+
+import "./ClassTable.scss";
+import colorClasses from "./colors.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -63,19 +65,19 @@ const GRID_MODULES: Module[] = [
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-enum ColorEnum {
-  Muted = "ag-cell-muted-text",
-  Success = "ag-cell-success-text",
-  Warning = "ag-cell-warning-text",
-  Error = "ag-cell-error-text",
-  Normal = "ag-cell-normal-text",
-}
+const COLORS = {
+  Muted: colorClasses.muted,
+  Success: colorClasses.success,
+  Warning: colorClasses.warning,
+  Error: colorClasses.error,
+  Normal: colorClasses.normal,
+} as const;
 
 const getFeeColor = (fee: number) => {
-  if (isNaN(fee)) return ColorEnum.Muted;
-  if (fee == 0) return ColorEnum.Success;
-  if (fee <= 20) return ColorEnum.Warning;
-  return ColorEnum.Error;
+  if (isNaN(fee)) return COLORS.Muted;
+  if (fee == 0) return COLORS.Success;
+  if (fee <= 20) return COLORS.Warning;
+  return COLORS.Error;
 };
 
 /** A single row in the class table. */
