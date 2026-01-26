@@ -285,7 +285,7 @@ def parse_date(date_str: str) -> date:
 
 def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str:
     """
-    Parses times from CSV to format from Fireroad, for compatibility.
+    Parses times from CSV to Fireroad format, for compatibility.
 
     Args:
         start_time (str): Start time of the class
@@ -297,9 +297,7 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
     """
     start_c = time_c.strptime(start_time, "%I:%M %p")
     start = time(start_c.tm_hour, start_c.tm_min)
-    end = time(
-        start.hour + 1, start.minute
-    )  # default to 1 hour, can be changed in overrides
+    # default to 1 hour, can be changed in overrides
 
     start_raw_time = (
         f"{12 - ((- start.hour) % 12)}"
