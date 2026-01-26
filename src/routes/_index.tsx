@@ -30,7 +30,9 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
   const urlNameOrig = searchParams.get("t");
 
-  const latestTerm = await fetchNoCache<LatestTermInfo>("/latestTerm.json");
+  const latestTerm = await fetchNoCache<LatestTermInfo>(
+    import.meta.env.BASE_URL + "latestTerm.json",
+  );
   const { urlName, shouldWarn } = getClosestUrlName(
     urlNameOrig,
     latestTerm.semester.urlName,
@@ -54,7 +56,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   }
 
   const { classes, lastUpdated, termInfo } = await fetchNoCache<SemesterData>(
-    `/${termToFetch}.json`,
+    `${import.meta.env.BASE_URL}${termToFetch}.json`,
   );
   const classesMap = new Map(Object.entries(classes));
 
