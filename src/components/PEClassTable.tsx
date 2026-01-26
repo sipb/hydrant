@@ -63,14 +63,20 @@ const GRID_MODULES: Module[] = [
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-// TODO colors
-// enum ColorEnum {
-//   Muted = "ag-cell-muted-text",
-//   Success = "ag-cell-success-text",
-//   Warning = "ag-cell-warning-text",
-//   Error = "ag-cell-error-text",
-//   Normal = "ag-cell-normal-text",
-// }
+enum ColorEnum {
+  Muted = "ag-cell-muted-text",
+  Success = "ag-cell-success-text",
+  Warning = "ag-cell-warning-text",
+  Error = "ag-cell-error-text",
+  Normal = "ag-cell-normal-text",
+}
+
+const getFeeColor = (fee: number) => {
+  if (isNaN(fee)) return ColorEnum.Muted;
+  if (fee == 0) return ColorEnum.Success;
+  if (fee <= 20) return ColorEnum.Warning;
+  return ColorEnum.Error;
+};
 
 /** A single row in the class table. */
 interface ClassTableRow {
@@ -443,8 +449,9 @@ export function PEClassTable() {
       {
         field: "fee",
         maxWidth: 93,
-        ...numberSortProps,
+        cellClass: (params) => getFeeColor(Number(params.value)),
         valueFormatter: (params) => "$" + Number(params.value).toFixed(2),
+        ...numberSortProps,
       },
       {
         field: "name",

@@ -563,7 +563,7 @@ export function ClassTable() {
         sortable: false,
         flex: 1,
         valueFormatter: (params) =>
-          `${params.data?.class.new ? "✨ " : ""}${params.value ?? ""}`,
+          (params.data?.class.new ? "✨ " : "") + (params.value ?? ""),
       },
     ];
   }, [state]);
