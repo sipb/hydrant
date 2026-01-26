@@ -22,9 +22,6 @@ on:
       - "{package,package-lock,tsconfig}.json"
       - "scrapers/overrides.toml.d/override-schema.json"
 
-env:
-  python-version: 3.8
-
 jobs:
   black:
     name: Black
@@ -33,7 +30,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version: ${{ vars.PYTHON_VERSION }}
           cache: "pip"
       - uses: psf/black@24.8.0 # pinned due to python 8 support
   pylint:
