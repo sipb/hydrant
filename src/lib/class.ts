@@ -229,7 +229,7 @@ export class Class implements BaseActivity {
     return this.number;
   }
 
-  /** Name, e.g. "Introduction to Machine Learning". */
+  /** Name; e.g. "Introduction to Machine Learning". */
   get name(): string {
     if (this.rawClass.oldNumber) {
       return `[${this.rawClass.oldNumber}] ${this.rawClass.name}`;

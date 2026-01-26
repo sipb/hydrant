@@ -12,6 +12,7 @@ import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { Class } from "../lib/class";
+import { PEClass } from "../lib/pe";
 import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.css";
@@ -45,7 +46,8 @@ export function Calendar() {
         cursor="pointer"
         height="100%"
       >
-        {event.extendedProps.activity instanceof Class ? (
+        {event.extendedProps.activity instanceof Class ||
+        event.extendedProps.activity instanceof PEClass ? (
           <Tooltip
             content={event.extendedProps.activity.name}
             portalled

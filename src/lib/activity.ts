@@ -72,6 +72,7 @@ export class Timeslot {
  */
 export interface BaseActivity {
   id: string;
+  name: string;
   backgroundColor: string;
   manualColor: boolean;
   hours: number;
