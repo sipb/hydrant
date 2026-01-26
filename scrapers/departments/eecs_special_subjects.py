@@ -17,14 +17,15 @@ Functions:
 
 from __future__ import annotations
 
-from pprint import pprint
 import re
-from typing import Any, Literal, Optional
+from pprint import pprint
+from typing import Any, Dict, List, Literal, Optional, Tuple
+from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup, Tag
-import requests
-from .fireroad import parse_timeslot, parse_section
-from .utils import TIMES, EVE_TIMES
+
+from scrapers.fireroad import parse_section, parse_timeslot
+from scrapers.utils import EVE_TIMES, TIMES
 
 # The EECS WordPress page renders its subject list by dynamically loading this HTML
 # fragment (see network request `.../plugins/subj_2026SP.html` in a browser).
@@ -56,13 +57,13 @@ DAY_WORD = {
 }
 
 
-Timeslot = tuple[int, int]
-Section = tuple[list[Timeslot], str]
-Units = dict[
+Timeslot = Tuple[int, int]
+Section = Tuple[List[Timeslot], str]
+Units = Dict[
     Literal["lectureUnits", "labUnits", "preparationUnits", "isVariableUnits"], Any
 ]
-RawSectionFields = dict[str, list[str]]
-SectionFields = dict[str, list[Section]]
+RawSectionFields = Dict[str, List[str]]
+SectionFields = Dict[str, List[Section]]
 
 
 def normalize_days(days_raw: str) -> str:
@@ -104,7 +105,11 @@ def make_raw_sections(days: str, slot: str, room: str, is_pm_int: int) -> str:
     """
     Formats a raw section (same shape as math_dept.py).
     """
+    assert days
+    assert slot
+    assert room
     assert is_pm_int in (0, 1), is_pm_int
+
     return f"{room}/{days}/{is_pm_int}/{slot}"
 
 
@@ -154,10 +159,6 @@ def parse_schedule(schedule_line: str) -> tuple[RawSectionFields, SectionFields]
         else:
             assert idx == 0, "Only the first chunk may omit its kind (assumed lecture)"
 
-        days = normalize_days(m.group("days"))
-        room = m.group("room")
-        assert room, chunk
-
         start = m.group("start").replace(":", ".")
         end = m.group("end").replace(":", ".")
 
@@ -168,11 +169,11 @@ def parse_schedule(schedule_line: str) -> tuple[RawSectionFields, SectionFields]
 
         slot = f"{start}-{end}" + (" PM" if is_pm_int == 1 else "")
 
-        raw_key = f"{kind}RawSections"
-        sec_key = f"{kind}Sections"
-        raw = make_raw_sections(days, slot, room, is_pm_int)
-        raw_fields.setdefault(raw_key, []).append(raw)
-        section_fields.setdefault(sec_key, []).append(parse_section(raw))
+        raw = make_raw_sections(
+            normalize_days(m.group("days")), slot, m.group("room"), is_pm_int
+        )
+        raw_fields.setdefault(f"{kind}RawSections", []).append(raw)
+        section_fields.setdefault(f"{kind}Sections", []).append(parse_section(raw))
 
     return raw_fields, section_fields
 
@@ -187,13 +188,15 @@ def get_rows() -> list[Tag]:
     Returns:
     * list[Tag]: BeautifulSoup tags for each detected 6.S### subject
     """
-    response = requests.get(
-        URL,
-        timeout=10,
-        headers={"User-Agent": "hydrant-scrapers (https://github.com/sipb/hydrant)"},
+    request = Request(URL)
+    request.add_unredirected_header(
+        "User-Agent", "hydrant-scrapers (https://github.com/sipb/hydrant)"
     )
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, features="lxml")
+
+    with urlopen(request, timeout=15) as response:
+        page_html = response.read().decode("utf-8")
+
+    soup = BeautifulSoup(page_html, features="lxml")
     page_text = soup.get_text(" ", strip=True)
     assert COURSE_RE.search(page_text) is not None, f"No 6.S### entries found on {URL}"
 

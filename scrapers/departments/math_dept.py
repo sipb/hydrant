@@ -21,7 +21,7 @@ from urllib.request import urlopen
 
 from bs4 import BeautifulSoup, Tag
 
-from .fireroad import parse_section, parse_timeslot
+from ..fireroad import parse_section, parse_timeslot
 
 
 def parse_when(when: str) -> tuple[str, str]:
