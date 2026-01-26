@@ -34,6 +34,7 @@ import {
 } from "../lib/activity";
 import type { Class } from "../lib/class";
 import type { PEClass } from "../lib/pe";
+import { PESection } from "../lib/pe";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
@@ -135,8 +136,12 @@ function ClassManualSections(props: { cls: Class | PEClass }) {
         return humanReadable ? "Auto (default)" : LockOption.Auto;
       } else if (sec === LockOption.None) {
         return LockOption.None;
+      } else if (!humanReadable) {
+        return sec.rawTime;
+      } else if (sec instanceof PESection) {
+        return `${sec.sectionNumber}: ${sec.parsedTime}`;
       } else {
-        return humanReadable ? sec.parsedTime : sec.rawTime;
+        return sec.parsedTime;
       }
     };
 
