@@ -40,7 +40,7 @@ import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
-import { ColorClasses } from "../lib/colors";
+import { ColorStyles } from "../lib/colors";
 
 import styles from "./ClassTable.module.css";
 
@@ -68,10 +68,10 @@ const GRID_MODULES: Module[] = [
 ModuleRegistry.registerModules(GRID_MODULES);
 
 const getFeeColor = (fee: number) => {
-  if (isNaN(fee)) return ColorClasses.Muted;
-  if (fee == 0) return ColorClasses.Success;
-  if (fee <= 20) return ColorClasses.Warning;
-  return ColorClasses.Error;
+  if (isNaN(fee)) return ColorStyles.Muted;
+  if (fee == 0) return ColorStyles.Success;
+  if (fee <= 20) return ColorStyles.Warning;
+  return ColorStyles.Error;
 };
 
 /** A single row in the class table. */

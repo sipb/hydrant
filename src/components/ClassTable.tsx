@@ -44,7 +44,7 @@ import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { TSemester } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
-import { ColorClasses } from "../lib/colors";
+import { ColorStyles } from "../lib/colors";
 
 import styles from "./ClassTable.module.css";
 
@@ -72,11 +72,11 @@ const GRID_MODULES: Module[] = [
 ModuleRegistry.registerModules(GRID_MODULES);
 
 const getRatingColor = (rating?: string | null) => {
-  if (!rating || rating === "N/A") return ColorClasses.Muted;
+  if (!rating || rating === "N/A") return ColorStyles.Muted;
   const ratingNumber = Number(rating);
-  if (ratingNumber >= 6) return ColorClasses.Success;
-  if (ratingNumber >= 5) return ColorClasses.Warning;
-  return ColorClasses.Error;
+  if (ratingNumber >= 6) return ColorStyles.Success;
+  if (ratingNumber >= 5) return ColorStyles.Warning;
+  return ColorStyles.Error;
 };
 
 const getHoursColor = (
@@ -85,9 +85,9 @@ const getHoursColor = (
   term: TSemester,
   half: number | undefined,
 ) => {
-  if (!hours || hours === "N/A") return ColorClasses.Muted;
-  if (totalUnits === undefined) return ColorClasses.Muted;
-  if (totalUnits === 0) return ColorClasses.Normal;
+  if (!hours || hours === "N/A") return ColorStyles.Muted;
+  if (totalUnits === undefined) return ColorStyles.Muted;
+  if (totalUnits === 0) return ColorStyles.Normal;
 
   const hoursNumber = Number(hours);
   let weeksInTerm = 0;
@@ -111,9 +111,9 @@ const getHoursColor = (
   const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
   const proportion = hoursNumber / expectedHours;
 
-  if (proportion < 0.8) return ColorClasses.Success;
-  if (proportion >= 0.8 && proportion <= 1.2) return ColorClasses.Warning;
-  return ColorClasses.Error;
+  if (proportion < 0.8) return ColorStyles.Success;
+  if (proportion >= 0.8 && proportion <= 1.2) return ColorStyles.Warning;
+  return ColorStyles.Error;
 };
 
 /** A single row in the class table. */

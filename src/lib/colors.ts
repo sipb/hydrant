@@ -3,7 +3,7 @@ import type { Activity } from "./activity";
 
 import styles from "./colors.module.css";
 
-export const ColorClasses = {
+export const ColorStyles = {
   Muted: styles.muted,
   Success: styles.success,
   Warning: styles.warning,
