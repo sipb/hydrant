@@ -88,10 +88,12 @@ export class PEClass implements BaseActivity {
     ];
   }
 
+  /** ID unique over all Activities. */
   get id(): string {
     return this.rawClass.number;
   }
 
+  /** Name; e.g. "Swimming, Beginner". */
   get name(): string {
     return this.rawClass.name;
   }
