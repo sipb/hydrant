@@ -156,7 +156,7 @@ export class PEClass implements BaseActivity {
       wellness: this.rawClass.wellness,
       pirate: this.rawClass.pirate,
       swim: this.rawClass.swimGIR,
-      nofee: this.rawClass.fee == "$0.00",
+      nofee: this.fee == 0,
       nopreq: this.rawClass.prereqs == "None",
     };
   }
