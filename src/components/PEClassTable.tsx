@@ -18,6 +18,7 @@ import {
   ExternalFilterModule,
   RenderApiModule,
   CellStyleModule,
+  RowStyleModule,
   themeQuartz,
   type IRowNode,
   type ColDef,
@@ -40,8 +41,8 @@ import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
 
-import "./ClassTable.css";
-import colorClasses from "./colors.module.css";
+import tableClasses from "./ClassTable.module.css";
+import colorClasses from "../lib/colors.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -59,6 +60,7 @@ const GRID_MODULES: Module[] = [
   ClientSideRowModelModule,
   ExternalFilterModule,
   CellStyleModule,
+  RowStyleModule,
   RenderApiModule,
   ...(import.meta.env.DEV ? [ValidationModule] : []),
 ];
@@ -498,6 +500,7 @@ export function PEClassTable() {
         <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
+          rowClass={tableClasses.row}
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={rowData}

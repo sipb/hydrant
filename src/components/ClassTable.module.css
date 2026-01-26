@@ -1,0 +1,7 @@
+.row {
+  cursor: pointer;
+}
+
+.row:hover :global(.ag-cell:nth-child(2)) {
+  text-decoration: underline;
+}
