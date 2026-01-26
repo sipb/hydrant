@@ -6,6 +6,6 @@
   cursor: pointer;
 }
 
-.ag-row:hover .ag-cell:first-child {
+.ag-row:hover .ag-cell:nth-child(2) {
   text-decoration: underline;
 }
