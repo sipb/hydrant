@@ -5,7 +5,8 @@ url = "https://introml.mit.edu?from=hydrant"
 
 ["6.S051"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S051"
-name = "(also 17.S917) AI Alignment: Moral, Political, and Computational Foundations"
+name = "AI Alignment: Moral, Political, and Computational Foundations"
+same = "17.S917"
 level = "U"
 lectureUnits = 3
 labUnits = 0
@@ -149,7 +150,8 @@ description = "6.S891: Biodiversity and environment - Prof. Sara Beery 6.S893: P
 
 ["6.S895"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S895"
-name = "(also 4.S52) Computational Textiles (2nd Half-Term)"
+name = "Computational Textiles (2nd Half-Term)"
+same = "4.S52"
 level = "G"
 lectureUnits = 1
 labUnits = 1
@@ -257,7 +259,8 @@ description = "This class covers of machine learning and signal processing as th
 
 ["6.S976"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S976"
-name = "(also under 18.S996) Cryptography and Machine Learning: Foundations and Frontiers"
+name = "Cryptography and Machine Learning: Foundations and Frontiers"
+same = "18.S996"
 level = "G"
 lectureUnits = 3
 labUnits = 0
@@ -337,7 +340,8 @@ description = "Warehouse-scale datacenters host a wide range of online services,
 
 ["6.S985"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S985"
-name = "(also under MAS.S60) Modeling: Multimodal Approaches"
+name = "Modeling: Multimodal Approaches"
+same = "MAS.S60"
 level = "G"
 lectureUnits = 3
 labUnits = 0
