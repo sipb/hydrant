@@ -126,40 +126,27 @@ def parse_schedule(schedule_line):
     chunks = list(filter(None, schedule_line.split(";")))
     out: dict[str, list[tuple[str, str, str, int]]] = {}
 
-    for i, raw_chunk in enumerate(chunks):
-        kind = "lecture"
-        chunk = raw_chunk.strip()
-
-        m_kind = re.match(
-            (
-                r"^(?P<kind>"
-                r"Lectures?|Lecture|"
-                r"Recitations?|Recitation|"
-                r"Labs?|Lab|"
-                r"Designs?|Design"
-                r"):\s*"
-            ),
-            chunk,
-            re.IGNORECASE,
-        )
-        if m_kind is not None:
-            kind = m_kind.group("kind").lower().rstrip("s")
-            chunk = chunk[m_kind.end() :]
-        else:
-            assert i == 0, "Only the first chunk may omit its kind (assumed lecture)"
-
+    for idx, chunk in enumerate(chunks):
         m = re.match(
-            r"^(?P<days>(?:[MTWRF]+)|(?:Monday|Tuesday|Wednesday|Thursday|Friday|"
+            r"^(?:(?P<kind>Lectures?|Lecture|Recitations?|Recitation|Labs?|Lab|"
+            r"Designs?|Design):\s*)?"
+            r"(?P<days>(?:[MTWRF]+)|(?:Monday|Tuesday|Wednesday|Thursday|Friday|"
             r"Mondays|Tuesdays|Wednesdays|Thursdays|Fridays))\s*"
             r"(?P<start>[0-9]+(?:[.:][0-9]{2})?)"
             r"(?:\s*(?P<start_ampm>am|pm|a|p))?\s*-\s*"
             r"(?P<end>[0-9]+(?:[.:][0-9]{2})?)"
             r"(?:\s*(?P<end_ampm>am|pm|a|p))?\s*,\s*room\s+"
             r"(?P<room>[A-Za-z0-9-]+)(?:\s+.*)?$",
-            chunk,
+            chunk.strip(),
             re.IGNORECASE,
         )
         assert m is not None, chunk
+
+        kind = "lecture"
+        if m.group("kind") is not None:
+            kind = m.group("kind").lower().rstrip("s")  # drop 's' in e.g. Lectures
+        else:
+            assert idx == 0, "Only the first chunk may omit its kind (assumed lecture)"
 
         days = normalize_days(m.group("days"))
         room = m.group("room")
@@ -314,11 +301,11 @@ def parse_row(row):
         if key and val:
             meta[key] = val
 
-    # Parse Level (only if present)
+    # Parse Level (if present)
     if "Level" in meta:
         data["level"] = parse_level(meta["Level"])
 
-    # Parse Units (only if present and parseable)
+    # Parse Units (if present and parseable)
     if "Units" in meta:
         units_result = parse_units(meta["Units"])
         if units_result is not None:
