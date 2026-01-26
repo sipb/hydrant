@@ -14,7 +14,7 @@ import { Slot } from "../lib/dates";
 import { Class } from "../lib/class";
 import { HydrantContext } from "../lib/hydrant";
 
-import "./Calendar.scss";
+import "./Calendar.css";
 
 /**
  * Calendar showing all the activities, including the buttons on top that
