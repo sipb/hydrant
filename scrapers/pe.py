@@ -404,7 +404,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
     return results
 
 
-@lru_cache(maxsize=1)
+@lru_cache(maxsize=None)
 def get_pe_catalog_descriptions() -> dict[str, str]:
     """
     Scrapes PE&W course descriptions from the DAPER PE&W catalog.
