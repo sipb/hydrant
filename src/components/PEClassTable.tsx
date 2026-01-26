@@ -40,9 +40,9 @@ import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
+import { ColorClasses } from "../lib/colors";
 
 import tableClasses from "./ClassTable.module.css";
-import colorClasses from "../lib/colors.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -67,19 +67,11 @@ const GRID_MODULES: Module[] = [
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-const COLORS = {
-  Muted: colorClasses.muted,
-  Success: colorClasses.success,
-  Warning: colorClasses.warning,
-  Error: colorClasses.error,
-  Normal: colorClasses.normal,
-} as const;
-
 const getFeeColor = (fee: number) => {
-  if (isNaN(fee)) return COLORS.Muted;
-  if (fee == 0) return COLORS.Success;
-  if (fee <= 20) return COLORS.Warning;
-  return COLORS.Error;
+  if (isNaN(fee)) return ColorClasses.Muted;
+  if (fee == 0) return ColorClasses.Success;
+  if (fee <= 20) return ColorClasses.Warning;
+  return ColorClasses.Error;
 };
 
 /** A single row in the class table. */

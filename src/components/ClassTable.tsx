@@ -44,9 +44,9 @@ import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { TSemester } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
+import { ColorClasses } from "../lib/colors";
 
 import tableClasses from "./ClassTable.module.css";
-import colorClasses from "../lib/colors.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -71,20 +71,12 @@ const GRID_MODULES: Module[] = [
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-const COLORS = {
-  Muted: colorClasses.muted,
-  Success: colorClasses.success,
-  Warning: colorClasses.warning,
-  Error: colorClasses.error,
-  Normal: colorClasses.normal,
-} as const;
-
 const getRatingColor = (rating?: string | null) => {
-  if (!rating || rating === "N/A") return COLORS.Muted;
+  if (!rating || rating === "N/A") return ColorClasses.Muted;
   const ratingNumber = Number(rating);
-  if (ratingNumber >= 6) return COLORS.Success;
-  if (ratingNumber >= 5) return COLORS.Warning;
-  return COLORS.Error;
+  if (ratingNumber >= 6) return ColorClasses.Success;
+  if (ratingNumber >= 5) return ColorClasses.Warning;
+  return ColorClasses.Error;
 };
 
 const getHoursColor = (
@@ -93,9 +85,9 @@ const getHoursColor = (
   term: TSemester,
   half: number | undefined,
 ) => {
-  if (!hours || hours === "N/A") return COLORS.Muted;
-  if (totalUnits === undefined) return COLORS.Muted;
-  if (totalUnits === 0) return COLORS.Normal;
+  if (!hours || hours === "N/A") return ColorClasses.Muted;
+  if (totalUnits === undefined) return ColorClasses.Muted;
+  if (totalUnits === 0) return ColorClasses.Normal;
 
   const hoursNumber = Number(hours);
   let weeksInTerm = 0;
@@ -119,9 +111,9 @@ const getHoursColor = (
   const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
   const proportion = hoursNumber / expectedHours;
 
-  if (proportion < 0.8) return COLORS.Success;
-  if (proportion >= 0.8 && proportion <= 1.2) return COLORS.Warning;
-  return COLORS.Error;
+  if (proportion < 0.8) return ColorClasses.Success;
+  if (proportion >= 0.8 && proportion <= 1.2) return ColorClasses.Warning;
+  return ColorClasses.Error;
 };
 
 /** A single row in the class table. */
