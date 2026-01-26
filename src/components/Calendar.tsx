@@ -19,6 +19,9 @@ import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.css";
 
+// Threshold at which to display a distance warning, in metres
+const DISTANCE_WARNING_THRESHOLD = 650;
+
 /**
  * Calendar showing all the activities, including the buttons on top that
  * change the schedule option selected.
@@ -73,7 +76,7 @@ export function Calendar() {
         location2.long,
       ).s12;
 
-      if (distance === undefined || distance < 500) {
+      if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
       }
 
