@@ -2,6 +2,6 @@
   cursor: pointer;
 }
 
-.row:hover :global(.ag-cell:nth-child(2)) {
+.row:hover .underline-on-hover {
   text-decoration: underline;
 }

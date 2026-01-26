@@ -422,6 +422,7 @@ export function PEClassTable() {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
+        cellClass: tableClasses["underline-on-hover"],
         ...sortProps,
       },
       {
