@@ -80,7 +80,7 @@ def normalize_days(days_raw):
         assert set(days_raw) <= set("MTWRF"), days_raw
         return days_raw
 
-    key = days_raw.lower().rstrip('s')
+    key = days_raw.lower().rstrip("s")
     assert key in DAY_WORD, days_raw
     return DAY_WORD[key]
 
@@ -149,7 +149,9 @@ def parse_schedule(schedule_line):
             kind = m_kind.group("kind").lower().rstrip("s")
             chunk = _clean(chunk[m_kind.end() :])
         else:
-            assert i == 0, "Only the first chunk can not specify a kind, which will be assumed as 'Lecture'"
+            assert (
+                i == 0
+            ), "Only the first chunk can not specify a kind, which will be assumed as 'Lecture'"
 
         m = re.match(
             r"^(?P<days>(?:[MTWRF]+)|(?:Monday|Tuesday|Wednesday|Thursday|Friday|"
