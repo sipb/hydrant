@@ -43,6 +43,9 @@ prereqs = "6.100A"
 lectureRawSections = [
     "32-141/F/0/11-1",
 ]
+recitationRawSections = [
+    "36-112/T/0/2-3",
+]
 lectureSections = [
     [
         [
@@ -53,9 +56,6 @@ lectureSections = [
         ],
         "32-141",
     ],
-]
-recitationRawSections = [
-    "36-112/T/0/2-3",
 ]
 recitationSections = [
     [
@@ -242,6 +242,9 @@ prereqs = "Probability (6.3700/6.3702), Linear Algebra (18.06) and Signals, Syst
 lectureRawSections = [
     "32-044/TR/0/10-12",
 ]
+recitationRawSections = [
+    "32-044/F/0/12-2",
+]
 lectureSections = [
     [
         [
@@ -256,9 +259,6 @@ lectureSections = [
         ],
         "32-044",
     ],
-]
-recitationRawSections = [
-    "32-044/F/0/12-2",
 ]
 recitationSections = [
     [

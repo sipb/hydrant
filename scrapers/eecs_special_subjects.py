@@ -8,22 +8,21 @@ and return a dict of overrides.
 Functions:
 * get_rows()
 * parse_schedule(schedule_line)
-* is_header(tag, text)
 * parse_header(text)
 * parse_many_timeslots(days, slot, is_pm_int)
 * make_raw_sections(days, slot, room, is_pm_int)
-* make_section_override(timeslots, room)
 * parse_row(row)
 * run()
 """
 
+from __future__ import annotations
+
 from pprint import pprint
 import re
-import sys
+from typing import Any, Literal, Optional
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import requests
-import tomli_w
 from .fireroad import parse_timeslot, parse_section
 from .utils import TIMES, EVE_TIMES
 
@@ -57,7 +56,16 @@ DAY_WORD = {
 }
 
 
-def normalize_days(days_raw):
+Timeslot = tuple[int, int]
+Section = tuple[list[Timeslot], str]
+Units = dict[
+    Literal["lectureUnits", "labUnits", "preparationUnits", "isVariableUnits"], Any
+]
+RawSectionFields = dict[str, list[str]]
+SectionFields = dict[str, list[Section]]
+
+
+def normalize_days(days_raw: str) -> str:
     """
     Normalize day strings into Fireroad-compatible day letters (MTWRF).
 
@@ -76,7 +84,7 @@ def normalize_days(days_raw):
     return DAY_WORD[key]
 
 
-def parse_many_timeslots(days, slot, is_pm_int):
+def parse_many_timeslots(days: str, slot: str, is_pm_int: int) -> list[Timeslot]:
     """
     Parses many timeslots.
 
@@ -86,13 +94,13 @@ def parse_many_timeslots(days, slot, is_pm_int):
     * is_pm_int (int): 0 for AM-ish slots, 1 for PM-ish slots
 
     Returns:
-    * list[list[int]]: All parsed timeslots, as a list
+    * list[Timeslot]: All parsed timeslots
     """
     assert is_pm_int in (0, 1), is_pm_int
     return [parse_timeslot(day, slot, bool(is_pm_int)) for day in days]
 
 
-def make_raw_sections(days, slot, room, is_pm_int):
+def make_raw_sections(days: str, slot: str, room: str, is_pm_int: int) -> str:
     """
     Formats a raw section (same shape as math_dept.py).
     """
@@ -100,14 +108,7 @@ def make_raw_sections(days, slot, room, is_pm_int):
     return f"{room}/{days}/{is_pm_int}/{slot}"
 
 
-def make_section_override(timeslots, room):
-    """
-    Makes a section override (same shape as math_dept.py).
-    """
-    return ((timeslots, room),)
-
-
-def parse_schedule(schedule_line):
+def parse_schedule(schedule_line: str) -> tuple[RawSectionFields, SectionFields]:
     """
     Parse a schedule value like:
       "Lectures: TR2:30-4, room 34-101"
@@ -118,13 +119,18 @@ def parse_schedule(schedule_line):
     * schedule_line (str): The raw schedule line
 
     Returns:
-    * dict[str, list[tuple[str, str, str, int]]]: Mapping kind -> list of
-      (days, slot, room, is_pm_int)
+    * (RawSectionFields, SectionFields):
+      - RawSectionFields: mapping like "lectureRawSections" -> list[str]
+      - SectionFields: mapping like "lectureSections" -> list[Section]
+
+      Both dicts are intended to be merged into the per-course `data` dict in
+      `parse_row()` via `data.update(...)`.
     """
     assert schedule_line and schedule_line != "TBD", schedule_line
 
     chunks = list(filter(None, schedule_line.split(";")))
-    out: dict[str, list[tuple[str, str, str, int]]] = {}
+    raw_fields: RawSectionFields = {}
+    section_fields: SectionFields = {}
 
     for idx, chunk in enumerate(chunks):
         m = re.match(
@@ -162,12 +168,16 @@ def parse_schedule(schedule_line):
 
         slot = f"{start}-{end}" + (" PM" if is_pm_int == 1 else "")
 
-        out.setdefault(kind, []).append((days, slot, room, is_pm_int))
+        raw_key = f"{kind}RawSections"
+        sec_key = f"{kind}Sections"
+        raw = make_raw_sections(days, slot, room, is_pm_int)
+        raw_fields.setdefault(raw_key, []).append(raw)
+        section_fields.setdefault(sec_key, []).append(parse_section(raw))
 
-    return out
+    return raw_fields, section_fields
 
 
-def get_rows():
+def get_rows() -> list[Tag]:
     """
     Scrapes the EECS subject updates page and returns "rows", each representing
     one 6.S### entry as a list of text blocks (header + body).
@@ -175,7 +185,7 @@ def get_rows():
     Args: none
 
     Returns:
-    * list[list[str]]: Rows for each detected 6.S### subject
+    * list[Tag]: BeautifulSoup tags for each detected 6.S### subject
     """
     response = requests.get(
         URL,
@@ -193,18 +203,7 @@ def get_rows():
     return rows
 
 
-def is_header(tag_name, text):
-    """
-    Heuristic: a header is an h2/h3/h4 (or short paragraph) that contains a 6.S###.
-    """
-    if COURSE_RE.search(text) is None:
-        return False
-    if tag_name in ("h2", "h3", "h4", "h5", "h6"):
-        return True
-    return text.startswith("6.S") and len(text) <= 140
-
-
-def parse_header(text):
+def parse_header(text: str) -> tuple[str, str, Optional[str]]:
     """
     Parse a header block containing a course number.
 
@@ -219,34 +218,44 @@ def parse_header(text):
     return course, title, same_as
 
 
-def parse_units(units_str):
+def parse_units(units_str: str) -> Units:
     """
-    Parse units string like "3-0-9" or "12" into (lecture, lab, prep, isVariable).
+    Parse units string like "3-0-9" or "12" into a dict suitable for `data.update(...)`.
 
     Args:
         units_str (str): Units string from the webpage
 
     Returns:
-        tuple:
-            (lectureUnits, labUnits, preparationUnits, isVariableUnits).
+        Units:
+            Dict with keys: lectureUnits, labUnits, preparationUnits, isVariableUnits.
             Raises ValueError if can't parse.
     """
     # Parse formats like "3-0-9"
     if "-" in units_str:
         parts = units_str.split("-")
         if len(parts) == 3:
-            return (int(parts[0]), int(parts[1]), int(parts[2]), False)
+            return {
+                "lectureUnits": int(parts[0]),
+                "labUnits": int(parts[1]),
+                "preparationUnits": int(parts[2]),
+                "isVariableUnits": False,
+            }
         raise ValueError(f"Invalid units string: {units_str}")
 
     # Single number like "12" - variable units
     if units_str.isdigit():
-        return (0, 0, 0, True)
+        return {
+            "lectureUnits": 0,
+            "labUnits": 0,
+            "preparationUnits": 0,
+            "isVariableUnits": True,
+        }
 
     # Can't parse
     raise ValueError(f"Invalid units string: {units_str}")
 
 
-def parse_level(level_str):
+def parse_level(level_str: str) -> str:
     """
     Parse level string to "U" or "G".
 
@@ -263,15 +272,15 @@ def parse_level(level_str):
     return "U"
 
 
-def parse_row(row):
+def parse_row(row: Tag) -> dict[str, dict[str, Any]]:
     """
     Parses a single row (one subject entry).
 
     Args:
-    * row (list[str]): header + body blocks
+    * row (Tag): header + body blocks
 
     Returns:
-    * dict[str, dict[str, str]]: A single-entry overrides dict
+    * dict[str, dict[str, Any]]: A single-entry overrides dict
     """
     header = row.get_text(" ", strip=True)
     course, title, same_as = parse_header(header)
@@ -307,33 +316,18 @@ def parse_row(row):
 
     # Parse Units (if present and parseable)
     if "Units" in meta:
-        lecture, lab, prep, is_var = parse_units(meta["Units"])
-        data["lectureUnits"] = lecture
-        data["labUnits"] = lab
-        data["preparationUnits"] = prep
-        data["isVariableUnits"] = is_var
+        data.update(parse_units(meta["Units"]))
 
     if "Instructors" in meta:
-        data["inCharge"] = meta["Instructors"].replace('\n', ', ')
+        data["inCharge"] = meta["Instructors"].replace("\n", ", ")
 
     if "Prereqs" in meta:
         data["prereqs"] = meta["Prereqs"]
 
     if "Schedule" in meta and meta["Schedule"] != "TBD":
-        schedule = parse_schedule(meta["Schedule"])
-        for kind, meetings in schedule.items():
-            raw_key = f"{kind}RawSections"
-            sec_key = f"{kind}Sections"
-
-            raw_sections: list[str] = []
-            sections = []
-            for days, slot, room, is_pm_int in meetings:
-                raw = make_raw_sections(days, slot, room, is_pm_int)
-                raw_sections.append(raw)
-                sections.append(parse_section(raw))
-
-            data[raw_key] = raw_sections
-            data[sec_key] = sections
+        raw_fields, section_fields = parse_schedule(meta["Schedule"])
+        data.update(raw_fields)
+        data.update(section_fields)
 
     desc_div = table.find_next_sibling("div")
     assert desc_div is not None, f"Missing description block for {course}"
@@ -342,14 +336,14 @@ def parse_row(row):
     return {course: data}
 
 
-def run():
+def run() -> dict[str, dict[str, Any]]:
     """
     The main entry point.
 
     Args: none
 
     Returns:
-    * dict[str, dict[str, str]]: Overrides keyed by subject number.
+    * dict[str, dict[str, Any]]: Overrides keyed by subject number.
     """
     rows = get_rows()
     overrides = {}
@@ -359,7 +353,4 @@ def run():
 
 
 if __name__ == "__main__":
-    result = run()
-    if "--toml" in sys.argv:
-        result = tomli_w.dumps(result)
-    pprint(result)
+    pprint(run())
