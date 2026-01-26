@@ -261,7 +261,7 @@ def parse_date(date_str: str) -> date:
 
 def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str:
     """
-    Parses times from CVS to format from Fireroad, for compatibility.
+    Parses times from CSV to format from Fireroad, for compatibility.
 
     Args:
         start_time (str): Start time of the class
@@ -278,16 +278,13 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
     )  # default to 1 hour, can be changed in overrides
 
     start_raw_time = (
-        f"{12 - ((- start.hour) % 12)}" f"{'.30' if start.minute > 29 else ''}"
+        f"{12 - ((- start.hour) % 12)}"
+        f"{'.30' if start.minute > 29 else ''}"
+        f"{' PM' if start.hour >= 17 else ''}"
     )
-    end_raw_time = (
-        f"{12 - ((- end.hour) % 12)}"
-        f"{'.30' if end.minute > 29 else ''}"
-        f"{' PM' if end.hour >= 17 else ''}"
-    )
-    evening = "1" if end.hour >= 17 else "0"
+    evening = "1" if start.hour >= 17 else "0"
 
-    return f"{location}/{days}/{evening}/{start_raw_time}-{end_raw_time}"
+    return f"{location}/{days}/{evening}/{start_raw_time}"
 
 
 def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
