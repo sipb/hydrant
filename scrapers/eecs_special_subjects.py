@@ -227,9 +227,9 @@ def parse_units(units_str):
         units_str (str): Units string from the webpage
 
     Returns:
-        tuple | None:
-            (lectureUnits, labUnits, preparationUnits, isVariableUnits), or None if
-            can't parse.
+        tuple:
+            (lectureUnits, labUnits, preparationUnits, isVariableUnits).
+            Raises ValueError if can't parse.
     """
     # Parse formats like "3-0-9"
     if "-" in units_str:
@@ -307,13 +307,11 @@ def parse_row(row):
 
     # Parse Units (if present and parseable)
     if "Units" in meta:
-        units_result = parse_units(meta["Units"])
-        if units_result is not None:
-            lecture, lab, prep, is_var = units_result
-            data["lectureUnits"] = lecture
-            data["labUnits"] = lab
-            data["preparationUnits"] = prep
-            data["isVariableUnits"] = is_var
+        lecture, lab, prep, is_var = parse_units(meta["Units"])
+        data["lectureUnits"] = lecture
+        data["labUnits"] = lab
+        data["preparationUnits"] = prep
+        data["isVariableUnits"] = is_var
 
     if "Instructors" in meta:
         data["inCharge"] = meta["Instructors"].replace('\n', ', ')
