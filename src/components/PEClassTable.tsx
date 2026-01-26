@@ -82,10 +82,9 @@ const getFeeColor = (fee: number) => {
 interface ClassTableRow {
   number: string;
   classSize: number;
-  fee: string;
+  fee: number;
   name: string;
   class: PEClass;
-  inCharge: string;
 }
 
 type ClassFilter = (cls?: PEClass) => boolean;
@@ -125,7 +124,6 @@ function ClassInput(props: {
           number: data.number,
           name: simplifyString(data.name),
           class: data.class,
-          inCharge: simplifyString(data.inCharge),
         };
       }),
     [rowData],
@@ -137,8 +135,7 @@ function ClassInput(props: {
       searchResults.current = processedRows.filter(
         (row) =>
           classNumberMatch(input, row.number) ||
-          row.name.includes(simplifyInput) ||
-          row.inCharge.includes(simplifyInput),
+          row.name.includes(simplifyInput),
       );
       const index = new Set(searchResults.current.map((row) => row.number));
       setInputFilter(
@@ -195,7 +192,7 @@ function ClassInput(props: {
             type="search"
             aria-label="Search for a class"
             id="class-search"
-            placeholder="Class number, name, or instructor"
+            placeholder="Class number or name"
             value={classInput}
             ref={inputRef}
             onChange={(e) => {
@@ -395,23 +392,6 @@ export function PEClassTable() {
     const initialSort = "asc" as const;
     const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
-    const numberSortProps = {
-      // sort by number, N/A is infinity, tiebreak with class number
-      comparator: (
-        valueA: string | number | undefined | null,
-        valueB: string | number | undefined | null,
-        nodeA: IRowNode<ClassTableRow>,
-        nodeB: IRowNode<ClassTableRow>,
-      ) => {
-        if (!nodeA.data || !nodeB.data) return 0;
-        const numberA = valueA === "N/A" || !valueA ? Infinity : Number(valueA);
-        const numberB = valueB === "N/A" || !valueB ? Infinity : Number(valueB);
-        return numberA !== numberB
-          ? numberA - numberB
-          : classSort(nodeA.data.number, nodeB.data.number);
-      },
-      ...sortProps,
-    };
     return [
       {
         headerName: "",
@@ -443,15 +423,15 @@ export function PEClassTable() {
       {
         field: "classSize",
         headerName: "Size",
-        maxWidth: 93,
-        ...numberSortProps,
+        maxWidth: 85,
+        ...sortProps,
       },
       {
         field: "fee",
-        maxWidth: 93,
-        cellClass: (params) => getFeeColor(Number(params.value)),
-        valueFormatter: (params) => "$" + Number(params.value).toFixed(2),
-        ...numberSortProps,
+        maxWidth: 87,
+        cellClass: (params) => getFeeColor(params.value as number),
+        valueFormatter: (params) => "$" + (params.value as number).toFixed(2),
+        ...sortProps,
       },
       {
         field: "name",
@@ -479,10 +459,9 @@ export function PEClassTable() {
       Array.from(peClasses.values(), (cls) => ({
         number: cls.rawClass.number,
         classSize: cls.rawClass.classSize,
-        fee: cls.fee.toString(),
+        fee: cls.fee,
         name: cls.rawClass.name,
         class: cls,
-        inCharge: "Jack Florey", // FIXME
         // TODO figure out if we get PE instructor names
       })),
     [peClasses],
