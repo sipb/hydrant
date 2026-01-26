@@ -141,7 +141,14 @@ def parse_schedule(schedule_line):
         chunk = raw_chunk.strip()
 
         m_kind = re.match(
-            r"^(?P<kind>Lectures?|Lecture|Recitations?|Recitation|Labs?|Lab|Designs?|Design):\s*",
+            (
+                r"^(?P<kind>"
+                r"Lectures?|Lecture|"
+                r"Recitations?|Recitation|"
+                r"Labs?|Lab|"
+                r"Designs?|Design"
+                r"):\s*"
+            ),
             chunk,
             re.IGNORECASE,
         )
@@ -149,15 +156,15 @@ def parse_schedule(schedule_line):
             kind = m_kind.group("kind").lower().rstrip("s")
             chunk = _clean(chunk[m_kind.end() :])
         else:
-            assert (
-                i == 0
-            ), "Only the first chunk can not specify a kind, which will be assumed as 'Lecture'"
+            assert i == 0, "Only the first chunk may omit its kind (assumed lecture)"
 
         m = re.match(
             r"^(?P<days>(?:[MTWRF]+)|(?:Monday|Tuesday|Wednesday|Thursday|Friday|"
             r"Mondays|Tuesdays|Wednesdays|Thursdays|Fridays))\s*"
-            r"(?P<start>[0-9]+(?:[.:][0-9]{2})?)(?:\s*(?P<start_ampm>am|pm|a|p))?\s*-\s*"
-            r"(?P<end>[0-9]+(?:[.:][0-9]{2})?)(?:\s*(?P<end_ampm>am|pm|a|p))?\s*,\s*room\s+"
+            r"(?P<start>[0-9]+(?:[.:][0-9]{2})?)"
+            r"(?:\s*(?P<start_ampm>am|pm|a|p))?\s*-\s*"
+            r"(?P<end>[0-9]+(?:[.:][0-9]{2})?)"
+            r"(?:\s*(?P<end_ampm>am|pm|a|p))?\s*,\s*room\s+"
             r"(?P<room>[A-Za-z0-9-]+)(?:\s+.*)?$",
             chunk,
             re.IGNORECASE,
@@ -238,6 +245,7 @@ def parse_header(text):
 
 
 def is_incharge_line(text):
+    """Return True if the given line looks like an instructor/contact label."""
     t = _clean(text).lower()
     return (
         t.startswith("instructor")
@@ -248,6 +256,7 @@ def is_incharge_line(text):
 
 
 def parse_incharge(text):
+    """Parse an instructor/contact line into its value (after the colon)."""
     text = _clean(text)
     if ":" in text:
         return _clean(text.split(":", 1)[1])
@@ -262,7 +271,9 @@ def parse_units(units_str):
         units_str (str): Units string from the webpage
 
     Returns:
-        tuple: (lectureUnits, labUnits, preparationUnits, isVariableUnits) or None if can't parse
+        tuple | None:
+            (lectureUnits, labUnits, preparationUnits, isVariableUnits), or None if
+            can't parse.
     """
     units_str = _clean(units_str)
 
