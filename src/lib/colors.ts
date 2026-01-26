@@ -1,14 +1,14 @@
 import type { ColorMode } from "../components/ui/color-mode";
 import type { Activity } from "./activity";
 
-import colorClasses from "./colors.module.css";
+import classes from "./colors.module.css";
 
 export const ColorClasses = {
-  Muted: colorClasses.muted,
-  Success: colorClasses.success,
-  Warning: colorClasses.warning,
-  Error: colorClasses.error,
-  Normal: colorClasses.normal,
+  Muted: classes.muted,
+  Success: classes.success,
+  Warning: classes.warning,
+  Error: classes.error,
+  Normal: classes.normal,
 } as const;
 
 /** The type of color schemes. */

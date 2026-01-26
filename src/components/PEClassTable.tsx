@@ -42,7 +42,7 @@ import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
 import { ColorClasses } from "../lib/colors";
 
-import tableClasses from "./ClassTable.module.css";
+import classes from "./ClassTable.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -414,7 +414,7 @@ export function PEClassTable() {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
-        cellClass: tableClasses["underline-on-hover"],
+        cellClass: classes["underline-on-hover"],
         ...sortProps,
       },
       {
@@ -493,7 +493,7 @@ export function PEClassTable() {
         <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
-          rowClass={tableClasses.row}
+          rowClass={classes.row}
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={rowData}
