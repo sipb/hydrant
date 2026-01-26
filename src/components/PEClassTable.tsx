@@ -40,7 +40,7 @@ import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
 
-import "./ClassTable.scss";
+import "./ClassTable.css";
 import colorClasses from "./colors.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
