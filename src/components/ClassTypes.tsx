@@ -8,6 +8,9 @@ import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
 import { HydrantContext } from "~/lib/hydrant";
 
+// TODO: Enable PE when ready (eg. email from DAPER)
+const PE_READY = false;
+
 function classTypeComponents(termKeys: ClassType[]) {
   const obj = {} as Record<ClassType, [IconType, React.ComponentType]>;
 
@@ -28,7 +31,8 @@ export const ClassTypesSwitcher = () => {
 
   const tabs = classTypeComponents([
     ...(state.classes.size > 0 ? [ClassType.ACADEMIC] : []),
-    ...(state.peClasses.size > 0 ? [ClassType.PEW] : []),
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    ...(state.peClasses.size > 0 && PE_READY ? [ClassType.PEW] : []),
   ]);
 
   if (Object.keys(tabs).length > 1)
