@@ -121,7 +121,11 @@ export class Event {
   }
 
   /** List of events that can be directly given to FullCalendar. */
-  get eventInputs(): EventInput[] {
+  get eventInputs(): (EventInput & {
+    start: Date;
+    end: Date;
+    room?: string;
+  })[] {
     const color = this.activity.backgroundColor;
     return this.slots.map((slot) => ({
       textColor: textColor(color),

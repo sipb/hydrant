@@ -8,6 +8,9 @@ import type { EventContentArg } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
+import geodesic from "geographiclib-geodesic";
+const geod = geodesic.Geodesic.WGS84;
+
 import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
@@ -65,6 +68,49 @@ export function Calendar() {
       .flatMap((act) => act.events)
       .flatMap((event) => event.eventInputs);
   }, [selectedActivities]);
+
+  // TODO make this visible in the calendar UI
+  for (const event1 of events) {
+    for (const event2 of events) {
+      if (event1.end.getTime() != event2.start.getTime()) {
+        continue;
+      }
+      if (!event1.room || !event2.room) {
+        continue;
+      }
+      const building1 = event1.room.split("-")[0].trim();
+      const building2 = event2.room.split("-")[0].trim();
+
+      // Coordinates of each building
+      const location1 = state.locations.get(building1);
+      const location2 = state.locations.get(building2);
+
+      if (!location1 || !location2) {
+        continue;
+      }
+
+      // Approximate distance (in metres) between the two buildings
+      const distance = geod.Inverse(
+        location1.lat,
+        location1.long,
+        location2.lat,
+        location2.long,
+      ).s12;
+
+      if (distance === undefined || distance < 500) {
+        continue;
+      }
+
+      const formattedDistance =
+        distance < 1000
+          ? `${distance.toFixed(0)} m`
+          : `${(distance / 1000).toFixed(2)} km`;
+
+      console.log(
+        `Warning: distance from ${building1} to ${building2} is ${formattedDistance}`,
+      );
+    }
+  }
 
   return (
     <FullCalendar
