@@ -36,7 +36,7 @@ export const ClassTypesSwitcher = () => {
       <Tabs.Root
         fitted
         size="sm"
-        variant="subtle"
+        variant="line"
         value={currentTab}
         onValueChange={(e) => {
           setCurrentTab(e.value as ClassType);
