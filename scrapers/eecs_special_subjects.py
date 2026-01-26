@@ -62,7 +62,7 @@ DAY_WORD = {
 def _clean(text):
     text = text.replace("\xa0", " ")
     text = text.replace("\u2013", "-").replace("\u2014", "-")
-    return re.sub(r"\s+", " ", text).strip("§ ")
+    return re.sub(r"\s+", " ", text)
 
 
 def normalize_days(days_raw):
@@ -127,48 +127,58 @@ def parse_schedule(schedule_line):
     * schedule_line (str): The raw schedule line
 
     Returns:
-    * tuple[str, str, str, int]: (days, slot, room, is_pm_int)
+    * dict[str, list[tuple[str, str, str, int]]]: Mapping kind -> list of
+      (days, slot, room, is_pm_int)
     """
     text = _clean(schedule_line)
     assert text and text != "TBD", text
 
-    # We only encode the first lecture-ish meeting chunk.
-    chunk = _clean(text.split(";", 1)[0])
+    chunks = [_clean(c) for c in text.split(";") if _clean(c)]
+    out: dict[str, list[tuple[str, str, str, int]]] = {}
 
-    # Expected examples:
-    # - "Lectures: TR2:30-4, room 34-101"
-    # - "MW 11-12:30, room E51-393"
-    # - "Lectures: Thursdays 7-10pm, room 2-131"
-    m = re.match(
-        r"^(?:(?:Lecture|Lectures|Recitation|Recitations|Lab|Labs):\s*)?"
-        r"(?P<days>(?:[MTWRF]+)|(?:Mondays|Monday|Tuesdays|Tuesday|Wednesdays|Wednesday|Thursdays|Thursday|Fridays|Friday))\s*"
-        r"(?P<start>[0-9]+(?:[.:][0-9]{2})?)(?:\s*(?P<start_ampm>am|pm|a|p))?\s*-\s*"
-        r"(?P<end>[0-9]+(?:[.:][0-9]{2})?)(?:\s*(?P<end_ampm>am|pm|a|p))?\s*,\s*room\s+(?P<room>[A-Za-z0-9-]+)(?:\s+.*)?$",
-        chunk,
-        re.IGNORECASE,
-    )
-    assert m is not None, chunk
+    for i, raw_chunk in enumerate(chunks):
+        kind = "lecture"
+        chunk = raw_chunk.strip()
 
-    days = normalize_days(m.group("days"))
-    room = _clean(m.group("room"))
-    assert room, chunk
+        m_kind = re.match(
+            r"^(?P<kind>Lectures?|Lecture|Recitations?|Recitation|Labs?|Lab|Designs?|Design):\s*",
+            chunk,
+            re.IGNORECASE,
+        )
+        if m_kind is not None:
+            kind = m_kind.group("kind").lower().rstrip("s")
+            chunk = _clean(chunk[m_kind.end() :])
+        else:
+            assert i == 0, "Only the first chunk can not specify a kind, which will be assumed as 'Lecture'"
 
-    start = m.group("start").replace(":", ".")
-    end = m.group("end").replace(":", ".")
+        m = re.match(
+            r"^(?P<days>(?:[MTWRF]+)|(?:Monday|Tuesday|Wednesday|Thursday|Friday|"
+            r"Mondays|Tuesdays|Wednesdays|Thursdays|Fridays))\s*"
+            r"(?P<start>[0-9]+(?:[.:][0-9]{2})?)(?:\s*(?P<start_ampm>am|pm|a|p))?\s*-\s*"
+            r"(?P<end>[0-9]+(?:[.:][0-9]{2})?)(?:\s*(?P<end_ampm>am|pm|a|p))?\s*,\s*room\s+"
+            r"(?P<room>[A-Za-z0-9-]+)(?:\s+.*)?$",
+            chunk,
+            re.IGNORECASE,
+        )
+        assert m is not None, chunk
 
-    # Choose the Fireroad timeslot table based on what keys exist.
-    # This avoids guessing AM/PM and matches how Hydrant encodes sections:
-    # - daytime table (TIMES) for normal daytime slots
-    # - evening-capable table (EVE_TIMES) for true evening slots like 7-10pm
-    is_day = start in TIMES and end in TIMES
-    is_eve = start in EVE_TIMES and end in EVE_TIMES
-    assert is_day or is_eve, (start, end)
-    # Prefer daytime table when both tables can represent the time.
-    is_pm_int = 0 if is_day else 1
+        days = normalize_days(m.group("days"))
+        room = _clean(m.group("room"))
+        assert room, chunk
 
-    slot = f"{start}-{end}" + (" PM" if is_pm_int == 1 else "")
+        start = m.group("start").replace(":", ".")
+        end = m.group("end").replace(":", ".")
 
-    return days, slot, room, is_pm_int
+        is_day = start in TIMES and end in TIMES
+        is_eve = start in EVE_TIMES and end in EVE_TIMES
+        assert is_day or is_eve, (start, end)
+        is_pm_int = 0 if is_day else 1
+
+        slot = f"{start}-{end}" + (" PM" if is_pm_int == 1 else "")
+
+        out.setdefault(kind, []).append((days, slot, room, is_pm_int))
+
+    return out
 
 
 def get_rows():
@@ -221,7 +231,7 @@ def parse_header(text):
     assert match
     course = match.group(1)
     same_as = match.group(2)
-    title = _clean(match.group(3)).lstrip(" :-–—\t")
+    title = _clean(match.group(3)).lstrip(" :-–—\t").rstrip("§ ")
     return course, title, same_as
 
 
@@ -345,13 +355,20 @@ def parse_row(row):
         data["prereqs"] = meta["Prereqs"]
 
     if "Schedule" in meta and meta["Schedule"] != "TBD":
-        days, slot, room, is_pm_int = parse_schedule(meta["Schedule"])
-        timeslots = parse_many_timeslots(days, slot, is_pm_int)
-        lecture_raw_sections = make_raw_sections(days, slot, room, is_pm_int)
-        lecture_sections = make_section_override(timeslots, room)
-        data["lectureRawSections"] = lecture_raw_sections
-        data["lectureSections"] = lecture_sections
-        assert parse_section(lecture_raw_sections) == lecture_sections[0]
+        schedule = parse_schedule(meta["Schedule"])
+        for kind, meetings in schedule.items():
+            raw_key = f"{kind}RawSections"
+            sec_key = f"{kind}Sections"
+
+            raw_sections: list[str] = []
+            sections = []
+            for days, slot, room, is_pm_int in meetings:
+                raw = make_raw_sections(days, slot, room, is_pm_int)
+                raw_sections.append(raw)
+                sections.append(parse_section(raw))
+
+            data[raw_key] = raw_sections
+            data[sec_key] = sections
 
     desc_div = table.find_next_sibling("div")
     assert desc_div is not None, f"Missing description block for {course}"
