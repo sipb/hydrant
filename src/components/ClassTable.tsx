@@ -46,7 +46,7 @@ import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
 import { ColorClasses } from "../lib/colors";
 
-import classes from "./ClassTable.module.css";
+import styles from "./ClassTable.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -482,6 +482,7 @@ const StarButton = ({
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable() {
   const { state } = useContext(HydrantContext);
+  const { classes } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
@@ -533,7 +534,7 @@ export function ClassTable() {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
-        cellClass: classes["underline-on-hover"],
+        cellClass: styles["underline-on-hover"],
         ...sortProps,
       },
       {
@@ -573,7 +574,7 @@ export function ClassTable() {
   // Setup rows
   const rowData: ClassTableRow[] = useMemo(
     () =>
-      Array.from(state.classes.values(), (cls) => ({
+      Array.from(classes.values(), (cls) => ({
         number: cls.number,
         rating: cls.evals.rating.slice(0, 3), // remove the "/7.0" if exists
         hours: cls.evals.hours,
@@ -581,7 +582,7 @@ export function ClassTable() {
         class: cls,
         inCharge: cls.description.inCharge,
       })),
-    [state.classes],
+    [classes],
   );
 
   const [inputFilter, setInputFilter] = useState<ClassFilter | null>(null);
@@ -613,7 +614,7 @@ export function ClassTable() {
         <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
-          rowClass={classes.row}
+          rowClass={styles.row}
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={rowData}
