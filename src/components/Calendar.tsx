@@ -9,12 +9,12 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import type { Activity } from "../lib/activity";
-import { NonClass, Timeslot } from "../lib/activity";
+import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { Class } from "../lib/class";
 import { HydrantContext } from "../lib/hydrant";
 
-import "./Calendar.scss";
+import "./Calendar.css";
 
 /**
  * Calendar showing all the activities, including the buttons on top that
@@ -99,9 +99,9 @@ export function Calendar() {
       }
       slotMaxTime="22:00:00"
       weekends={false}
-      selectable={viewedActivity instanceof NonClass}
+      selectable={viewedActivity instanceof CustomActivity}
       select={(e) => {
-        if (viewedActivity instanceof NonClass) {
+        if (viewedActivity instanceof CustomActivity) {
           state.addTimeslot(
             viewedActivity,
             Timeslot.fromStartEnd(

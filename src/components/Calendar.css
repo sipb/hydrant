@@ -2,10 +2,6 @@
 .fc .fc-scrollgrid-section > td,
 .fc .fc-timegrid-axis {
   border-color: transparent;
-
-  .dark & {
-    border-color: transparent;
-  }
 }
 
 .fc .fc-timegrid-slot {

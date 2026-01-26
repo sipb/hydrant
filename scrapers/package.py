@@ -19,7 +19,8 @@ import sys
 from collections.abc import Iterable
 from typing import Any
 
-from .utils import get_term_info
+from scrapers.pe import get_pe_quarters
+from scrapers.utils import get_term_info
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -45,32 +46,34 @@ def load_json_data(json_path: str) -> Any:
         return json.load(json_file)
 
 
-def load_toml_data(overrides_dir: str, subpath=".") -> dict[str, Any]:
+def load_toml_data(toml_path: str) -> dict[str, Any]:
     """
-    Loads data from the provided directory that consists exclusively of TOML files
+    Loads data from the provided TOML file, or directory that consists exclusively of
+    TOML files
 
     Args:
-        overrides_dir (str): The directory to load from
-        subpath (str, optional): Load from a subdirectory. Defaults to ".".
+        toml_path (str): The file or directory to load from
 
     Returns:
         dict[str, Any]: The data contained within the directory
     """
-    overrides_path = os.path.join(package_dir, overrides_dir)
-    out: dict[str, Any] = {}
+    toml_path = os.path.join(package_dir, toml_path)
 
-    if not os.path.isdir(os.path.join(overrides_path, subpath)):
-        # directory doesn't exist, so we return an empty dict
+    if os.path.isfile(toml_path):
+        with open(toml_path, "rb") as toml_file:
+            return tomllib.load(toml_file)
+    elif os.path.isdir(toml_path):
+        # If the path is a directory, we load all TOML files in it
+        out = {}
+        with os.scandir(toml_path) as entries:
+            for entry in entries:
+                if entry.is_file() and entry.name.endswith(".toml"):
+                    with open(entry.path, "rb") as toml_file:
+                        out.update(tomllib.load(toml_file))
         return out
-
-    # If the path is a directory, we load all TOML files in it
-    toml_dir = os.path.join(overrides_path, subpath)
-    for fname in os.listdir(toml_dir):
-        if fname.endswith(".toml"):
-            with open(os.path.join(toml_dir, fname), "rb") as toml_file:
-                out.update(tomllib.load(toml_file))
-
-    return out
+    else:
+        # Neither a file nor a directory exists as this path, so we return an empty dict
+        return {}
 
 
 def merge_data(
@@ -118,6 +121,7 @@ def get_include(overrides: dict[str, dict[str, Any]]) -> set[str]:
     return classes
 
 
+# pylint: disable=too-many-locals
 def run() -> None:
     """
     The main entry point.
@@ -135,7 +139,7 @@ def run() -> None:
 
     for sem in sem_types:
         fireroad_sem = load_json_data(f"fireroad-{sem}.json")
-        overrides_sem = load_toml_data("overrides.toml.d", sem)
+        overrides_sem = load_toml_data(os.path.join("overrides.toml.d", sem))
 
         # The key needs to be in BOTH fireroad and catalog to make it:
         # If it's not in Fireroad, it's not offered in this semester (fall, etc.).
@@ -150,11 +154,17 @@ def run() -> None:
         term_info = get_term_info(sem)
         url_name = term_info["urlName"]
 
-        obj: dict[str, dict[str, Any] | str | dict[Any, dict[str, Any]]] = {
-            "termInfo": term_info,
-            "lastUpdated": now,
-            "classes": courses,
-        }
+        pe_data = {}
+        for quarter in get_pe_quarters(url_name):
+            pe_file = f"pe-q{quarter}.json"
+            pe_overrides_file = os.path.join("pe", f"pe-q{quarter}-overrides.toml")
+            if os.path.isfile(os.path.join(package_dir, pe_file)):
+                quarter_data = load_json_data(pe_file)
+                quarter_overrides = load_toml_data(pe_overrides_file)
+                pe_data[quarter] = merge_data(
+                    datasets=[quarter_data, quarter_overrides],
+                    keys_to_keep=set(quarter_data),
+                )
 
         with open(
             os.path.join(
@@ -163,7 +173,16 @@ def run() -> None:
             mode="w",
             encoding="utf-8",
         ) as file:
-            json.dump(obj, file, separators=(",", ":"))
+            json.dump(
+                {
+                    "termInfo": term_info,
+                    "lastUpdated": now,
+                    "classes": courses,
+                    "pe": pe_data,
+                },
+                file,
+                separators=(",", ":"),
+            )
 
         print(f"{url_name}: got {len(courses)} courses")
 
