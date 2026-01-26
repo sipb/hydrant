@@ -133,6 +133,7 @@ def run() -> None:
 
     catalog = load_json_data("catalog.json")
     cim = load_json_data("cim.json")
+    locations = load_json_data("locations.json")
     overrides_all = load_toml_data("overrides.toml.d")
 
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -179,6 +180,7 @@ def run() -> None:
                     "lastUpdated": now,
                     "classes": courses,
                     "pe": pe_data,
+                    "locations": locations,
                 },
                 file,
                 separators=(",", ":"),
