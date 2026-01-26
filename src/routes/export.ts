@@ -25,7 +25,9 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const currentTerm = searchParams.get("t");
   const callback = searchParams.get("callback");
 
-  const latestTerm = await fetchNoCache<LatestTermInfo>("/latestTerm.json");
+  const latestTerm = await fetchNoCache<LatestTermInfo>(
+    import.meta.env.BASE_URL + "latestTerm.json",
+  );
   const { urlName } = getClosestUrlName(
     currentTerm,
     latestTerm.semester.urlName,
@@ -34,7 +36,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const term = urlName === latestTerm.semester.urlName ? "latest" : urlName;
 
   const { classes, lastUpdated, termInfo } = await fetchNoCache<SemesterData>(
-    `/${term}.json`,
+    `${import.meta.env.BASE_URL}${term}.json`,
   );
   const classesMap = new Map(Object.entries(classes));
   const hydrantObj = new State(
