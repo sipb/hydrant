@@ -34,7 +34,9 @@ from .utils import TIMES, EVE_TIMES
 # `requests.get()` of the WordPress page often returns only navigation chrome, so
 # this script scrapes the source-of-truth fragment directly.
 URL = "https://eecsis.mit.edu/plugins/subj_2026SP.html"
-FRONTEND_URL = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/"
+FRONTEND_URL = (
+    "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/"
+)
 COURSE_RE = re.compile(r"\b(6\.S\d{3})\b")
 DAY_WORD = {
     "monday": "M",
@@ -53,7 +55,7 @@ DAY_WORD = {
 def _clean(text):
     text = text.replace("\xa0", " ")
     text = text.replace("\u2013", "-").replace("\u2014", "-")
-    return re.sub(r"\s+", " ", text).strip('§ ')
+    return re.sub(r"\s+", " ", text).strip("§ ")
 
 
 def normalize_days(days_raw):
@@ -235,19 +237,19 @@ def parse_incharge(text):
 def parse_units(units_str):
     """
     Parse units string like "3-0-9" or "12" into (lecture, lab, prep, isVariable).
-    
+
     Args:
         units_str (str): Units string from the webpage
-    
+
     Returns:
         tuple: (lectureUnits, labUnits, preparationUnits, isVariableUnits) or None if can't parse
     """
     units_str = _clean(units_str)
-    
+
     # Check for "Arranged" or variable units
     if "arranged" in units_str.lower():
         return (0, 0, 0, True)
-    
+
     # Parse formats like "3-0-9"
     if "-" in units_str:
         parts = units_str.split("-")
@@ -256,7 +258,7 @@ def parse_units(units_str):
                 return (int(parts[0]), int(parts[1]), int(parts[2]), False)
             except ValueError:
                 return None
-    
+
     # Single number like "12" - convert to standard format
     if units_str.isdigit():
         total = int(units_str)
@@ -266,7 +268,7 @@ def parse_units(units_str):
         lecture = total // 3
         prep = total - lecture
         return (lecture, 0, prep, False)
-    
+
     # Can't parse - return None
     return None
 
@@ -274,10 +276,10 @@ def parse_units(units_str):
 def parse_level(level_str):
     """
     Parse level string to "U" or "G".
-    
+
     Args:
         level_str (str): Level string from the webpage
-    
+
     Returns:
         str: "U" for undergraduate, "G" for graduate
     """
@@ -327,7 +329,7 @@ def parse_row(row):
     # Parse Level (only if present)
     if "Level" in meta:
         data["level"] = parse_level(meta["Level"])
-    
+
     # Parse Units (only if present and parseable)
     if "Units" in meta:
         units_result = parse_units(meta["Units"])
@@ -340,6 +342,9 @@ def parse_row(row):
 
     if "Instructors" in meta:
         data["inCharge"] = meta["Instructors"]
+
+    if "Prereqs" in meta:
+        data["prereqs"] = meta["Prereqs"]
 
     if "Schedule" in meta and meta["Schedule"] != "TBD":
         days, slot, room, is_pm_int = parse_schedule(meta["Schedule"])
