@@ -316,11 +316,19 @@ export class Sections {
     return this.kind ? this.kind.toLowerCase() : "sec";
   }
 
-  readonly prority = 0;
+  private readonly _priority = 0;
+  get priority(): number {
+    return this._priority;
+  }
 
   /** Name for the kind of sections these are. */
   get name(): string {
     return this.kind ?? "Section";
+  }
+
+  /** Full display name for this section on the calendar. */
+  get longName(): string {
+    return `${this.cls.id} ${this.shortName}`;
   }
 
   /** The event (possibly none) for this group of sections. */
@@ -328,7 +336,7 @@ export class Sections {
     return this.selected
       ? new Event(
           this.cls,
-          `${this.cls.id} ${this.shortName}`,
+          this.longName,
           this.selected.timeslots,
           this.roomOverride || this.selected.room,
           this.cls.half,

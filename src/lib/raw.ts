@@ -205,6 +205,8 @@ export interface RawPEClass {
   /** Class name; e.g., "Skate, Beginner" */
   name: string;
 
+  /** PE&W section number for each section */
+  sectionNumbers: string[];
   /** Timeslots and locations for each section */
   sections: RawSection[];
   /** Raw (FireRoad format) section locations/times */

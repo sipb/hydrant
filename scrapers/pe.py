@@ -70,6 +70,7 @@ class PEWSchema(TypedDict):
 
     number: str
     name: str
+    sectionNumbers: list[str]
     sections: list[tuple[list[tuple[int, int]], str]]
     rawSections: list[str]
     classSize: int
@@ -243,13 +244,13 @@ def term_to_semester_year(term_str: str) -> tuple[int, Term, Literal[1, 2] | Non
 
 def split_section_code(section_code: str) -> tuple[str, str]:
     """
-    Splits a section code into its subject and number components.
+    Splits a section code into its subject and section number components.
 
     Args:
         section_code (str): The section code in the format "PE.0201-1"
 
     Returns:
-        tuple[str, str]: A tuple containing the subject and number components
+        tuple[str, str]: A tuple containing the subject and section number components
 
     Raises:
         ValueError: If the section code format is invalid
@@ -343,7 +344,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
             term_results = {}
             results[quarter] = term_results
 
-        subject_num, _ = split_section_code(pe_row["section"])
+        subject_num, section_number = split_section_code(pe_row["section"])
         current_results = term_results.get(subject_num)
 
         if current_results:
@@ -365,6 +366,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
             )
             section = parse_section(raw_section)
 
+            current_results["sectionNumbers"].append(section_number)
             current_results["rawSections"].append(raw_section)
             current_results["sections"].append(section)
 
@@ -380,6 +382,7 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
             term_results[subject_num] = {
                 "number": subject_num,
                 "name": pe_row["title"],
+                "sectionNumbers": [section_number],
                 "sections": [section],
                 "rawSections": [raw_section],
                 "classSize": pe_row["capacity"],

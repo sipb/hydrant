@@ -1,5 +1,5 @@
-import { Sections, type BaseActivity } from "./activity";
-import { type RawPEClass } from "./raw";
+import { Section, Sections, type BaseActivity } from "./activity";
+import { type RawPEClass, type RawSection } from "./raw";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
 
@@ -21,19 +21,48 @@ export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
   return peFlagEmojis[flag] ?? "";
 };
 
+export class PESection extends Section {
+  sectionNumber: string;
+
+  constructor(
+    secs: PESections,
+    rawTime: string,
+    section: RawSection,
+    sectionNumber: string,
+  ) {
+    super(secs, rawTime, section);
+    this.sectionNumber = sectionNumber;
+  }
+}
+
 export class PESections extends Sections {
   declare cls: PEClass;
+  declare sections: PESection[];
+  declare selected: PESection | null;
 
-  private readonly _shortName = "pe";
-  public get shortName() {
-    return this._shortName;
+  constructor(
+    cls: BaseActivity,
+    rawTimes: string[],
+    secs: RawSection[],
+    sectionNumbers: string[],
+    kind?: string,
+    locked?: boolean,
+    selected?: Section | null,
+  ) {
+    super(cls, rawTimes, secs, kind, locked, selected);
+    this.sections = secs.map(
+      (sec, i) => new PESection(this, rawTimes[i], sec, sectionNumbers[i]),
+    );
   }
 
-  readonly priority = -1;
+  public get longName() {
+    return this.selected
+      ? `${this.cls.id}-${this.selected.sectionNumber}`
+      : this.cls.id;
+  }
 
-  private readonly _name = "PE and Wellness";
-  public get name() {
-    return this._name;
+  get priority(): number {
+    return -1;
   }
 }
 
@@ -50,7 +79,12 @@ export class PEClass implements BaseActivity {
     this.rawClass = rawClass;
     this.backgroundColor = fallbackColor(colorScheme);
     this.sections = [
-      new PESections(this, rawClass.rawSections, rawClass.sections),
+      new PESections(
+        this,
+        rawClass.rawSections,
+        rawClass.sections,
+        rawClass.sectionNumbers,
+      ),
     ];
   }
 
