@@ -329,7 +329,7 @@ def parse_row(row):
             data["isVariableUnits"] = is_var
 
     if "Instructors" in meta:
-        data["inCharge"] = meta["Instructors"]
+        data["inCharge"] = meta["Instructors"].replace('\n', ', ')
 
     if "Prereqs" in meta:
         data["prereqs"] = meta["Prereqs"]

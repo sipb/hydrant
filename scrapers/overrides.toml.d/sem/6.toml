@@ -38,7 +38,7 @@ lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
 isVariableUnits = false
-inCharge = "Ana Bell (EECS) Paola Rebusco (ESG) Carter Jernigan (ESG)"
+inCharge = "Ana Bell (EECS), Paola Rebusco (ESG), Carter Jernigan (ESG)"
 prereqs = "6.100A"
 lectureRawSections = [
     "32-141/F/0/11-1",
@@ -68,7 +68,7 @@ recitationSections = [
         "36-112",
     ],
 ]
-description = "Did you know that your mindset can add up to 7 years to your life? Or that only 5% of leaders know the secret to motivating their teams? Or that time pressure decreases your creative problem solving by 45%? Thriving in life, work, and school isn't a mystery-it’s within your grasp. Research shows that nearly half of your well-being is shaped by your daily choices. In Hack Yourself, you’ll learn how to design those choices, building a toolkit of over 60 sustainable positive habits. You’ll apply a data science approach to how you live and lead-using tools from generative AI to vibe coding to statistical analysis to validate and personalize positive psychology practices, while also applying the same data methods across domains from leadership to innovation. Instruction and practice in oral and written communication provided. Students complete a group project in the last ¼ of the course."
+description = "Did you know that your mindset can add up to 7 years to your life? Or that only 5% of leaders know the secret to motivating their teams? Or that time pressure decreases your creative problem solving by 45%?\n\nThriving in life, work, and school isn't a mystery—it’s within your grasp. Research shows that nearly half of your well-being is shaped by your daily choices. In Hack Yourself, you’ll learn how to design those choices, building a toolkit of over 60 sustainable positive habits. You’ll apply a data science approach to how you live and lead—using tools from generative AI to vibe coding to statistical analysis to validate and personalize positive psychology practices, while also applying the same data methods across domains from leadership to innovation. \n\nInstruction and practice in oral and written communication provided.  Students complete a group project in the last ¼ of the course."
 
 ["6.S058"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S058"
@@ -170,7 +170,7 @@ lectureSections = [
         "4-145",
     ],
 ]
-description = "6.S891: Biodiversity and environment - Prof. Sara Beery 6.S893: Power and energy systems - Prof. Priya Donti 12.S992: Climate models - Prof. Abigail Bodner Examines applications of artificial intelligence and machine learning to climate change mitigation, adaptation, and monitoring. Introduces the physical science of climate change, data-driven modeling and observation, and approaches for decision-making in domains such as climate modeling, biodiversity, and energy systems. Includes common (‘merged’) lectures on climate fundamentals followed by domain-specific sections (‘forks’) focusing on advanced methods such as physics-informed learning, data assimilation, and uncertainty quantification. Within each ‘fork’, students present, critique, and lead discussions of current research papers and develop a written research proposal applying machine learning methods to the track’s focus area. ‘Merged’ sessions later in the term synthesize lessons and foster exchange across domains. Both graduate and undergraduate students are encouraged to register."
+description = "6.S891: Biodiversity and environment - Prof. Sara Beery\n6.S893: Power and energy systems - Prof. Priya Donti\n12.S992: Climate models - Prof. Abigail Bodner\n\nExamines applications of artificial intelligence and machine learning to climate change mitigation, adaptation, and monitoring. Introduces the physical science of climate change, data-driven modeling and observation, and approaches for decision-making in domains such as climate modeling, biodiversity, and energy systems. Includes common (‘merged’) lectures on climate fundamentals followed by domain-specific sections (‘forks’) focusing on advanced methods such as physics-informed learning, data assimilation, and uncertainty quantification.  Within each ‘fork’, students present, critique, and lead discussions of current research papers and develop a written research proposal applying machine learning methods to the track’s focus area.  ‘Merged’ sessions later in the term synthesize lessons and foster exchange across domains. Both graduate and undergraduate students are encouraged to register."
 
 ["6.S895"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S895"
@@ -197,7 +197,7 @@ lectureSections = [
         "3-329",
     ],
 ]
-description = "The goal of the class is to explore the intersection of textile fabrication, computational design, and design thinking. Students will learn how computational methods can transform knitting from a traditional craft into a precise digital fabrication technique for creating complex tensile structures and geometric components. By using the 3D knitting machine, students will gain practical experience with digital knitting tools and develop an understanding of how computation enables new possibilities for textile-based architecture. No prior knitting experience required-just curiosity about the intersection of materials, code, and form."
+description = "The goal of the class is to explore the intersection of textile fabrication, computational design, and design thinking. Students will learn how computational methods can transform knitting from a traditional craft into a precise digital fabrication technique for creating complex tensile structures and geometric components. By using the 3D knitting machine, students will gain practical experience with digital knitting tools and develop an understanding of how computation enables new possibilities for textile-based architecture. No prior knitting experience required—just curiosity about the intersection of materials, code, and form."
 
 ["6.S898"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S898"
@@ -312,7 +312,7 @@ lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
 isVariableUnits = false
-inCharge = "Vinod Vaikuntanathan (EECS) Shafi Goldwasser (Math)"
+inCharge = "Vinod Vaikuntanathan (EECS), Shafi Goldwasser (Math)"
 prereqs = "6.1220 (Algorithms) AND 6.390 (Intro to Machine Learning); or equivalent."
 lectureRawSections = [
     "24-115/TR/0/11-12.30",
@@ -332,7 +332,7 @@ lectureSections = [
         "24-115",
     ],
 ]
-description = "Cryptography offers a playbook for building trust on untrusted platforms. This course applies that playbook to modern machine learning. We will study how cryptographic modeling and tools-ranging from privacy-preserving algorithms to interactive proofs and debate protocols-can endow ML systems with privacy, verifiability, and reliability. Topics include mechanisms for data and model privacy; methods to verify average-case quality and certify worst-case correctness; and strategies for robustness and alignment across discriminative and generative models. By the end, students will see the contours of a new field at the Crypto × ML interface and identify concrete problems in trustworthy ML that benefit from cryptographic thinking and techniques."
+description = "Cryptography offers a playbook for building trust on untrusted platforms. This course applies that playbook to modern machine learning. We will study how cryptographic modeling and tools—ranging from privacy-preserving algorithms to interactive proofs and debate protocols—can endow ML systems with privacy, verifiability, and reliability. Topics include mechanisms for data and model privacy; methods to verify average-case quality and certify worst-case correctness; and strategies for robustness and alignment across discriminative and generative models. By the end, students will see the contours of a new field at the Crypto × ML interface and identify concrete problems in trustworthy ML that benefit from cryptographic thinking and techniques."
 
 ["6.S977"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S977"
@@ -358,7 +358,7 @@ lectureSections = [
         "56-154",
     ],
 ]
-description = "Focuses on the human-facing considerations in the pipeline of machine learning (ML) development in human-facing systems like healthcare, employment, and education. Topics covered include algorithmic fairness, sources of model error/bias, model robustness, human/model evaluations, and policy. Pertinent issues co-occurring in society will be discussed, and course projects will emphasize the technical and ethical challenges of using machine learning in human systems. For more information: https://canvas.mit.edu/courses/37283"
+description = "Focuses on the human-facing considerations in the pipeline of machine learning (ML) development in human-facing systems like healthcare, employment, and education. Topics covered include algorithmic fairness, sources of model error/bias, model robustness, human/model evaluations, and policy. Pertinent issues co-occurring in society will be discussed, and course projects will emphasize the technical and ethical challenges of using machine learning in human systems. \n\nFor more information: https://canvas.mit.edu/courses/37283"
 
 ["6.S984"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S984"
@@ -388,7 +388,7 @@ lectureSections = [
         "36-144",
     ],
 ]
-description = "Warehouse-scale datacenters host a wide range of online services, including social networks, web search, video streaming, machine learning, and serverless workloads. In this course, we will study the end-to-end stack of modern datacenters, from hardware and OS all the way to resource managers and programming frameworks. We will also explore cross-cutting issues, such as total cost of ownership, service level objectives, availability, and reliability. The course is a combination of lectures and paper readings. Students will read up to two papers per topic and submit brief summaries. During class meetings, we will start with a student presentation of the papers followed by an in-class discussion. The main deliverable for the course is a semester-long group project which should address an open research problem in modern cloud environments (project suggestions will be provided by the instructor, but students are also welcome to propose their own). The class is appropriate for graduate and advanced undergraduate students who want to learn more about cloud computing and datacenter systems."
+description = "Warehouse-scale datacenters host a wide range of online services, including social networks, web search, video streaming, machine learning, and serverless workloads. In this course, we will study the end-to-end stack of modern datacenters, from hardware and OS all the way to resource managers and programming frameworks. We will also explore cross-cutting issues, such as total cost of ownership, service level objectives, availability, and reliability. The course is a combination of lectures and paper readings. Students will read up to two papers per topic and submit brief summaries. During class meetings, we will start with a student presentation of the papers followed by an in-class discussion. The main deliverable for the course is a semester-long group project which should address an open research problem in modern cloud environments (project suggestions will be provided by the instructor, but students are also welcome to propose their own). \n \nThe class is appropriate for graduate and advanced undergraduate students who want to learn more about cloud computing and datacenter systems."
 
 ["6.S985"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S985"
@@ -399,7 +399,7 @@ lectureUnits = 3
 labUnits = 0
 preparationUnits = 9
 isVariableUnits = false
-inCharge = "Paul Liang (MAS+EECS) Dimitris Bertsimas (Sloan) Sang-Gook Kim (MechE) Jinhua Zhao (DUSP)"
+inCharge = "Paul Liang (MAS+EECS), Dimitris Bertsimas (Sloan), Sang-Gook Kim (MechE), Jinhua Zhao (DUSP)"
 prereqs = "6.390 or equivalent"
 lectureRawSections = [
     "E14-633/TR/0/2.30-4",
