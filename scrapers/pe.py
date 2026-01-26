@@ -5,6 +5,7 @@ Adds information from PE&W subjects, as given by DAPER.
 from __future__ import annotations
 
 import csv
+from functools import lru_cache
 import json
 import os
 import time as time_c
@@ -41,26 +42,30 @@ PIRATE_CLASSES = [
     "Sailing",
 ]
 
-
-class PEWFile(TypedDict):
-    """
-    Data from CSV file representing PE&W subjects, as given by DAPER
-    """
-
-    term: str
-    section: str
-    title: str
-    capacity: int
-    days: str
-    start_time: str
-    location: str
-    start_date: str
-    end_date: str
-    prerequisites: str
-    equipment: str
-    gir_points: int
-    swim_gir: bool
-    fee_amount: str
+# I don't really like how this looks tbh,
+# but typing as a class doesn't allow for spaces in vars
+PEWFile = TypedDict(
+    "PEWFile",
+    {
+        "Term": str,
+        "Section": str,
+        "Title": str,
+        "Capacity": str,
+        "Day": str,
+        "Time": str,
+        "Location": str,
+        "Start Date": str,
+        "End Date": str,
+        "Prerequisites": str,
+        "Equipment": str,
+        "GIR Points": str,
+        "Swim GIR": str,
+        "Fee Amount": str,
+    },
+)
+"""
+Data from CSV file representing PE&W subjects, as given by DAPER
+"""
 
 
 class PEWSchema(TypedDict):
@@ -156,28 +161,16 @@ def read_pew_file(filepath: str) -> list[PEWFile]:
     Returns:
         list[PEWFile]: A list of PEWFile dictionaries representing the parsed data
     """
-    pew_data: list[PEWFile] = []
+    pew_data: list[PEWFile]
+    cols = getattr(PEWFile, "__annotations__").keys()
     with open(filepath, mode="r", newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
+        pew_data = []
         for row in reader:
-            pew_data.append(
-                {
-                    "term": row["Term"],
-                    "section": row["Section"],
-                    "title": row["Title"],
-                    "capacity": int(row["Capacity"]),
-                    "days": row["Day"],
-                    "start_time": row["Time"],
-                    "location": augment_location(row["Location"]),
-                    "start_date": row["Start Date"],
-                    "end_date": row["End Date"],
-                    "prerequisites": row["Prerequisites"],
-                    "equipment": row["Equipment"],
-                    "gir_points": int(row["GIR Points"]),
-                    "swim_gir": parse_bool(row["Swim GIR"]),
-                    "fee_amount": row["Fee Amount"],
-                }
-            )
+            assert all(
+                col in row for col in cols
+            ), f"Missing columns in PEW file: {filepath}"
+            pew_data.append({col: row[col] for col in cols})  # type: ignore
     return pew_data
 
 
@@ -321,93 +314,98 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
     return f"{location}/{days}/{evening}/{start_raw_time}-{end_raw_time}"
 
 
+def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
+    """
+    Parses a single PEWFile row into PEWSchema format.
+
+    Args:
+        row (PEWFile): The PEWFile row to parse
+        quarter (int): The quarter the data is for
+
+    Returns:
+        PEWSchema: The parsed PEWSchema object
+    """
+    number, section_num = split_section_code(row["Section"])
+    raw_section = parse_times_to_raw_section(
+        row["Time"],
+        row["Day"],
+        augment_location(row["Location"]),
+    )
+    section = parse_section(raw_section)
+
+    return {
+        "number": number,
+        "name": row["Title"],
+        "sectionNumbers": [section_num],
+        "rawSections": [raw_section],
+        "sections": [section],
+        "classSize": int(row["Capacity"]),
+        "startDate": parse_date(row["Start Date"]).isoformat(),
+        "endDate": parse_date(row["End Date"]).isoformat(),
+        "points": int(row["GIR Points"]),
+        "wellness": any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES),
+        "pirate": any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES),
+        "swimGIR": parse_bool(row["Swim GIR"]),
+        "prereqs": row["Prerequisites"] or "None",
+        "equipment": row["Equipment"],
+        "fee": row["Fee Amount"],
+        "description": get_pe_catalog_descriptions().get(number, ""),
+        "quarter": quarter,
+    }
+
+
 def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]:
     """
     Converts PEWFile dictionaries to a standardized schema dictionary.
 
     Args:
-        pe_file (PEWFile): The PEWFile dictionary to convert
+        pe_rows (list[PEWFile]): The list of PEWFile dictionaries to convert
 
     Returns:
         dict: A dictionary representing the standardized schema,
             keyed by quarter and subject number
     """
 
-    description_data = scrape_pe_catalog_descriptions()
     results: dict[int, dict[str, PEWSchema]] = {}
 
     for pe_row in pe_rows:
-        _, quarter = get_year_quarter(pe_row["term"])
+        _, quarter = get_year_quarter(pe_row["Term"])
 
         term_results = results.get(quarter)
         if term_results is None:
             term_results = {}
             results[quarter] = term_results
 
-        subject_num, section_number = split_section_code(pe_row["section"])
-        current_results = term_results.get(subject_num)
+        data = parse_data(pe_row, quarter)
+        current_results = term_results.get(data["number"])
 
         if current_results:
             # ensure all data in current_results (except for section info) are the same
-            assert current_results["name"] == pe_row["title"]
-            assert current_results["classSize"] == pe_row["capacity"]
-            assert current_results["points"] == pe_row["gir_points"]
-            assert current_results["swimGIR"] == pe_row["swim_gir"]
-            assert current_results["prereqs"] == pe_row["prerequisites"] or (
-                current_results["prereqs"] == "None" and pe_row["prerequisites"] == ""
+            assert current_results["name"] == data["name"]
+            assert current_results["classSize"] == data["classSize"]
+            assert current_results["points"] == data["points"]
+            assert current_results["swimGIR"] == data["swimGIR"]
+            assert current_results["prereqs"] == data["prereqs"] or (
+                current_results["prereqs"] == "None" and not data["prereqs"]
             )
-            assert current_results["equipment"] == pe_row["equipment"]
-            assert current_results["fee"] == pe_row["fee_amount"]
+            assert current_results["equipment"] == data["equipment"]
+            assert current_results["fee"] == data["fee"]
 
-            raw_section = parse_times_to_raw_section(
-                pe_row["start_time"],
-                pe_row["days"],
-                pe_row["location"],
-            )
-            section = parse_section(raw_section)
+            current_results["sectionNumbers"].append(data["sectionNumbers"][0])
+            current_results["rawSections"].append(data["rawSections"][0])
+            current_results["sections"].append(data["sections"][0])
 
-            current_results["sectionNumbers"].append(section_number)
-            current_results["rawSections"].append(raw_section)
-            current_results["sections"].append(section)
-
-            term_results[subject_num] = current_results
+            term_results[data["number"]] = current_results
         else:
-            raw_section = parse_times_to_raw_section(
-                pe_row["start_time"],
-                pe_row["days"],
-                pe_row["location"],
-            )
-            section = parse_section(raw_section)
+            term_results[data["number"]] = data
 
-            term_results[subject_num] = {
-                "number": subject_num,
-                "name": pe_row["title"],
-                "sectionNumbers": [section_number],
-                "sections": [section],
-                "rawSections": [raw_section],
-                "classSize": pe_row["capacity"],
-                "startDate": parse_date(pe_row["start_date"]).isoformat(),
-                "endDate": parse_date(pe_row["end_date"]).isoformat(),
-                "points": pe_row["gir_points"],
-                "wellness": any(
-                    subject_num.startswith(prefix) for prefix in WELLNESS_PREFIXES
-                ),
-                "pirate": any(
-                    pe_row["title"].startswith(prefix) for prefix in PIRATE_CLASSES
-                ),
-                "swimGIR": pe_row["swim_gir"],
-                "prereqs": pe_row["prerequisites"] or "None",
-                "equipment": pe_row["equipment"],
-                "fee": pe_row["fee_amount"],
-                "description": description_data.get(subject_num, ""),
-                "quarter": quarter,
-            }
         results[quarter] = term_results
 
     return results
 
 
-def scrape_pe_catalog_descriptions() -> dict[str, str]:
+@lru_cache(maxsize=1)
+def get_pe_catalog_descriptions() -> dict[str, str]:
     """
     Scrapes PE&W course descriptions from the DAPER PE&W catalog.
 
