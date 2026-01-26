@@ -1,3 +1,8 @@
+#:schema ../override-schema.json
+
+["6.3900"]
+url = "https://introml.mit.edu?from=hydrant"
+
 ["6.S051"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S051"
 name = "AI Alignment: Moral, Political, and Computational Foundations"
