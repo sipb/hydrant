@@ -40,15 +40,10 @@ FRONTEND_URL = (
 COURSE_RE = re.compile(r"\b(6\.S\d{3})\b")
 DAY_WORD = {
     "monday": "M",
-    "mondays": "M",
     "tuesday": "T",
-    "tuesdays": "T",
     "wednesday": "W",
-    "wednesdays": "W",
     "thursday": "R",
-    "thursdays": "R",
     "friday": "F",
-    "fridays": "F",
 }
 
 
@@ -73,7 +68,7 @@ def normalize_days(days_raw):
         assert set(days_raw) <= set("MTWRF"), days_raw
         return days_raw
 
-    key = days_raw.lower()
+    key = days_raw.lower().rstrip('s')
     assert key in DAY_WORD, days_raw
     return DAY_WORD[key]
 
