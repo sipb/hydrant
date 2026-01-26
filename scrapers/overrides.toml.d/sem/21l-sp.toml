@@ -1,5 +1,9 @@
 #:schema ../override-schema.json
 
+['21L.004']
+lectureRawSections = ["1-134/MW/0/1-2.30"]
+lectureSections = [[[[14, 3], [82, 3]], "1-134"]]
+
 ["21L.024"]
 name = "Life, Death and Freedom: Literature and Existentialism"
 

@@ -11,7 +11,6 @@ Install:
 In the root directory, run:
 
 - `pip install -e .[dev]` to install dependencies.
-  - This will generate a `Hydrant.egg-info` folder in `src`, feel free to delete it.
 - `npm install` to install dependencies.
 
 ## Updating

@@ -1,0 +1,116 @@
+#:schema ../override-schema.json
+
+["11.S187"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+level = "U"
+meets = "11.S945"
+description = "Every landscape represents an incomplete or interrupted plan that tells time and intention. Physical landscapes provide evidence of successful, failed and emergent development plans, but only the learned eye sees beyond the material culture of the street. “Death” offers a way to conceptualize the unseen, underground, the underneath, the liminal space between what we know, what is actual and what is yet to be. Linking social theory, geography, public policy and planning history, this course asks: How can planners and critical observers of the built environment begin to access the collection of meanings that script the movement, stasis and location of everyday users? In other words, how do we move beyond official maps, plans and histories to consider contested meanings of place as they are lived, exchanged and created. Through weekly examinations of first person documentary accounts including ethnography, historical fiction, autobiography, film and novels, students will analyze the social, political and geographic impact of various land development strategies in the U.S. and beyond. Displacement defines a major theme of this course -- students will examine: 1) How does this happen? 2) What have been subsequent local responses? And, 3) What are the lasting consequences of population dispersals? \n\nInformed by ethnographic method and archival immersion, this course will provide students with an interdisciplinary framework for identifying and describing the social impact of place-based change and capital movement. Students will develop a critical understanding of urban planning informed by resident-authored analysis across time and space."
+name = "(Un)Dead Geographies: The Afterlife of Urban Plans"
+inCharge = "Karilyn Crockett"
+
+["11.S195"]
+lectureUnits = 1
+labUnits = 1
+preparationUnits = 4
+isVariableUnits = false
+level = "U"
+meets = "11.S942 / 1.C01/51"
+prereqs = "6.C01/51"
+description = "Building on core material in 6.C01/51, emphasizes the design and operation of sustainable systems and the application of machine learning to real-world planning and policy challenges. Students learn to leverage data from urban services, cities, and the environment to evaluate and/or improve sustainability solutions. Projects focus on using machine learning to identify new insights or decisions that advance equity and sustainability in societal-scale systems. This (H4) course meets together with 1.C01/51. Students cannot receive credit without completion of the core subject (H3) 6.C01/51."
+name = "Machine Learning for Sustainable Systems"
+inCharge = " Cong Cong, Saurabh Amin"
+
+["11.S939"]
+lectureUnits = 8
+labUnits = 0
+preparationUnits = 4
+isVariableUnits = false
+level = "G"
+description = "Making Good on Baltimore as a Just City: Building Solutions For A Vacant Housing Crisis, as a practicum will have students immersed in two related projects: Develop a complex revitalization plan for a neglected city neighborhood using the case scenario, The Urban Plan (UP) and complete deliverables for a real client, Flight Blight Baltimore. The UP case scenario activities examine the nexus between development and urban planning. Students will go through an eight-stage development process model, and the material will cover idea conception, feasibility, planning, financing, market analysis, contract negotiation, construction, and asset management. Other topics discussed include but are not limited to market analysis, site acquisition, due diligence, zoning, entitlements, approvals, site planning, building design, construction, financing, leasing, and ongoing management and disposition. \n\nWorking on a project for a client will allow students to solve a community challenge in real-time, pushing students to rethink the concept of stakeholder engagement in vacant housing underutilized infrastructure in Baltimore. Students will engage the idea of using citizen engineers to explore how the current demolish vacant building initiative by the City of Baltimore can integrate resident perspective in the city’s neighborhood stabilization initiatives. Part of this course will also explore how emerging vacant building assessment digital technology certification in the job market is linked to just banking and economies. The primary deliverables will center on data collection and analysis, and mapping. During the practicum experience, students will create their personal theory of practice, develop reflective practice strategies, and learn and deploy community engagement strategies."
+name = "Making Good on Baltimore as a Just City: Building Solutions For A Vacant Housing Crisis"
+inCharge = "Holly Harriel"
+
+["11.S941"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+level = "G"
+description = "Building on the department’s work with Ukrainian mayors through the Ukraine Community Recovery Academy, the Spring 2026 practicum, Innovation in Ukraine, will center on the city of Vinnytsia, a region of 400,000 and the development of its innovation ecosystem. This topic, chosen by the Mayor of Vinnytsia’s office, will examine how to build upon the region’s innovation assets (e.g., universities, entrepreneurs, industries, city planning/built environment) using US, European and other models of national/regional innovation systems. The practicum will work with city and regional leaders to identify forward-looking pilot ideas that speak to near-term opportunities in the midst of the current wartime conflict, as well as strategies for building a strong foundation for innovation-led growth in the future. The goal is to generate both outcomes and a methodology that could potentially be applicable and scalable to other parts of Ukraine and other conflict areas in an increasingly unpredictable geopolitical context. We will explore the intersection of key stakeholders, functions within an innovation ecosystem, and industries, and look at how private-public partnerships could shape core pillars of an innovation ecosystem (talent, entrepreneurship, technology, built environment), to create a more robust innovation engine in Vinnytsia to generate shared prosperity."
+name = "Innovating in Ukraine"
+inCharge = "Elisabeth Reynolds"
+
+["11.S942"]
+lectureUnits = 1
+labUnits = 1
+preparationUnits = 4
+isVariableUnits = false
+level = "G"
+meets = "11.S195 / 1.C01/51"
+prereqs = "6.C01/51"
+description = "Building on core material in 6.C01/51, emphasizes the design and operation of sustainable systems and the application of machine learning to real-world planning and policy challenges. Students learn to leverage data from urban services, cities, and the environment to evaluate and/or improve sustainability solutions. Projects focus on using machine learning to identify new insights or decisions that advance equity and sustainability in societal-scale systems. This (H4) course meets together with 1.C01/51. Students cannot receive credit without completion of the core subject (H3) 6.C01/51."
+name = "Machine Learning for Sustainable Systems"
+inCharge = "Cong Cong, Saurabh Amin"
+
+["11.S943"]
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 10
+isVariableUnits = false
+level = "G"
+description = "Urban Political Economy is a vibrant field of inquiry that centers on the various ways in which forms of social power shape urban governance. The field emerged in partial response to Chicago School urban sociology and, inspired by the social turmoil of the 1960s, developed new analytic tools that centered on issues such as the production of space and the role of capitalist relations in shaping uneven urban development. As the field continued to evolve through the rest of the 20th century and in to the 21st, it addressed burning questions of politics, race, rights, social justice, globalization, financialization, and computation. It also helped to break new methodological ground in the social sciences by bringing new strategies for addressing social processes across scales (urban, regional, national, global, planetary). This course aims to chart the frontiers of the field through a combination of sessions that focus on foundational texts and presentations by invited guest speakers whose work is pushing the boundaries of the field."
+name = "Frontiers of Urban Political Economy"
+inCharge = " Jason Jackson"
+
+["11.S945"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+level = "G"
+description = "Every landscape represents an incomplete or interrupted plan that tells time and intention. Physical landscapes provide evidence of successful, failed and emergent development plans, but only the learned eye sees beyond the material culture of the street. “Death” offers a way to conceptualize the unseen, underground, the underneath, the liminal space between what we know, what is actual and what is yet to be. Linking social theory, geography, public policy and planning history, this course asks: How can planners and critical observers of the built environment begin to access the collection of meanings that script the movement, stasis and location of everyday users? In other words, how do we move beyond official maps, plans and histories to consider contested meanings of place as they are lived, exchanged and created. Through weekly examinations of first person documentary accounts including ethnography, historical fiction, autobiography, film and novels, students will analyze the social, political and geographic impact of various land development strategies in the U.S. and beyond. Displacement defines a major theme of this course -- students will examine: 1) How does this happen? 2) What have been subsequent local responses? And, 3) What are the lasting consequences of population dispersals? \n\nInformed by ethnographic method and archival immersion, this course will provide students with an interdisciplinary framework for identifying and describing the social impact of place-based change and capital movement. Students will develop a critical understanding of urban planning informed by resident-authored analysis across time and space."
+name = "(Un)Dead Geographies: The Afterlife of Urban Plans"
+inCharge = "Karilyn Crockett"
+
+["11.S946"]
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 10
+isVariableUnits = false
+level = "G"
+description = "Housing is in crisis globally, including the US, from a pandemic of evictions, displacement and lack of resettlement, lack of affordability and criminalization of homelessness to migration, the increasing lack of access to land and the lack of adequate legal recognition and protection of housing and land.  A housing justice perspective, drawing on the work of the instructor as UN Special Rapporteur on the Right to adequate housing, will be used in this seminar to engage with the multiple dimensions of the global housing crisis, which coincides with multiple other crises.  The seminar will include a theoretical grounding of 'housing justice', an analytical understanding of the key challenges to achieving housing justice, and an exposure to the most promising work done to meet those challenges."
+name = "Housing Justice"
+inCharge = "Balakrishnan Rajagopal"
+
+["11.S947"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+isVariableUnits = false
+level = "G"
+description = "This class will explore despondency, rage, pessimism concerning one's own future and the future of society, and the absence of meaningful social relationships as symptoms of US political, economic, and social decline. The various analyses of these problems and suggested interventions will be reviewed. This class will mainly be an intensive reading and discussion seminar. Discussions and paper topics will be grounded in viewing videotaped testimonies from NYC's \"Racial Justice Commission\" during 2020-2021."
+name = "Understanding Alienation and Moral Injury"
+inCharge = "J. Phillip Thompson"
+
+["11.S948"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+isVariableUnits = false
+level = "G"
+description = "Los Angeles, New York, Chicago, Oakland, Seattle, and Raleigh have all recently elected mayors on the political Left. Do the mayors share common ideologies or policy prescriptions? Were their electoral coalitions similar? How do they deliver on promises given their state and the national political climate? The course will rely heavily on newspaper, magazine, and online reports as well as readings on federalism and cities. Speakers will various cities will be invited to speak via Zoom."
+name = "Can Cities on the Left Govern?"
+inCharge = " J. Phillip Thompson"
+
+["11.S938"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+level = "G"
+description = "Class examines issues of urbanism via the interdisciplinary field of night studies, and examines and analyzes important issues in urban studies and planning and architecture--particularly governance, urban design, environmental policy and practice, transportation, economic development, and design of the public realm--by focusing on the night. Attention is also paid to issues of temporality--like Kevin Lynch did in What Time is This Place--and focuses on time as an instrument of design. Special focus is on city development through managing darkness and the night and the many rhythms of labor, leisure, and city life, especially through the emergence of the new role of night mayors that have sprung up all over the world."
+name = "The Dark City: Nocturnal Rhythms of the Urban Landscape"
+inCharge = "Garnette Cadogan"

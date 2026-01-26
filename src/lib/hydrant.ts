@@ -2,7 +2,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 import { useColorMode } from "../components/ui/color-mode";
 
 import type { TermInfo } from "../lib/dates";
-import type { RawClass } from "../lib/rawClass";
+import type { RawClass, RawPEClass } from "./raw";
 import type { HydrantState } from "../lib/schema";
 import { DEFAULT_STATE } from "../lib/schema";
 import type { State } from "../lib/state";
@@ -11,7 +11,23 @@ export interface SemesterData {
   classes: Record<string, RawClass>;
   lastUpdated: string;
   termInfo: TermInfo;
+  pe?: Record<number, Record<string, RawPEClass>>;
 }
+
+export const getStateMaps = (
+  classes: SemesterData["classes"],
+  pe?: SemesterData["pe"],
+) => {
+  const classesMap = new Map(Object.entries(classes));
+  const peClassesMap = Object.entries(pe ?? {}).reduce<
+    Record<number, Map<string, RawPEClass>>
+  >((acc, [quarter, peClasses]) => {
+    acc[Number(quarter)] = new Map(Object.entries(peClasses));
+    return acc;
+  }, {});
+
+  return { classesMap, peClassesMap };
+};
 
 /** Fetch from the url, which is JSON of type T. */
 export const fetchNoCache = async <T>(url: string): Promise<T> => {
