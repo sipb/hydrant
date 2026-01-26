@@ -37,7 +37,19 @@ URL = "https://eecsis.mit.edu/plugins/subj_2026SP.html"
 FRONTEND_URL = (
     "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/"
 )
-COURSE_RE = re.compile(r"\b(6\.S\d{3})\b")
+# Match a 6.S### subject header, optionally with an "(also ...)" clause.
+# Group 1: the 6.S### number
+# Group 2 (optional): comma-separated cross-list numbers (for the "same" field)
+# Group 3: the title text (excluding the "(also ...)" clause when present)
+COURSE_RE = re.compile(
+    r"\b(6\.S\d{3})\b"
+    r"(?:\s*\(\s*also(?: under)?\s+"
+    r"([A-Za-z]{0,5}\d{0,3}[A-Za-z]{0,3}\.[A-Za-z]{0,3}\d{1,4}[A-Za-z]?"
+    r"(?:\s*,\s*[A-Za-z]{0,5}\d{0,3}[A-Za-z]{0,3}\.[A-Za-z]{0,3}\d{1,4}[A-Za-z]?)*"
+    r")\s*\)\s*)?"
+    r"(.*)$",
+    re.IGNORECASE,
+)
 DAY_WORD = {
     "monday": "M",
     "tuesday": "T",
@@ -202,14 +214,15 @@ def parse_header(text):
     Parse a header block containing a course number.
 
     Returns:
-    * tuple[str, str]: (course_number, title_fragment)
+    * tuple[str, str, str | None]: (course_number, title_fragment, same_csv)
     """
     text = _clean(text)
     match = COURSE_RE.search(text)
     assert match
     course = match.group(1)
-    title = _clean(text.replace(course, "", 1)).lstrip(" :-–—\t")
-    return course, title
+    same_as = match.group(2)
+    title = _clean(match.group(3)).lstrip(" :-–—\t")
+    return course, title, same_as
 
 
 def is_incharge_line(text):
@@ -296,11 +309,13 @@ def parse_row(row):
     * dict[str, dict[str, str]]: A single-entry overrides dict
     """
     header = row.get_text(" ", strip=True)
-    course, title = parse_header(header)
+    course, title, same_as = parse_header(header)
     data = {"url": f'{FRONTEND_URL}#{course.replace(".", "_", 1)}'}
 
     if title:
         data["name"] = _clean(title)
+    if same_as:
+        data["same"] = same_as
 
     # The fragment lays out each subject as:
     #   <h6> ... </h6>
