@@ -83,11 +83,7 @@ export function Calendar() {
         continue;
       }
 
-      const formattedDistance =
-        distance < 1000
-          ? `${distance.toFixed(0)} m`
-          : `${(distance / 1000).toFixed(2)} km`;
-
+      const formattedDistance = state.measurementSystem.formatLength(distance);
       const mins = (distance / WALKING_SPEED / 60).toFixed(0);
 
       return (

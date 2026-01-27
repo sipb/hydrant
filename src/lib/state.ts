@@ -13,6 +13,8 @@ import { Class } from "./class";
 import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
 import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
+import type { MeasurementSystem } from "./measurement";
+import { getDefaultMeasurementSystem } from "./measurement";
 import type { RawClass, RawTimeslot, RawPEClass, BuildingInfo } from "./raw";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
@@ -114,6 +116,16 @@ export class State {
 
     // If no color scheme is set, use the default one
     return getDefaultColorScheme();
+  }
+
+  /** The measurement system. */
+  get measurementSystem(): MeasurementSystem {
+    if (this.preferences.measurementSystem) {
+      return this.preferences.measurementSystem;
+    }
+
+    // If no measurement system is set, use the default one
+    return getDefaultMeasurementSystem();
   }
 
   //========================================================================
