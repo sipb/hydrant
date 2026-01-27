@@ -126,7 +126,7 @@ def augment_location(location: str) -> str:
         str: The location, with a building number possibly prepended
 
     >>> augment_location("Du Pont T Club Lounge")
-    'W35 - Du Pont T Club Lounge'
+    'W35+ - Du Pont T Club Lounge'
 
     >>> augment_location("Harvard")
     'Harvard'
@@ -135,10 +135,10 @@ def augment_location(location: str) -> str:
     'Du Pont T Club Lounge and 26-100'
     """
     buildings = {
-        "Du Pont": "W35",
-        "Zesiger": "W35",
-        "Rockwell": "W35",
-        "Johnson": "W35",
+        "Du Pont": "W35+",
+        "Zesiger": "W35+",
+        "Rockwell": "W35+",
+        "Johnson": "W35+",
     }
 
     if " and " in location:
