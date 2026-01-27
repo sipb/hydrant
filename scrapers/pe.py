@@ -5,11 +5,11 @@ Adds information from PE&W subjects, as given by DAPER.
 from __future__ import annotations
 
 import csv
-from functools import lru_cache
 import json
 import os
 import time as time_c
 from datetime import date, time
+from functools import lru_cache
 from typing import Literal, TypedDict
 from urllib.request import Request, urlopen
 
