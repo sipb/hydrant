@@ -15,11 +15,11 @@ import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.css";
 
-// Threshold at which to display a distance warning, in feet (half a mile)
-const DISTANCE_WARNING_THRESHOLD = 2640;
+// Threshold at which to display a distance warning, in feet (650 meters)
+const DISTANCE_WARNING_THRESHOLD = 2112;
 
-// Walking speed, in ft/s (approximately 3.1 mph)
-const WALKING_SPEED = 4.6;
+// Walking speed, in ft/s (~3 mph)
+const WALKING_SPEED = 4.4;
 
 /**
  * Calendar showing all the activities, including the buttons on top that
