@@ -140,6 +140,10 @@ def run():
         rows = get_raw_data()
     except (URLError, socket.timeout) as e:
         print(f"Unable to scrape locations data: {e}")
+        if not os.path.exists(fname):
+            with open(fname, "w", encoding="utf-8") as location_file:
+                json.dump({}, location_file)
+        return
 
     locations = convert_data(rows)
 
