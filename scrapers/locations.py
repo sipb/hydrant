@@ -29,9 +29,9 @@ import os
 import socket
 import statistics
 from functools import lru_cache
+from typing import TypedDict
 from urllib.error import URLError
 from urllib.request import urlopen
-from typing import TypedDict
 
 # pylint: disable=line-too-long
 LOCATIONS_URL = "https://hub.arcgis.com/api/download/v1/items/b935e99782064e2da7cc8e08ba10c1cb/csv?layers=3"
