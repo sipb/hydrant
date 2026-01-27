@@ -19,11 +19,14 @@ Functions:
 
 from __future__ import annotations
 
+import csv
 import json
 import os.path
 from enum import Enum
 from itertools import zip_longest
 from typing import Any, Generator, Iterable, Literal
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
 GIR_REWRITE = {
     "GIR:CAL1": "Calculus I (GIR)",
@@ -236,3 +239,53 @@ def url_name_to_term(url_name: str) -> Term:
         return Term.SU
 
     raise ValueError(f"Invalid term {url_name[0]}")
+
+
+def is_url(path_string: str) -> bool:
+    """Check if the string has a URL-like scheme and network location."""
+    try:
+        result = urlparse(path_string)
+        # Check if both a scheme (e.g., 'http', 'https')
+        # AND a network location (e.g., 'www.google.com') are present
+        return bool(result.scheme and result.netloc)
+    except ValueError:
+        return False
+
+
+def read_csv(path: str, types_dict: type) -> list:
+    """
+    Parses data from file according to a specific format from a CSV
+
+    Args:
+        filepath (str): The path to the CSV file, either file path or URL
+        types_dict (type): The TypedDict type representing the data format
+
+    Returns:
+        list[types_dict]: A list of TypedDict dictionaries representing the parsed data
+    """
+
+    assert hasattr(types_dict, "__annotations__"), "types_dict must be a TypedDict type"
+
+    data = []
+    cols = getattr(types_dict, "__annotations__").keys()
+
+    path_is_url = is_url(path)
+
+    if path_is_url:
+        with_open = urlopen(path, timeout=15)
+    else:
+        with_open = open(path, mode="r", newline="", encoding="utf-8")
+
+    with with_open as csvfile:
+        reader = csv.DictReader(
+            csvfile
+            if not path_is_url
+            else csvfile.read().decode("utf-8")[1:].splitlines()  # type: ignore
+        )
+        for row in reader:
+            assert all(
+                col in row for col in cols
+            ), f"Missing columns in CSV file: {path}"
+            data.append({col: row[col] for col in cols})  # type: ignore
+
+    return data

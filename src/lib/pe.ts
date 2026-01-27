@@ -92,6 +92,10 @@ export class PEClass implements BaseActivity {
     return this.rawClass.number;
   }
 
+  get name(): string {
+    return this.rawClass.name;
+  }
+
   /** Hours per week. */
   get hours(): number {
     return this.rawClass.points;

@@ -37,6 +37,7 @@ describe("Store", () => {
       showEventTimes: false,
       defaultScheduleId: null,
       showBanner: false,
+      measurementSystem: null,
     };
     myStore.globalSet("preferences", myPreferences);
     expect(myStore.globalGet("preferences")).toStrictEqual(myPreferences);
