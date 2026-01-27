@@ -35,6 +35,26 @@ export function Calendar() {
       .flatMap((event) => event.eventInputs);
   }, [selectedActivities]);
 
+  const getBuildingNumber = (room: string) =>
+    room.split("-")[0].trim().replace(/\+$/, "");
+
+  /**
+   * Get the approximate distance (in feet) between two buildings on campus
+   */
+  const getDistance = (building1: string, building2: string) => {
+    // Get coordinates of each building
+    const location1 = state.locations.get(building1);
+    const location2 = state.locations.get(building2);
+
+    if (!location1 || !location2) {
+      return undefined;
+    }
+
+    const dx = location1.x - location2.x;
+    const dy = location1.y - location2.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
   /**
    * Check if event1 ends at the same time that some other event starts. If
    * this is the case and the commute distance between the two events' locations
@@ -55,26 +75,13 @@ export function Calendar() {
         continue;
       }
 
-      // Extract building numbers from room numbers
-      const building1 = room1.split("-")[0].trim();
-      const building2 = event2.room.split("-")[0].trim();
+      const building1 = getBuildingNumber(room1);
+      const building2 = getBuildingNumber(event2.room);
 
-      // Get coordinates of each building
-      const location1 = state.locations.get(building1);
-      const location2 = state.locations.get(building2);
+      // Approximate distance (in feet) between the two buildings
+      const distance = getDistance(building1, building2);
 
-      if (!location1 || !location2) {
-        continue;
-      }
-
-      // Approximate distance (in feet) between the two buildings using Pythagoras
-      const distance = (() => {
-        const dx = location1.x - location2.x;
-        const dy = location1.y - location2.y;
-        return Math.sqrt(dx * dx + dy * dy);
-      })();
-
-      if (distance < DISTANCE_WARNING_THRESHOLD) {
+      if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
       }
 
@@ -135,10 +142,11 @@ export function Calendar() {
             content={event.extendedProps.roomClarification as string}
             portalled
             positioning={{ placement: "top" }}
-            children={<Text fontSize="xs">{event.extendedProps.room}</Text>}
-          />
+          >
+            <Text fontSize="xs">{room}</Text>
+          </Tooltip>
         ) : (
-          <Text fontSize="xs">{event.extendedProps.room}</Text>
+          <Text fontSize="xs">{room}</Text>
         )}
         {distanceWarning ? (
           <Float placement="bottom-end">
