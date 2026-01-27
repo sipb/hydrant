@@ -18,6 +18,7 @@ import {
   ExternalFilterModule,
   RenderApiModule,
   CellStyleModule,
+  RowStyleModule,
   themeQuartz,
   type IRowNode,
   type ColDef,
@@ -37,9 +38,11 @@ import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
 import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
+import { ColorStyles } from "../lib/colors";
+
+import styles from "./ClassTable.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -57,25 +60,18 @@ const GRID_MODULES: Module[] = [
   ClientSideRowModelModule,
   ExternalFilterModule,
   CellStyleModule,
+  RowStyleModule,
   RenderApiModule,
   ...(import.meta.env.DEV ? [ValidationModule] : []),
 ];
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-enum ColorEnum {
-  Muted = "ag-cell-muted-text",
-  Success = "ag-cell-success-text",
-  Warning = "ag-cell-warning-text",
-  Error = "ag-cell-error-text",
-  Normal = "ag-cell-normal-text",
-}
-
 const getFeeColor = (fee: number) => {
-  if (isNaN(fee)) return ColorEnum.Muted;
-  if (fee == 0) return ColorEnum.Success;
-  if (fee <= 20) return ColorEnum.Warning;
-  return ColorEnum.Error;
+  if (isNaN(fee)) return ColorStyles.Muted;
+  if (fee == 0) return ColorStyles.Success;
+  if (fee <= 20) return ColorStyles.Warning;
+  return ColorStyles.Error;
 };
 
 /** A single row in the class table. */
@@ -418,6 +414,7 @@ export function PEClassTable() {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
+        cellClass: styles["underline-on-hover"],
         ...sortProps,
       },
       {
@@ -496,6 +493,7 @@ export function PEClassTable() {
         <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
+          rowClass={styles.row}
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={rowData}

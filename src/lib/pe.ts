@@ -92,6 +92,10 @@ export class PEClass implements BaseActivity {
     return this.rawClass.number;
   }
 
+  get name(): string {
+    return this.rawClass.name;
+  }
+
   /** Hours per week. */
   get hours(): number {
     return this.rawClass.points;
@@ -156,7 +160,7 @@ export class PEClass implements BaseActivity {
       wellness: this.rawClass.wellness,
       pirate: this.rawClass.pirate,
       swim: this.rawClass.swimGIR,
-      nofee: this.rawClass.fee == "$0.00",
+      nofee: this.fee == 0,
       nopreq: this.rawClass.prereqs == "None",
     };
   }

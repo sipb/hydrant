@@ -1,0 +1,19 @@
+.muted {
+  color: var(--chakra-colors-fg-muted);
+}
+
+.success {
+  color: var(--chakra-colors-fg-success);
+}
+
+.warning {
+  color: var(--chakra-colors-fg-warning);
+}
+
+.error {
+  color: var(--chakra-colors-fg-error);
+}
+
+.normal {
+  color: var(--chakra-colors-fg);
+}

@@ -199,6 +199,7 @@ export enum TermCode {
   SU = "SU",
 }
 
+/** The raw PE class format produced by the scraper. */
 export interface RawPEClass {
   /** Class number; e.g., "PE.0612" */
   number: string;
@@ -239,4 +240,14 @@ export interface RawPEClass {
   description: string;
   /** Quarter of class */
   quarter: number;
+}
+
+/** The building information format produced by scrapers/location.py */
+export interface BuildingInfo {
+  /** Building number; e.g., "56" */
+  number: string;
+  /** Latitude of the building, as a signed value; e.g., 42.36059380245 */
+  lat: number;
+  /** Longitude of the building, as a signed value; e.g., -71.09018127934999 */
+  long: number;
 }
