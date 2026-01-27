@@ -7,13 +7,13 @@ This is written to the file locations.json, in the following format:
     {
         "56": {
             "number": "56",
-            "lat": 42.36059380245,
-            "long": -71.09018127934999
+            "x": 766928.3517173745,
+            "y": 2956695.64603492
         }
     }
 
-The latitude and longitude values are given by the average of the locations of the
-building access points (entrances).
+The x and y values, in the Massachusetts Mainland projection, are given by the
+average of the locations of the building access points (entrances).
 
 Functions:
     get_raw_data()
@@ -68,8 +68,8 @@ class BuildingInfo(TypedDict):
     """
 
     number: str
-    lat: float
-    long: float
+    x: float
+    y: float
 
 
 @lru_cache(maxsize=None)
@@ -85,10 +85,7 @@ def get_raw_data() -> list[AccessPoint]:
         socket.timeout: If the request times out.
     """
 
-    rows: list[AccessPoint] = read_csv(LOCATIONS_URL, AccessPoint)
-    rows = list(filter(lambda row: row["OBJECTID"] != "0", rows))
-
-    return rows
+    return read_csv(LOCATIONS_URL, AccessPoint)
 
 
 def convert_data(rows: list[AccessPoint]) -> dict[str, BuildingInfo]:
@@ -109,7 +106,7 @@ def convert_data(rows: list[AccessPoint]) -> dict[str, BuildingInfo]:
     for building in buildings:
         xs, ys = zip(
             *(
-                (float(row["X_Coord"]), float(row["Y_Coord"]))
+                (float(row["x"]), float(row["y"]))
                 for row in rows
                 if row["FACILITY"] == building
             )
@@ -118,8 +115,8 @@ def convert_data(rows: list[AccessPoint]) -> dict[str, BuildingInfo]:
         y = statistics.mean(ys)
         out[building] = {
             "number": building,
-            "lat": y,
-            "long": x,
+            "x": x,
+            "y": y,
         }
 
     return out
