@@ -9,8 +9,8 @@ Functions:
 
 from .catalog import run as catalog_run
 from .cim import run as cim_run
-from .locations import run as locations_run
 from .fireroad import run as fireroad_run
+from .locations import run as locations_run
 from .package import run as package_run
 from .pe import run as pe_run
 

@@ -23,7 +23,6 @@ Functions:
 
 from __future__ import annotations
 
-import csv
 import json
 import os
 import socket
@@ -31,7 +30,8 @@ import statistics
 from functools import lru_cache
 from typing import TypedDict
 from urllib.error import URLError
-from urllib.request import urlopen
+
+from scrapers.utils import read_csv
 
 # pylint: disable=line-too-long
 LOCATIONS_URL = "https://hub.arcgis.com/api/download/v1/items/b935e99782064e2da7cc8e08ba10c1cb/csv?layers=3"
@@ -84,20 +84,9 @@ def get_raw_data() -> list[AccessPoint]:
         URLError: If there is a protocol error.
         socket.timeout: If the request times out.
     """
-    with urlopen(LOCATIONS_URL, timeout=15) as resp:
-        # Strip byte order mark
-        text = resp.read().decode("utf-8")[1:]
 
-    rows: list[AccessPoint] = []
-    cols = getattr(AccessPoint, "__annotations__").keys()
-    reader = csv.DictReader(text.splitlines())
-
-    for row in reader:
-        assert all(col in row for col in cols), "Missing columns in location file"
-
-        # Rows with OBJECTID 0 don't contain lat/long data, so ignore them
-        if row["OBJECTID"] != "0":
-            rows.append({col: row[col] for col in cols})  # type: ignore
+    rows: list[AccessPoint] = read_csv(LOCATIONS_URL, AccessPoint)
+    rows = list(filter(lambda row: row["OBJECTID"] != "0", rows))
 
     return rows
 
