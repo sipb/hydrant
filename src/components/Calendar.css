@@ -2,10 +2,6 @@
 .fc .fc-scrollgrid-section > td,
 .fc .fc-timegrid-axis {
   border-color: transparent;
-
-  .dark & {
-    border-color: transparent;
-  }
 }
 
 .fc .fc-timegrid-slot {
@@ -31,6 +27,10 @@
 
 .fc .fc-col-header-cell .fc-scrollgrid-sync-inner {
   background: var(--chakra-colors-bg);
+}
+
+.fc .fc-timegrid-event-harness-inset {
+  z-index: auto !important;
 }
 
 .fc .fc-timegrid-event-harness-inset .fc-timegrid-event {

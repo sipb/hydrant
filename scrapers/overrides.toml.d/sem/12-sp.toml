@@ -43,3 +43,12 @@ labUnits = 0
 preparationUnits = 0
 isVariableUnits = true
 new = true
+
+["12.S992"]
+name = "Special Subject in Climate Science — AI for Climate Action"
+description = "Examines applications of artificial intelligence and machine learning to climate change mitigation, adaptation, and monitoring. Introduces the physical science of climate change, data-driven modeling and observation, and approaches for decision-making in domains such as climate modeling, biodiversity, and energy systems. Includes common (‘merged’) lectures on climate fundamentals followed by domain-specific sections (‘forks’) focusing on advanced methods such as physics-informed learning, data assimilation, and uncertainty quantification. Within each ‘fork’, students present, critique, and lead discussions of current research papers and develop a written research proposal applying machine learning methods to the track’s focus area. ‘Merged’ sessions later in the term synthesize lessons and foster exchange across domains. Both graduate and undergraduate students are encouraged to register."
+inCharge = "A. Bodner"
+terms = ["SP"]
+level = "G"
+prereqs = "6.3900 OR 6.8300/6.8301 OR 6.7960 OR equivalent"
+new = true

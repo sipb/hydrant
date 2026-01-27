@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import { HydrantContext } from "../lib/hydrant";
+import { BANNER_MESSAGE } from "~/lib/schema";
 
 export const Banner = () => {
   const { state } = useContext(HydrantContext);
@@ -37,7 +38,7 @@ export const Banner = () => {
         >
           <Flex align="center" textStyle="sm">
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
-              IAP and Spring 2026 classes are now available! ❄️🌹
+              {BANNER_MESSAGE}
             </Text>
             <CloseButton
               hideFrom="sm"

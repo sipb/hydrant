@@ -24,7 +24,11 @@ import {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
-  { rel: "icon", type: "icon/png", href: "/hydrant.png" },
+  {
+    rel: "icon",
+    type: "icon/png",
+    href: import.meta.env.BASE_URL + "hydrant.png",
+  },
 ];
 
 export function HydrateFallback() {

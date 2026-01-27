@@ -198,3 +198,56 @@ export enum TermCode {
   /** Summer */
   SU = "SU",
 }
+
+/** The raw PE class format produced by the scraper. */
+export interface RawPEClass {
+  /** Class number; e.g., "PE.0612" */
+  number: string;
+  /** Class name; e.g., "Skate, Beginner" */
+  name: string;
+
+  /** PE&W section number for each section */
+  sectionNumbers: string[];
+  /** Timeslots and locations for each section */
+  sections: RawSection[];
+  /** Raw (FireRoad format) section locations/times */
+  rawSections: string[];
+  /** Class size (for each section) */
+  classSize: number;
+
+  /** Start date, in ISO 8601 format */
+  startDate: string;
+  /** End date, in ISO 8601 format */
+  endDate: string;
+
+  /** PE points */
+  points: number;
+
+  /** Wellness Wizard eligible */
+  wellness: boolean;
+  /** Pirate Certificate eligible */
+  pirate: boolean;
+  /** Satisfies swim GIR */
+  swimGIR: boolean;
+
+  /** Prereqs, no specific format */
+  prereqs: string;
+  /** Equipment, no specific format */
+  equipment: string;
+  /** Fee */
+  fee: string;
+  /** Description, no specific format */
+  description: string;
+  /** Quarter of class */
+  quarter: number;
+}
+
+/** The building information format produced by scrapers/location.py */
+export interface BuildingInfo {
+  /** Building number; e.g., "56" */
+  number: string;
+  /** X coordinate of the building as a value in EPSG:2249; e.g., 766928.3517173745 */
+  x: number;
+  /** Y coordinate of the building as a value in EPSG:2249; e.g., 2956695.64603492 */
+  y: number;
+}
