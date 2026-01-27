@@ -37,7 +37,8 @@ PIRATE_CLASSES = [
     "Fencing",
     "Pistol",
     "Air Pistol",
-    "Rifle",  # TODO ask if air rifle is also eligible
+    "Rifle",
+    "Air Rifle",
     "Sailing",
 ]
 
@@ -84,6 +85,7 @@ class PEWSchema(TypedDict):
     wellness: bool
     pirate: bool
     swimGIR: bool
+    remote: bool
     prereqs: str
     equipment: str
     fee: str
@@ -125,7 +127,7 @@ def augment_location(location: str) -> str:
         str: The location, with a building number possibly prepended
 
     >>> augment_location("Du Pont T Club Lounge")
-    'W35 - Du Pont T Club Lounge'
+    'W35+ - Du Pont T Club Lounge'
 
     >>> augment_location("Harvard")
     'Harvard'
@@ -134,10 +136,10 @@ def augment_location(location: str) -> str:
     'Du Pont T Club Lounge and 26-100'
     """
     buildings = {
-        "Du Pont": "W35",
-        "Zesiger": "W35",
-        "Rockwell": "W35",
-        "Johnson": "W35",
+        "Du Pont": "W35+",
+        "Zesiger": "W35+",
+        "Rockwell": "W35+",
+        "Johnson": "W35+",
     }
 
     if " and " in location:
@@ -261,7 +263,7 @@ def parse_date(date_str: str) -> date:
 
 def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str:
     """
-    Parses times from CVS to format from Fireroad, for compatibility.
+    Parses times from CSV to Fireroad format, for compatibility.
 
     Args:
         start_time (str): Start time of the class
@@ -273,21 +275,16 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
     """
     start_c = time_c.strptime(start_time, "%I:%M %p")
     start = time(start_c.tm_hour, start_c.tm_min)
-    end = time(
-        start.hour + 1, start.minute
-    )  # default to 1 hour, can be changed in overrides
+    # default to 1 hour, can be changed in overrides
 
     start_raw_time = (
-        f"{12 - ((- start.hour) % 12)}" f"{'.30' if start.minute > 29 else ''}"
+        f"{12 - ((- start.hour) % 12)}"
+        f"{'.30' if start.minute > 29 else ''}"
+        f"{' PM' if start.hour >= 17 else ''}"
     )
-    end_raw_time = (
-        f"{12 - ((- end.hour) % 12)}"
-        f"{'.30' if end.minute > 29 else ''}"
-        f"{' PM' if end.hour >= 17 else ''}"
-    )
-    evening = "1" if end.hour >= 17 else "0"
+    evening = "1" if start.hour >= 17 else "0"
 
-    return f"{location}/{days}/{evening}/{start_raw_time}-{end_raw_time}"
+    return f"{location}/{days}/{evening}/{start_raw_time}"
 
 
 def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
@@ -322,6 +319,7 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "wellness": any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES),
         "pirate": any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES),
         "swimGIR": parse_bool(row["Swim GIR"]),
+        "remote": row["Title"].lower().find("remote") != -1,
         "prereqs": row["Prerequisites"] or "None",
         "equipment": row["Equipment"],
         "fee": row["Fee Amount"],

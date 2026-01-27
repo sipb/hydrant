@@ -405,6 +405,7 @@ export class State {
   /** Clear (almost) all program state. This doesn't clear class state. */
   reset(): void {
     this.selectedClasses = [];
+    this.selectedPEClasses = [];
     this.selectedCustomActivities = [];
     this.selectedOption = 0;
   }
