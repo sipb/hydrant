@@ -17,17 +17,17 @@ export interface SemesterData {
 
 export const getStateMaps = (
   classes: SemesterData["classes"],
-  pe: SemesterData["pe"],
-  locations: SemesterData["locations"],
+  pe?: SemesterData["pe"],
+  locations?: SemesterData["locations"],
 ) => {
   const classesMap = new Map(Object.entries(classes));
-  const peClassesMap = Object.entries(pe).reduce<
+  const peClassesMap = Object.entries(pe ?? {}).reduce<
     Record<number, Map<string, RawPEClass>>
   >((acc, [quarter, peClasses]) => {
     acc[Number(quarter)] = new Map(Object.entries(peClasses));
     return acc;
   }, {});
-  const locationsMap = new Map(Object.entries(locations));
+  const locationsMap = new Map(Object.entries(locations ?? {}));
 
   return { classesMap, peClassesMap, locationsMap };
 };
