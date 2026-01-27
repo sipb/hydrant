@@ -1,5 +1,6 @@
 import type { Activity } from "./activity";
 import type { ColorScheme } from "./colors";
+import type { MeasurementSystem } from "./measurement";
 
 export enum ClassType {
   ACADEMIC = "Academic",
@@ -25,6 +26,7 @@ export interface Preferences {
   defaultScheduleId: string | null;
   showBanner: boolean;
   showBannerChanged?: number;
+  measurementSystem: MeasurementSystem | null;
 }
 
 /** The default user preferences. */
@@ -35,6 +37,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   defaultScheduleId: null,
   showBanner: true,
   showBannerChanged: undefined,
+  measurementSystem: null,
 };
 
 /** React state. */

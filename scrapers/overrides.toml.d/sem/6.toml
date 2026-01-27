@@ -58,7 +58,8 @@ description = "Provides an introduction to computer vision, covering topics from
 
 ["6.S080"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S080"
-name = "(also taught under 16.S690) Introduction to Autonomy"
+name = "Introduction to Autonomy"
+same = "16.S690"
 level = "U"
 lectureUnits = 2
 labUnits = 0
@@ -85,7 +86,8 @@ description = "Traces the global, material history of computing from the ninetee
 
 ["6.S891"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S891"
-name = "/6.S893/12.S992 AI for Climate Action"
+name = "AI for Climate Action"
+same = "6.S893, 12.S992"
 level = "G"
 lectureUnits = 3
 labUnits = 0
@@ -112,6 +114,7 @@ lectureUnits = 1
 labUnits = 1
 preparationUnits = 4
 isVariableUnits = false
+half = 2
 inCharge = "Professor Mariana Popescu (ARCH), madpope@mit.edu"
 prereqs = "experience with 3D modeling and Python coding is preferred; some affinity for physical prototyping would also be useful"
 lectureRawSections = ["3-329/T/0/10.30-12.30"]

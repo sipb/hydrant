@@ -1,20 +1,29 @@
 import { useContext, useMemo } from "react";
 
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Circle, Float, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
 
 import FullCalendar from "@fullcalendar/react";
-import type { EventContentArg } from "@fullcalendar/core";
+import type { EventContentArg, EventApi } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+
+import geodesic from "geographiclib-geodesic";
 
 import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
-import { Class } from "../lib/class";
 import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.css";
+
+const GEOD = geodesic.Geodesic.WGS84;
+
+// Threshold at which to display a distance warning, in metres
+const DISTANCE_WARNING_THRESHOLD = 650;
+
+// Walking speed, in m/s (1.33 m/s corresponds to a ~20-minute mile)
+const WALKING_SPEED = 4 / 3;
 
 /**
  * Calendar showing all the activities, including the buttons on top that
@@ -23,6 +32,71 @@ import "./Calendar.css";
 export function Calendar() {
   const { state, hydrantState } = useContext(HydrantContext);
   const { selectedActivities, viewedActivity } = hydrantState;
+
+  const events = useMemo(() => {
+    return selectedActivities
+      .flatMap((act) => act.events)
+      .flatMap((event) => event.eventInputs);
+  }, [selectedActivities]);
+
+  /**
+   * Check if event1 ends at the same time that some other event starts. If
+   * this is the case and the commute distance between the two events' locations
+   * is more than 500 metres, return an appropriate warning message. Otherwise,
+   * return undefined.
+   */
+  const getDistanceWarning = (event1: EventApi) => {
+    const room1 = event1.extendedProps.room as string | undefined;
+    if (!event1.end || !room1) {
+      return undefined;
+    }
+
+    for (const event2 of events) {
+      if (!event2.start || !event2.room) {
+        continue;
+      }
+      if (event1.end.getTime() != event2.start.getTime()) {
+        continue;
+      }
+
+      // Extract building numbers from room numbers
+      const building1 = room1.split("-")[0].trim();
+      const building2 = event2.room.split("-")[0].trim();
+
+      // Get coordinates of each building
+      const location1 = state.locations.get(building1);
+      const location2 = state.locations.get(building2);
+
+      if (!location1 || !location2) {
+        continue;
+      }
+
+      // Approximate distance (in metres) between the two buildings
+      const distance = GEOD.Inverse(
+        location1.lat,
+        location1.long,
+        location2.lat,
+        location2.long,
+      ).s12;
+
+      if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
+        continue;
+      }
+
+      const formattedDistance = state.measurementSystem.formatLength(distance);
+      const mins = (distance / WALKING_SPEED / 60).toFixed(0);
+
+      return (
+        <Text>
+          Warning: distance from {building1} to {building2} is{" "}
+          {formattedDistance}
+          <br />
+          (about a {mins}-minute walk)
+        </Text>
+      );
+    }
+    return undefined;
+  };
 
   const renderEvent = ({ event }: EventContentArg) => {
     const TitleText = () => (
@@ -37,6 +111,10 @@ export function Calendar() {
       </Text>
     );
 
+    const room = event.extendedProps.room as string | undefined;
+    const activity = event.extendedProps.activity as Activity;
+    const distanceWarning = getDistanceWarning(event);
+
     return (
       <Box
         color={event.textColor}
@@ -44,27 +122,41 @@ export function Calendar() {
         lineHeight={1.3}
         cursor="pointer"
         height="100%"
+        position="relative"
       >
-        {event.extendedProps.activity instanceof Class ? (
+        {!(activity instanceof CustomActivity) ? (
           <Tooltip
-            content={event.extendedProps.activity.name}
+            content={activity.name}
             portalled
             positioning={{ placement: "top" }}
-            children={TitleText()}
-          />
+          >
+            {TitleText()}
+          </Tooltip>
         ) : (
           <TitleText />
         )}
-        <Text fontSize="xs">{event.extendedProps.room}</Text>
+        <Text fontSize="xs">{room}</Text>
+        {distanceWarning ? (
+          <Float placement="bottom-end">
+            <Tooltip
+              content={distanceWarning}
+              portalled
+              positioning={{ placement: "top" }}
+            >
+              <Circle
+                size="5"
+                bg="orange.solid"
+                color="orange.contrast"
+                boxShadow="lg"
+              >
+                !
+              </Circle>
+            </Tooltip>
+          </Float>
+        ) : null}
       </Box>
     );
   };
-
-  const events = useMemo(() => {
-    return selectedActivities
-      .flatMap((act) => act.events)
-      .flatMap((event) => event.eventInputs);
-  }, [selectedActivities]);
 
   return (
     <FullCalendar
