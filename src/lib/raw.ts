@@ -246,8 +246,8 @@ export interface RawPEClass {
 export interface BuildingInfo {
   /** Building number; e.g., "56" */
   number: string;
-  /** Latitude of the building, as a signed value; e.g., 42.36059380245 */
-  lat: number;
-  /** Longitude of the building, as a signed value; e.g., -71.09018127934999 */
-  long: number;
+  /** X coordinate of the building as a value in EPSG:2249; e.g., 766928.3517173745 */
+  x: number;
+  /** Y coordinate of the building as a value in EPSG:2249; e.g., 2956695.64603492 */
+  y: number;
 }

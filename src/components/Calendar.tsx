@@ -8,8 +8,6 @@ import type { EventContentArg, EventApi } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import geodesic from "geographiclib-geodesic";
-
 import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
@@ -17,13 +15,11 @@ import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.css";
 
-const GEOD = geodesic.Geodesic.WGS84;
+// Threshold at which to display a distance warning, in feet (half a mile)
+const DISTANCE_WARNING_THRESHOLD = 2640;
 
-// Threshold at which to display a distance warning, in metres
-const DISTANCE_WARNING_THRESHOLD = 650;
-
-// Walking speed, in m/s (1.33 m/s corresponds to a ~20-minute mile)
-const WALKING_SPEED = 4 / 3;
+// Walking speed, in ft/s (approximately 3.1 mph)
+const WALKING_SPEED = 4.6;
 
 /**
  * Calendar showing all the activities, including the buttons on top that
@@ -42,7 +38,7 @@ export function Calendar() {
   /**
    * Check if event1 ends at the same time that some other event starts. If
    * this is the case and the commute distance between the two events' locations
-   * is more than 500 metres, return an appropriate warning message. Otherwise,
+   * is more than half a mile, return an appropriate warning message. Otherwise,
    * return undefined.
    */
   const getDistanceWarning = (event1: EventApi) => {
@@ -71,15 +67,14 @@ export function Calendar() {
         continue;
       }
 
-      // Approximate distance (in metres) between the two buildings
-      const distance = GEOD.Inverse(
-        location1.lat,
-        location1.long,
-        location2.lat,
-        location2.long,
-      ).s12;
+      // Approximate distance (in feet) between the two buildings using Pythagoras
+      const distance = (() => {
+        const dx = location1.x - location2.x;
+        const dy = location1.y - location2.y;
+        return Math.sqrt(dx * dx + dy * dy);
+      })();
 
-      if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
+      if (distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
       }
 
