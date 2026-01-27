@@ -118,36 +118,39 @@ export function Calendar() {
     const distanceWarning = getDistanceWarning(event);
 
     return (
-      <Box
-        color={event.textColor}
-        p={0.5}
-        lineHeight={1.3}
-        cursor="pointer"
-        height="100%"
-        position="relative"
-      >
-        {!(activity instanceof CustomActivity) ? (
-          <Tooltip
-            content={activity.name}
-            portalled
-            positioning={{ placement: "top" }}
-          >
-            {TitleText()}
-          </Tooltip>
-        ) : (
-          <TitleText />
-        )}
-        {event.extendedProps.roomClarification ? (
-          <Tooltip
-            content={event.extendedProps.roomClarification as string}
-            portalled
-            positioning={{ placement: "top" }}
-          >
+      <>
+        <Box
+          color={event.textColor}
+          overflow="hidden"
+          p={0.5}
+          lineHeight={1.3}
+          cursor="pointer"
+          height="100%"
+          position="relative"
+        >
+          {!(activity instanceof CustomActivity) ? (
+            <Tooltip
+              content={activity.name}
+              portalled
+              positioning={{ placement: "top" }}
+            >
+              {TitleText()}
+            </Tooltip>
+          ) : (
+            <TitleText />
+          )}
+          {event.extendedProps.roomClarification ? (
+            <Tooltip
+              content={event.extendedProps.roomClarification as string}
+              portalled
+              positioning={{ placement: "top" }}
+            >
+              <Text fontSize="xs">{room}</Text>
+            </Tooltip>
+          ) : (
             <Text fontSize="xs">{room}</Text>
-          </Tooltip>
-        ) : (
-          <Text fontSize="xs">{room}</Text>
-        )}
+          )}
+        </Box>
         {distanceWarning ? (
           <Float placement="bottom-end">
             <Tooltip
@@ -166,7 +169,7 @@ export function Calendar() {
             </Tooltip>
           </Float>
         ) : null}
-      </Box>
+      </>
     );
   };
 
