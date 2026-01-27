@@ -11,8 +11,8 @@ export interface SemesterData {
   classes: Record<string, RawClass>;
   lastUpdated: string;
   termInfo: TermInfo;
-  pe: Record<number, Record<string, RawPEClass>>;
-  locations: Record<string, BuildingInfo>;
+  pe?: Record<number, Record<string, RawPEClass>>;
+  locations?: Record<string, BuildingInfo>;
 }
 
 export const getStateMaps = (
