@@ -133,7 +133,6 @@ test("Event.eventInputs", () => {
     myTitle,
     [new Timeslot(6, 7), new Timeslot(57, 10)],
     myRoom,
-    undefined,
   );
   expect(myEvent.eventInputs).toStrictEqual([
     {
@@ -144,6 +143,7 @@ test("Event.eventInputs", () => {
       backgroundColor: myHexCode,
       borderColor: myHexCode,
       room: myRoom,
+      roomClarification: undefined,
       activity: myCustomActivity,
     },
     {
@@ -154,6 +154,7 @@ test("Event.eventInputs", () => {
       backgroundColor: myHexCode,
       borderColor: myHexCode,
       room: myRoom,
+      roomClarification: undefined,
       activity: myCustomActivity,
     },
   ]);
