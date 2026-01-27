@@ -57,7 +57,16 @@ export function Calendar() {
         ) : (
           <TitleText />
         )}
-        <Text fontSize="xs">{event.extendedProps.room}</Text>
+        {event.extendedProps.roomClarification ? (
+          <Tooltip
+            content={event.extendedProps.roomClarification as string}
+            portalled
+            positioning={{ placement: "top" }}
+            children={<Text fontSize="xs">{event.extendedProps.room}</Text>}
+          />
+        ) : (
+          <Text fontSize="xs">{event.extendedProps.room}</Text>
+        )}
       </Box>
     );
   };

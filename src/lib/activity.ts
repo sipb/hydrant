@@ -104,6 +104,8 @@ export class Event {
   slots: Timeslot[];
   /** The room of the event. */
   room?: string;
+  /** Room clarification, e.g. "in the pool" */
+  roomClarification?: string;
   /** If defined, 1 -> first half; 2 -> second half. */
   half?: number;
 
@@ -113,12 +115,14 @@ export class Event {
     slots: Timeslot[],
     room?: string,
     half?: number,
+    roomClarification?: string,
   ) {
     this.activity = activity;
     this.name = name;
     this.slots = slots;
     this.room = room;
     this.half = half;
+    this.roomClarification = roomClarification;
   }
 
   /** List of events that can be directly given to FullCalendar. */
@@ -132,6 +136,7 @@ export class Event {
       backgroundColor: color,
       borderColor: color,
       room: this.room,
+      roomClarification: this.roomClarification,
       activity: this.activity,
     }));
   }
