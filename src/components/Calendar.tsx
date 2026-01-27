@@ -9,7 +9,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import geodesic from "geographiclib-geodesic";
-const geod = geodesic.Geodesic.WGS84;
 
 import type { BaseActivity, Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
@@ -18,6 +17,8 @@ import { Class } from "../lib/class";
 import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.css";
+
+const GEOD = geodesic.Geodesic.WGS84;
 
 // Threshold at which to display a distance warning, in metres
 const DISTANCE_WARNING_THRESHOLD = 650;
@@ -72,7 +73,7 @@ export function Calendar() {
       }
 
       // Approximate distance (in metres) between the two buildings
-      const distance = geod.Inverse(
+      const distance = GEOD.Inverse(
         location1.lat,
         location1.long,
         location2.lat,
