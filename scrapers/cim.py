@@ -102,8 +102,8 @@ def run() -> None:
 
     try:
         sections = get_sections()
-    except (URLError, socket.timeout):
-        print("Unable to scrape Registrar page for CI-M subjects.")
+    except (URLError, socket.timeout) as e:
+        print(f"Unable to scrape Registrar page for CI-M subjects: {e}")
         if not os.path.exists(fname):
             with open(fname, "w", encoding="utf-8") as cim_file:
                 json.dump({}, cim_file)

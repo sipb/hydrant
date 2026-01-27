@@ -4,19 +4,18 @@ Adds information from PE&W subjects, as given by DAPER.
 
 from __future__ import annotations
 
-import csv
-from functools import lru_cache
 import json
 import os
 import time as time_c
 from datetime import date, time
+from functools import lru_cache
 from typing import Literal, TypedDict
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
 
 from scrapers.fireroad import parse_section
-from scrapers.utils import Term
+from scrapers.utils import Term, read_csv
 
 PE_CATALOG = (
     "https://physicaleducationandwellness.mit.edu/options-for-points/course-catalog/"
@@ -71,7 +70,7 @@ Data from CSV file representing PE&W subjects, as given by DAPER
 
 class PEWSchema(TypedDict):
     """
-    Information expected by the frontend (see rawPEClass.ts)
+    Information expected by the frontend (see raw.ts)
     """
 
     number: str
@@ -150,29 +149,6 @@ def augment_location(location: str) -> str:
             return f"{building} - {location}"
 
     return location
-
-
-def read_pew_file(filepath: str) -> list[PEWFile]:
-    """
-    Parses PE&W data from file according to a specific format from a CSV
-
-    Args:
-        filepath (str): The path to the CSV file
-
-    Returns:
-        list[PEWFile]: A list of PEWFile dictionaries representing the parsed data
-    """
-    pew_data: list[PEWFile]
-    cols = getattr(PEWFile, "__annotations__").keys()
-    with open(filepath, mode="r", newline="", encoding="utf-8") as csvfile:
-        reader = csv.DictReader(csvfile)
-        pew_data = []
-        for row in reader:
-            assert all(
-                col in row for col in cols
-            ), f"Missing columns in PEW file: {filepath}"
-            pew_data.append({col: row[col] for col in cols})  # type: ignore
-    return pew_data
 
 
 def get_year_quarter(term_str: str) -> tuple[int, int]:
@@ -471,11 +447,11 @@ def run():
     pe_folder = os.path.join(os.path.dirname(__file__), "pe")
     pe_files = os.listdir(pe_folder)
 
-    pe_files_data = []
+    pe_files_data: list[PEWFile] = []
     for pe_file in pe_files:
         if pe_file.endswith(".csv"):
             # process the data as needed
-            pe_files_data.extend(read_pew_file(os.path.join(pe_folder, pe_file)))
+            pe_files_data.extend(read_csv(os.path.join(pe_folder, pe_file), PEWFile))
 
     pe_data = pe_rows_to_schema(pe_files_data)
 

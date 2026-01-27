@@ -13,7 +13,9 @@ import { Class } from "./class";
 import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
 import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
-import type { RawClass, RawTimeslot, RawPEClass } from "./raw";
+import type { MeasurementSystem } from "./measurement";
+import { getDefaultMeasurementSystem } from "./measurement";
+import type { RawClass, RawTimeslot, RawPEClass, BuildingInfo } from "./raw";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
@@ -74,6 +76,8 @@ export class State {
   constructor(
     rawClasses: Map<string, RawClass>,
     rawPEClasses: Record<number, Map<string, RawPEClass>>,
+    /** A mapping from building numbers to BuildingInfo objects. */
+    public readonly locations: Map<string, BuildingInfo>,
     /** The current term object. */
     public readonly term: Term,
     /** String representing last update time. */
@@ -112,6 +116,16 @@ export class State {
 
     // If no color scheme is set, use the default one
     return getDefaultColorScheme();
+  }
+
+  /** The measurement system. */
+  get measurementSystem(): MeasurementSystem {
+    if (this.preferences.measurementSystem) {
+      return this.preferences.measurementSystem;
+    }
+
+    // If no measurement system is set, use the default one
+    return getDefaultMeasurementSystem();
   }
 
   //========================================================================
@@ -391,6 +405,7 @@ export class State {
   /** Clear (almost) all program state. This doesn't clear class state. */
   reset(): void {
     this.selectedClasses = [];
+    this.selectedPEClasses = [];
     this.selectedCustomActivities = [];
     this.selectedOption = 0;
   }

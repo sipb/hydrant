@@ -4,5 +4,5 @@ export default {
   appDirectory: "src",
   ssr: false,
   // change if deploying to a subdirectory
-  basename: "/",
+  basename: process.env.SUBDIR ?? "/",
 } satisfies Config;
