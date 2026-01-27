@@ -107,6 +107,12 @@ def convert_data(rows: list[AccessPoint]) -> dict[str, BuildingInfo]:
     Converts the raw CSV data to a dict mapping building numbers to BuildingInfo
     objects. Each BuildingInfo object contains the average of the latitudes and
     longitudes of the access points corresponding to that building.
+
+    Args:
+        rows (list[AccessPoint]): The raw CSV data fetched from the ArcGIS endpoint.
+
+    Returns:
+        dict[str, BuildingInfo]: A dictionary mapping building numbers to BuildingInfo objects.
     """
     out: dict[str, BuildingInfo] = {}
     buildings = set(row["FACILITY"] for row in rows)
