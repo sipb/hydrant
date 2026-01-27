@@ -44,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          name: gh-pages-artifact
+          name: github-pages
           path: "./build/client"
       - name: Deploy to GitHub Pages
         id: deployment
