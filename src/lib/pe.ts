@@ -10,6 +10,7 @@ export interface PEFlags {
   wellness: boolean;
   pirate: boolean;
   swim: boolean;
+  remote: boolean;
   nofee: boolean;
   nopreq: boolean;
 }
@@ -18,6 +19,7 @@ const peFlagEmojis: { [k in keyof PEFlags]?: string } = {
   wellness: "🔮",
   pirate: "🏴‍☠️",
   swim: "🌊",
+  remote: "💻",
 };
 
 export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
@@ -179,6 +181,7 @@ export class PEClass implements BaseActivity {
       wellness: this.rawClass.wellness,
       pirate: this.rawClass.pirate,
       swim: this.rawClass.swimGIR,
+      remote: this.rawClass.remote,
       nofee: this.fee == 0,
       nopreq: this.rawClass.prereqs == "None",
     };

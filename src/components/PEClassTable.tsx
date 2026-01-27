@@ -222,6 +222,7 @@ const CLASS_FLAGS_2: FilterGroup = [
   ["wellness", "🔮 Wellness Wizard"],
   ["pirate", "🏴‍☠️ Pirate Certificate"],
   ["swim", "🌊 Swim GIR"],
+  ["remote", "💻 Remote"],
 ];
 
 const CLASS_FLAGS = [...CLASS_FLAGS_1, ...CLASS_FLAGS_2];

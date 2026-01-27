@@ -85,6 +85,7 @@ class PEWSchema(TypedDict):
     wellness: bool
     pirate: bool
     swimGIR: bool
+    remote: bool
     prereqs: str
     equipment: str
     fee: str
@@ -318,6 +319,7 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "wellness": any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES),
         "pirate": any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES),
         "swimGIR": parse_bool(row["Swim GIR"]),
+        "remote": row["Title"].lower().find("remote") != -1,
         "prereqs": row["Prerequisites"] or "None",
         "equipment": row["Equipment"],
         "fee": row["Fee Amount"],

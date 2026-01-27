@@ -166,6 +166,7 @@ function PEClassTypes(props: { cls: PEClass }) {
     ["wellness", "Wellness Wizard eligible"],
     ["pirate", "Pirate Certificate eligible"],
     ["swim", "Satisfies swim GIR"],
+    ["remote", "Remote class"],
   ]);
 
   return (
