@@ -31,8 +31,17 @@ jobs:
         with:
           node-version: ${{ vars.NODE_VERSION }}
           cache: "npm"
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ vars.PYTHON_VERSION }}
+          cache: "pip"
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          pip install .
+      - name: Run scrapers
+        run: python3 -m scrapers
       - name: Check/generate types
         run: npm run typecheck
       - name: Build
