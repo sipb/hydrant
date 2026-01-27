@@ -459,7 +459,6 @@ export function PEClassTable() {
         fee: cls.fee,
         name: cls.rawClass.name,
         class: cls,
-        // TODO figure out if we get PE instructor names
       })),
     [peClasses],
   );
