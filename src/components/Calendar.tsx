@@ -22,6 +22,9 @@ import "./Calendar.css";
 // Threshold at which to display a distance warning, in metres
 const DISTANCE_WARNING_THRESHOLD = 650;
 
+// Walking speed, in m/s (1.33 m/s corresponds to a ~20-minute mile)
+const WALKING_SPEED = 4 / 3;
+
 /**
  * Calendar showing all the activities, including the buttons on top that
  * change the schedule option selected.
@@ -85,10 +88,19 @@ export function Calendar() {
           ? `${distance.toFixed(0)} m`
           : `${(distance / 1000).toFixed(2)} km`;
 
-      return `Warning: distance from ${building1} to ${building2} is ${formattedDistance}`;
+      const mins = (distance / WALKING_SPEED / 60).toFixed(0);
+
+      return (
+        <Text>
+          Warning: distance from {building1} to {building2} is{" "}
+          {formattedDistance}
+          <br />
+          (a {mins}-minute walk)
+        </Text>
+      );
     }
     return undefined;
-  }
+  };
 
   const renderEvent = ({ event }: EventContentArg) => {
     const TitleText = () => (
@@ -128,19 +140,18 @@ export function Calendar() {
         )}
         <Text fontSize="xs">{room}</Text>
         {distanceWarning ? (
-        <Float placement="bottom-end">
-          <Tooltip
-            content={distanceWarning}
-            portalled
-            positioning={{ placement: "top" }}
-          >
-            <Circle size="5" bg="fg.warning" color="white" boxShadow="lg">
-              !
-            </Circle>
-          </Tooltip>
-        </Float>
-        ) : null
-        }
+          <Float placement="bottom-end">
+            <Tooltip
+              content={distanceWarning}
+              portalled
+              positioning={{ placement: "top" }}
+            >
+              <Circle size="5" bg="fg.warning" color="white" boxShadow="lg">
+                !
+              </Circle>
+            </Tooltip>
+          </Float>
+        ) : null}
       </Box>
     );
   };
