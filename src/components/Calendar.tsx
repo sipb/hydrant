@@ -10,10 +10,9 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 import geodesic from "geographiclib-geodesic";
 
-import type { BaseActivity, Activity } from "../lib/activity";
+import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
-import { Class } from "../lib/class";
 import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.css";
@@ -92,7 +91,7 @@ export function Calendar() {
           Warning: distance from {building1} to {building2} is{" "}
           {formattedDistance}
           <br />
-          (a {mins}-minute walk)
+          (about a {mins}-minute walk)
         </Text>
       );
     }
@@ -113,7 +112,7 @@ export function Calendar() {
     );
 
     const room = event.extendedProps.room as string | undefined;
-    const activity = event.extendedProps.activity as BaseActivity;
+    const activity = event.extendedProps.activity as Activity;
     const distanceWarning = getDistanceWarning(event);
 
     return (
@@ -125,13 +124,14 @@ export function Calendar() {
         height="100%"
         position="relative"
       >
-        {activity instanceof Class ? (
+        {!(activity instanceof CustomActivity) ? (
           <Tooltip
             content={activity.name}
             portalled
             positioning={{ placement: "top" }}
-            children={TitleText()}
-          />
+          >
+            {TitleText()}
+          </Tooltip>
         ) : (
           <TitleText />
         )}
@@ -143,7 +143,12 @@ export function Calendar() {
               portalled
               positioning={{ placement: "top" }}
             >
-              <Circle size="5" bg="fg.warning" color="white" boxShadow="lg">
+              <Circle
+                size="5"
+                bg="orange.solid"
+                color="orange.contrast"
+                boxShadow="lg"
+              >
                 !
               </Circle>
             </Tooltip>
