@@ -14,7 +14,7 @@ const metric: MeasurementSystem = {
 };
 
 // This conversion factor is exact (note: technically US survey feet)
-const FEET_PER_METER = 1200/3937;
+const FEET_PER_METER = 1200 / 3937;
 // five tomatoes :)
 const FEET_PER_MILE = 5280;
 
