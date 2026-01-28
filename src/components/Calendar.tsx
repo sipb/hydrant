@@ -61,9 +61,9 @@ export function Calendar() {
    * is more than half a mile, return an appropriate warning message. Otherwise,
    * return undefined.
    */
-  const getDistanceWarning = (currentEvent: EventApi) => {
-    const room1 = currentEvent.extendedProps.room as string | undefined;
-    if (!currentEvent.start || !room1) {
+  const getDistanceWarning = (thisEvent: EventApi) => {
+    const thisRoom = thisEvent.extendedProps.room as string | undefined;
+    if (!thisEvent.start || !thisRoom) {
       return undefined;
     }
 
@@ -71,16 +71,15 @@ export function Calendar() {
       if (!eventBefore.start || !eventBefore.room) {
         continue;
       }
-      if (currentEvent.start.getTime() != eventBefore.end.getTime()) {
+      if (thisEvent.start.getTime() != eventBefore.end.getTime()) {
         continue;
       }
 
-      const building1 = getBuildingNumber(room1);
-      const building2 = getBuildingNumber(eventBefore.room);
+      const thisBuilding = getBuildingNumber(thisRoom);
+      const beforeBuilding = getBuildingNumber(eventBefore.room);
 
       // Approximate distance (in feet) between the two buildings
-      const distance = getDistance(building1, building2);
-
+      const distance = getDistance(thisBuilding, beforeBuilding);
       if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
       }
@@ -90,7 +89,7 @@ export function Calendar() {
 
       return (
         <Text>
-          Warning: distance from {building1} to {building2} is{" "}
+          Warning: distance from {beforeBuilding} to {thisBuilding} is{" "}
           {formattedDistance}
           <br />
           (about a {mins}-minute walk)
@@ -118,15 +117,20 @@ export function Calendar() {
     const distanceWarning = getDistanceWarning(event);
 
     return (
-      <>
+      <Box
+        display="inline-block"
+        pos="relative"
+        width="100%"
+        height="100%"
+        cursor="pointer"
+        overflow="hidden"
+      >
         <Box
           color={event.textColor}
-          overflow="hidden"
           p={0.5}
           lineHeight={1.3}
-          cursor="pointer"
+          width="100%"
           height="100%"
-          position="relative"
         >
           {!(activity instanceof CustomActivity) ? (
             <Tooltip
@@ -152,7 +156,7 @@ export function Calendar() {
           )}
         </Box>
         {distanceWarning ? (
-          <Float placement="top-end">
+          <Float placement="top-end" offset={3}>
             <Tooltip
               content={distanceWarning}
               portalled
@@ -162,14 +166,14 @@ export function Calendar() {
                 size="5"
                 bg="orange.solid"
                 color="orange.contrast"
-                boxShadow="lg"
+                boxShadow="sm"
               >
                 !
               </Circle>
             </Tooltip>
           </Float>
         ) : null}
-      </>
+      </Box>
     );
   };
 
