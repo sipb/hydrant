@@ -1,5 +1,9 @@
 #:schema ../override-schema.json
 
+["21L.011"]
+name = "(NEW) Introduction to Film Studies"
+new = true
+
 ["21L.024"]
 name = "Life, Death and Freedom: Literature and Existentialism"
 

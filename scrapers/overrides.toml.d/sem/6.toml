@@ -29,6 +29,7 @@ preparationUnits = 9
 isVariableUnits = false
 inCharge = "Ana Bell (EECS), Paola Rebusco (ESG), Carter Jernigan (ESG)"
 prereqs = "6.100A"
+same = "ES.S70"
 lectureRawSections = ["32-141/F/0/11-1"]
 recitationRawSections = ["36-112/T/0/2-3"]
 lectureSections = [[[[146, 4]], "32-141"]]
