@@ -67,16 +67,16 @@ export function Calendar() {
       return undefined;
     }
 
-    for (const eventBefore of events) {
-      if (!eventBefore.start || !eventBefore.room) {
+    for (const beforeEvent of events) {
+      if (!beforeEvent.start || !beforeEvent.room) {
         continue;
       }
-      if (thisEvent.start.getTime() != eventBefore.end.getTime()) {
+      if (thisEvent.start.getTime() != beforeEvent.end.getTime()) {
         continue;
       }
 
       const thisBuilding = getBuildingNumber(thisRoom);
-      const beforeBuilding = getBuildingNumber(eventBefore.room);
+      const beforeBuilding = getBuildingNumber(beforeEvent.room);
 
       // Approximate distance (in feet) between the two buildings
       const distance = getDistance(thisBuilding, beforeBuilding);
