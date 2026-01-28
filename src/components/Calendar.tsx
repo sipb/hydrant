@@ -61,25 +61,25 @@ export function Calendar() {
    * is more than half a mile, return an appropriate warning message. Otherwise,
    * return undefined.
    */
-  const getDistanceWarning = (currentEvent: EventApi) => {
-    const room1 = currentEvent.extendedProps.room as string | undefined;
-    if (!currentEvent.start || !room1) {
+  const getDistanceWarning = (thisEvent: EventApi) => {
+    const thisRoom = thisEvent.extendedProps.room as string | undefined;
+    if (!thisEvent.start || !thisRoom) {
       return undefined;
     }
 
-    for (const eventBefore of events) {
-      if (!eventBefore.start || !eventBefore.room) {
+    for (const beforeEvent of events) {
+      if (!beforeEvent.start || !beforeEvent.room) {
         continue;
       }
-      if (currentEvent.start.getTime() != eventBefore.end.getTime()) {
+      if (thisEvent.start.getTime() != beforeEvent.end.getTime()) {
         continue;
       }
 
-      const building1 = getBuildingNumber(room1);
-      const building2 = getBuildingNumber(eventBefore.room);
+      const thisBuilding = getBuildingNumber(thisRoom);
+      const beforeBuilding = getBuildingNumber(beforeEvent.room);
 
       // Approximate distance (in feet) between the two buildings
-      const distance = getDistance(building1, building2);
+      const distance = getDistance(thisBuilding, beforeBuilding);
 
       if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
@@ -90,7 +90,7 @@ export function Calendar() {
 
       return (
         <Text>
-          Warning: distance from {building1} to {building2} is{" "}
+          Warning: distance from {beforeBuilding} to {thisBuilding} is{" "}
           {formattedDistance}
           <br />
           (about a {mins}-minute walk)
