@@ -80,6 +80,7 @@ export function Calendar() {
 
       // Approximate distance (in feet) between the two buildings
       const distance = getDistance(thisBuilding, beforeBuilding);
+
       if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
       }
