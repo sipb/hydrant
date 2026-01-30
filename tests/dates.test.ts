@@ -183,7 +183,7 @@ describe("Term", () => {
     test("secondHalf false, startDay undefined, slot.weekday matches", () => {
       expect(
         myTerm.startDateFor(
-          new Slot(69), // Wednesday, slot 1 (= 6:30 AM)
+          new Slot(138), // Wednesday, slot 2 (= 6:30 AM)
           false,
           undefined,
         ),
@@ -193,7 +193,7 @@ describe("Term", () => {
     test("secondHalf false, startDay undefined, slot.weekday doesn't match", () => {
       expect(
         myTerm.startDateFor(
-          new Slot(61), // Tuesday, slot 27 (= 7:30 PM)
+          new Slot(122), // Tuesday, slot 54 (= 7:30 PM)
           false,
           undefined,
         ),
@@ -205,7 +205,7 @@ describe("Term", () => {
     test("secondHalf false, startDay defined, slot.weekday matches", () => {
       expect(
         myTerm.startDateFor(
-          new Slot(168), // Friday, slot 32 (= 10:00 PM)
+          new Slot(336), // Friday, slot 64 (= 10:00 PM)
           false,
           [11, 4], // this would mean Friday, November 4, 2044
         ),
@@ -215,7 +215,7 @@ describe("Term", () => {
     test("secondHalf false, startDay defined, slot.weekday doesn't match", () => {
       expect(
         myTerm.startDateFor(
-          new Slot(28), // Monday, slot 28 (= 8:00 PM)
+          new Slot(56), // Monday, slot 56 (= 8:00 PM)
           false,
           [11, 4],
         ),
@@ -227,7 +227,7 @@ describe("Term", () => {
     test("secondHalf true, startDay undefined, slot.weekday matches", () => {
       expect(
         myTerm.startDateFor(
-          new Slot(1), // Monday, slot 1 (= 6:30 AM)
+          new Slot(2), // Monday, slot 2 (= 6:30 AM)
           true,
           undefined,
         ),
@@ -237,7 +237,7 @@ describe("Term", () => {
     test("secondHalf true, startDay undefined, slot.weekday doesn't match", () => {
       expect(
         myTerm.startDateFor(
-          new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
+          new Slot(70), // Tuesday, slot 2 (= 6:30 AM)
           true,
           undefined,
         ),
@@ -249,7 +249,7 @@ describe("Term", () => {
     test("secondHalf true, startDay defined, slot.weekday matches", () => {
       expect(
         myTerm.startDateFor(
-          new Slot(1), // Monday, slot 1 (= 6:30 AM)
+          new Slot(2), // Monday, slot 2 (= 6:30 AM)
           true,
           [11, 14], // Monday, November 14, 2044
         ),
@@ -259,7 +259,7 @@ describe("Term", () => {
     test("secondHalf true, startDay defined, slot.weekday doesn't match", () => {
       expect(
         myTerm.startDateFor(
-          new Slot(35), // Tuesday, slot 1 (= 6:30 AM)
+          new Slot(70), // Tuesday, slot 2 (= 6:30 AM)
           true,
           [11, 14],
         ),
@@ -284,13 +284,13 @@ describe("Term", () => {
 
     test("firstHalf false, endDay undefined, slot.weekday matches", () => {
       expect(
-        myTerm.endDateFor(new Slot(1), false, undefined), // NOTE: slot 1 = Monday at 6:30 AM
+        myTerm.endDateFor(new Slot(2), false, undefined), // NOTE: slot 2 = Monday at 6:30 AM
       ).toStrictEqual(new Date(2044, 10, 22, 6, 30, 0, 0));
     });
 
     test("firstHalf false, endDay undefined, slot.weekday doesn't match", () => {
       expect(
-        myTerm.endDateFor(new Slot(68), false, undefined), // NOTE: slot 68 = Wednesday at 6:00 AM
+        myTerm.endDateFor(new Slot(136), false, undefined), // NOTE: slot 136 = Wednesday at 6:00 AM
       ).toStrictEqual(
         new Date(2044, 10, 17, 6, 0, 0, 0), // NOTE: 2044-11-17 is a Thursday
       );
@@ -298,13 +298,13 @@ describe("Term", () => {
 
     test("firstHalf true, endDay undefined, slot.weekday matches", () => {
       expect(
-        myTerm.endDateFor(new Slot(94), true, undefined), // NOTE: slot 94 = Wednesday at 7:00 PM
+        myTerm.endDateFor(new Slot(188), true, undefined), // NOTE: slot 188 = Wednesday at 7:00 PM
       ).toStrictEqual(new Date(2044, 9, 20, 19, 0, 0, 0));
     });
 
     test("firstHalf true, endDay undefined, slot.weekday doesn't match", () => {
       expect(
-        myTerm.endDateFor(new Slot(4), true, undefined), // NOTE: slot 4 = Monday at 8:00 PM
+        myTerm.endDateFor(new Slot(8), true, undefined), // NOTE: slot 8 = Monday at 8:00 PM
       ).toStrictEqual(
         new Date(2044, 9, 18, 8, 0, 0, 0), // NOTE: 2044-10-18 is a Tuesday
       );
@@ -324,12 +324,12 @@ describe("Term", () => {
 
     test("firstHalf false, endDay defined, slot.weekday doesn't match", () => {
       expect(
-        myTerm.endDateFor(new Slot(69), false, [9, 5]), // NOTE: slot 69 = Wednesday at 6:30 AM
+        myTerm.endDateFor(new Slot(138), false, [9, 5]), // NOTE: slot 138 = Wednesday at 6:30 AM
       ).toStrictEqual(new Date(2044, 8, 1, 6, 30, 0, 0));
     });
 
     test("firstHalf true, endDay defined, slot.weekday doesn't match", () => {
-      expect(myTerm.endDateFor(new Slot(69), true, [9, 5])).toStrictEqual(
+      expect(myTerm.endDateFor(new Slot(138), true, [9, 5])).toStrictEqual(
         new Date(2044, 8, 1, 6, 30, 0, 0),
       );
     });
@@ -348,7 +348,7 @@ describe("Term", () => {
         mondayScheduleDate: "2079-08-11",
       });
       expect(
-        myTerm.exDatesFor(new Slot(40)), // NOTE: slot 40 = Tuesday at 9:00 AM
+        myTerm.exDatesFor(new Slot(80)), // NOTE: slot 80 = Tuesday at 9:00 AM
       ).toStrictEqual([
         new Date(2079, 7, 8, 9, 0, 0, 0),
         new Date(2079, 7, 11, 9, 0, 0, 0),
@@ -362,7 +362,7 @@ describe("Term", () => {
         mondayScheduleDate: "2079-08-11",
       });
       expect(
-        myTerm.exDatesFor(new Slot(100)), // NOTE: slot 100 = Wednesday at 10:00 PM
+        myTerm.exDatesFor(new Slot(200)), // NOTE: slot 200 = Wednesday at 10:00 PM
       ).toStrictEqual([new Date(2079, 7, 9, 22, 0, 0, 0)]);
     });
 
@@ -373,7 +373,7 @@ describe("Term", () => {
         mondayScheduleDate: "2079-08-11",
       });
       expect(
-        myTerm.exDatesFor(new Slot(41)), // NOTE: slot 41 = Tuesday at 9:30 AM
+        myTerm.exDatesFor(new Slot(82)), // NOTE: slot 82 = Tuesday at 9:30 AM
       ).toStrictEqual([new Date(2079, 7, 11, 9, 30, 0, 0)]);
     });
 
@@ -384,7 +384,7 @@ describe("Term", () => {
         mondayScheduleDate: "2079-08-11",
       });
       expect(
-        myTerm.exDatesFor(new Slot(168)), // NOTE: slot 100 = Friday at 10:00 PM
+        myTerm.exDatesFor(new Slot(336)), // NOTE: slot 336 = Friday at 10:00 PM
       ).toStrictEqual([]);
     });
 
@@ -394,7 +394,7 @@ describe("Term", () => {
         mondayScheduleDate: "2079-01-01",
       });
       expect(
-        myTerm.exDatesFor(new Slot(34)), // NOTE: slot 34 = Tuesday at 6:00 AM
+        myTerm.exDatesFor(new Slot(68)), // NOTE: slot 68 = Tuesday at 6:00 AM
       ).toStrictEqual(
         [new Date(2079, 0, 1, 6, 0, 0, 0)], // NOTE: in some timezones this shifts to 2000-01-01 so we hardcode "America/New_York" for reproducibility
       );
@@ -457,12 +457,12 @@ describe("Slot", () => {
   test("Slot.fromStartDate", () => {
     const myDate: Date = new Date(2001, 6, 19, 22, 1, 52, 23); // randomly chosen date
     const mySlot: Slot = Slot.fromStartDate(myDate);
-    expect(mySlot.slot).toBe(134); // note: this was a Thursday (July 19, 2001), slot number 32
+    expect(mySlot.slot).toBe(268); // note: this was a Thursday (July 19, 2001), slot number 64
   });
 
   test("Slot.fromDayString", () => {
     const mySlot: Slot = Slot.fromDayString("Thu", "10:00 PM");
-    expect(mySlot.slot).toBe(134);
+    expect(mySlot.slot).toBe(268);
   });
 
   test("Slot.add", () => {
@@ -472,33 +472,33 @@ describe("Slot", () => {
   });
 
   test("Slot.onDate", () => {
-    const mySlot: Slot = new Slot(125); // Thursday, 5:30 PM
+    const mySlot: Slot = new Slot(250); // Thursday, 5:30 PM
     const myDate: Date = new Date(2068, 8, 6); // this is also a Thursday
     expect(mySlot.onDate(myDate)).toStrictEqual(new Date(2068, 8, 6, 17, 30));
   });
 
   test("Slot.startDate", () => {
-    const mySlot: Slot = new Slot(62); // Tuesday, 8:00 PM
+    const mySlot: Slot = new Slot(124); // Tuesday, 8:00 PM
     expect(mySlot.startDate).toStrictEqual(new Date(2001, 0, 2, 20, 0));
   });
 
   test("Slot.endDate", () => {
-    const mySlot: Slot = new Slot(130); // Thursday, 8:00 PM
-    expect(mySlot.endDate).toStrictEqual(new Date(2001, 0, 4, 20, 30));
+    const mySlot: Slot = new Slot(260); // Thursday, 8:00 PM
+    expect(mySlot.endDate).toStrictEqual(new Date(2001, 0, 4, 20, 15));
   });
 
   test("Slot.weekday", () => {
-    const mySlot: Slot = new Slot(18); // Monday, 3:00 PM
+    const mySlot: Slot = new Slot(36); // Monday, 3:00 PM
     expect(mySlot.weekday).toBe(1);
   });
 
   test("Slot.dayString", () => {
-    const mySlot: Slot = new Slot(12); // Monday, 12:00 PM
+    const mySlot: Slot = new Slot(24); // Monday, 12:00 PM
     expect(mySlot.dayString).toBe("Mon");
   });
 
   test("Slot.timeString", () => {
-    const mySlot: Slot = new Slot(31); // Monday, 9:30 PM
+    const mySlot: Slot = new Slot(62); // Monday, 9:30 PM
     expect(mySlot.timeString).toBe("9:30 PM");
   });
 });

@@ -24,7 +24,7 @@ const SEMESTER_NAMES = {
   },
 } as const;
 
-const TIMESLOTS = 34;
+const TIMESLOTS = 68;
 
 /** Type of semester abbreviations. */
 export type TSemester = keyof typeof SEMESTER_NAMES;
@@ -37,15 +37,22 @@ function generateTimeslotStrings(): string[] {
   const res = [];
   for (let i = 6; i <= 11; i++) {
     res.push(`${i.toString()}:00 AM`);
+    res.push(`${i.toString()}:15 AM`);
     res.push(`${i.toString()}:30 AM`);
+    res.push(`${i.toString()}:45 AM`);
   }
   res.push("12:00 PM");
+  res.push("12:15 PM");
   res.push("12:30 PM");
+  res.push("12:45 PM");
   for (let i = 1; i <= 9; i++) {
     res.push(`${i.toString()}:00 PM`);
+    res.push(`${i.toString()}:15 PM`);
     res.push(`${i.toString()}:30 PM`);
+    res.push(`${i.toString()}:45 PM`);
   }
   res.push(`10:00 PM`);
+
   return res;
 }
 
@@ -56,11 +63,11 @@ export const TIMESLOT_STRINGS = generateTimeslotStrings();
 const SLOT_OBJECTS: Record<number, Slot> = {};
 
 /**
- * A thirty-minute slot. Each day has 34 slots from 6 AM to 11 PM, times five
+ * A fifteen-minute slot. Each day has 68 slots from 6 AM to 11 PM, times five
  * days a week. When treated as an instant, a slot represents its start time.
  *
- * Each slot is assigned a slot number. Monday slots are 0 to 33, Tuesday are
- * 34 to 67, etc., slot number 0 is Monday 6 AM to 6:30 AM, etc.
+ * Each slot is assigned a slot number. Monday slots are 0 to 67, Tuesday are
+ * 68 to 135, etc., slot number 0 is Monday 6 AM to 6:15 AM, etc.
  *
  * The interface ends at 11 PM, so we don't need to worry about the fencepost
  * problem with respect to ending slots.
@@ -80,8 +87,8 @@ export class Slot {
   static fromStartDate(date: Date): Slot {
     return new Slot(
       TIMESLOTS * (date.getDay() - 1) +
-        2 * (date.getHours() - 6) +
-        Math.floor(date.getMinutes() / 30),
+        4 * (date.getHours() - 6) +
+        Math.floor(date.getMinutes() / 15),
     );
   }
 
@@ -102,8 +109,8 @@ export class Slot {
    * that date is the right day of the week.
    */
   onDate(date: Date): Date {
-    const hour = Math.floor((this.slot % TIMESLOTS) / 2) + 6;
-    const minute = (this.slot % 2) * 30;
+    const hour = Math.floor((this.slot % TIMESLOTS) / 4) + 6;
+    const minute = (this.slot % 4) * 15;
     return new Date(
       date.getFullYear(),
       date.getMonth(),

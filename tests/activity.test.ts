@@ -24,14 +24,14 @@ describe("Timeslot", () => {
   });
 
   test("Timeslot.startTime", () => {
-    const myTimeslot: Timeslot = new Timeslot(22, 43); // note: slot 22 is Monday at 5:00 PM
+    const myTimeslot: Timeslot = new Timeslot(44, 86); // note: slot 44 is Monday at 5:00 PM
     expect(myTimeslot.startTime).toStrictEqual(
       new Date(2001, 0, 1, 17, 0, 0, 0),
     );
   });
 
   test("Timeslot.endTime", () => {
-    const myTimeslot: Timeslot = new Timeslot(79, 52); // note: slot 79 + 52 = 131 is Thursday at 8:30 PM
+    const myTimeslot: Timeslot = new Timeslot(158, 104); // note: slot 79 + 52 = 131 is Thursday at 8:30 PM
     expect(myTimeslot.endTime).toStrictEqual(
       new Date(2001, 0, 4, 20, 30, 0, 0),
     );
@@ -84,7 +84,7 @@ describe("Timeslot", () => {
   });
 
   test("Timeslot.toString", () => {
-    const myTimeslot: Timeslot = new Timeslot(151, 5);
+    const myTimeslot: Timeslot = new Timeslot(302, 10);
     expect(myTimeslot.toString()).toBe("Fri, 1:30 PM – 4:00 PM");
   });
 
@@ -131,15 +131,15 @@ test("Event.eventInputs", () => {
   const myEvent: Event = new Event(
     myCustomActivity,
     myTitle,
-    [new Timeslot(6, 7), new Timeslot(57, 10)],
+    [new Timeslot(12, 14), new Timeslot(114, 20)],
     myRoom,
   );
   expect(myEvent.eventInputs).toStrictEqual([
     {
       textColor: "#ffffff",
       title: myTitle,
-      start: new Date(2001, 0, 1, 9, 0, 0, 0), // slot 6 = Monday at 9 AM
-      end: new Date(2001, 0, 1, 12, 30, 0, 0), // slot 13 = Monday at 12:30 PM
+      start: new Date(2001, 0, 1, 9, 0, 0, 0), // slot 12 = Monday at 9 AM
+      end: new Date(2001, 0, 1, 12, 30, 0, 0), // slot 26 = Monday at 12:30 PM
       backgroundColor: myHexCode,
       borderColor: myHexCode,
       room: myRoom,
@@ -149,8 +149,8 @@ test("Event.eventInputs", () => {
     {
       textColor: "#ffffff",
       title: myTitle,
-      start: new Date(2001, 0, 2, 17, 30, 0, 0), // slot 57 = Tuesday at 5:30 PM
-      end: new Date(2001, 0, 2, 22, 30, 0, 0), // slot 67 = Tuesday at 10:30 PM
+      start: new Date(2001, 0, 2, 17, 30, 0, 0), // slot 114 = Tuesday at 5:30 PM
+      end: new Date(2001, 0, 2, 22, 30, 0, 0), // slot 134 = Tuesday at 10:30 PM
       backgroundColor: myHexCode,
       borderColor: myHexCode,
       room: myRoom,
