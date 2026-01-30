@@ -90,8 +90,8 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
             end_slot = find_timeslot(day, end, True)
     else:
         start_slot = find_timeslot(day, slot, time_is_pm)
-        # Slot is one hour long, so length is 2.
-        end_slot = start_slot + 2
+        # Slot is one hour long, so length is 4.
+        end_slot = start_slot + 4
 
     assert end_slot > start_slot
 

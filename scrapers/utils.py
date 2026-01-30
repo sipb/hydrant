@@ -37,7 +37,7 @@ GIR_REWRITE = {
     "GIR:BIOL": "Biology (GIR)",
 }
 
-TIMESLOTS = 34
+TIMESLOTS = 68
 
 DAYS = {
     "M": 0,
@@ -49,54 +49,39 @@ DAYS = {
 
 TIMES = {
     "6": 0,
-    "6.30": 1,
-    "7": 2,
-    "7.30": 3,
-    "8": 4,
-    "8.30": 5,
-    "9": 6,
-    "9.30": 7,
-    "10": 8,
-    "10.30": 9,
-    "11": 10,
-    "11.30": 11,
-    "12": 12,
-    "12.30": 13,
-    "1": 14,
-    "1.30": 15,
-    "2": 16,
-    "2.30": 17,
-    "3": 18,
-    "3.30": 19,
-    "4": 20,
-    "4.30": 21,
-    "5": 22,
-    "5.30": 23,
+    "7": 4,
+    "8": 8,
+    "9": 12,
+    "10": 16,
+    "11": 20,
+    "12": 24,
+    "1": 28,
+    "2": 32,
+    "3": 36,
+    "4": 40,
+    "5": 44,
 }
 
 EVE_TIMES = {
-    "12": 12,
-    "12.30": 13,
-    "1": 14,
-    "1.30": 15,
-    "2": 16,
-    "2.30": 17,
-    "3": 18,
-    "3.30": 19,
-    "4": 20,
-    "4.30": 21,
-    "5": 22,
-    "5.30": 23,
-    "6": 24,
-    "6.30": 25,
-    "7": 26,
-    "7.30": 27,
-    "8": 28,
-    "8.30": 29,
-    "9": 30,
-    "9.30": 31,
-    "10": 32,
-    "10.30": 33,
+    "12": 24,
+    "1": 28,
+    "2": 32,
+    "3": 36,
+    "4": 40,
+    "5": 44,
+    "6": 48,
+    "7": 52,
+    "8": 56,
+    "9": 60,
+    "10": 64,
+}
+
+MINUTES = {
+    "": 0,
+    "00": 0,
+    "15": 1,
+    "30": 2,
+    "45": 3,
 }
 
 MONTHS = {
@@ -143,9 +128,11 @@ def find_timeslot(day: str, slot: str, is_slot_pm: bool) -> int:
         int: A numeric code for the timeslot
     """
     time_dict = EVE_TIMES if is_slot_pm else TIMES
-    if day not in DAYS or slot not in time_dict:  # error handling!
+    slot_split = slot.split(".")
+    hour, min = [slot_split[0], slot_split[1] if len(slot_split) > 1 else ""]
+    if day not in DAYS or hour not in time_dict:  # error handling!
         raise ValueError(f"Invalid timeslot {day}, {slot}, {is_slot_pm}")
-    return DAYS[day] + time_dict[slot]
+    return DAYS[day] + time_dict[hour] + MINUTES[min]
 
 
 def zip_strict(*iterables: Iterable[Any]) -> Generator[tuple[Any, ...], Any, None]:

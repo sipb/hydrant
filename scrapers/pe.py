@@ -279,7 +279,7 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
 
     start_raw_time = (
         f"{12 - ((- start.hour) % 12)}"
-        f"{'.30' if start.minute > 29 else ''}"
+        f"{'.45' if start.minute > 44 else ('.30' if start.minute > 29 else ('.15' if start.minute > 14 else ''))}"
         f"{' PM' if start.hour >= 17 else ''}"
     )
     evening = "1" if start.hour >= 17 else "0"

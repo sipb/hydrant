@@ -188,6 +188,8 @@ export function Calendar() {
       }}
       headerToolbar={false}
       height="auto"
+      slotLabelInterval={"01:00"}
+      nowIndicator={true}
       // a date that is, conveniently enough, a monday
       initialDate="2001-01-01"
       slotDuration="00:30:00"
