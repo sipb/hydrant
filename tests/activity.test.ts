@@ -24,14 +24,14 @@ describe("Timeslot", () => {
   });
 
   test("Timeslot.startTime", () => {
-    const myTimeslot: Timeslot = new Timeslot(22, 43); // note: slot 22 is Monday at 5:00 PM
+    const myTimeslot: Timeslot = new Timeslot(44, 86); // note: slot 44 is Monday at 5:00 PM
     expect(myTimeslot.startTime).toStrictEqual(
       new Date(2001, 0, 1, 17, 0, 0, 0),
     );
   });
 
   test("Timeslot.endTime", () => {
-    const myTimeslot: Timeslot = new Timeslot(79, 52); // note: slot 79 + 52 = 131 is Thursday at 8:30 PM
+    const myTimeslot: Timeslot = new Timeslot(158, 104); // note: slot 79 + 52 = 131 is Thursday at 8:30 PM
     expect(myTimeslot.endTime).toStrictEqual(
       new Date(2001, 0, 4, 20, 30, 0, 0),
     );
@@ -84,7 +84,7 @@ describe("Timeslot", () => {
   });
 
   test("Timeslot.toString", () => {
-    const myTimeslot: Timeslot = new Timeslot(151, 5);
+    const myTimeslot: Timeslot = new Timeslot(302, 10);
     expect(myTimeslot.toString()).toBe("Fri, 1:30 PM – 4:00 PM");
   });
 
