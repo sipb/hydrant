@@ -114,7 +114,7 @@ def find_timeslot(day: str, slot: str, is_slot_pm: bool) -> int:
     Finds the numeric code for a timeslot.
 
     >>> find_timeslot("W", "11.30", False)
-    79
+    158
 
     Args:
         day (str): The day of the timeslot
@@ -129,10 +129,10 @@ def find_timeslot(day: str, slot: str, is_slot_pm: bool) -> int:
     """
     time_dict = EVE_TIMES if is_slot_pm else TIMES
     slot_split = slot.split(".")
-    hour, min = [slot_split[0], slot_split[1] if len(slot_split) > 1 else ""]
+    hour, minute = [slot_split[0], slot_split[1] if len(slot_split) > 1 else ""]
     if day not in DAYS or hour not in time_dict:  # error handling!
         raise ValueError(f"Invalid timeslot {day}, {slot}, {is_slot_pm}")
-    return DAYS[day] + time_dict[hour] + MINUTES[min]
+    return DAYS[day] + time_dict[hour] + MINUTES[minute]
 
 
 def zip_strict(*iterables: Iterable[Any]) -> Generator[tuple[Any, ...], Any, None]:

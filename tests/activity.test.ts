@@ -131,15 +131,15 @@ test("Event.eventInputs", () => {
   const myEvent: Event = new Event(
     myCustomActivity,
     myTitle,
-    [new Timeslot(6, 7), new Timeslot(57, 10)],
+    [new Timeslot(12, 14), new Timeslot(114, 20)],
     myRoom,
   );
   expect(myEvent.eventInputs).toStrictEqual([
     {
       textColor: "#ffffff",
       title: myTitle,
-      start: new Date(2001, 0, 1, 9, 0, 0, 0), // slot 6 = Monday at 9 AM
-      end: new Date(2001, 0, 1, 12, 30, 0, 0), // slot 13 = Monday at 12:30 PM
+      start: new Date(2001, 0, 1, 9, 0, 0, 0), // slot 12 = Monday at 9 AM
+      end: new Date(2001, 0, 1, 12, 30, 0, 0), // slot 26 = Monday at 12:30 PM
       backgroundColor: myHexCode,
       borderColor: myHexCode,
       room: myRoom,
@@ -149,8 +149,8 @@ test("Event.eventInputs", () => {
     {
       textColor: "#ffffff",
       title: myTitle,
-      start: new Date(2001, 0, 2, 17, 30, 0, 0), // slot 57 = Tuesday at 5:30 PM
-      end: new Date(2001, 0, 2, 22, 30, 0, 0), // slot 67 = Tuesday at 10:30 PM
+      start: new Date(2001, 0, 2, 17, 30, 0, 0), // slot 114 = Tuesday at 5:30 PM
+      end: new Date(2001, 0, 2, 22, 30, 0, 0), // slot 134 = Tuesday at 10:30 PM
       backgroundColor: myHexCode,
       borderColor: myHexCode,
       room: myRoom,
