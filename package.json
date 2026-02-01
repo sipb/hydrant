@@ -58,7 +58,7 @@
     "@react-router/fs-routes": "^7.13.0",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^20.19.30",
-    "@types/react": "^19.2.9",
+    "@types/react": "^19.2.10",
     "@types/react-dom": "19.2.3",
     "@vitest/eslint-plugin": "^1.6.6",
     "eslint": "^9.39.2",

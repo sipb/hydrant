@@ -14,7 +14,7 @@ import {
   createListCollection,
   parseColor,
 } from "@chakra-ui/react";
-import type { ComponentPropsWithRef, FormEvent } from "react";
+import type { ComponentPropsWithRef, SubmitEventHandler } from "react";
 import { useContext, useLayoutEffect, useState } from "react";
 
 import { ColorPickerInput } from "./ui/colorpicker-input";
@@ -318,7 +318,7 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
   );
   const [times, setTimes] = useState({ start: "10:00 AM", end: "1:00 PM" });
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     for (const day in days) {
       if (!days[day]) continue;
