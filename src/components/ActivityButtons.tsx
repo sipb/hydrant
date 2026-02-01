@@ -215,7 +215,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
   };
   const onCancel = onHide;
   const onConfirm = () => {
-    state.setBackgroundColor(activity, color.toString("rgb"));
+    state.setBackgroundColor(activity, color.toString("hex"));
     onHide();
   };
 
