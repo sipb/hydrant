@@ -1,6 +1,6 @@
 import { redirect } from "react-router";
 
-import { fetchNoCache, type SemesterData } from "../lib/hydrant";
+import { fetchNoCache, type SemesterData, getStateMaps } from "../lib/hydrant";
 import { getClosestUrlName, Term, type LatestTermInfo } from "../lib/dates";
 import { State } from "../lib/state";
 import { Class } from "../lib/class";
@@ -25,7 +25,9 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const currentTerm = searchParams.get("t");
   const callback = searchParams.get("callback");
 
-  const latestTerm = await fetchNoCache<LatestTermInfo>("/latestTerm.json");
+  const latestTerm = await fetchNoCache<LatestTermInfo>(
+    import.meta.env.BASE_URL + "latestTerm.json",
+  );
   const { urlName } = getClosestUrlName(
     currentTerm,
     latestTerm.semester.urlName,
@@ -33,12 +35,18 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
   const term = urlName === latestTerm.semester.urlName ? "latest" : urlName;
 
-  const { classes, lastUpdated, termInfo } = await fetchNoCache<SemesterData>(
-    `/${term}.json`,
+  const { classes, lastUpdated, termInfo, pe, locations } =
+    await fetchNoCache<SemesterData>(`${import.meta.env.BASE_URL}${term}.json`);
+  const { classesMap, peClassesMap, locationsMap } = getStateMaps(
+    classes,
+    pe,
+    locations,
   );
-  const classesMap = new Map(Object.entries(classes));
+
   const hydrantObj = new State(
     classesMap,
+    peClassesMap,
+    locationsMap,
     new Term(termInfo),
     lastUpdated,
     latestTerm.semester.urlName,

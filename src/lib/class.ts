@@ -1,4 +1,4 @@
-import { Timeslot, Event } from "./activity";
+import { Event, Sections, type BaseActivity, type Section } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
 import {
@@ -10,7 +10,7 @@ import {
   TermCode,
   type RawClass,
   type RawSection,
-} from "./rawClass";
+} from "./raw";
 
 import nonextImg from "../assets/nonext.gif";
 import underImg from "../assets/under.gif";
@@ -113,85 +113,9 @@ export const getFlagImg = (flag: keyof Flags): string => {
   return flagImages[flag] ?? "";
 };
 
-/**
- * A section is an array of timeslots that meet in the same room for the same
- * purpose. Sections can be lectures, recitations, or labs, for a given class.
- * All instances of Section belong to a Sections.
- */
-export class Section {
-  /** Group of sections this section belongs to */
-  secs: Sections;
-  /** Timeslots this section meets */
-  timeslots: Timeslot[];
-  /** String representing raw timeslots, e.g. MW9-11 or T2,F1. */
-  rawTime: string;
-  /** Room this section meets in */
-  room: string;
-
-  /** @param section - raw section info (timeslot and room) */
-  constructor(secs: Sections, rawTime: string, section: RawSection) {
-    this.secs = secs;
-    this.rawTime = rawTime;
-    const [rawSlots, room] = section;
-    this.timeslots = rawSlots.map((slot) => new Timeslot(...slot));
-    this.room = room;
-  }
-
-  /** Get the parsed time for this section in a format similar to the Registrar. */
-  get parsedTime(): string {
-    const [room, days, eveningBool, times] = this.rawTime.split("/");
-
-    const isEvening = eveningBool === "1";
-
-    if (isEvening) {
-      return `${days} EVE (${times}) (${room})`;
-    }
-
-    return `${days}${times} (${room})`;
-  }
-
-  /**
-   * @param currentSlots - array of timeslots currently occupied
-   * @returns number of conflicts this section has with currentSlots
-   */
-  countConflicts(currentSlots: Timeslot[]): number {
-    let conflicts = 0;
-    for (const slot of this.timeslots) {
-      for (const otherSlot of currentSlots) {
-        conflicts += slot.conflicts(otherSlot) ? 1 : 0;
-      }
-    }
-    return conflicts;
-  }
-}
-
-/** The non-section options for a manual section time. */
-export const LockOption = {
-  Auto: "Auto",
-  None: "None",
-} as const;
-
-/** The type of {@link LockOption}. */
-type TLockOption = (typeof LockOption)[keyof typeof LockOption];
-
-/** All section options for a manual section time. */
-export type SectionLockOption = Section | TLockOption;
-
-/**
- * A group of {@link Section}s, all the same kind (like lec, rec, or lab). At
- * most one of these can be selected at a time, and that selection is possibly
- * locked.
- */
-export class Sections {
-  cls: Class;
-  kind: SectionKind;
-  sections: Section[];
-  /** Are these sections locked? None counts as locked. */
-  locked: boolean;
-  /** Currently selected section out of these. None is null. */
-  selected: Section | null;
-  /** Overridden location for this particular section. */
-  roomOverride = "";
+export class ClassSections extends Sections {
+  declare cls: Class;
+  declare kind: SectionKind;
 
   constructor(
     cls: Class,
@@ -201,14 +125,10 @@ export class Sections {
     locked?: boolean,
     selected?: Section | null,
   ) {
-    this.cls = cls;
+    super(cls, rawTimes, secs, kind, locked, selected);
     this.kind = kind;
-    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
-    this.locked = locked ?? false;
-    this.selected = selected ?? null;
   }
 
-  /** Short name for the kind of sections these are. */
   get shortName(): string {
     switch (this.kind) {
       case SectionKind.LECTURE:
@@ -235,7 +155,6 @@ export class Sections {
     }
   }
 
-  /** Name for the kind of sections these are. */
   get name(): string {
     switch (this.kind) {
       case SectionKind.LECTURE:
@@ -248,43 +167,17 @@ export class Sections {
         return "Design";
     }
   }
-
-  /** The event (possibly none) for this group of sections. */
-  get event(): Event | null {
-    return this.selected
-      ? new Event(
-          this.cls,
-          `${this.cls.number} ${this.shortName}`,
-          this.selected.timeslots,
-          this.roomOverride || this.selected.room,
-          this.cls.half,
-        )
-      : null;
-  }
-
-  /** Lock a specific section of this class. Does not validate. */
-  lockSection(sec: SectionLockOption): void {
-    if (sec === LockOption.Auto) {
-      this.locked = false;
-    } else if (sec === LockOption.None) {
-      this.locked = true;
-      this.selected = null;
-    } else {
-      this.locked = true;
-      this.selected = sec;
-    }
-  }
 }
 
 /** An entire class, e.g. 6.036, and its selected sections. */
-export class Class {
+export class Class implements BaseActivity {
   /**
    * The RawClass being wrapped around. Nothing outside Class should touch
    * this; instead use the Class getters like cls.id, cls.number, etc.
    */
   readonly rawClass: RawClass;
   /** The sections associated with this class. */
-  readonly sections: Sections[];
+  readonly sections: ClassSections[];
   /** The background color for the class, used for buttons and calendar. */
   backgroundColor: string;
   /** Is the color set by the user (as opposed to chosen automatically?) */
@@ -298,28 +191,28 @@ export class Class {
       .map((kind) => {
         switch (kind) {
           case SectionKind.LECTURE:
-            return new Sections(
+            return new ClassSections(
               this,
               SectionKind.LECTURE,
               rawClass.lectureRawSections,
               rawClass.lectureSections,
             );
           case SectionKind.RECITATION:
-            return new Sections(
+            return new ClassSections(
               this,
               SectionKind.RECITATION,
               rawClass.recitationRawSections,
               rawClass.recitationSections,
             );
           case SectionKind.LAB:
-            return new Sections(
+            return new ClassSections(
               this,
               SectionKind.LAB,
               rawClass.labRawSections,
               rawClass.labSections,
             );
           case SectionKind.DESIGN:
-            return new Sections(
+            return new ClassSections(
               this,
               SectionKind.DESIGN,
               rawClass.designRawSections,
@@ -336,7 +229,7 @@ export class Class {
     return this.number;
   }
 
-  /** Name, e.g. "Introduction to Machine Learning". */
+  /** Name; e.g. "Introduction to Machine Learning". */
   get name(): string {
     if (this.rawClass.oldNumber) {
       return `[${this.rawClass.oldNumber}] ${this.rawClass.name}`;
@@ -409,6 +302,14 @@ export class Class {
     return this.sections
       .map((secs) => secs.event)
       .filter((event): event is Event => event instanceof Event);
+  }
+
+  get start(): [number, number] | undefined {
+    return this.rawClass.quarterInfo?.start;
+  }
+
+  get end(): [number, number] | undefined {
+    return this.rawClass.quarterInfo?.end;
   }
 
   /** Object of boolean properties of class, used for filtering. */

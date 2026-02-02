@@ -14,7 +14,7 @@ import {
   createListCollection,
   parseColor,
 } from "@chakra-ui/react";
-import type { ComponentPropsWithRef, FormEvent } from "react";
+import type { ComponentPropsWithRef, SubmitEventHandler } from "react";
 import { useContext, useLayoutEffect, useState } from "react";
 
 import { ColorPickerInput } from "./ui/colorpicker-input";
@@ -24,10 +24,17 @@ import { Checkbox } from "./ui/checkbox";
 import { Field } from "./ui/field";
 import { Radio, RadioGroup } from "./ui/radio";
 
-import type { Activity, NonClass } from "../lib/activity";
-import { Timeslot } from "../lib/activity";
-import type { Class, SectionLockOption, Sections } from "../lib/class";
-import { LockOption } from "../lib/class";
+import {
+  Timeslot,
+  LockOption,
+  type Activity,
+  type CustomActivity,
+  type Sections,
+  type SectionLockOption,
+} from "../lib/activity";
+import type { Class } from "../lib/class";
+import type { PEClass } from "../lib/pe";
+import { PESection } from "../lib/pe";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
@@ -107,10 +114,10 @@ function OverrideLocations(props: { secs: Sections }) {
 }
 
 /** Div containing section manual selection interface. */
-function ClassManualSections(props: { cls: Class }) {
+function ClassManualSections(props: { cls: Class | PEClass }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
-  const genSelected = (cls: Class) =>
+  const genSelected = (cls: Class | PEClass) =>
     cls.sections.map((sections) =>
       sections.locked
         ? sections.selected
@@ -129,8 +136,12 @@ function ClassManualSections(props: { cls: Class }) {
         return humanReadable ? "Auto (default)" : LockOption.Auto;
       } else if (sec === LockOption.None) {
         return LockOption.None;
+      } else if (!humanReadable) {
+        return sec.rawTime;
+      } else if (sec instanceof PESection) {
+        return `${sec.sectionNumber}: ${sec.parsedTime}`;
       } else {
-        return humanReadable ? sec.parsedTime : sec.rawTime;
+        return sec.parsedTime;
       }
     };
 
@@ -139,7 +150,7 @@ function ClassManualSections(props: { cls: Class }) {
         {cls.sections.map((secs, sectionIndex) => {
           const options = [LockOption.Auto, LockOption.None, ...secs.sections];
           return (
-            <Field key={secs.kind} label={secs.name}>
+            <Field key={secs.shortName} label={secs.name}>
               <RadioGroup
                 orientation="vertical"
                 value={selected[sectionIndex]}
@@ -204,7 +215,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
   };
   const onCancel = onHide;
   const onConfirm = () => {
-    state.setBackgroundColor(activity, color.toString("rgb"));
+    state.setBackgroundColor(activity, color.toString("hex"));
     onHide();
   };
 
@@ -245,7 +256,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
 }
 
 /** Buttons in class description to add/remove class, and lock sections. */
-export function ClassButtons(props: { cls: Class }) {
+export function ClassButtons(props: { cls: Class | PEClass }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
   const [showManual, setShowManual] = useState(false);
@@ -298,8 +309,8 @@ export function ClassButtons(props: { cls: Class }) {
   );
 }
 
-/** Form to add a timeslot to a non-class. */
-function NonClassAddTime(props: { activity: NonClass }) {
+/** Form to add a timeslot to a custom activity. */
+function CustomActivityAddTime(props: { activity: CustomActivity }) {
   const { activity } = props;
   const { state } = useContext(HydrantContext);
   const [days, setDays] = useState(
@@ -307,7 +318,7 @@ function NonClassAddTime(props: { activity: NonClass }) {
   );
   const [times, setTimes] = useState({ start: "10:00 AM", end: "1:00 PM" });
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     for (const day in days) {
       if (!days[day]) continue;
@@ -395,9 +406,9 @@ function NonClassAddTime(props: { activity: NonClass }) {
 }
 
 /**
- * Buttons in non-class description to rename it, or add/edit/remove timeslots.
+ * Buttons in custom activity description to rename it, or add/edit/remove timeslots.
  */
-export function NonClassButtons(props: { activity: NonClass }) {
+export function CustomActivityButtons(props: { activity: CustomActivity }) {
   const { activity } = props;
   const { state } = useContext(HydrantContext);
 
@@ -453,7 +464,7 @@ export function NonClassButtons(props: { activity: NonClass }) {
   };
 
   const onConfirmRename = () => {
-    state.renameNonClass(activity, name);
+    state.renameCustomActivity(activity, name);
     setIsRenaming(false);
   };
   const onCancelRename = () => {
@@ -461,7 +472,7 @@ export function NonClassButtons(props: { activity: NonClass }) {
   };
 
   const onConfirmRelocating = () => {
-    state.relocateNonClass(activity, room);
+    state.relocateCustomActivity(activity, room);
     setIsRelocating(false);
   };
   const onCancelRelocating = () => {
@@ -534,7 +545,7 @@ export function NonClassButtons(props: { activity: NonClass }) {
         Click and drag on an empty time in the calendar to add the times for
         your activity. Or add one manually:
       </Text>
-      <NonClassAddTime activity={activity} />
+      <CustomActivityAddTime activity={activity} />
     </Flex>
   );
 }

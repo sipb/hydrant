@@ -18,7 +18,11 @@ import "@fontsource-variable/inter/index.css";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
-  { rel: "icon", type: "icon/png", href: "/hydrant.png" },
+  {
+    rel: "icon",
+    type: "icon/png",
+    href: import.meta.env.BASE_URL + "hydrant.png",
+  },
 ];
 
 export function HydrateFallback() {
@@ -31,6 +35,22 @@ export function HydrateFallback() {
 
 interface LayoutProps {
   children: React.ReactNode;
+}
+
+function Analytics() {
+  return (
+    <>
+      {/* Privacy-friendly analytics by Plausible */}
+      <script
+        async
+        src="https://analytics.mit.edu/js/pa-gQ_B0WWR0n8I3ly4S-urO.js"
+      ></script>
+      <script>
+        {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()`}
+      </script>
+    </>
+  );
 }
 
 export const Layout = withEmotionCache((props: LayoutProps, cache) => {
@@ -46,11 +66,7 @@ export const Layout = withEmotionCache((props: LayoutProps, cache) => {
         <title>Hydrant</title>
         <Meta />
         <Links />
-        <script
-          defer
-          data-domain="hydrant.mit.edu"
-          src="https://analytics.mit.edu/js/script.hash.outbound-links.tagged-events.js"
-        ></script>
+        <Analytics />
       </head>
       <body>
         <Provider>

@@ -20,9 +20,6 @@ on:
       - ".prettierignore"
       - "scrapers/overrides.toml.d/override-schema.json"
 
-env:
-  node-version: 20
-
 jobs:
   prettier:
     name: Prettier
@@ -32,7 +29,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.node-version }}
+          node-version: ${{ vars.NODE_VERSION }}
           cache: "npm"
       - name: Install node dependencies
         run: npm ci
@@ -46,7 +43,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.node-version }}
+          node-version: ${{ vars.NODE_VERSION }}
           cache: "npm"
       - name: Install node dependencies
         run: npm ci
@@ -62,7 +59,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.node-version }}
+          node-version: ${{ vars.NODE_VERSION }}
           cache: "npm"
       - name: Install node dependencies
         run: npm ci

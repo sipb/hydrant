@@ -35,6 +35,7 @@ addopts = "--doctest-modules"
 [tool.pylint.main]
 max-line-length = 88
 py-version = "3.8"
+disable = "fixme"
 
 [tool.hatch.build.targets.wheel]
 packages = ["scrapers"]

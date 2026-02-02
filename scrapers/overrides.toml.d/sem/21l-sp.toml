@@ -1,8 +1,8 @@
 #:schema ../override-schema.json
 
-['21L.004']
-lectureRawSections = ["1-134/MW/0/1-2.30"]
-lectureSections = [[[[14, 3], [82, 3]], "1-134"]]
+["21L.011"]
+name = "(NEW) Introduction to Film Studies"
+new = true
 
 ["21L.024"]
 name = "Life, Death and Freedom: Literature and Existentialism"
@@ -56,9 +56,11 @@ name = "Greek Reading 2: Advanced Greek Readings (Second Half Term Begins March 
 
 ["21L.611"]
 name = "Latin I (First Half Term Ends March 20)"
+inCharge = "M. Shiffer"
 
 ["21L.612"]
 name = "Latin II (Second Half Term Begins March 30)"
+inCharge = "M. Shiffer"
 
 ["21L.703"]
 name = "Stoppard, Churchill and Company: Studies in Drama"

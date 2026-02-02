@@ -17,6 +17,7 @@ import { useColorModeValue } from "./ui/color-mode";
 import { LuSettings, LuX } from "react-icons/lu";
 
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
+import { MEASUREMENT_SYSTEM_PRESETS } from "../lib/measurement";
 import type { Preferences } from "../lib/schema";
 import { DEFAULT_PREFERENCES } from "../lib/schema";
 import { HydrantContext } from "../lib/hydrant";
@@ -24,7 +25,7 @@ import { HydrantContext } from "../lib/hydrant";
 import logo from "../assets/logo.svg";
 import logoDark from "../assets/logo-dark.svg";
 import hydraAnt from "../assets/hydraAnt.png";
-import { SIPBLogo } from "./SIPBLogo";
+import { SIPBLogo } from "./ButtonsLinks";
 
 export function PreferencesDialog() {
   const { state, hydrantState } = useContext(HydrantContext);
@@ -57,10 +58,20 @@ export function PreferencesDialog() {
     setVisible(false);
   };
 
-  const collection = createListCollection({
+  const colorSchemeCollection = createListCollection({
     items: [
       { label: "System Default", value: "" },
       ...COLOR_SCHEME_PRESETS.map(({ name }) => ({
+        label: name,
+        value: name,
+      })),
+    ],
+  });
+
+  const measurementSystemCollection = createListCollection({
+    items: [
+      { label: "System Default", value: "" },
+      ...MEASUREMENT_SYSTEM_PRESETS.map(({ name }) => ({
         label: name,
         value: name,
       })),
@@ -94,7 +105,7 @@ export function PreferencesDialog() {
               <Dialog.Body>
                 <Flex gap={4}>
                   <Select.Root
-                    collection={collection}
+                    collection={colorSchemeCollection}
                     value={[preferences.colorScheme?.name ?? ""]}
                     onValueChange={(e) => {
                       if (e.value[0] === "") {
@@ -124,7 +135,7 @@ export function PreferencesDialog() {
                     </Select.Control>
                     <Select.Positioner>
                       <Select.Content>
-                        {collection.items.map((colorScheme) => (
+                        {colorSchemeCollection.items.map((colorScheme) => (
                           <Select.Item
                             item={colorScheme}
                             key={colorScheme.value}
@@ -133,6 +144,51 @@ export function PreferencesDialog() {
                             <Select.ItemIndicator />
                           </Select.Item>
                         ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Select.Root>
+                  <Select.Root
+                    collection={measurementSystemCollection}
+                    value={[preferences.measurementSystem?.name ?? ""]}
+                    onValueChange={(e) => {
+                      if (e.value[0] === "") {
+                        previewPreferences({
+                          ...preferences,
+                          measurementSystem: null,
+                        });
+                        return;
+                      }
+
+                      const measurementSystem = MEASUREMENT_SYSTEM_PRESETS.find(
+                        ({ name }) => name === e.value[0],
+                      );
+                      if (!measurementSystem) return;
+                      previewPreferences({ ...preferences, measurementSystem });
+                    }}
+                  >
+                    <Select.HiddenSelect />
+                    <Select.Label>Measurement system:</Select.Label>
+                    <Select.Control>
+                      <Select.Trigger>
+                        <Select.ValueText />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+                    <Select.Positioner>
+                      <Select.Content>
+                        {measurementSystemCollection.items.map(
+                          (measurementSystem) => (
+                            <Select.Item
+                              item={measurementSystem}
+                              key={measurementSystem.value}
+                            >
+                              {measurementSystem.label}
+                              <Select.ItemIndicator />
+                            </Select.Item>
+                          ),
+                        )}
                       </Select.Content>
                     </Select.Positioner>
                   </Select.Root>

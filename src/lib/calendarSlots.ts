@@ -1,5 +1,6 @@
-import type { NonClass, Timeslot } from "./activity";
-import type { Section, Sections, Class } from "./class";
+import type { CustomActivity, Timeslot, Section, Sections } from "./activity";
+import type { Class } from "./class";
+import type { PEClass } from "./pe";
 
 /**
  * Helper function for selectSlots. Implements backtracking: we try to place
@@ -65,12 +66,13 @@ function selectHelper(
  * @returns Object with:
  *    options - list of schedule options; each schedule option is a list of all
  *      sections in that schedule, including locked sections (but not including
- *      non-class activities.)
+ *      custom activities.)
  *    conflicts - number of conflicts in any option
  */
 export function scheduleSlots(
   selectedClasses: Class[],
-  selectedNonClasses: NonClass[],
+  selectedPEClasses: PEClass[],
+  selectedCustomActivities: CustomActivity[],
 ): {
   options: Section[][];
   conflicts: number;
@@ -97,7 +99,24 @@ export function scheduleSlots(
     }
   }
 
-  for (const activity of selectedNonClasses) {
+  for (const cls of selectedPEClasses) {
+    for (const secs of cls.sections) {
+      if (secs.locked) {
+        const sec = secs.selected;
+        if (sec) {
+          lockedSections.push(secs);
+          lockedOptions.push(sec);
+          initialSlots.push(...sec.timeslots);
+        } else {
+          // locked to having no section, do nothing
+        }
+      } else if (secs.sections.length > 0) {
+        freeSections.push(secs);
+      }
+    }
+  }
+
+  for (const activity of selectedCustomActivities) {
     initialSlots.push(...activity.timeslots);
   }
 

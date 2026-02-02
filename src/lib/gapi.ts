@@ -6,6 +6,7 @@ import { tzlib_get_ical_block } from "timezones-ical-library";
 import type { Activity } from "./activity";
 import type { Term } from "./dates";
 import type { State } from "./state";
+import { Class } from "./class";
 
 /** Timezone string. */
 const TIMEZONE = "America/New_York";
@@ -30,13 +31,21 @@ function download(filename: string, text: string) {
 function toICalEvents(activity: Activity, term: Term): ICalEventData[] {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
-      const rawClass =
-        "rawClass" in event.activity ? event.activity.rawClass : undefined;
+      const start: [number, number] | undefined =
+        "start" in event.activity ? event.activity.start : undefined;
+      const end: [number, number] | undefined =
+        "end" in event.activity ? event.activity.end : undefined;
 
-      const start = rawClass?.quarterInfo?.start;
-      const end = rawClass?.quarterInfo?.end;
-      const h1 = rawClass?.half === 1;
-      const h2 = rawClass?.half === 2;
+      let h1 = false;
+      let h2 = false;
+
+      if (event.activity instanceof Class) {
+        if (event.half === 1) {
+          h1 = true;
+        } else if (event.half === 2) {
+          h2 = true;
+        }
+      }
 
       const startDate = term.startDateFor(slot.startSlot, h2, start);
       const startDateEnd = term.startDateFor(slot.endSlot, h2, start);

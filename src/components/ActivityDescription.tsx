@@ -13,24 +13,26 @@ import {
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
-import type { NonClass } from "../lib/activity";
+import { CustomActivity } from "../lib/activity";
 import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 
-import { ClassButtons, NonClassButtons } from "./ActivityButtons";
+import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 import { LuExternalLink } from "react-icons/lu";
+import { type PEFlags } from "../lib/pe";
+import { PEClass, getPEFlagEmoji } from "../lib/pe";
 
 /** A small image indicating a flag, like Spring or CI-H. */
-function TypeSpan(props: { flag?: keyof Flags; title: string }) {
+function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {
   const { flag, title } = props;
   const filter = useColorModeValue(
     "",
-    flag && DARK_IMAGES.includes(flag) ? "invert()" : "",
+    DARK_IMAGES.includes(flag) ? "invert()" : "",
   );
 
-  return flag ? (
+  return (
     <Tooltip content={title}>
       <Image
         alt={title}
@@ -40,19 +42,28 @@ function TypeSpan(props: { flag?: keyof Flags; title: string }) {
         filter={filter}
       />
     </Tooltip>
-  ) : (
-    <>{title}</>
   );
 }
 
-/** Header for class description; contains flags and related classes. */
+/** An emoji with tooltip indicating a flag, like Wellness Wizard. */
+function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
+  const { flag, title } = props;
+
+  return (
+    <Tooltip content={title}>
+      <Span>{getPEFlagEmoji(flag)}</Span>
+    </Tooltip>
+  );
+}
+
+/** Header for class description; contains flags and units. */
 function ClassTypes(props: { cls: Class }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
   const { flags, totalUnits, units } = cls;
 
   /**
-   * Wrap a group of flags in TypeSpans.
+   * Wrap a group of flags in ClassTypeSpans.
    *
    * @param arr - Arrays with [flag name, alt text].
    */
@@ -60,7 +71,7 @@ function ClassTypes(props: { cls: Class }) {
     arr
       .filter(([flag, _]) => flags[flag])
       .map(([flag, title]) => (
-        <TypeSpan key={flag} flag={flag} title={title} />
+        <ClassTypeSpan key={flag} flag={flag} title={title} />
       ));
 
   const currentYear = parseInt(state.term.fullRealYear);
@@ -107,13 +118,11 @@ function ClassTypes(props: { cls: Class }) {
   ]);
 
   const halfType =
-    flags.half === 1 ? (
-      <TypeSpan title="; first half of term" />
-    ) : flags.half === 2 ? (
-      <TypeSpan title="; second half of term" />
-    ) : (
-      ""
-    );
+    flags.half === 1
+      ? "; first half of term"
+      : flags.half === 2
+        ? "; second half of term"
+        : "";
 
   const unitsDescription = cls.isVariableUnits
     ? "Units arranged"
@@ -131,6 +140,40 @@ function ClassTypes(props: { cls: Class }) {
       </Flex>
       <Text>{unitsDescription}</Text>
       {flags.final ? <Text>Has final</Text> : null}
+    </Flex>
+  );
+}
+
+/** Header for PE class description; contains class size, points, and flags. */
+function PEClassTypes(props: { cls: PEClass }) {
+  const { cls } = props;
+  const { flags } = cls;
+  const { classSize, points } = cls.rawClass;
+
+  /**
+   * Wrap a group of flags in PEClassTypeSpans.
+   *
+   * @param arr - Arrays with [flag name, tooltip text].
+   */
+  const makeFlags = (arr: [keyof PEFlags, string][]) =>
+    arr
+      .filter(([flag, _]) => flags[flag])
+      .map(([flag, title]) => (
+        <PEClassTypeSpan key={flag} flag={flag} title={title} />
+      ));
+
+  const types = makeFlags([
+    ["wellness", "Wellness Wizard eligible"],
+    ["pirate", "Pirate Certificate eligible"],
+    ["swim", "Satisfies swim GIR"],
+    ["remote", "Remote class"],
+  ]);
+
+  return (
+    <Flex gap={4} align="center">
+      <Text>Class size: {classSize}</Text>
+      <Text>Awards {points} PE points</Text>
+      <Flex align="center">{types}</Flex>
     </Flex>
   );
 }
@@ -245,14 +288,14 @@ function ClassDescription(props: { cls: Class }) {
   );
 }
 
-/** Full non-class activity description, from title to timeslots. */
-function NonClassDescription(props: { activity: NonClass }) {
+/** Full custom activity description, from title to timeslots. */
+function CustomActivityDescription(props: { activity: CustomActivity }) {
   const { activity } = props;
   const { state } = useContext(HydrantContext);
 
   return (
     <Flex direction="column" gap={4}>
-      <NonClassButtons activity={activity} />
+      <CustomActivityButtons activity={activity} />
       <Flex direction="column" gap={2}>
         {activity.timeslots.map((t) => (
           <Flex key={t.toString()} align="center" gap={2}>
@@ -272,17 +315,109 @@ function NonClassDescription(props: { activity: NonClass }) {
   );
 }
 
-/** Activity description, whether class or non-class. */
+/** Full PE&W class description, from title to URLs at the end. */
+function PEClassDescription(props: { cls: PEClass }) {
+  const { cls } = props;
+  const { fee, startDate, endDate } = cls;
+  const { number, name, prereqs, equipment, description } = cls.rawClass;
+
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+
+  const start = fmt.format(startDate);
+  const end = fmt.format(endDate);
+
+  const urls = [
+    {
+      label: "PE&W registration",
+      url: "https://physicaleducationandwellness.mit.edu/registration-information/registration/",
+    },
+    {
+      label: "Waitlist info",
+      url: "https://physicaleducationandwellness.mit.edu/registration-information/registration/waitlist/",
+    },
+    {
+      label: "Student history",
+      url: "https://physicaleducationandwellness.mit.edu/my-gir/student-course-history/",
+    },
+    {
+      label: "PE&W FAQs",
+      url: "https://physicaleducationandwellness.mit.edu/faqs/",
+    },
+  ];
+
+  return (
+    <Flex direction="column" gap={4}>
+      <Heading size="md">
+        {number}: {name}
+      </Heading>
+      <Flex direction="column" gap={0.5}>
+        <PEClassTypes cls={cls} />
+        {fee ? <Text>${fee.toFixed(2)} enrollment fee</Text> : null}
+        <Text>
+          Begins {start}, ends {end}.
+        </Text>
+        <Text>Schedule subject to change once online registration opens.</Text>
+      </Flex>
+      <ClassButtons cls={cls} />
+      <Flex direction="column" gap={2}>
+        <Text lang="en" style={{ hyphens: "auto", whiteSpace: "pre-wrap" }}>
+          {description}
+        </Text>
+        <Text>
+          <Span fontWeight="medium">Prereq:</Span>{" "}
+          <Span
+            fontWeight={prereqs.toLowerCase() === "none" ? "bold" : "normal"}
+          >
+            {prereqs}
+          </Span>
+        </Text>
+        <Text>
+          <Span fontWeight="medium">Equipment:</Span>{" "}
+          <Span
+            fontWeight={equipment.toLowerCase() === "none" ? "bold" : "normal"}
+          >
+            {equipment}
+          </Span>
+        </Text>
+      </Flex>
+      <Flex gap={4}>
+        {urls.map(({ label, url }) => (
+          <Link
+            key={label}
+            href={url}
+            target="_blank"
+            colorPalette="blue"
+            display="inline-block"
+            flexGrow={1}
+          >
+            {label} <LuExternalLink style={{ display: "inline" }} />
+          </Link>
+        ))}
+      </Flex>
+    </Flex>
+  );
+}
+
+/** Activity description, whether class, PE class, or custom activity. */
 export function ActivityDescription() {
   const { hydrantState } = useContext(HydrantContext);
   const { viewedActivity: activity } = hydrantState;
   if (!activity) {
     return null;
   }
+  if (activity instanceof Class) {
+    return <ClassDescription cls={activity} />;
+  }
+  if (activity instanceof PEClass) {
+    return <PEClassDescription cls={activity} />;
+  }
+  if (activity instanceof CustomActivity) {
+    return <CustomActivityDescription activity={activity} />;
+  }
 
-  return activity instanceof Class ? (
-    <ClassDescription cls={activity} />
-  ) : (
-    <NonClassDescription activity={activity} />
-  );
+  activity satisfies never;
 }

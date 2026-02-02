@@ -1,5 +1,5 @@
 import { expect, test, describe } from "vitest";
-import { Timeslot, NonClass, Event } from "../src/lib/activity";
+import { Timeslot, CustomActivity, Event } from "../src/lib/activity";
 import { Slot } from "../src/lib/dates";
 import {
   COLOR_SCHEME_LIGHT,
@@ -121,17 +121,18 @@ describe("Timeslot", () => {
 });
 
 test("Event.eventInputs", () => {
-  const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT_CONTRAST);
+  const myCustomActivity: CustomActivity = new CustomActivity(
+    COLOR_SCHEME_LIGHT_CONTRAST,
+  );
   const myHexCode = "#611917"; // randomly generated hex code
   const myTitle = "y8g0i81"; // random keysmashes
   const myRoom = "ahouttoanhontjanota";
-  myNonClass.backgroundColor = myHexCode;
+  myCustomActivity.backgroundColor = myHexCode;
   const myEvent: Event = new Event(
-    myNonClass,
+    myCustomActivity,
     myTitle,
     [new Timeslot(6, 7), new Timeslot(57, 10)],
     myRoom,
-    undefined,
   );
   expect(myEvent.eventInputs).toStrictEqual([
     {
@@ -142,7 +143,8 @@ test("Event.eventInputs", () => {
       backgroundColor: myHexCode,
       borderColor: myHexCode,
       room: myRoom,
-      activity: myNonClass,
+      roomClarification: undefined,
+      activity: myCustomActivity,
     },
     {
       textColor: "#ffffff",
@@ -152,74 +154,91 @@ test("Event.eventInputs", () => {
       backgroundColor: myHexCode,
       borderColor: myHexCode,
       room: myRoom,
-      activity: myNonClass,
+      roomClarification: undefined,
+      activity: myCustomActivity,
     },
   ]);
 });
 
-describe("NonClass", () => {
-  describe("NonClass.constructor", () => {
+describe("CustomActivity", () => {
+  describe("CustomActivity.constructor", () => {
     const nanoidRegex = /^[A-Za-z0-9-_]{8}$/;
 
     test("COLOR_SCHEME_LIGHT", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      expect(nanoidRegex.test(myNonClass.id)).toBeTruthy();
-      expect(myNonClass.backgroundColor).toBe("#4A5568");
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
+      expect(myCustomActivity.backgroundColor).toBe("#4A5568");
     });
 
     test("COLOR_SCHEME_DARK", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_DARK);
-      expect(nanoidRegex.test(myNonClass.id)).toBeTruthy();
-      expect(myNonClass.backgroundColor).toBe("#CBD5E0");
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_DARK,
+      );
+      expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
+      expect(myCustomActivity.backgroundColor).toBe("#CBD5E0");
     });
 
     test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT_CONTRAST);
-      expect(nanoidRegex.test(myNonClass.id)).toBeTruthy();
-      expect(myNonClass.backgroundColor).toBe("#4A5568");
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT_CONTRAST,
+      );
+      expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
+      expect(myCustomActivity.backgroundColor).toBe("#4A5568");
     });
 
     test("COLOR_SCHEME_DARK_CONTRAST", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_DARK_CONTRAST);
-      expect(nanoidRegex.test(myNonClass.id)).toBeTruthy();
-      expect(myNonClass.backgroundColor).toBe("#CBD5E0");
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_DARK_CONTRAST,
+      );
+      expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
+      expect(myCustomActivity.backgroundColor).toBe("#CBD5E0");
     });
   });
 
-  describe("NonClass.buttonName", () => {
+  describe("CustomActivity.buttonName", () => {
     /** Partition on this.name: changed, not changed */
-    test("NonClass.name not changed", () => {
-      expect(new NonClass(COLOR_SCHEME_LIGHT).buttonName).toBe("New Activity");
+    test("CustomActivity.name not changed", () => {
+      expect(new CustomActivity(COLOR_SCHEME_LIGHT).buttonName).toBe(
+        "New Activity",
+      );
     });
 
-    test("NonClass.name changed", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+    test("CustomActivity.name changed", () => {
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myString = "lorem ipsum dolor sit amet";
-      myNonClass.name = myString;
-      expect(myNonClass.buttonName).toBe(myString);
+      myCustomActivity.name = myString;
+      expect(myCustomActivity.buttonName).toBe(myString);
     });
   });
 
-  describe("NonClass.hours", () => {
+  describe("CustomActivity.hours", () => {
     /** Partition on timeslot count: 0, 1, >1 */
     test("0 timeslots", () => {
-      expect(new NonClass(COLOR_SCHEME_LIGHT).hours).toBe(0);
+      expect(new CustomActivity(COLOR_SCHEME_LIGHT).hours).toBe(0);
     });
 
     test("1 timeslot", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      myNonClass.timeslots = [new Timeslot(4, 5)];
-      expect(myNonClass.hours).toBe(5 / 2);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      myCustomActivity.timeslots = [new Timeslot(4, 5)];
+      expect(myCustomActivity.hours).toBe(5 / 2);
     });
 
     test("multiple timeslots", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      myNonClass.timeslots = [new Timeslot(2, 7), new Timeslot(11, 5)];
-      expect(myNonClass.hours).toBe(6);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      myCustomActivity.timeslots = [new Timeslot(2, 7), new Timeslot(11, 5)];
+      expect(myCustomActivity.hours).toBe(6);
     });
   });
 
-  test("NonClass.events", () => {
+  test("CustomActivity.events", () => {
     // arbitrary random constants
     const myName = "r57t68y9u";
     const myTimeslots: Timeslot[] = [
@@ -228,90 +247,104 @@ describe("NonClass", () => {
       new Timeslot(21, 32),
     ];
     const myRoom = "ahuotiyuwiq";
-    // constructing and testing `myNonClass`
-    const myNonClass: NonClass = new NonClass(COLOR_SCHEME_DARK);
-    myNonClass.name = myName;
-    myNonClass.timeslots = myTimeslots;
-    myNonClass.room = myRoom;
-    expect(myNonClass.events).toStrictEqual([
-      new Event(myNonClass, myName, myTimeslots, myRoom),
+    // constructing and testing `myCustomActivity`
+    const myCustomActivity: CustomActivity = new CustomActivity(
+      COLOR_SCHEME_DARK,
+    );
+    myCustomActivity.name = myName;
+    myCustomActivity.timeslots = myTimeslots;
+    myCustomActivity.room = myRoom;
+    expect(myCustomActivity.events).toStrictEqual([
+      new Event(myCustomActivity, myName, myTimeslots, myRoom),
     ]);
   });
 
-  describe("NonClass.addTimeslot", () => {
+  describe("CustomActivity.addTimeslot", () => {
     /** Partition:
      * - slot matches existing timeslot, doesn't add
      * - slot extends over multiple days, doesn't add
      * - slot is valid, adds
      */
     test("adds valid slot", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myTimeslot: Timeslot = new Timeslot(1, 1);
-      myNonClass.addTimeslot(myTimeslot);
-      expect(myNonClass.timeslots).toStrictEqual([myTimeslot]);
+      myCustomActivity.addTimeslot(myTimeslot);
+      expect(myCustomActivity.timeslots).toStrictEqual([myTimeslot]);
     });
 
     test("doesn't add existing slot", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myTimeslot: Timeslot = new Timeslot(4, 6);
-      myNonClass.timeslots = [myTimeslot];
-      myNonClass.addTimeslot(myTimeslot);
-      expect(myNonClass.timeslots).toStrictEqual([myTimeslot]);
+      myCustomActivity.timeslots = [myTimeslot];
+      myCustomActivity.addTimeslot(myTimeslot);
+      expect(myCustomActivity.timeslots).toStrictEqual([myTimeslot]);
     });
 
     test("doesn't add multi-day slot", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      myNonClass.addTimeslot(new Timeslot(42, 69));
-      expect(myNonClass.timeslots).toStrictEqual([]);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      myCustomActivity.addTimeslot(new Timeslot(42, 69));
+      expect(myCustomActivity.timeslots).toStrictEqual([]);
     });
   });
 
-  describe("NonClass.removeTimeslot", () => {
+  describe("CustomActivity.removeTimeslot", () => {
     /**
      * Partition:
-     * - NonClass.timeslots (before call): empty, nonempty with match, nonempty without match
+     * - CustomActivity.timeslots (before call): empty, nonempty with match, nonempty without match
      */
-    test("removing timeslot from empty NonClass", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      myNonClass.removeTimeslot(new Timeslot(1, 1));
-      expect(myNonClass.timeslots).toStrictEqual([]);
+    test("removing timeslot from empty CustomActivity", () => {
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      myCustomActivity.removeTimeslot(new Timeslot(1, 1));
+      expect(myCustomActivity.timeslots).toStrictEqual([]);
     });
 
-    test("remove matching timeslot from nonempty NonClass", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+    test("remove matching timeslot from nonempty CustomActivity", () => {
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myTimeslots: Timeslot[] = [
         new Timeslot(1, 2),
         new Timeslot(4, 3),
         new Timeslot(42, 4),
       ];
-      myNonClass.timeslots = myTimeslots;
-      myNonClass.removeTimeslot(new Timeslot(1, 2));
-      expect(myNonClass.timeslots).toStrictEqual([
+      myCustomActivity.timeslots = myTimeslots;
+      myCustomActivity.removeTimeslot(new Timeslot(1, 2));
+      expect(myCustomActivity.timeslots).toStrictEqual([
         new Timeslot(4, 3),
         new Timeslot(42, 4),
       ]);
     });
 
-    test("remove non-matching timeslot from nonempty NonClass", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
+    test("remove non-matching timeslot from nonempty CustomActivity", () => {
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
       const myTimeslots: Timeslot[] = [
         new Timeslot(1, 2),
         new Timeslot(4, 3),
         new Timeslot(42, 4),
       ];
-      myNonClass.timeslots = myTimeslots;
-      myNonClass.removeTimeslot(new Timeslot(1, 1));
-      expect(myNonClass.timeslots).toStrictEqual(myTimeslots);
+      myCustomActivity.timeslots = myTimeslots;
+      myCustomActivity.removeTimeslot(new Timeslot(1, 1));
+      expect(myCustomActivity.timeslots).toStrictEqual(myTimeslots);
     });
   });
 
-  describe("NonClass.deflate", () => {
+  describe("CustomActivity.deflate", () => {
     /** Partition:
      * - this.timeslots: empty, nonempty
      * - this.room: defined, undefined
      */
     test("timeslots empty, room undefined", () => {
-      expect(new NonClass(COLOR_SCHEME_LIGHT).deflate()).toStrictEqual([
+      expect(new CustomActivity(COLOR_SCHEME_LIGHT).deflate()).toStrictEqual([
         [],
         "New Activity",
         "#4A5568",
@@ -320,9 +353,11 @@ describe("NonClass", () => {
     });
 
     test("timeslots empty, room defined", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      myNonClass.room = "lorem ipsum";
-      expect(myNonClass.deflate()).toStrictEqual([
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      myCustomActivity.room = "lorem ipsum";
+      expect(myCustomActivity.deflate()).toStrictEqual([
         [],
         "New Activity",
         "#4A5568",
@@ -331,9 +366,11 @@ describe("NonClass", () => {
     });
 
     test("timeslots nonempty, room undefined", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      myNonClass.timeslots = [new Timeslot(10, 2)];
-      expect(myNonClass.deflate()).toStrictEqual([
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      myCustomActivity.timeslots = [new Timeslot(10, 2)];
+      expect(myCustomActivity.deflate()).toStrictEqual([
         [[10, 2]],
         "New Activity",
         "#4A5568",
@@ -342,23 +379,27 @@ describe("NonClass", () => {
     });
   });
 
-  describe("NonClass.inflate", () => {
+  describe("CustomActivity.inflate", () => {
     /**
      * Partition on first item: empty, nonempty
      */
     test("first item empty", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      myNonClass.inflate([[], "alpha", "#123456", "beta"]);
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      myCustomActivity.inflate([[], "alpha", "#123456", "beta"]);
 
-      expect(myNonClass.timeslots).toStrictEqual([]);
-      expect(myNonClass.name).toBe("alpha");
-      expect(myNonClass.backgroundColor).toBe("#123456");
-      expect(myNonClass.room).toBe("beta");
+      expect(myCustomActivity.timeslots).toStrictEqual([]);
+      expect(myCustomActivity.name).toBe("alpha");
+      expect(myCustomActivity.backgroundColor).toBe("#123456");
+      expect(myCustomActivity.room).toBe("beta");
     });
 
     test("first item nonempty", () => {
-      const myNonClass: NonClass = new NonClass(COLOR_SCHEME_LIGHT);
-      myNonClass.inflate([
+      const myCustomActivity: CustomActivity = new CustomActivity(
+        COLOR_SCHEME_LIGHT,
+      );
+      myCustomActivity.inflate([
         [
           [1, 2],
           [4, 5],
@@ -368,13 +409,13 @@ describe("NonClass", () => {
         "delta",
       ]);
 
-      expect(myNonClass.timeslots).toStrictEqual([
+      expect(myCustomActivity.timeslots).toStrictEqual([
         new Timeslot(1, 2),
         new Timeslot(4, 5),
       ]);
-      expect(myNonClass.name).toBe("gamma");
-      expect(myNonClass.backgroundColor).toBe("#7890AB");
-      expect(myNonClass.room).toBe("delta");
+      expect(myCustomActivity.name).toBe("gamma");
+      expect(myCustomActivity.backgroundColor).toBe("#7890AB");
+      expect(myCustomActivity.room).toBe("delta");
     });
   });
 });

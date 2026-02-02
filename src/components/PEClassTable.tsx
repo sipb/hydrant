@@ -1,3 +1,4 @@
+// TODO factor out common pieces between ClassTable and PEClassTable
 import {
   useContext,
   useEffect,
@@ -27,7 +28,6 @@ import {
 import {
   Box,
   Flex,
-  Image,
   Input,
   Button,
   ButtonGroup,
@@ -35,13 +35,9 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
-import { LabelledButton } from "./ui/button";
-import { useColorModeValue } from "./ui/color-mode";
 
-import type { Class, Flags } from "../lib/class";
-import { DARK_IMAGES, getFlagImg } from "../lib/class";
+import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import type { TSemester } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
 import { ColorStyles } from "../lib/colors";
@@ -64,69 +60,30 @@ const GRID_MODULES: Module[] = [
   ClientSideRowModelModule,
   ExternalFilterModule,
   CellStyleModule,
-  RenderApiModule,
   RowStyleModule,
+  RenderApiModule,
   ...(import.meta.env.DEV ? [ValidationModule] : []),
 ];
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-const getRatingColor = (rating?: string | null) => {
-  if (!rating || rating === "N/A") return ColorStyles.Muted;
-  const ratingNumber = Number(rating);
-  if (ratingNumber >= 6) return ColorStyles.Success;
-  if (ratingNumber >= 5) return ColorStyles.Warning;
-  return ColorStyles.Error;
-};
-
-const getHoursColor = (
-  hours: string | null | undefined,
-  totalUnits: number | undefined,
-  term: TSemester,
-  half: number | undefined,
-) => {
-  if (!hours || hours === "N/A") return ColorStyles.Muted;
-  if (totalUnits === undefined) return ColorStyles.Muted;
-  if (totalUnits === 0) return ColorStyles.Normal;
-
-  const hoursNumber = Number(hours);
-  let weeksInTerm = 0;
-
-  switch (term) {
-    case "s":
-      weeksInTerm = 14;
-      break;
-    case "f":
-      weeksInTerm = 14;
-      break;
-    case "m":
-      weeksInTerm = 10;
-      break;
-    case "i":
-      weeksInTerm = 4;
-      break;
-  }
-
-  // https://registrar.mit.edu/registration-academics/academic-requirements/subject-levels-credit
-  const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
-  const proportion = hoursNumber / expectedHours;
-
-  if (proportion < 0.8) return ColorStyles.Success;
-  if (proportion >= 0.8 && proportion <= 1.2) return ColorStyles.Warning;
+const getFeeColor = (fee: number) => {
+  if (isNaN(fee)) return ColorStyles.Muted;
+  if (fee == 0) return ColorStyles.Success;
+  if (fee <= 20) return ColorStyles.Warning;
   return ColorStyles.Error;
 };
 
 /** A single row in the class table. */
 interface ClassTableRow {
   number: string;
-  rating: string;
-  hours: string;
+  classSize: number;
+  fee: number;
   name: string;
-  class: Class;
-  inCharge: string;
+  class: PEClass;
 }
 
-type ClassFilter = (cls?: Class) => boolean;
+type ClassFilter = (cls?: PEClass) => boolean;
 /** Type of filter on class list; null if no filter. */
 type SetClassFilter = Dispatch<SetStateAction<ClassFilter | null>>;
 
@@ -150,24 +107,19 @@ function ClassInput(props: {
   // Search results for classes.
   const searchResults = useRef<
     {
-      numbers: string[];
+      number: string;
       name: string;
-      class: Class;
+      class: PEClass;
     }[]
   >(undefined);
 
   const processedRows = useMemo(
     () =>
       rowData.map((data) => {
-        const numbers = [data.number];
-        const [, otherNumber, realName] =
-          /^\[(.*)\] (.*)$/.exec(data.name) ?? [];
-        if (otherNumber) numbers.push(otherNumber);
         return {
-          numbers,
-          name: simplifyString(realName || data.name),
+          number: data.number,
+          name: simplifyString(data.name),
           class: data.class,
-          inCharge: simplifyString(data.inCharge),
         };
       }),
     [rowData],
@@ -178,12 +130,13 @@ function ClassInput(props: {
       const simplifyInput = simplifyString(input);
       searchResults.current = processedRows.filter(
         (row) =>
-          row.numbers.some((number) => classNumberMatch(input, number)) ||
-          row.name.includes(simplifyInput) ||
-          row.inCharge.includes(simplifyInput),
+          classNumberMatch(input, row.number) ||
+          row.name.includes(simplifyInput),
       );
-      const index = new Set(searchResults.current.map((cls) => cls.numbers[0]));
-      setInputFilter(() => (cls?: Class) => index.has(cls?.number ?? ""));
+      const index = new Set(searchResults.current.map((row) => row.number));
+      setInputFilter(
+        () => (cls?: PEClass) => index.has(cls?.rawClass.number ?? ""),
+      );
     } else {
       setInputFilter(null);
     }
@@ -191,17 +144,17 @@ function ClassInput(props: {
   };
 
   const onEnter = () => {
-    const { numbers, class: cls } = searchResults.current?.[0] ?? {};
+    const { number, class: cls } = searchResults.current?.[0] ?? {};
     if (
       searchResults.current?.length === 1 ||
-      numbers?.some((number) => classNumberMatch(number, classInput, true))
+      (number && classNumberMatch(number, classInput, true))
     ) {
       // first check if the first result matches
       state.toggleActivity(cls);
       onClassInputChange("");
-    } else if (state.classes.has(classInput)) {
+    } else if (state.peClasses.has(classInput)) {
       // else check if this number exists exactly
-      const cls = state.classes.get(classInput);
+      const cls = state.peClasses.get(classInput);
       state.toggleActivity(cls);
     }
   };
@@ -235,7 +188,7 @@ function ClassInput(props: {
             type="search"
             aria-label="Search for a class"
             id="class-search"
-            placeholder="Class number, name, or instructor"
+            placeholder="Class number or name"
             value={classInput}
             ref={inputRef}
             onChange={(e) => {
@@ -250,55 +203,29 @@ function ClassInput(props: {
 
 const filtersNonFlags = {
   fits: (state, cls) => state.fitsSchedule(cls),
-  starred: (state, cls) => state.isClassStarred(cls),
-  new: (_, cls) => cls.new,
-} satisfies Record<string, (state: State, cls: Class) => boolean>;
+  starred: (state, cls) => state.isPEClassStarred(cls),
+} satisfies Record<string, (state: State, cls: PEClass) => boolean>;
 
-type Filter = keyof Flags | keyof typeof filtersNonFlags;
+type Filter = keyof PEFlags | keyof typeof filtersNonFlags;
 type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
   ["starred", "Starred", <LuStar fill="currentColor" />],
-  ["hass", "HASS"],
-  ["cih", "CI-H"],
-  ["cim", "CI-M"],
+  ["nofee", "No fee"],
+  ["nopreq", "No prereq"],
   ["fits", "Fits schedule"],
-  ["new", "✨ New!"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
 const CLASS_FLAGS_2: FilterGroup = [
-  ["nofinal", "No final"],
-  ["nopreq", "No prereq"],
-  ["under", "Undergrad", getFlagImg("under")],
-  ["grad", "Graduate", getFlagImg("grad")],
+  ["wellness", "🔮 Wellness Wizard"],
+  ["pirate", "🏴‍☠️ Pirate Certificate"],
+  ["swim", "🌊 Swim GIR"],
+  ["remote", "💻 Remote"],
 ];
 
-/** Second row of hidden filter IDs. */
-const CLASS_FLAGS_3: FilterGroup = [
-  ["le9units", "≤ 9 units"],
-  ["half", "Half-term"],
-  ["limited", "Limited enrollment"],
-];
-
-/** Third row of hidden filter IDs. */
-const CLASS_FLAGS_4: FilterGroup = [
-  ["rest", "REST", getFlagImg("rest")],
-  ["lab", "Institute Lab", getFlagImg("lab")],
-  ["hassA", "HASS-A", getFlagImg("hassA")],
-  ["hassH", "HASS-H", getFlagImg("hassH")],
-  ["hassS", "HASS-S", getFlagImg("hassS")],
-  ["cihw", "CI-HW"],
-  ["notcih", "Not CI-H"],
-];
-
-const CLASS_FLAGS = [
-  ...CLASS_FLAGS_1,
-  ...CLASS_FLAGS_2,
-  ...CLASS_FLAGS_3,
-  ...CLASS_FLAGS_4,
-];
+const CLASS_FLAGS = [...CLASS_FLAGS_1, ...CLASS_FLAGS_2];
 
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
@@ -339,7 +266,7 @@ function ClassFlags(props: {
 
     // careful! we have to wrap it with a () => because otherwise React will
     // think it's an updater function instead of the actual function.
-    setFlagsFilter(() => (cls?: Class) => {
+    setFlagsFilter(() => (cls?: PEClass) => {
       if (!cls) return false;
       let result = true;
       newFlags.forEach((value, flag) => {
@@ -361,11 +288,6 @@ function ClassFlags(props: {
     });
   };
 
-  const filter = useColorModeValue(
-    (_flags: keyof Flags) => "",
-    (flag: keyof Flags) => (DARK_IMAGES.includes(flag) ? "invert()" : ""),
-  );
-
   const renderGroup = (group: FilterGroup) => {
     return (
       <ButtonGroup attached colorPalette="orange" wrap="wrap">
@@ -375,42 +297,24 @@ function ClassFlags(props: {
           // hide starred button if no classes starred
           if (
             flag === "starred" &&
-            state.getStarredClasses().length === 0 &&
+            state.getStarredPEClasses().length === 0 &&
             !checked
           ) {
             return null;
           }
 
           return image ? (
-            typeof image === "string" ? (
-              // if image is a string, it's a path to an image
-              <LabelledButton
-                key={flag}
-                onClick={() => {
-                  onChange(flag, !checked);
-                }}
-                title={label}
-                variant={checked ? "solid" : "outline"}
-              >
-                <Image
-                  src={image}
-                  alt={label}
-                  filter={filter(flag as keyof Flags)}
-                />
-              </LabelledButton>
-            ) : (
-              // image is a react element, like an icon
-              <Button
-                key={flag}
-                onClick={() => {
-                  onChange(flag, !checked);
-                }}
-                aria-label={label}
-                variant={checked ? "solid" : "outline"}
-              >
-                {image}
-              </Button>
-            )
+            // image is a react element, like an icon
+            <Button
+              key={flag}
+              onClick={() => {
+                onChange(flag, !checked);
+              }}
+              aria-label={label}
+              variant={checked ? "solid" : "outline"}
+            >
+              {image}
+            </Button>
           ) : (
             <Button
               key={flag}
@@ -442,13 +346,7 @@ function ClassFlags(props: {
           {allFlags ? "Less filters" : "More filters"}
         </Button>
       </Flex>
-      {allFlags && (
-        <>
-          {renderGroup(CLASS_FLAGS_2)}
-          {renderGroup(CLASS_FLAGS_3)}
-          {renderGroup(CLASS_FLAGS_4)}
-        </>
-      )}
+      {allFlags && <>{renderGroup(CLASS_FLAGS_2)}</>}
     </Flex>
   );
 }
@@ -457,17 +355,17 @@ const StarButton = ({
   cls,
   onStarToggle,
 }: {
-  cls: Class;
+  cls: PEClass;
   onStarToggle?: () => void;
 }) => {
   const { state } = useContext(HydrantContext);
-  const isStarred = state.isClassStarred(cls);
+  const isStarred = state.isPEClassStarred(cls);
 
   return (
     <Button
       onClick={(e) => {
         e.stopPropagation();
-        state.toggleStarClass(cls);
+        state.toggleStarPEClass(cls);
         onStarToggle?.();
       }}
       variant="plain"
@@ -480,40 +378,23 @@ const StarButton = ({
 };
 
 /** The table of all classes, along with searching and filtering with flags. */
-export function ClassTable() {
+export function PEClassTable() {
   const { state } = useContext(HydrantContext);
-  const { classes } = state;
+  const { peClasses } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns
-  const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
+  const columnDefs: ColDef<ClassTableRow, string | number>[] = useMemo(() => {
     const initialSort = "asc" as const;
     const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
-    const numberSortProps = {
-      // sort by number, N/A is infinity, tiebreak with class number
-      comparator: (
-        valueA: string | undefined | null,
-        valueB: string | undefined | null,
-        nodeA: IRowNode<ClassTableRow>,
-        nodeB: IRowNode<ClassTableRow>,
-      ) => {
-        if (!nodeA.data || !nodeB.data) return 0;
-        const numberA = valueA === "N/A" || !valueA ? Infinity : Number(valueA);
-        const numberB = valueB === "N/A" || !valueB ? Infinity : Number(valueB);
-        return numberA !== numberB
-          ? numberA - numberB
-          : classSort(nodeA.data.number, nodeB.data.number);
-      },
-      ...sortProps,
-    };
     return [
       {
         headerName: "",
         field: "number",
         maxWidth: 49,
-        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
+        cellRenderer: (params: { data: ClassTableRow }) => (
           <StarButton
             cls={params.data.class}
             onStarToggle={() => {
@@ -538,29 +419,28 @@ export function ClassTable() {
         ...sortProps,
       },
       {
-        field: "rating",
-        maxWidth: 99,
-        cellClass: (params) => getRatingColor(params.value),
-        ...numberSortProps,
+        field: "classSize",
+        headerName: "Size",
+        maxWidth: 85,
+        ...sortProps,
       },
       {
-        field: "hours",
-        maxWidth: 97,
-        cellClass: (params) =>
-          getHoursColor(
-            params.value,
-            params.data?.class.totalUnits,
-            state.term.semester,
-            params.data?.class.half,
-          ),
-        ...numberSortProps,
+        field: "fee",
+        maxWidth: 87,
+        cellClass: (params) => getFeeColor(params.value as number),
+        valueFormatter: (params) => "$" + (params.value as number).toFixed(2),
+        ...sortProps,
       },
       {
         field: "name",
         sortable: false,
         flex: 1,
         valueFormatter: (params) =>
-          (params.data?.class.new ? "✨ " : "") + (params.value ?? ""),
+          Object.entries(params.data?.class.flags ?? ({} as PEFlags))
+            .filter(([_, val]) => val)
+            .map(([flag]) => getPEFlagEmoji(flag as keyof PEFlags))
+            .concat([params.value?.toString() ?? ""])
+            .join(" "),
       },
     ];
   }, [state]);
@@ -574,15 +454,14 @@ export function ClassTable() {
   // Setup rows
   const rowData: ClassTableRow[] = useMemo(
     () =>
-      Array.from(classes.values(), (cls) => ({
-        number: cls.number,
-        rating: cls.evals.rating.slice(0, 3), // remove the "/7.0" if exists
-        hours: cls.evals.hours,
-        name: cls.name,
+      Array.from(peClasses.values(), (cls) => ({
+        number: cls.rawClass.number,
+        classSize: cls.rawClass.classSize,
+        fee: cls.fee,
+        name: cls.rawClass.name,
         class: cls,
-        inCharge: cls.description.inCharge,
       })),
-    [classes],
+    [peClasses],
   );
 
   const [inputFilter, setInputFilter] = useState<ClassFilter | null>(null);
