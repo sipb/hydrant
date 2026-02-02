@@ -3,10 +3,14 @@ import { type RawPEClass, type RawSection } from "./raw";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
 
+export const W35_PLUS_TEXT =
+  "W31, W32, W33, W34 and W35 are all connected. Enter through W35.";
+
 export interface PEFlags {
   wellness: boolean;
   pirate: boolean;
   swim: boolean;
+  remote: boolean;
   nofee: boolean;
   nopreq: boolean;
 }
@@ -15,6 +19,7 @@ const peFlagEmojis: { [k in keyof PEFlags]?: string } = {
   wellness: "🔮",
   pirate: "🏴‍☠️",
   swim: "🌊",
+  remote: "💻",
 };
 
 export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
@@ -64,6 +69,20 @@ export class PESections extends Sections {
   get priority(): number {
     return -1;
   }
+
+  get event(): Event | null {
+    const room = this.roomOverride || this.selected?.room;
+    return this.selected
+      ? new Event(
+          this.cls,
+          this.longName,
+          this.selected.timeslots,
+          room,
+          undefined,
+          room?.includes("W35+") ? W35_PLUS_TEXT : undefined,
+        )
+      : null;
+  }
 }
 
 /**
@@ -88,10 +107,12 @@ export class PEClass implements BaseActivity {
     ];
   }
 
+  /** ID unique over all Activities. */
   get id(): string {
     return this.rawClass.number;
   }
 
+  /** Name; e.g. "Swimming, Beginner". */
   get name(): string {
     return this.rawClass.name;
   }
@@ -160,6 +181,7 @@ export class PEClass implements BaseActivity {
       wellness: this.rawClass.wellness,
       pirate: this.rawClass.pirate,
       swim: this.rawClass.swimGIR,
+      remote: this.rawClass.remote,
       nofee: this.fee == 0,
       nopreq: this.rawClass.prereqs == "None",
     };

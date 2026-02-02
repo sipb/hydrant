@@ -16,8 +16,12 @@ description = "Whether you have musical experience, or are new to music, learn a
 ["ES.S70"]
 name = "Hack Yourself: Data-Driven Wellbeing and Learning"
 same = "6.S056"
-meets = "6.S056"
 description = "Do you want to take charge of your wellbeing and learn at your best? In this seminar, you will discover how with practices based on positive psychology supported by data. At the end of the semester, you will have a toolkit of over 60 new habits plus some experience with data science tools you can use to “hack” yourself. Pre-req 6.100A or equivalent knowledge. Limited to 12, priority to ESG students."
+lectureRawSections = ["32-141/F/0/11-1"]
+recitationRawSections = ["36-112/T/0/2-3"]
+lectureSections = [[[[146, 4]], "32-141"]]
+recitationSections = [[[[50, 2]], "36-112"]]
+sectionKinds = ["lecture", "recitation"]
 
 ["ES.S71"]
 name = "Transformers and Neural Networks"
