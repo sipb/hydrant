@@ -35,46 +35,53 @@ export function Calendar() {
       .flatMap((event) => event.eventInputs);
   }, [selectedActivities]);
 
+  const getBuildingNumber = (room: string) =>
+    room.split("-")[0].trim().replace(/\+$/, "");
+
+  /**
+   * Get the approximate distance (in feet) between two buildings on campus
+   */
+  const getDistance = (building1: string, building2: string) => {
+    // Get coordinates of each building
+    const location1 = state.locations.get(building1);
+    const location2 = state.locations.get(building2);
+
+    if (!location1 || !location2) {
+      return undefined;
+    }
+
+    const dx = location1.x - location2.x;
+    const dy = location1.y - location2.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
   /**
    * Check if event1 ends at the same time that some other event starts. If
    * this is the case and the commute distance between the two events' locations
    * is more than half a mile, return an appropriate warning message. Otherwise,
    * return undefined.
    */
-  const getDistanceWarning = (event1: EventApi) => {
-    const room1 = event1.extendedProps.room as string | undefined;
-    if (!event1.end || !room1) {
+  const getDistanceWarning = (thisEvent: EventApi) => {
+    const thisRoom = thisEvent.extendedProps.room as string | undefined;
+    if (!thisEvent.start || !thisRoom) {
       return undefined;
     }
 
-    for (const event2 of events) {
-      if (!event2.start || !event2.room) {
+    for (const beforeEvent of events) {
+      if (!beforeEvent.start || !beforeEvent.room) {
         continue;
       }
-      if (event1.end.getTime() != event2.start.getTime()) {
-        continue;
-      }
-
-      // Extract building numbers from room numbers
-      const building1 = room1.split("-")[0].trim();
-      const building2 = event2.room.split("-")[0].trim();
-
-      // Get coordinates of each building
-      const location1 = state.locations.get(building1);
-      const location2 = state.locations.get(building2);
-
-      if (!location1 || !location2) {
+      if (thisEvent.start.getTime() != beforeEvent.end.getTime()) {
         continue;
       }
 
-      // Approximate distance (in feet) between the two buildings using Pythagoras
-      const distance = (() => {
-        const dx = location1.x - location2.x;
-        const dy = location1.y - location2.y;
-        return Math.sqrt(dx * dx + dy * dy);
-      })();
+      const thisBuilding = getBuildingNumber(thisRoom);
+      const beforeBuilding = getBuildingNumber(beforeEvent.room);
 
-      if (distance < DISTANCE_WARNING_THRESHOLD) {
+      // Approximate distance (in feet) between the two buildings
+      const distance = getDistance(thisBuilding, beforeBuilding);
+
+      if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
       }
 
@@ -83,7 +90,7 @@ export function Calendar() {
 
       return (
         <Text>
-          Warning: distance from {building1} to {building2} is{" "}
+          Warning: distance from {beforeBuilding} to {thisBuilding} is{" "}
           {formattedDistance}
           <br />
           (about a {mins}-minute walk)
@@ -111,28 +118,41 @@ export function Calendar() {
     const distanceWarning = getDistanceWarning(event);
 
     return (
-      <Box
-        color={event.textColor}
-        p={0.5}
-        lineHeight={1.3}
-        cursor="pointer"
-        height="100%"
-        position="relative"
-      >
-        {!(activity instanceof CustomActivity) ? (
-          <Tooltip
-            content={activity.name}
-            portalled
-            positioning={{ placement: "top" }}
-          >
-            {TitleText()}
-          </Tooltip>
-        ) : (
-          <TitleText />
-        )}
-        <Text fontSize="xs">{room}</Text>
+      <>
+        <Box
+          color={event.textColor}
+          overflow="hidden"
+          p={0.5}
+          lineHeight={1.3}
+          cursor="pointer"
+          height="100%"
+          position="relative"
+        >
+          {!(activity instanceof CustomActivity) ? (
+            <Tooltip
+              content={activity.name}
+              portalled
+              positioning={{ placement: "top" }}
+            >
+              {TitleText()}
+            </Tooltip>
+          ) : (
+            <TitleText />
+          )}
+          {event.extendedProps.roomClarification ? (
+            <Tooltip
+              content={event.extendedProps.roomClarification as string}
+              portalled
+              positioning={{ placement: "top" }}
+            >
+              <Text fontSize="xs">{room}</Text>
+            </Tooltip>
+          ) : (
+            <Text fontSize="xs">{room}</Text>
+          )}
+        </Box>
         {distanceWarning ? (
-          <Float placement="bottom-end">
+          <Float placement="top-end">
             <Tooltip
               content={distanceWarning}
               portalled
@@ -149,7 +169,7 @@ export function Calendar() {
             </Tooltip>
           </Float>
         ) : null}
-      </Box>
+      </>
     );
   };
 

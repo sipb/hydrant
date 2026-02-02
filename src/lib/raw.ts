@@ -229,6 +229,8 @@ export interface RawPEClass {
   pirate: boolean;
   /** Satisfies swim GIR */
   swimGIR: boolean;
+  /** Remote status */
+  remote: boolean;
 
   /** Prereqs, no specific format */
   prereqs: string;
