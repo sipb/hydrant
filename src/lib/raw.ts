@@ -89,7 +89,7 @@ export interface RawClass {
   half: number | false;
   /** True if limited enrollment */
   limited: boolean;
-  /** True if subject is new */
+  /** True if subject is new, e.g., special subject */
   new: boolean;
 
   /** Rating (out of 7.0) from evals */
