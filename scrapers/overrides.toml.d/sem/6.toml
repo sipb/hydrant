@@ -18,6 +18,7 @@ lectureRawSections = ["2-131/R/0/7-10"]
 lectureSections = [[[[104, 6]], "2-131"]]
 sectionKinds = ["lecture"]
 description = "Explores moral, political, and computational foundations of AI alignment. Draws on political theory and computer science to consider how individual and collective values are elicited and embedded in AI. Topics include bureaucracy-based versus AI-based decision rules; the concept of values; fairness and welfare objectives; pluralism and democratic input; and how well technical elicitation methods can capture considered judgments. Activities include seminar discussion, periodic problem sets, short response papers, and a course research project."
+new = true
 
 ["6.S056"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S056"
@@ -41,6 +42,7 @@ Did you know that your mindset can add up to 7 years to your life? Or that only 
 Thriving in life, work, and school isn't a mystery—it’s within your grasp. Research shows that nearly half of your well-being is shaped by your daily choices. In Hack Yourself, you’ll learn how to design those choices, building a toolkit of over 60 sustainable positive habits. You’ll apply a data science approach to how you live and lead—using tools from generative AI to vibe coding to statistical analysis to validate and personalize positive psychology practices, while also applying the same data methods across domains from leadership to innovation. \n
 \n
 Instruction and practice in oral and written communication provided.  Students complete a group project in the last ¼ of the course."""
+new = true
 
 ["6.S058"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S058"
@@ -56,6 +58,7 @@ lectureRawSections = ["34-101/TR/0/2.30-4"]
 lectureSections = [[[[51, 3], [119, 3]], "34-101"]]
 sectionKinds = ["lecture"]
 description = "Provides an introduction to computer vision, covering topics from early vision to mid- and high-level vision, including low-level image analysis, edge detection, image transformations for image synthesis, methods for 3D scene reconstruction, motion analysis and tracking. Additionally, presents basics of machine learning, convolutional neural networks, and transformers in the context of image and video data for object classification, detection, and segmentation."
+new = true
 
 ["6.S080"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S080"
@@ -69,6 +72,7 @@ isVariableUnits = false
 inCharge = "Prof. Sertac Karaman"
 prereqs = "6.100A or 6.100L"
 description = "Provides an introduction to computational principles that underlie autonomous robots and vehicles. Topics include planning on state-space graphs, estimation of probabilistic belief state, formulating constraint programs, and reinforcement learning of optimal decision-making policies."
+new = true
 
 ["6.S085"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S085"
@@ -84,6 +88,7 @@ lectureRawSections = ["E51-393/MW/0/11-12.30"]
 lectureSections = [[[[10, 3], [78, 3]], "E51-393"]]
 sectionKinds = ["lecture"]
 description = "Traces the global, material history of computing from the nineteenth century to the present. Use historical artifacts, such as World War II ciphers and thirty-pound laptops, to analyze the changing design, cultural meaning, and purposes of computing. Develops a framework for understanding how computing technologies move across national borders and shaped the modern world."
+new = true
 
 ["6.S891"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S891"
@@ -105,6 +110,7 @@ description = """
 12.S992: Climate models - Prof. Abigail Bodner\n
 \n
 Examines applications of artificial intelligence and machine learning to climate change mitigation, adaptation, and monitoring. Introduces the physical science of climate change, data-driven modeling and observation, and approaches for decision-making in domains such as climate modeling, biodiversity, and energy systems. Includes common (‘merged’) lectures on climate fundamentals followed by domain-specific sections (‘forks’) focusing on advanced methods such as physics-informed learning, data assimilation, and uncertainty quantification.  Within each ‘fork’, students present, critique, and lead discussions of current research papers and develop a written research proposal applying machine learning methods to the track’s focus area.  ‘Merged’ sessions later in the term synthesize lessons and foster exchange across domains. Both graduate and undergraduate students are encouraged to register."""
+new = true
 
 ["6.S895"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S895"
@@ -122,6 +128,7 @@ lectureRawSections = ["3-329/T/0/10.30-12.30"]
 lectureSections = [[[[43, 4]], "3-329"]]
 sectionKinds = ["lecture"]
 description = "The goal of the class is to explore the intersection of textile fabrication, computational design, and design thinking. Students will learn how computational methods can transform knitting from a traditional craft into a precise digital fabrication technique for creating complex tensile structures and geometric components. By using the 3D knitting machine, students will gain practical experience with digital knitting tools and develop an understanding of how computation enables new possibilities for textile-based architecture. No prior knitting experience required—just curiosity about the intersection of materials, code, and form."
+new = true
 
 ["6.S898"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S898"
@@ -137,6 +144,7 @@ lectureRawSections = ["32-155/TR/0/11-12.30"]
 lectureSections = [[[[44, 3], [112, 3]], "32-155"]]
 sectionKinds = ["lecture"]
 description = "As computing systems increasingly rely on parallelism, understanding how to design efficient parallel algorithms has become essential. This graduate-level theory course introduces the fundamental principles of, and the algorithm design techniques for exploiting, parallelism in computation. The focus will be on algorithmic tools and techniques, in the context of rigorous models of parallel computation."
+new = true
 
 ["6.S899"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S899"
@@ -154,6 +162,7 @@ lectureSections = [[[[42, 4], [110, 4]], "32-044"]]
 recitationSections = [[[[148, 4]], "32-044"]]
 sectionKinds = ["lecture", "recitation"]
 description = "A time series is a set of time-stamped observations that capture an evolving process, often affected by noise. These observations may be interdependent in a specific yet unknown manner. Examples of time series include stock prices, currency exchange rates relative to the dollar, average housing prices, the number of Covid-19 infections, or the pitch angle of an airplane during flight. Modeling these processes for prediction or intervention is a fundamental challenge in statistical learning. This course provides a foundation for understanding, predicting, and intervening in such processes."
+new = true
 
 ["6.S955"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S955"
@@ -169,6 +178,7 @@ lectureRawSections = ["32-155/MW/0/1-2.30"]
 lectureSections = [[[[14, 3], [82, 3]], "32-155"]]
 sectionKinds = ["lecture"]
 description = "This class covers of machine learning and signal processing as they pertain to the development of systems that can understand complex real-world signals, such as speech, images, movies, music, biological and mechanical readings, etc. It focuses on developing a strong unifying perspective between machine learning and signal processing, covering both classical techniques, but also many of the latest developments. Subjects include hands-on examples of how to decompose, analyze, classify, detect and consolidate signals, and we examine various commonplace operations such as finding faces from camera feeds, organizing personal music collections, designing speech dialog systems, focusing radio arrays, etc. Graduate credit includes extra homework assignments and a final project."
+new = true
 
 ["6.S976"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S976"
@@ -185,6 +195,7 @@ lectureRawSections = ["24-115/TR/0/11-12.30"]
 lectureSections = [[[[44, 3], [112, 3]], "24-115"]]
 sectionKinds = ["lecture"]
 description = "Cryptography offers a playbook for building trust on untrusted platforms. This course applies that playbook to modern machine learning. We will study how cryptographic modeling and tools—ranging from privacy-preserving algorithms to interactive proofs and debate protocols—can endow ML systems with privacy, verifiability, and reliability. Topics include mechanisms for data and model privacy; methods to verify average-case quality and certify worst-case correctness; and strategies for robustness and alignment across discriminative and generative models. By the end, students will see the contours of a new field at the Crypto × ML interface and identify concrete problems in trustworthy ML that benefit from cryptographic thinking and techniques."
+new = true
 
 ["6.S977"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S977"
@@ -203,6 +214,7 @@ description = """
 Focuses on the human-facing considerations in the pipeline of machine learning (ML) development in human-facing systems like healthcare, employment, and education. Topics covered include algorithmic fairness, sources of model error/bias, model robustness, human/model evaluations, and policy. Pertinent issues co-occurring in society will be discussed, and course projects will emphasize the technical and ethical challenges of using machine learning in human systems. \n
 \n
 For more information: https://canvas.mit.edu/courses/37283"""
+new = true
 
 ["6.S984"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S984"
@@ -221,6 +233,7 @@ description = """
 Warehouse-scale datacenters host a wide range of online services, including social networks, web search, video streaming, machine learning, and serverless workloads. In this course, we will study the end-to-end stack of modern datacenters, from hardware and OS all the way to resource managers and programming frameworks. We will also explore cross-cutting issues, such as total cost of ownership, service level objectives, availability, and reliability. The course is a combination of lectures and paper readings. Students will read up to two papers per topic and submit brief summaries. During class meetings, we will start with a student presentation of the papers followed by an in-class discussion. The main deliverable for the course is a semester-long group project which should address an open research problem in modern cloud environments (project suggestions will be provided by the instructor, but students are also welcome to propose their own). \n
  \n
 The class is appropriate for graduate and advanced undergraduate students who want to learn more about cloud computing and datacenter systems."""
+new = true
 
 ["6.S985"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S985"
@@ -237,6 +250,7 @@ lectureRawSections = ["E14-633/TR/0/2.30-4"]
 lectureSections = [[[[51, 3], [119, 3]], "E14-633"]]
 sectionKinds = ["lecture"]
 description = "Artificial Intelligence (AI) holds great promise to enhance digital productivity, physical interactions, overall well-being, and the human experience. To enable the true impact of AI, these systems will need to be grounded in many real-world data modalities, from language-only systems to holistically integrating vision, audio, sensors, medical data, music, art, smell, taste, and more. This course introduces the principles of multimodal AI that can process many modalities at once, such as connecting language and images, music and art, sensing and actuation, and more. We will cover AI methods to (1) represent and fuse heterogeneous and interconnected data sources, (2) align data across different views, (3) reason over multiple steps with many modalities, (4) generate new multimodal content, (5) transfer knowledge from high-resource to low-resource data, and (6) quantify the principles of multimodal AI for safe, ethical, and human-aligned deployment."
+new = true
 
 ["6.S986"]
 url = "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/#6_S986"
@@ -252,3 +266,4 @@ lectureRawSections = ["32-144/TR/0/2.30-4"]
 lectureSections = [[[[51, 3], [119, 3]], "32-144"]]
 sectionKinds = ["lecture"]
 description = "Investigates modern algorithms and theory for in uncertainty quantification at an advanced graduate level. Covers widely-used methods such as (Bayesian) deep ensembles, calibration, and conformal prediction, as well as their underlying motivation and theoretical support. Subsequently, the course surveys research literature from the last few years. Intended for PhD students with research interests in statistics, machine learning, or similar."
+new = true

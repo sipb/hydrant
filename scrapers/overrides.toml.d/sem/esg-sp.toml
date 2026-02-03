@@ -4,14 +4,17 @@
 name = "Many Interesting Things (MIT)"
 inCharge = "Christian Cardozo"
 description = "Computation and communication: they shape our world as we know it today. But these technologies didn’t emerge from thin air—they were born from common human experience, logic, and physics. From basic Python to artificial intelligence, from building a computer to connecting millions of them across the globe: we’ll introduce these topics in an accessible way for everyone, regardless of background. By term’s end, we’ll have explored many of the interesting classes of MIT, but without the pressure of actually being in them—learning for learning’s sake. No prereqs, no psets, no pressure!"
+new = true
 
 ["ES.S11"]
 name = "Trieste Project"
+new = true
 
 ["ES.S50"]
 name = "Composing the Cosmos: Music, Science, and Cultural Heritage"
 inCharge = "Brian Urra"
 description = "Whether you have musical experience, or are new to music, learn about fundamental ideas and concepts that you can apply to compose music that relates to your scientific interests and cultural heritage! We will start from a six-movement orchestral suite (composed by the instructor) that explores black holes while engaging with the cultural and natural landscapes of the Atacama Desert and the traditions of Música Andina. Over the course of the semester you will create your own multidisciplinary project, synthesizing original music composition, visual media, and science. We will celebrate the end of the semester with a class concert, during which the students’ projects will be played by professional musicians."
+new = true
 
 ["ES.S70"]
 name = "Hack Yourself: Data-Driven Wellbeing and Learning"
@@ -22,11 +25,13 @@ recitationRawSections = ["36-112/T/0/2-3"]
 lectureSections = [[[[146, 4]], "32-141"]]
 recitationSections = [[[[50, 2]], "36-112"]]
 sectionKinds = ["lecture", "recitation"]
+new = true
 
 ["ES.S71"]
 name = "Transformers and Neural Networks"
 inCharge = "Alexis Montecinos"
 description = "This 6-week seminar offers an introduction to Artificial Intelligence (AI) and its real-world applications through neural networks, image recognition, time series forecasting, and natural language processing (NLP). Designed for students with basic Python skills, the seminar combines conceptual learning with hands-on coding to help participants understand how machines can learn from data to make predictions, recognize patterns, and interpret human language. This seminar provides a comprehensive overview of advanced AI techniques using Python. Students will learn to implement deep neural networks across medicine, business, finance, and other scientific and technological domains."
+new = true
 
 ["ES.7016"]
 name = "Introductory Biology"

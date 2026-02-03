@@ -6,6 +6,7 @@ description = "Traces the global, material history of computing from the ninetee
 inCharge = "B. Lindquist"
 hass = ["H"]
 url = "https://history.mit.edu/subjects/special-subject-history/"
+new = true
 
 ["21H.S04"]
 name = "The Global Offshore"
@@ -13,3 +14,4 @@ description = "This course explores the history of the offshore world from the a
 inCharge = "I. Kumekawa"
 url = "https://history.mit.edu/subjects/special-subject-history-4/"
 hass = ["H"]
+new = true
