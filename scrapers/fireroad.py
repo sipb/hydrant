@@ -210,18 +210,16 @@ def parse_quarter_info(
         dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
     """
 
-    has_quarter_info = "quarter_information" in course
-    quarter_info: str = ""
+    quarter_info: str = course.get("quarter_information", "")  # type: ignore
 
-    if has_quarter_info:
-        if term == Term.FA and "quarter_information_fall" in course:
-            quarter_info = course["quarter_information_fall"]  # type: ignore
-        elif term == Term.JA and "quarter_information_IAP" in course:
-            quarter_info = course["quarter_information_IAP"]  # type: ignore
-        elif term == Term.SP and "quarter_information_spring" in course:
-            quarter_info = course["quarter_information_spring"]  # type: ignore
-        elif term == Term.SU and "quarter_information_summer" in course:
-            quarter_info = course["quarter_information_summer"]  # type: ignore
+    if term == Term.FA and "quarter_information_fall" in course:
+        quarter_info = course["quarter_information_fall"]  # type: ignore
+    elif term == Term.JA and "quarter_information_IAP" in course:
+        quarter_info = course["quarter_information_IAP"]  # type: ignore
+    elif term == Term.SP and "quarter_information_spring" in course:
+        quarter_info = course["quarter_information_spring"]  # type: ignore
+    elif term == Term.SU and "quarter_information_summer" in course:
+        quarter_info = course["quarter_information_summer"]  # type: ignore
 
     if quarter_info:
         quarter_info_list = quarter_info.split(",")
