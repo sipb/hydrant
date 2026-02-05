@@ -210,16 +210,14 @@ def parse_quarter_info(
         dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
     """
 
-    quarter_info: str = course.get("quarter_information", "")  # type: ignore
+    quarter_info: str
 
-    if term == Term.FA and "quarter_information_fall" in course:
-        quarter_info = course["quarter_information_fall"]  # type: ignore
-    elif term == Term.JA and "quarter_information_IAP" in course:
-        quarter_info = course["quarter_information_IAP"]  # type: ignore
-    elif term == Term.SP and "quarter_information_spring" in course:
-        quarter_info = course["quarter_information_spring"]  # type: ignore
-    elif term == Term.SU and "quarter_information_summer" in course:
-        quarter_info = course["quarter_information_summer"]  # type: ignore
+    if any(f"quarter_information_{t.value}" in course for t in Term):
+        # This course has quarter information by term, so look up the one for this term
+        quarter_info = course.get(f"quarter_information_{term.value}", "")
+    else:
+        # Fall back to general quarter information
+        quarter_info = course.get("quarter_information", "")
 
     if quarter_info:
         quarter_info_list = quarter_info.split(",")
@@ -358,30 +356,26 @@ def get_course_data(
     if term.name not in raw_class["terms"]:  # type: ignore
         return False
 
-    has_schedule = "schedule" in course
+    has_schedule = True
 
     # tba, sectionKinds, lectureSections, recitationSections, labSections,
     # designSections, lectureRawSections, recitationRawSections, labRawSections,
     # designRawSections
-    if has_schedule:
-        try:
-            if term == Term.FA and "schedule_fall" in course:
-                raw_class.update(
-                    parse_schedule(course["schedule_fall"])  # type: ignore
-                )
-            elif term == Term.JA and "schedule_IAP" in course:
-                raw_class.update(parse_schedule(course["schedule_IAP"]))  # type: ignore
-            elif term == Term.SP and "schedule_spring" in course:
-                raw_class.update(
-                    parse_schedule(course["schedule_spring"])  # type: ignore
-                )
-            else:
-                raw_class.update(parse_schedule(course["schedule"]))  # type: ignore
-        except ValueError as val_err:
-            # if we can't parse the schedule, warn
-            # NOTE: parse_schedule will raise a ValueError
-            print(f"Can't parse schedule {course_code}: {val_err!r}")
-            has_schedule = False
+    try:
+        if any(f"schedule_{t.value}" in course for t in Term):
+            # This course has schedule information by term, so look up the one for this term
+            raw_class.update(parse_schedule(course[f"schedule_{term.value}"]))
+        else:
+            # Fall back to general quarter information
+            raw_class.update(parse_schedule(course["schedule"]))
+    except KeyError:
+        has_schedule = False
+    except ValueError as val_err:
+        # if we can't parse the schedule, warn
+        # NOTE: parse_schedule will raise a ValueError
+        print(f"Can't parse schedule {course_code}: {val_err!r}")
+        has_schedule = False
+
     if not has_schedule:
         raw_class.update(
             {
