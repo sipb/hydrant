@@ -1,43 +1,36 @@
-import { Card, IconButton, Flex, Image, Text, Button } from "@chakra-ui/react";
+import { useState, useRef, useContext } from "react";
+import { useSearchParams } from "react-router";
+
+import {
+  Card,
+  IconButton,
+  Flex,
+  Image,
+  Text,
+  Button,
+  createListCollection,
+  Dialog,
+  Select,
+  Portal,
+} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { LuSettings, LuX } from "react-icons/lu";
 
-import {
-  DialogRoot,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogActionTrigger,
-} from "./ui/dialog";
-import { useColorModeValue } from "./ui/color-mode";
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "./ui/select";
-
-import { createListCollection } from "@chakra-ui/react";
-
-import { State } from "../lib/state";
-import { useState, useRef } from "react";
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
-import { Preferences, DEFAULT_PREFERENCES } from "../lib/schema";
+import { MEASUREMENT_SYSTEM_PRESETS } from "../lib/measurement";
+import type { Preferences } from "../lib/schema";
+import { DEFAULT_PREFERENCES } from "../lib/schema";
+import { HydrantContext } from "../lib/hydrant";
 
 import logo from "../assets/logo.svg";
 import logoDark from "../assets/logo-dark.svg";
 import hydraAnt from "../assets/hydraAnt.png";
-import { SIPBLogo } from "./SIPBLogo";
+import { SIPBLogo } from "./ButtonsLinks";
 
-export function PreferencesDialog(props: {
-  state: State;
-  preferences: Preferences;
-}) {
-  const { preferences: originalPreferences, state } = props;
+export function PreferencesDialog() {
+  const { state, hydrantState } = useContext(HydrantContext);
+  const { preferences: originalPreferences } = hydrantState;
+
   const [visible, setVisible] = useState(false);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
   const initialPreferencesRef = useRef(DEFAULT_PREFERENCES);
@@ -65,80 +58,172 @@ export function PreferencesDialog(props: {
     setVisible(false);
   };
 
+  const colorSchemeCollection = createListCollection({
+    items: [
+      { label: "System Default", value: "" },
+      ...COLOR_SCHEME_PRESETS.map(({ name }) => ({
+        label: name,
+        value: name,
+      })),
+    ],
+  });
+
+  const measurementSystemCollection = createListCollection({
+    items: [
+      { label: "System Default", value: "" },
+      ...MEASUREMENT_SYSTEM_PRESETS.map(({ name }) => ({
+        label: name,
+        value: name,
+      })),
+    ],
+  });
+
   return (
     <>
-      <DialogRoot
+      <Dialog.Root
         open={visible}
-        onOpenChange={(e) => (e.open ? onOpen() : onCancel())}
+        onOpenChange={(e) => {
+          if (e.open) {
+            onOpen();
+          } else {
+            onCancel();
+          }
+        }}
       >
-        <DialogTrigger asChild>
+        <Dialog.Trigger asChild>
           <IconButton size="sm" aria-label="Change theme" variant="outline">
             <LuSettings />
           </IconButton>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Preferences</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            <Flex gap={4}>
-              <SelectRoot
-                collection={createListCollection({
-                  items: COLOR_SCHEME_PRESETS.map(({ name }) => ({
-                    label: name,
-                    value: name,
-                  })),
-                })}
-                value={[preferences.colorScheme.name]}
-                onValueChange={(e) => {
-                  const colorScheme = COLOR_SCHEME_PRESETS.find(
-                    ({ name }) => name === e.value[0],
-                  );
-                  if (!colorScheme) return;
-                  previewPreferences({ ...preferences, colorScheme });
-                }}
-              >
-                <SelectLabel>Color scheme:</SelectLabel>
-                <SelectTrigger>
-                  <SelectValueText />
-                </SelectTrigger>
-                <SelectContent portalled={false}>
-                  {COLOR_SCHEME_PRESETS.map(({ name }) => (
-                    <SelectItem item={name} key={name}>
-                      {name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            </Flex>
-          </DialogBody>
-          <DialogFooter>
-            <DialogActionTrigger asChild>
-              <Button>Cancel</Button>
-            </DialogActionTrigger>
-            <Button onClick={onConfirm}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
+        </Dialog.Trigger>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>Preferences</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Flex gap={4}>
+                  <Select.Root
+                    collection={colorSchemeCollection}
+                    value={[preferences.colorScheme?.name ?? ""]}
+                    onValueChange={(e) => {
+                      if (e.value[0] === "") {
+                        previewPreferences({
+                          ...preferences,
+                          colorScheme: null,
+                        });
+                        return;
+                      }
+
+                      const colorScheme = COLOR_SCHEME_PRESETS.find(
+                        ({ name }) => name === e.value[0],
+                      );
+                      if (!colorScheme) return;
+                      previewPreferences({ ...preferences, colorScheme });
+                    }}
+                  >
+                    <Select.HiddenSelect />
+                    <Select.Label>Color scheme:</Select.Label>
+                    <Select.Control>
+                      <Select.Trigger>
+                        <Select.ValueText />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+                    <Select.Positioner>
+                      <Select.Content>
+                        {colorSchemeCollection.items.map((colorScheme) => (
+                          <Select.Item
+                            item={colorScheme}
+                            key={colorScheme.value}
+                          >
+                            {colorScheme.label}
+                            <Select.ItemIndicator />
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Select.Root>
+                  <Select.Root
+                    collection={measurementSystemCollection}
+                    value={[preferences.measurementSystem?.name ?? ""]}
+                    onValueChange={(e) => {
+                      if (e.value[0] === "") {
+                        previewPreferences({
+                          ...preferences,
+                          measurementSystem: null,
+                        });
+                        return;
+                      }
+
+                      const measurementSystem = MEASUREMENT_SYSTEM_PRESETS.find(
+                        ({ name }) => name === e.value[0],
+                      );
+                      if (!measurementSystem) return;
+                      previewPreferences({ ...preferences, measurementSystem });
+                    }}
+                  >
+                    <Select.HiddenSelect />
+                    <Select.Label>Measurement system:</Select.Label>
+                    <Select.Control>
+                      <Select.Trigger>
+                        <Select.ValueText />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+                    <Select.Positioner>
+                      <Select.Content>
+                        {measurementSystemCollection.items.map(
+                          (measurementSystem) => (
+                            <Select.Item
+                              item={measurementSystem}
+                              key={measurementSystem.value}
+                            >
+                              {measurementSystem.label}
+                              <Select.ItemIndicator />
+                            </Select.Item>
+                          ),
+                        )}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Select.Root>
+                </Flex>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.ActionTrigger asChild>
+                  <Button>Cancel</Button>
+                </Dialog.ActionTrigger>
+                <Button onClick={onConfirm}>Save</Button>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 }
 
 /** Header above the left column, with logo and semester selection. */
-export function Header(props: { state: State }) {
-  const { state } = props;
+export function Header() {
+  const { state } = useContext(HydrantContext);
   const logoSrc = useColorModeValue(logo, logoDark);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const params = new URLSearchParams(document.location.search);
-  const urlNameOrig = params.get("ti");
-  const urlName = params.get("t") ?? state.latestUrlName;
+  const urlNameOrig = searchParams.get("ti");
+  const urlName = searchParams.get("t") ?? state.latestUrlName;
 
   const [show, setShow] = useState(urlNameOrig !== null);
 
   const onClose = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete("ti");
-    window.history.pushState({}, "", url);
+    setSearchParams((searchParams) => {
+      searchParams.delete("ti");
+      return searchParams;
+    });
     setShow(false);
   };
 

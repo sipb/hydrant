@@ -1,25 +1,52 @@
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from "react";
+
 import { AgGridReact } from "ag-grid-react";
 import {
   ModuleRegistry,
-  AllCommunityModule,
+  ClientSideRowModelModule,
+  ValidationModule,
+  ExternalFilterModule,
+  RenderApiModule,
+  CellStyleModule,
+  RowStyleModule,
   themeQuartz,
   type IRowNode,
   type ColDef,
+  type Module,
 } from "ag-grid-community";
-import { Box, Flex, Image, Input, Button, ButtonGroup } from "@chakra-ui/react";
-import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import {
+  Box,
+  Flex,
+  Image,
+  Input,
+  Button,
+  ButtonGroup,
+  InputGroup,
+  CloseButton,
+} from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
-
-import { InputGroup } from "./ui/input-group";
 import { LabelledButton } from "./ui/button";
-import { useColorMode } from "./ui/color-mode";
+import { useColorModeValue } from "./ui/color-mode";
 
-import { Class, DARK_IMAGES, Flags, getFlagImg } from "../lib/class";
+import type { Class, Flags } from "../lib/class";
+import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import { State } from "../lib/state";
-import { TSemester } from "../lib/dates";
-import "./ClassTable.scss";
+import type { TSemester } from "../lib/dates";
+import { HydrantContext } from "../lib/hydrant";
+import type { State } from "../lib/state";
+import { ColorStyles } from "../lib/colors";
+
+import styles from "./ClassTable.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -33,22 +60,23 @@ const hydrantTheme = themeQuartz.withParams({
   wrapperBorderRadius: "var(--chakra-radii-md)",
 });
 
-ModuleRegistry.registerModules([AllCommunityModule]);
+const GRID_MODULES: Module[] = [
+  ClientSideRowModelModule,
+  ExternalFilterModule,
+  CellStyleModule,
+  RenderApiModule,
+  RowStyleModule,
+  ...(import.meta.env.DEV ? [ValidationModule] : []),
+];
 
-enum ColorEnum {
-  Muted = "ag-cell-muted-text",
-  Success = "ag-cell-success-text",
-  Warning = "ag-cell-warning-text",
-  Error = "ag-cell-error-text",
-  Normal = "ag-cell-normal-text",
-}
+ModuleRegistry.registerModules(GRID_MODULES);
 
 const getRatingColor = (rating?: string | null) => {
-  if (!rating || rating === "N/A") return ColorEnum.Muted;
+  if (!rating || rating === "N/A") return ColorStyles.Muted;
   const ratingNumber = Number(rating);
-  if (ratingNumber >= 6) return ColorEnum.Success;
-  if (ratingNumber >= 5) return ColorEnum.Warning;
-  return ColorEnum.Error;
+  if (ratingNumber >= 6) return ColorStyles.Success;
+  if (ratingNumber >= 5) return ColorStyles.Warning;
+  return ColorStyles.Error;
 };
 
 const getHoursColor = (
@@ -57,9 +85,9 @@ const getHoursColor = (
   term: TSemester,
   half: number | undefined,
 ) => {
-  if (!hours || hours === "N/A") return ColorEnum.Muted;
-  if (totalUnits === undefined) return ColorEnum.Muted;
-  if (totalUnits === 0) return ColorEnum.Normal;
+  if (!hours || hours === "N/A") return ColorStyles.Muted;
+  if (totalUnits === undefined) return ColorStyles.Muted;
+  if (totalUnits === 0) return ColorStyles.Normal;
 
   const hoursNumber = Number(hours);
   let weeksInTerm = 0;
@@ -83,24 +111,24 @@ const getHoursColor = (
   const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
   const proportion = hoursNumber / expectedHours;
 
-  if (proportion < 0.8) return ColorEnum.Success;
-  if (proportion >= 0.8 && proportion <= 1.2) return ColorEnum.Warning;
-  return ColorEnum.Error;
+  if (proportion < 0.8) return ColorStyles.Success;
+  if (proportion >= 0.8 && proportion <= 1.2) return ColorStyles.Warning;
+  return ColorStyles.Error;
 };
 
 /** A single row in the class table. */
-type ClassTableRow = {
+interface ClassTableRow {
   number: string;
   rating: string;
   hours: string;
   name: string;
   class: Class;
   inCharge: string;
-};
+}
 
 type ClassFilter = (cls?: Class) => boolean;
 /** Type of filter on class list; null if no filter. */
-type SetClassFilter = React.Dispatch<React.SetStateAction<ClassFilter | null>>;
+type SetClassFilter = Dispatch<SetStateAction<ClassFilter | null>>;
 
 /**
  * Textbox for typing in the name or number of the class to search. Maintains
@@ -108,32 +136,36 @@ type SetClassFilter = React.Dispatch<React.SetStateAction<ClassFilter | null>>;
  */
 function ClassInput(props: {
   /** All rows in the class table. */
-  rowData: Array<ClassTableRow>;
+  rowData: ClassTableRow[];
   /** Callback for updating the class filter. */
   setInputFilter: SetClassFilter;
-  state: State;
 }) {
-  const { rowData, setInputFilter, state } = props;
+  const { rowData, setInputFilter } = props;
+  const { state } = useContext(HydrantContext);
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
-  const searchResults =
-    useRef<Array<{ numbers: Array<string>; name: string; class: Class }>>(
-      undefined,
-    );
+  const searchResults = useRef<
+    {
+      numbers: string[];
+      name: string;
+      class: Class;
+    }[]
+  >(undefined);
 
   const processedRows = useMemo(
     () =>
       rowData.map((data) => {
         const numbers = [data.number];
         const [, otherNumber, realName] =
-          data.name.match(/^\[(.*)\] (.*)$/) ?? [];
+          /^\[(.*)\] (.*)$/.exec(data.name) ?? [];
         if (otherNumber) numbers.push(otherNumber);
         return {
           numbers,
-          name: simplifyString(realName ?? data.name),
+          name: simplifyString(realName || data.name),
           class: data.class,
           inCharge: simplifyString(data.inCharge),
         };
@@ -174,6 +206,17 @@ function ClassInput(props: {
     }
   };
 
+  const clearButton = classInput ? (
+    <CloseButton
+      size="xs"
+      onClick={() => {
+        onClassInputChange("");
+        inputRef.current?.focus();
+      }}
+      me="-2"
+    />
+  ) : undefined;
+
   return (
     <Flex justify="center">
       <form
@@ -183,14 +226,21 @@ function ClassInput(props: {
         }}
         style={{ width: "100%", maxWidth: "30em" }}
       >
-        <InputGroup startElement={<LuSearch />} width="fill-available">
+        <InputGroup
+          startElement={<LuSearch />}
+          endElement={clearButton}
+          width="fill-available"
+        >
           <Input
-            type="text"
+            type="search"
             aria-label="Search for a class"
             id="class-search"
             placeholder="Class number, name, or instructor"
             value={classInput}
-            onChange={(e) => onClassInputChange(e.target.value)}
+            ref={inputRef}
+            onChange={(e) => {
+              onClassInputChange(e.target.value);
+            }}
           />
         </InputGroup>
       </form>
@@ -198,8 +248,14 @@ function ClassInput(props: {
   );
 }
 
-type Filter = keyof Flags | "fits" | "starred";
-type FilterGroup = Array<[Filter, string, React.ReactNode?]>;
+const filtersNonFlags = {
+  fits: (state, cls) => state.fitsSchedule(cls),
+  starred: (state, cls) => state.isClassStarred(cls),
+  new: (_, cls) => cls.new,
+} satisfies Record<string, (state: State, cls: Class) => boolean>;
+
+type Filter = keyof Flags | keyof typeof filtersNonFlags;
+type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
@@ -208,6 +264,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["cim", "CI-M"],
   ["fits", "Fits schedule"],
+  ["new", "✨ New!"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
@@ -228,7 +285,7 @@ const CLASS_FLAGS_3: FilterGroup = [
 /** Third row of hidden filter IDs. */
 const CLASS_FLAGS_4: FilterGroup = [
   ["rest", "REST", getFlagImg("rest")],
-  ["Lab", "Institute Lab", getFlagImg("Lab")],
+  ["lab", "Institute Lab", getFlagImg("lab")],
   ["hassA", "HASS-A", getFlagImg("hassA")],
   ["hassH", "HASS-H", getFlagImg("hassH")],
   ["hassS", "HASS-S", getFlagImg("hassS")],
@@ -247,11 +304,11 @@ const CLASS_FLAGS = [
 function ClassFlags(props: {
   /** Callback for updating the class filter. */
   setFlagsFilter: SetClassFilter;
-  state: State;
   /** Callback for updating the grid filter manually. */
   updateFilter: () => void;
 }) {
-  const { setFlagsFilter, state, updateFilter } = props;
+  const { setFlagsFilter, updateFilter } = props;
+  const { state } = useContext(HydrantContext);
 
   // Map from flag to whether it's on.
   const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
@@ -268,7 +325,11 @@ function ClassFlags(props: {
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
   useEffect(() => {
-    state.fitsScheduleCallback = () => flags.get("fits") && updateFilter();
+    state.fitsScheduleCallback = () => {
+      if (flags.get("fits")) {
+        updateFilter();
+      }
+    };
   }, [state, flags, updateFilter]);
 
   const onChange = (flag: Filter, value: boolean) => {
@@ -282,15 +343,16 @@ function ClassFlags(props: {
       if (!cls) return false;
       let result = true;
       newFlags.forEach((value, flag) => {
-        if (value && flag === "fits" && !state.fitsSchedule(cls)) {
-          result = false;
-        } else if (value && flag === "starred" && !state.isClassStarred(cls)) {
+        if (
+          value &&
+          flag in filtersNonFlags &&
+          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+        ) {
           result = false;
         } else if (
           value &&
-          flag !== "fits" &&
-          flag !== "starred" &&
-          !cls.flags[flag]
+          !(flag in filtersNonFlags) &&
+          !cls.flags[flag as keyof typeof cls.flags]
         ) {
           result = false;
         }
@@ -298,7 +360,11 @@ function ClassFlags(props: {
       return result;
     });
   };
-  const { colorMode } = useColorMode();
+
+  const filter = useColorModeValue(
+    (_flags: keyof Flags) => "",
+    (flag: keyof Flags) => (DARK_IMAGES.includes(flag) ? "invert()" : ""),
+  );
 
   const renderGroup = (group: FilterGroup) => {
     return (
@@ -320,25 +386,25 @@ function ClassFlags(props: {
               // if image is a string, it's a path to an image
               <LabelledButton
                 key={flag}
-                onClick={() => onChange(flag, !checked)}
+                onClick={() => {
+                  onChange(flag, !checked);
+                }}
                 title={label}
                 variant={checked ? "solid" : "outline"}
               >
                 <Image
                   src={image}
                   alt={label}
-                  filter={
-                    colorMode === "dark" && DARK_IMAGES.includes(flag ?? "")
-                      ? "invert()"
-                      : ""
-                  }
+                  filter={filter(flag as keyof Flags)}
                 />
               </LabelledButton>
             ) : (
               // image is a react element, like an icon
               <Button
                 key={flag}
-                onClick={() => onChange(flag, !checked)}
+                onClick={() => {
+                  onChange(flag, !checked);
+                }}
                 aria-label={label}
                 variant={checked ? "solid" : "outline"}
               >
@@ -348,7 +414,9 @@ function ClassFlags(props: {
           ) : (
             <Button
               key={flag}
-              onClick={() => onChange(flag, !checked)}
+              onClick={() => {
+                onChange(flag, !checked);
+              }}
               variant={checked ? "solid" : "outline"}
             >
               {label}
@@ -363,7 +431,13 @@ function ClassFlags(props: {
     <Flex direction="column" align="center" gap={2}>
       <Flex align="center">
         {renderGroup(CLASS_FLAGS_1)}
-        <Button onClick={() => setAllFlags(!allFlags)} size="sm" ml={2}>
+        <Button
+          onClick={() => {
+            setAllFlags(!allFlags);
+          }}
+          size="sm"
+          ml={2}
+        >
           {allFlags ? <LuMinus /> : <LuPlus />}
           {allFlags ? "Less filters" : "More filters"}
         </Button>
@@ -381,14 +455,14 @@ function ClassFlags(props: {
 
 const StarButton = ({
   cls,
-  state,
   onStarToggle,
 }: {
   cls: Class;
-  state: State;
   onStarToggle?: () => void;
 }) => {
+  const { state } = useContext(HydrantContext);
   const isStarred = state.isClassStarred(cls);
+
   return (
     <Button
       onClick={(e) => {
@@ -406,17 +480,16 @@ const StarButton = ({
 };
 
 /** The table of all classes, along with searching and filtering with flags. */
-export function ClassTable(props: {
-  classes: Map<string, Class>;
-  state: State;
-}) {
-  const { classes, state } = props;
-  const gridRef = useRef<AgGridReact>(null);
+export function ClassTable() {
+  const { state } = useContext(HydrantContext);
+  const { classes } = state;
+
+  const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
     const initialSort = "asc" as const;
-    const sortingOrder: Array<"asc" | "desc"> = ["asc", "desc"];
+    const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
     const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     const numberSortProps = {
       // sort by number, N/A is infinity, tiebreak with class number
@@ -443,8 +516,8 @@ export function ClassTable(props: {
         cellRenderer: (params: { value: string; data: ClassTableRow }) => (
           <StarButton
             cls={params.data.class}
-            state={state}
             onStarToggle={() => {
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               gridRef.current?.api?.refreshCells({
                 force: true,
                 columns: ["number"],
@@ -461,6 +534,7 @@ export function ClassTable(props: {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
+        cellClass: [styles["underline-on-hover"], styles.overflow],
         ...sortProps,
       },
       {
@@ -481,7 +555,13 @@ export function ClassTable(props: {
           ),
         ...numberSortProps,
       },
-      { field: "name", sortable: false, flex: 1 },
+      {
+        field: "name",
+        sortable: false,
+        flex: 1,
+        valueFormatter: (params) =>
+          (params.data?.class.new ? "✨ " : "") + (params.value ?? ""),
+      },
     ];
   }, [state]);
 
@@ -490,21 +570,18 @@ export function ClassTable(props: {
   }, []);
 
   // Setup rows
-  const rowData = useMemo(() => {
-    const rows: Array<ClassTableRow> = [];
-    classes.forEach((cls) => {
-      const { number, evals, name, description } = cls;
-      rows.push({
-        number: number,
-        rating: evals.rating.slice(0, 3), // remove the "/7.0" if exists
-        hours: evals.hours,
-        name: name,
+  const rowData: ClassTableRow[] = useMemo(
+    () =>
+      Array.from(classes.values(), (cls) => ({
+        number: cls.number,
+        rating: cls.evals.rating.slice(0, 3), // remove the "/7.0" if exists
+        hours: cls.evals.hours,
+        name: cls.name,
         class: cls,
-        inCharge: description.inCharge,
-      });
-    });
-    return rows;
-  }, [classes]);
+        inCharge: cls.description.inCharge,
+      })),
+    [classes],
+  );
 
   const [inputFilter, setInputFilter] = useState<ClassFilter | null>(null);
   const [flagsFilter, setFlagsFilter] = useState<ClassFilter | null>(null);
@@ -519,25 +596,23 @@ export function ClassTable(props: {
 
   // Need to notify grid every time we update the filter
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     gridRef.current?.api?.onFilterChanged();
   }, [doesExternalFilterPass]);
 
   return (
     <Flex direction="column" gap={4}>
-      <ClassInput
-        rowData={rowData}
-        setInputFilter={setInputFilter}
-        state={state}
-      />
+      <ClassInput rowData={rowData} setInputFilter={setInputFilter} />
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
-        state={state}
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
         <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
+          rowClass={styles.row}
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={rowData}
@@ -545,8 +620,12 @@ export function ClassTable(props: {
           enableCellTextSelection={true}
           isExternalFilterPresent={() => true}
           doesExternalFilterPass={doesExternalFilterPass}
-          onRowClicked={(e) => state.setViewedActivity(e.data?.class)}
-          onRowDoubleClicked={(e) => state.toggleActivity(e.data?.class)}
+          onRowClicked={(e) => {
+            state.setViewedActivity(e.data?.class);
+          }}
+          onRowDoubleClicked={(e) => {
+            state.toggleActivity(e.data?.class);
+          }}
           // these have to be set here, not in css:
           headerHeight={40}
           rowHeight={40}

@@ -1,74 +1,116 @@
-import { Flex, Link, Text, Button, Image } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import {
-  DialogRoot,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogActionTrigger,
-} from "./ui/dialog";
-
-import { State } from "../lib/state";
+  Flex,
+  Link as ChakraLink,
+  Text,
+  Button,
+  Image,
+  Dialog,
+  Portal,
+} from "@chakra-ui/react";
+import { Link } from "react-router";
 
 import fuzzAndAnt from "../assets/fuzzAndAnt.png";
+import { HydrantContext } from "../lib/hydrant";
 
 function AboutDialog() {
   const [visible, setVisible] = useState(false);
 
   return (
     <>
-      <Link onClick={() => setVisible(true)} colorPalette="blue">
-        About
-      </Link>
-      <DialogRoot open={visible} onOpenChange={() => setVisible(false)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Hydrant</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            <Flex direction="column" gap={4}>
-              <Text>
-                Hydrant is a student-run class planner for MIT students,
-                maintained by SIPB, the{" "}
-                <Link href="https://sipb.mit.edu/" colorPalette="blue">
-                  Student Information Processing Board
-                </Link>
-                .
-              </Text>
-              <Text>
-                We welcome contributions! View the source code or file issues on{" "}
-                <Link
-                  href="https://github.com/sipb/hydrant"
-                  colorPalette="blue"
-                >
-                  GitHub
-                </Link>
-                , or come to a SIPB meeting and ask how to help.
-              </Text>
-              <Text>
-                We'd like to thank CJ Quines '23 for creating Hydrant and Edward
-                Fan '19 for creating{" "}
-                <Link href="https://firehose.guide/" colorPalette="blue">
-                  Firehose
-                </Link>
-                , the basis for Hydrant. We'd also like to thank the{" "}
-                <Link href="https://fireroad.mit.edu/" colorPalette="blue">
-                  FireRoad
-                </Link>{" "}
-                team for collaborating with us.
-              </Text>
-            </Flex>
-          </DialogBody>
-          <DialogFooter>
-            <DialogActionTrigger asChild>
-              <Button>Close</Button>
-            </DialogActionTrigger>
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
+      <Dialog.Root
+        lazyMount
+        open={visible}
+        onOpenChange={(e) => {
+          setVisible(e.open);
+        }}
+      >
+        <Dialog.Trigger asChild>
+          <ChakraLink colorPalette="blue">About</ChakraLink>
+        </Dialog.Trigger>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>Hydrant</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Flex direction="column" gap={4}>
+                  <Text>
+                    Hydrant is a student-run class planner for MIT students,
+                    maintained by SIPB, the{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        to="https://sipb.mit.edu/"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Student Information Processing Board
+                      </Link>
+                    </ChakraLink>
+                    .
+                  </Text>
+                  <Text>
+                    We welcome contributions! View the source code or file
+                    issues on{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://github.com/sipb/hydrant"
+                      >
+                        GitHub
+                      </Link>
+                    </ChakraLink>
+                    , or come to a SIPB meeting and ask how to help.
+                  </Text>
+                  <Text>
+                    We'd like to thank CJ Quines '23 for creating Hydrant and
+                    Edward Fan '19 for creating{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://firehose.guide/"
+                      >
+                        Firehose
+                      </Link>
+                    </ChakraLink>
+                    , the basis for Hydrant. We'd also like to thank the{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://fireroad.mit.edu/"
+                      >
+                        FireRoad
+                      </Link>
+                    </ChakraLink>{" "}
+                    team and{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://physicaleducationandwellness.mit.edu/"
+                      >
+                        DAPER
+                      </Link>
+                    </ChakraLink>{" "}
+                    for collaborating with us.
+                  </Text>
+                </Flex>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.ActionTrigger asChild>
+                  <Button>Close</Button>
+                </Dialog.ActionTrigger>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 }
@@ -78,43 +120,80 @@ function PrivacyPolicyDialog() {
 
   return (
     <>
-      <Link onClick={() => setVisible(true)} colorPalette="blue">
-        Privacy Policy
-      </Link>
-      <DialogRoot open={visible} onOpenChange={() => setVisible(false)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Privacy Policy</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            <Flex direction="column" gap={4}>
-              <Text>
-                Hydrant does not store any of your data outside of your browser.
-                Data is only transmitted upstream when you export to Google
-                Calendar. When you export to Google Calendar, Hydrant sends
-                calendar information to Google to place into your calendar.
-              </Text>
-              <Text>
-                No data is transmitted otherwise. That means that our servers do
-                not store your class or calendar information. If you never
-                export to Google Calendar we never send your data anywhere else.
-              </Text>
-            </Flex>
-          </DialogBody>
-          <DialogFooter>
-            <DialogActionTrigger asChild>
-              <Button>Close</Button>
-            </DialogActionTrigger>
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
+      <Dialog.Root
+        open={visible}
+        onOpenChange={(e) => {
+          setVisible(e.open);
+        }}
+      >
+        <Dialog.Trigger asChild>
+          <ChakraLink colorPalette="blue">Privacy Policy</ChakraLink>
+        </Dialog.Trigger>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>Privacy Policy</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Flex direction="column" gap={4}>
+                  <Text>
+                    SIPB self-hosts an open-source analytics platform called{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://plausible.io/"
+                      >
+                        Plausible Analytics
+                      </Link>
+                    </ChakraLink>{" "}
+                    to track usage of Hydrant. A{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://plausible.io/data-policy"
+                      >
+                        limited amount of information
+                      </Link>
+                    </ChakraLink>
+                    , including page URLs, HTTP Referer strings, browser and
+                    operating system information, device type, and what city you
+                    are in, is sent anonymously for analytics purposes. No
+                    personally identifiable information is ever collected or
+                    stored, and none of this information ever leaves SIPB.
+                  </Text>
+                  <Text>
+                    No data is transmitted otherwise. That means that our
+                    servers do not store your class or calendar information, and
+                    all data stays on your device. If you never export your
+                    class data, such as to Matrix, we never send your data
+                    anywhere else.
+                  </Text>
+                  <Text>
+                    We do not, and will never, share any user data with third
+                    parties without your explicit consent.
+                  </Text>
+                </Flex>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.ActionTrigger asChild>
+                  <Button>Close</Button>
+                </Dialog.ActionTrigger>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 }
 
 /** The footer on the bottom of the calendar. */
-export function LeftFooter(props: { state: State }) {
-  const { state } = props;
+export function LeftFooter() {
+  const { state } = useContext(HydrantContext);
 
   return (
     <Flex direction="row" align="center" justify="center" gap={5}>
@@ -129,13 +208,13 @@ export function LeftFooter(props: { state: State }) {
         <Text>Last updated: {state.lastUpdated}.</Text>
         <Flex gap={4} wrap="wrap">
           <AboutDialog />
-          <Link href="mailto:sipb-hydrant@mit.edu" colorPalette="blue">
-            Contact
-          </Link>
+          <ChakraLink colorPalette="blue" asChild>
+            <Link to="mailto:sipb-hydrant@mit.edu">Contact</Link>
+          </ChakraLink>
           <PrivacyPolicyDialog />
-          <Link href="https://accessibility.mit.edu/" colorPalette="blue">
-            Accessibility
-          </Link>
+          <ChakraLink colorPalette="blue" asChild>
+            <Link to="https://accessibility.mit.edu/">Accessibility</Link>
+          </ChakraLink>
         </Flex>
       </Flex>
     </Flex>

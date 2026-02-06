@@ -1,5 +1,6 @@
-import { NonClass, Timeslot } from "./activity";
-import { Section, Sections, Class } from "./class";
+import type { CustomActivity, Timeslot, Section, Sections } from "./activity";
+import type { Class } from "./class";
+import type { PEClass } from "./pe";
 
 /**
  * Helper function for selectSlots. Implements backtracking: we try to place
@@ -14,20 +15,20 @@ import { Section, Sections, Class } from "./class";
  * @returns Object with best options found so far and number of conflicts
  */
 function selectHelper(
-  freeSections: Array<Sections>,
-  filledSlots: Array<Timeslot>,
-  foundOptions: Array<Section>,
+  freeSections: Sections[],
+  filledSlots: Timeslot[],
+  foundOptions: Section[],
   curConflicts: number,
   foundMinConflicts: number,
 ): {
-  options: Array<Array<Section>>;
+  options: Section[][];
   minConflicts: number;
 } {
   if (freeSections.length === 0) {
     return { options: [foundOptions], minConflicts: curConflicts };
   }
 
-  let options: Array<Array<Section>> = [];
+  let options: Section[][] = [];
   let minConflicts: number = foundMinConflicts;
 
   const [secs, ...remainingSections] = freeSections;
@@ -65,20 +66,21 @@ function selectHelper(
  * @returns Object with:
  *    options - list of schedule options; each schedule option is a list of all
  *      sections in that schedule, including locked sections (but not including
- *      non-class activities.)
+ *      custom activities.)
  *    conflicts - number of conflicts in any option
  */
 export function scheduleSlots(
-  selectedClasses: Array<Class>,
-  selectedNonClasses: Array<NonClass>,
+  selectedClasses: Class[],
+  selectedPEClasses: PEClass[],
+  selectedCustomActivities: CustomActivity[],
 ): {
-  options: Array<Array<Section>>;
+  options: Section[][];
   conflicts: number;
 } {
-  const lockedSections: Array<Sections> = [];
-  const lockedOptions: Array<Section> = [];
-  const initialSlots: Array<Timeslot> = [];
-  const freeSections: Array<Sections> = [];
+  const lockedSections: Sections[] = [];
+  const lockedOptions: Section[] = [];
+  const initialSlots: Timeslot[] = [];
+  const freeSections: Sections[] = [];
 
   for (const cls of selectedClasses) {
     for (const secs of cls.sections) {
@@ -97,7 +99,24 @@ export function scheduleSlots(
     }
   }
 
-  for (const activity of selectedNonClasses) {
+  for (const cls of selectedPEClasses) {
+    for (const secs of cls.sections) {
+      if (secs.locked) {
+        const sec = secs.selected;
+        if (sec) {
+          lockedSections.push(secs);
+          lockedOptions.push(sec);
+          initialSlots.push(...sec.timeslots);
+        } else {
+          // locked to having no section, do nothing
+        }
+      } else if (secs.sections.length > 0) {
+        freeSections.push(secs);
+      }
+    }
+  }
+
+  for (const activity of selectedCustomActivities) {
     initialSlots.push(...activity.timeslots);
   }
 

@@ -1,8 +1,8 @@
 import { Link } from "@chakra-ui/react";
-import Msgpack from "msgpack-lite";
-import { JSX } from "react/jsx-runtime";
+import { unpack, pack } from "msgpackr";
+import type { JSX } from "react/jsx-runtime";
 
-import { State } from "./state";
+import type { State } from "./state";
 
 //========================================================================
 // Class utilities:
@@ -25,14 +25,19 @@ const CLASS_REGEX = new RegExp(
 
 /** Three-way comparison for class numbers. */
 export function classSort(
-  a: string | null | undefined,
-  b: string | null | undefined,
+  a: string | number | null | undefined,
+  b: string | number | null | undefined,
 ) {
   if (!a && !b) return 0;
   if (!a) return 1;
   if (!b) return -1;
-  const aGroups = a.match(CLASS_REGEX)?.groups;
-  const bGroups = b.match(CLASS_REGEX)?.groups;
+  if (typeof a === "number" && typeof b === "number") {
+    return a - b;
+  }
+  a = String(a);
+  b = String(b);
+  const aGroups = CLASS_REGEX.exec(a)?.groups;
+  const bGroups = CLASS_REGEX.exec(b)?.groups;
   if (!aGroups || !bGroups) return 0;
   const aCourseNumber = Number(aGroups.courseDigits || "Infinity");
   const bCourseNumber = Number(bGroups.courseDigits || "Infinity");
@@ -57,7 +62,7 @@ export function simplifyString(s: string): string {
 export function classNumberMatch(
   searchString: string,
   classNumber: string,
-  exact: boolean = false,
+  exact = false,
 ): boolean {
   const process = (s: string) =>
     searchString.includes(".") ? s.toLowerCase() : simplifyString(s);
@@ -75,7 +80,9 @@ export function linkClasses(state: State, str: string): JSX.Element {
         return (
           <Link
             key={i}
-            onClick={() => state.setViewedActivity(cls)}
+            onClick={() => {
+              state.setViewedActivity(cls);
+            }}
             colorPalette="blue"
           >
             {text}
@@ -90,20 +97,21 @@ export function linkClasses(state: State, str: string): JSX.Element {
 // Other utilities:
 
 /** Takes the sum of an array. */
-export function sum(arr: Array<number>): number {
+export function sum(arr: number[]): number {
   return arr.reduce((acc, cur) => acc + cur, 0);
 }
 
 export function urlencode(obj: unknown): string {
-  return btoa(
-    // @ts-expect-error msgpack-lite types are weird :/
-    String.fromCharCode.apply(null, Msgpack.encode(obj) as Uint8Array),
-  );
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64
+  // return pack(obj).toBase64();
+  return btoa(String.fromCharCode(...pack(obj)));
 }
 
-export function urldecode(obj: string) {
-  return Msgpack.decode(
-    new Uint8Array(
+export function urldecode(obj: string): unknown {
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64
+  // return unpack(Uint8Array.fromBase64(obj));
+  return unpack(
+    Uint8Array.from(
       atob(obj)
         .split("")
         .map((c) => c.charCodeAt(0)),

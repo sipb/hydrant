@@ -1,12 +1,22 @@
-import { ColorMode } from "../components/ui/color-mode";
-import { Activity } from "./activity";
+import type { ColorMode } from "../components/ui/color-mode";
+import type { Activity } from "./activity";
+
+import styles from "./colors.module.css";
+
+export const ColorStyles = {
+  Muted: styles.muted,
+  Success: styles.success,
+  Warning: styles.warning,
+  Error: styles.error,
+  Normal: styles.normal,
+} as const;
 
 /** The type of color schemes. */
-export type ColorScheme = {
+export interface ColorScheme {
   name: string;
   colorMode: ColorMode;
-  backgroundColors: Array<string>;
-};
+  backgroundColors: string[];
+}
 
 const classic: ColorScheme = {
   name: "Classic",
@@ -73,12 +83,17 @@ const highContrastDark: ColorScheme = {
 };
 
 /** The default color schemes. */
-export const COLOR_SCHEME_PRESETS: Array<ColorScheme> = [
+export const COLOR_SCHEME_PRESETS: ColorScheme[] = [
   classic,
   classicDark,
   highContrast,
   highContrastDark,
 ];
+
+export const COLOR_SCHEME_DARK = classicDark;
+export const COLOR_SCHEME_LIGHT = classic;
+export const COLOR_SCHEME_DARK_CONTRAST = highContrastDark;
+export const COLOR_SCHEME_LIGHT_CONTRAST = highContrast;
 
 /** The default background color for a color scheme. */
 export function fallbackColor(colorScheme: ColorScheme): string {
@@ -99,24 +114,45 @@ function murmur3(str: string): () => number {
   };
 }
 
+export const getDefaultColorScheme = (): ColorScheme => {
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const prefersConstrast = window.matchMedia(
+    "(prefers-constrast: more)",
+  ).matches;
+
+  if (prefersConstrast) {
+    if (prefersDark) {
+      return COLOR_SCHEME_DARK_CONTRAST;
+    } else {
+      return COLOR_SCHEME_LIGHT_CONTRAST;
+    }
+  } else {
+    if (prefersDark) {
+      return COLOR_SCHEME_DARK;
+    } else {
+      return COLOR_SCHEME_LIGHT;
+    }
+  }
+};
+
 /**
  * Assign background colors to a list of activities. Mutates each activity
  * in the list.
  */
 export function chooseColors(
-  activities: Array<Activity>,
+  activities: Activity[],
   colorScheme: ColorScheme,
 ): void {
   // above this length, we give up trying to be nice:
   const colorLen = colorScheme.backgroundColors.length;
-  const indices: Array<number> = [];
+  const indices: number[] = [];
   for (const activity of activities) {
     if (activity.manualColor) continue;
     const hash = murmur3(activity.id);
     let index = hash() % colorLen;
     // try to pick distinct colors if possible; hash to try to make each
     // activity have a consistent color.
-    while (indices.length < colorLen && indices.indexOf(index) !== -1) {
+    while (indices.length < colorLen && indices.includes(index)) {
       index = hash() % colorLen;
     }
     indices.push(index);
@@ -155,4 +191,4 @@ export function canonicalizeColor(code: string): string | undefined {
 }
 
 /** The Google calendar background color. */
-export const CALENDAR_COLOR = "#DB5E45";
+// export const CALENDAR_COLOR = "#DB5E45";

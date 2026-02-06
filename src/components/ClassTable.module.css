@@ -1,0 +1,12 @@
+.row {
+  cursor: pointer;
+}
+
+.row:hover .underline-on-hover {
+  text-decoration: underline;
+}
+
+.overflow span {
+  overflow-x: auto;
+  text-overflow: unset;
+}
