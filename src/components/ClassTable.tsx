@@ -534,7 +534,7 @@ export function ClassTable() {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
-        cellClass: styles["underline-on-hover"],
+        cellClass: [styles["underline-on-hover"], styles.overflow],
         ...sortProps,
       },
       {
@@ -566,9 +566,7 @@ export function ClassTable() {
   }, [state]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
-    return {
-      resizable: false,
-    };
+    return { resizable: false };
   }, []);
 
   // Setup rows
