@@ -214,10 +214,12 @@ def parse_quarter_info(
 
     if any(f"quarter_information_{t.value}" in course for t in Term):
         # This course has quarter information by term, so look up the one for this term
-        quarter_info = course.get(f"quarter_information_{term.value}", "")
+        quarter_info = course.get(
+            f"quarter_information_{term.value}", ""  # type: ignore
+        )
     else:
         # Fall back to general quarter information
-        quarter_info = course.get("quarter_information", "")
+        quarter_info = course.get("quarter_information", "")  # type: ignore
 
     if quarter_info:
         quarter_info_list = quarter_info.split(",")
@@ -363,11 +365,14 @@ def get_course_data(
     # designRawSections
     try:
         if any(f"schedule_{t.value}" in course for t in Term):
-            # This course has schedule information by term, so look up the one for this term
-            raw_class.update(parse_schedule(course[f"schedule_{term.value}"]))
+            # This course has schedule information by term,
+            # so look up the one for this term
+            raw_class.update(
+                parse_schedule(course[f"schedule_{term.value}"])  # type: ignore
+            )
         else:
             # Fall back to general quarter information
-            raw_class.update(parse_schedule(course["schedule"]))
+            raw_class.update(parse_schedule(course["schedule"]))  # type: ignore
     except KeyError:
         has_schedule = False
     except ValueError as val_err:
