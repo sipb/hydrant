@@ -205,6 +205,7 @@ def parse_quarter_info(
 
     Args:
         course (Mapping[str, CourseValues]): The course object.
+        term (Term): The current term (fall, IAP, spring, or summer).
 
     Returns:
         dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
