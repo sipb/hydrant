@@ -534,7 +534,7 @@ export function ClassTable() {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
-        cellClass: [styles["underline-on-hover"], styles.overflow],
+        cellClass: styles["underline-on-hover"],
         ...sortProps,
       },
       {
@@ -559,6 +559,7 @@ export function ClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
+        cellClass: styles.overflow,
         valueFormatter: (params) =>
           (params.data?.class.new ? "✨ " : "") + (params.value ?? ""),
       },
