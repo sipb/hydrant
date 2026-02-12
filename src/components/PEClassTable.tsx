@@ -435,6 +435,7 @@ export function PEClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
+        cellClass: styles.overflow,
         valueFormatter: (params) =>
           Object.entries(params.data?.class.flags ?? ({} as PEFlags))
             .filter(([_, val]) => val)
