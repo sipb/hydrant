@@ -3,10 +3,13 @@ import { useContext, useMemo } from "react";
 import { Box, Circle, Float, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
 
-import FullCalendar from "@fullcalendar/react";
-import type { EventContentArg, EventApi } from "@fullcalendar/core";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import FullCalendar, {
+  type EventDisplayData,
+  type EventApi,
+} from "@fullcalendar/react";
+import themePlugin from "@fullcalendar/react/themes/classic";
+import timeGridPlugin from "@fullcalendar/react/timegrid";
+import interactionPlugin from "@fullcalendar/react/interaction";
 
 import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
@@ -14,6 +17,8 @@ import { Slot } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
 import "./Calendar.css";
+import "@fullcalendar/react/skeleton.css";
+import "@fullcalendar/react/themes/classic/theme.css";
 
 // Threshold at which to display a distance warning, in feet (650 meters)
 const DISTANCE_WARNING_THRESHOLD = 2112;
@@ -100,7 +105,7 @@ export function Calendar() {
     return undefined;
   };
 
-  const renderEvent = ({ event }: EventContentArg) => {
+  const renderEvent = ({ event, contrastColor }: EventDisplayData) => {
     const TitleText = () => (
       <Text
         fontSize="sm"
@@ -120,7 +125,7 @@ export function Calendar() {
     return (
       <>
         <Box
-          color={event.textColor}
+          color={contrastColor}
           overflow="hidden"
           p={0.5}
           lineHeight={1.3}
@@ -175,7 +180,7 @@ export function Calendar() {
 
   return (
     <FullCalendar
-      plugins={[timeGridPlugin, interactionPlugin]}
+      plugins={[themePlugin, timeGridPlugin, interactionPlugin]}
       initialView="timeGridWeek"
       allDaySlot={false}
       dayHeaderFormat={{ weekday: "short" }}
@@ -191,8 +196,8 @@ export function Calendar() {
       // a date that is, conveniently enough, a monday
       initialDate="2001-01-01"
       slotDuration="00:30:00"
-      slotLabelFormat={({ date }) => {
-        const { hour } = date;
+      slotHeaderContent={({ date }) => {
+        const hour = date.getHours();
         return hour === 12
           ? "noon"
           : hour < 12

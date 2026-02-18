@@ -1,4 +1,4 @@
-import type { EventInput } from "@fullcalendar/core";
+import type { EventInput } from "@fullcalendar/react";
 import { nanoid } from "nanoid";
 
 import type { ColorScheme } from "./colors";
@@ -133,12 +133,11 @@ export class Event {
   })[] {
     const color = this.activity.backgroundColor;
     return this.slots.map((slot) => ({
-      textColor: textColor(color),
+      contrastColor: textColor(color),
       title: this.name,
       start: slot.startTime,
       end: slot.endTime,
-      backgroundColor: color,
-      borderColor: color,
+      color: color,
       room: this.room,
       roomClarification: this.roomClarification,
       activity: this.activity,
