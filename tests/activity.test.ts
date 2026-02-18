@@ -8,6 +8,10 @@ import {
   COLOR_SCHEME_DARK_CONTRAST,
 } from "../src/lib/colors";
 
+if (!("Temporal" in globalThis)) {
+  await import("temporal-polyfill/global");
+}
+
 describe("Timeslot", () => {
   test("Timeslot.fromStartEnd", () => {
     const myStart: Slot = new Slot(2);
@@ -26,14 +30,30 @@ describe("Timeslot", () => {
   test("Timeslot.startTime", () => {
     const myTimeslot: Timeslot = new Timeslot(22, 43); // note: slot 22 is Monday at 5:00 PM
     expect(myTimeslot.startTime).toStrictEqual(
-      new Date(2001, 0, 1, 17, 0, 0, 0),
+      Temporal.PlainDateTime.from({
+        year: 2001,
+        month: 1,
+        day: 1,
+        hour: 17,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      }),
     );
   });
 
   test("Timeslot.endTime", () => {
     const myTimeslot: Timeslot = new Timeslot(79, 52); // note: slot 79 + 52 = 131 is Thursday at 8:30 PM
     expect(myTimeslot.endTime).toStrictEqual(
-      new Date(2001, 0, 4, 20, 30, 0, 0),
+      Temporal.PlainDateTime.from({
+        year: 2001,
+        month: 1,
+        day: 4,
+        hour: 20,
+        minute: 30,
+        second: 0,
+        millisecond: 0,
+      }),
     );
   });
 
@@ -136,23 +156,53 @@ test("Event.eventInputs", () => {
   );
   expect(myEvent.eventInputs).toStrictEqual([
     {
-      textColor: "#ffffff",
+      contrastColor: "#ffffff",
       title: myTitle,
-      start: new Date(2001, 0, 1, 9, 0, 0, 0), // slot 6 = Monday at 9 AM
-      end: new Date(2001, 0, 1, 12, 30, 0, 0), // slot 13 = Monday at 12:30 PM
-      backgroundColor: myHexCode,
-      borderColor: myHexCode,
+      start: Temporal.PlainDateTime.from({
+        year: 2001,
+        month: 1,
+        day: 1,
+        hour: 9,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      }).toString(),
+      end: Temporal.PlainDateTime.from({
+        year: 2001,
+        month: 1,
+        day: 1,
+        hour: 12,
+        minute: 30,
+        second: 0,
+        millisecond: 0,
+      }).toString(),
+      color: myHexCode,
       room: myRoom,
       roomClarification: undefined,
       activity: myCustomActivity,
     },
     {
-      textColor: "#ffffff",
+      contrastColor: "#ffffff",
       title: myTitle,
-      start: new Date(2001, 0, 2, 17, 30, 0, 0), // slot 57 = Tuesday at 5:30 PM
-      end: new Date(2001, 0, 2, 22, 30, 0, 0), // slot 67 = Tuesday at 10:30 PM
-      backgroundColor: myHexCode,
-      borderColor: myHexCode,
+      start: Temporal.PlainDateTime.from({
+        year: 2001,
+        month: 1,
+        day: 2,
+        hour: 17,
+        minute: 30,
+        second: 0,
+        millisecond: 0,
+      }).toString(),
+      end: Temporal.PlainDateTime.from({
+        year: 2001,
+        month: 1,
+        day: 2,
+        hour: 22,
+        minute: 30,
+        second: 0,
+        millisecond: 0,
+      }).toString(),
+      color: myHexCode,
       room: myRoom,
       roomClarification: undefined,
       activity: myCustomActivity,

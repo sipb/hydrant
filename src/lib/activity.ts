@@ -9,6 +9,14 @@ import { sum } from "./utils";
 import type { PEClass } from "./pe";
 import type { Class } from "./class";
 
+// TODO: fullcalendar's types aren't updated and require a Date,
+// but it can take a string for now.
+interface AcvitityEventInput extends EventInput {
+  room?: string;
+  start: string;
+  end: string;
+}
+
 /** A period of time, spanning several Slots. */
 export class Timeslot {
   startSlot: Slot;
@@ -30,12 +38,12 @@ export class Timeslot {
   }
 
   /** The start time, on the week of 2001-01-01. */
-  get startTime(): Date {
+  get startTime(): Temporal.PlainDateTime {
     return this.startSlot.startDate;
   }
 
   /** The end time, on the week of 2001-01-01. */
-  get endTime(): Date {
+  get endTime(): Temporal.PlainDateTime {
     return this.endSlot.startDate;
   }
 
@@ -126,17 +134,13 @@ export class Event {
   }
 
   /** List of events that can be directly given to FullCalendar. */
-  get eventInputs(): (EventInput & {
-    start: Date;
-    end: Date;
-    room?: string;
-  })[] {
+  get eventInputs(): AcvitityEventInput[] {
     const color = this.activity.backgroundColor;
     return this.slots.map((slot) => ({
       contrastColor: textColor(color),
       title: this.name,
-      start: slot.startTime,
-      end: slot.endTime,
+      start: slot.startTime.toString(),
+      end: slot.endTime.toString(),
       color: color,
       room: this.room,
       roomClarification: this.roomClarification,
@@ -185,7 +189,7 @@ export class CustomActivity implements BaseActivity {
   addTimeslot(slot: Timeslot): void {
     if (
       this.timeslots.find((slot_) => slot_.equals(slot)) ||
-      slot.startTime.getDate() !== slot.endTime.getDate()
+      slot.startTime.day !== slot.endTime.day
     )
       return;
     this.timeslots.push(slot);

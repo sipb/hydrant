@@ -140,11 +140,11 @@ export class PEClass implements BaseActivity {
   }
 
   get startDate() {
-    return new Date(this.rawClass.startDate);
+    return Temporal.PlainDate.from(this.rawClass.startDate);
   }
 
   get endDate() {
-    return new Date(this.rawClass.endDate);
+    return Temporal.PlainDate.from(this.rawClass.endDate);
   }
 
   /** Fee, in dollars */
@@ -167,13 +167,11 @@ export class PEClass implements BaseActivity {
   }
 
   get start(): [number, number] {
-    const startDate = new Date(this.rawClass.startDate);
-    return [startDate.getMonth() + 1, startDate.getDate()];
+    return [this.startDate.month, this.startDate.day];
   }
 
   get end(): [number, number] {
-    const endDate = new Date(this.rawClass.endDate);
-    return [endDate.getMonth() + 1, endDate.getDate()];
+    return [this.endDate.month, this.endDate.day];
   }
 
   get flags(): PEFlags {

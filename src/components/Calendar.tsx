@@ -76,7 +76,7 @@ export function Calendar() {
       if (!beforeEvent.start || !beforeEvent.room) {
         continue;
       }
-      if (thisEvent.start.getTime() != beforeEvent.end.getTime()) {
+      if (thisEvent.start.getTime() != new Date(beforeEvent.end).getTime()) {
         continue;
       }
 
@@ -205,7 +205,7 @@ export function Calendar() {
             : `${(hour - 12).toString()} PM`;
       }}
       slotMinTime={
-        events.some((e) => (e.start as Date).getHours() < 8)
+        events.some((e) => new Date(e.start).getHours() < 8)
           ? "06:00:00"
           : "08:00:00"
       }
@@ -217,8 +217,24 @@ export function Calendar() {
           state.addTimeslot(
             viewedActivity,
             Timeslot.fromStartEnd(
-              Slot.fromStartDate(e.start),
-              Slot.fromStartDate(e.end),
+              Slot.fromStartDate(
+                Temporal.PlainDateTime.from({
+                  year: e.start.getFullYear(),
+                  month: e.start.getMonth() + 1,
+                  day: e.start.getDate(),
+                  hour: e.start.getHours(),
+                  minute: e.start.getMinutes(),
+                }),
+              ),
+              Slot.fromStartDate(
+                Temporal.PlainDateTime.from({
+                  year: e.end.getFullYear(),
+                  month: e.end.getMonth() + 1,
+                  day: e.end.getDate(),
+                  hour: e.end.getHours(),
+                  minute: e.end.getMinutes(),
+                }),
+              ),
             ),
           );
         }
