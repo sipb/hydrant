@@ -193,9 +193,10 @@ export function Calendar() {
       }}
       headerToolbar={false}
       height="auto"
-      // a date that is, conveniently enough, a monday
-      initialDate="2001-01-01"
-      slotDuration="00:30:00"
+      initialDate={Temporal.Now.plainDateISO()
+        .subtract({ days: Temporal.Now.plainDateISO().dayOfWeek - 1 })
+        .toString()}
+      slotDuration={Temporal.Duration.from({ minutes: 30 })}
       slotHeaderContent={({ date }) => {
         const hour = date.getHours();
         return hour === 12
@@ -204,12 +205,15 @@ export function Calendar() {
             ? `${hour.toString()} AM`
             : `${(hour - 12).toString()} PM`;
       }}
+      dayHeaderContent={({ text }) => {
+        return text.toLocaleUpperCase();
+      }}
       slotMinTime={
         events.some((e) => new Date(e.start).getHours() < 8)
-          ? "06:00:00"
-          : "08:00:00"
+          ? Temporal.Duration.from({ hours: 6 })
+          : Temporal.Duration.from({ hours: 8 })
       }
-      slotMaxTime="22:00:00"
+      slotMaxTime={Temporal.Duration.from({ hours: 22 })}
       weekends={false}
       selectable={viewedActivity instanceof CustomActivity}
       select={(e) => {
@@ -218,22 +222,16 @@ export function Calendar() {
             viewedActivity,
             Timeslot.fromStartEnd(
               Slot.fromStartDate(
-                Temporal.PlainDateTime.from({
-                  year: e.start.getFullYear(),
-                  month: e.start.getMonth() + 1,
-                  day: e.start.getDate(),
-                  hour: e.start.getHours(),
-                  minute: e.start.getMinutes(),
-                }),
+                e.start
+                  .toTemporalInstant()
+                  .toZonedDateTimeISO(Temporal.Now.timeZoneId())
+                  .toPlainDateTime(),
               ),
               Slot.fromStartDate(
-                Temporal.PlainDateTime.from({
-                  year: e.end.getFullYear(),
-                  month: e.end.getMonth() + 1,
-                  day: e.end.getDate(),
-                  hour: e.end.getHours(),
-                  minute: e.end.getMinutes(),
-                }),
+                e.end
+                  .toTemporalInstant()
+                  .toZonedDateTimeISO(Temporal.Now.timeZoneId())
+                  .toPlainDateTime(),
               ),
             ),
           );

@@ -109,13 +109,13 @@ export class Slot {
     return date.toPlainDateTime(time);
   }
 
-  /** The date in the week of 2001-01-01 that this starts in. */
+  /** The date in the current week that this class starts on. */
   get startDate(): Temporal.PlainDateTime {
-    // conveniently enough, 2001-01-01 is a Monday:
-    return this.onDate(new Temporal.PlainDate(2001, 1, this.weekday));
+    const today = Temporal.Now.plainDateISO();
+    return this.onDate(today.add({ days: this.weekday - today.dayOfWeek }));
   }
 
-  /** The date in the week of 2001-01-01 that this ends in. */
+  /** The date in this week that this ends on. */
   get endDate(): Temporal.PlainDateTime {
     return this.add(1).startDate;
   }

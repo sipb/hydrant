@@ -8,7 +8,7 @@ import type { Term } from "./dates";
 import type { State } from "./state";
 import { Class } from "./class";
 
-/** Timezone string. */
+/** MIT's Timezone string. */
 const TIMEZONE = "America/New_York";
 
 /** Downloads a file with the given text data */

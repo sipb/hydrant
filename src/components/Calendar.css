@@ -29,3 +29,9 @@ NOTE: button/toolbar UI is not defined here
   --fc-classic-border: var(--chakra-colors-border);
   --fc-classic-strong-border: var(--chakra-colors-border-emphasized);
 }
+
+.dark {
+  /* calendar content */
+  --fc-classic-highlight: #3b82f633;
+  --fc-classic-today: #fef08a1A;
+}

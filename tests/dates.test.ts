@@ -635,6 +635,18 @@ describe("Slot", () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
    */
+
+  beforeEach(() => {
+    // Set fixed system time to ensure consistency
+    const mockDate = new Date(2001, 0, 1, 12, 0, 0, 0); // January 1st, 2001 at noon
+    vi.setSystemTime(mockDate);
+  });
+
+  afterEach(() => {
+    // Restore the original system time after each test
+    vi.useRealTimers();
+  });
+
   test("Slot.fromSlotNumber", () => {
     const mySlot: Slot = Slot.fromSlotNumber(42);
     expect(mySlot.slot).toBe(42);
