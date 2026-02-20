@@ -83,8 +83,8 @@
   --fc-monarch-muted-foreground: var(--chakra-colors-fg-muted);
 
   /* neutral borders */
-  --fc-monarch-border: var(--chakra-colors-border);
-  --fc-monarch-strong-border: var(--chakra-colors-border-emphasized);
+  --fc-monarch-border: var(--chakra-colors-border-emphasized);
+  --fc-monarch-strong-border: var(--chakra-colors-border-inverted);
 }
 
 :global(.dark) {
@@ -133,4 +133,5 @@
 .fc-event-inner {
   flex-direction: column;
   align-items: flex-start;
+  overflow: hidden;
 }
