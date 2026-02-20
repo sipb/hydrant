@@ -168,6 +168,8 @@ export function Calendar() {
                 color="orange.contrast"
                 boxShadow="lg"
                 cursor={"initial"}
+                colorPalette={"orange"}
+                _print={{ boxShadow: "none" }}
               >
                 !
               </Circle>
@@ -196,6 +198,7 @@ export function Calendar() {
       }}
       headerToolbar={false}
       height="auto"
+      eventShortHeight={30}
       initialDate={Temporal.Now.plainDateISO()
         .subtract({ days: Temporal.Now.plainDateISO().dayOfWeek - 1 })
         .toString()}

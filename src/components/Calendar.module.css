@@ -131,7 +131,10 @@
 }
 
 .fc-event-inner {
-  flex-direction: column;
-  align-items: flex-start;
-  overflow: hidden;
+  padding-top: 0.25rem;
+  padding-inline-start: 0.5rem;
+}
+
+.fc-event-inner > * {
+  padding-block: 0rem;
 }
