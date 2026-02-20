@@ -125,3 +125,12 @@
   font-size: 0.8rem;
   letter-spacing: 0.05rem;
 }
+
+.fc-event {
+  cursor: pointer;
+}
+
+.fc-event-inner {
+  flex-direction: column;
+  align-items: flex-start;
+}

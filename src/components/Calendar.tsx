@@ -1,6 +1,6 @@
 import { useContext, useMemo } from "react";
 
-import { Box, Circle, Float, Text } from "@chakra-ui/react";
+import { Circle, Float, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
 
 import FullCalendar, {
@@ -105,59 +105,58 @@ export function Calendar() {
     return undefined;
   };
 
-  const renderEvent = ({ event, contrastColor }: EventDisplayData) => {
+  const renderEvent = ({
+    event,
+    titleClass,
+    timeClass,
+    isNarrow,
+  }: EventDisplayData) => {
+    const room = event.extendedProps.room as string | undefined;
+    const activity = event.extendedProps.activity as Activity;
+    const distanceWarning = getDistanceWarning(event);
+
     const TitleText = () => (
       <Text
-        fontSize="sm"
+        fontSize={isNarrow ? "xs" : "sm"}
         fontWeight="medium"
-        overflow="hidden"
-        textOverflow="clip"
-        whiteSpace="nowrap"
+        className={titleClass}
       >
         {event.title}
       </Text>
     );
 
-    const room = event.extendedProps.room as string | undefined;
-    const activity = event.extendedProps.activity as Activity;
-    const distanceWarning = getDistanceWarning(event);
+    const RoomText = () => (
+      <Text fontSize={isNarrow ? "xxs" : "xs"} className={timeClass}>
+        {room}
+      </Text>
+    );
 
     return (
       <>
-        <Box
-          color={contrastColor}
-          overflow="hidden"
-          p={0.5}
-          lineHeight={1.3}
-          cursor="pointer"
-          height="100%"
-          position="relative"
-        >
-          {!(activity instanceof CustomActivity) ? (
-            <Tooltip
-              content={activity.name}
-              portalled
-              positioning={{ placement: "top" }}
-            >
-              {TitleText()}
-            </Tooltip>
-          ) : (
-            <TitleText />
-          )}
-          {event.extendedProps.roomClarification ? (
-            <Tooltip
-              content={event.extendedProps.roomClarification as string}
-              portalled
-              positioning={{ placement: "top" }}
-            >
-              <Text fontSize="xs">{room}</Text>
-            </Tooltip>
-          ) : (
-            <Text fontSize="xs">{room}</Text>
-          )}
-        </Box>
+        {!(activity instanceof CustomActivity) ? (
+          <Tooltip
+            content={activity.name}
+            portalled
+            positioning={{ placement: "top" }}
+          >
+            {TitleText()}
+          </Tooltip>
+        ) : (
+          <TitleText />
+        )}
+        {event.extendedProps.roomClarification ? (
+          <Tooltip
+            content={event.extendedProps.roomClarification as string}
+            portalled
+            positioning={{ placement: "top" }}
+          >
+            {RoomText()}
+          </Tooltip>
+        ) : (
+          <RoomText />
+        )}
         {distanceWarning ? (
-          <Float placement="top-end">
+          <Float placement="top-end" offsetX={1.5} offsetY={-0.5}>
             <Tooltip
               content={distanceWarning}
               portalled
@@ -168,6 +167,7 @@ export function Calendar() {
                 bg="orange.solid"
                 color="orange.contrast"
                 boxShadow="lg"
+                cursor={"initial"}
               >
                 !
               </Circle>
@@ -187,6 +187,8 @@ export function Calendar() {
       dayHeaderFormat={{ weekday: "short" }}
       editable={false}
       events={events}
+      eventClass={styles["fc-event"]}
+      eventInnerClass={styles["fc-event-inner"]}
       eventContent={renderEvent}
       eventClick={(e) => {
         // extendedProps: non-standard props of {@link Event.eventInputs}
