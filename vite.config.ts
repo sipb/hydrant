@@ -18,8 +18,11 @@ export default defineConfig({
     babel({
       filter: /\.[jt]sx?$/,
       babelConfig: {
-        presets: ["@babel/preset-typescript"], // if you use TypeScript
-        plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
+        presets: ["@babel/preset-typescript"],
+        plugins: [
+          ["babel-plugin-react-compiler", ReactCompilerConfig],
+          ["@babel/plugin-transform-typescript", { allowDeclareFields: true }],
+        ],
       },
     }),
     checker({
