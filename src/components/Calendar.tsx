@@ -7,7 +7,7 @@ import FullCalendar, {
   type EventDisplayData,
   type EventApi,
 } from "@fullcalendar/react";
-import themePlugin from "@fullcalendar/react/themes/classic";
+import themePlugin from "@fullcalendar/react/themes/monarch";
 import timeGridPlugin from "@fullcalendar/react/timegrid";
 import interactionPlugin from "@fullcalendar/react/interaction";
 
@@ -16,9 +16,9 @@ import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
-import "./Calendar.css";
 import "@fullcalendar/react/skeleton.css";
-import "@fullcalendar/react/themes/classic/theme.css";
+import "@fullcalendar/react/themes/monarch/theme.css";
+import styles from "./Calendar.module.css";
 
 // Threshold at which to display a distance warning, in feet (650 meters)
 const DISTANCE_WARNING_THRESHOLD = 2112;
@@ -181,6 +181,7 @@ export function Calendar() {
   return (
     <FullCalendar
       plugins={[themePlugin, timeGridPlugin, interactionPlugin]}
+      borderless={true}
       initialView="timeGridWeek"
       allDaySlot={false}
       dayHeaderFormat={{ weekday: "short" }}
@@ -205,9 +206,9 @@ export function Calendar() {
             ? `${hour.toString()} AM`
             : `${(hour - 12).toString()} PM`;
       }}
-      dayHeaderContent={({ text }) => {
-        return text.toLocaleUpperCase();
-      }}
+      slotHeaderInnerClass={styles["fc-slot-header-inner"]}
+      dayHeaderContent={({ text }) => text.toLocaleUpperCase()}
+      dayHeaderInnerClass={styles["fc-day-header-inner"]}
       slotMinTime={
         events.some((e) => new Date(e.start).getHours() < 8)
           ? Temporal.Duration.from({ hours: 6 })
