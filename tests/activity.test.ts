@@ -13,6 +13,16 @@ if (!("Temporal" in globalThis)) {
 }
 
 describe("Timeslot", () => {
+  beforeEach(() => {
+    // Set fixed system time to ensure consistency
+    vi.setSystemTime("2001-01-01T12:00:00.000Z"); // January 1st, 2001 at noon
+  });
+
+  afterEach(() => {
+    // Restore the original system time after each test
+    vi.useRealTimers();
+  });
+
   test("Timeslot.fromStartEnd", () => {
     const myStart: Slot = new Slot(2);
     const myEnd: Slot = new Slot(120);
@@ -140,74 +150,87 @@ describe("Timeslot", () => {
   });
 });
 
-test("Event.eventInputs", () => {
-  const myCustomActivity: CustomActivity = new CustomActivity(
-    COLOR_SCHEME_LIGHT_CONTRAST,
-  );
-  const myHexCode = "#611917"; // randomly generated hex code
-  const myTitle = "y8g0i81"; // random keysmashes
-  const myRoom = "ahouttoanhontjanota";
-  myCustomActivity.backgroundColor = myHexCode;
-  const myEvent: Event = new Event(
-    myCustomActivity,
-    myTitle,
-    [new Timeslot(6, 7), new Timeslot(57, 10)],
-    myRoom,
-  );
-  expect(myEvent.eventInputs).toStrictEqual([
-    {
-      contrastColor: "#ffffff",
-      title: myTitle,
-      start: Temporal.PlainDateTime.from({
-        year: 2001,
-        month: 1,
-        day: 1,
-        hour: 9,
-        minute: 0,
-        second: 0,
-        millisecond: 0,
-      }).toString(),
-      end: Temporal.PlainDateTime.from({
-        year: 2001,
-        month: 1,
-        day: 1,
-        hour: 12,
-        minute: 30,
-        second: 0,
-        millisecond: 0,
-      }).toString(),
-      color: myHexCode,
-      room: myRoom,
-      roomClarification: undefined,
-      activity: myCustomActivity,
-    },
-    {
-      contrastColor: "#ffffff",
-      title: myTitle,
-      start: Temporal.PlainDateTime.from({
-        year: 2001,
-        month: 1,
-        day: 2,
-        hour: 17,
-        minute: 30,
-        second: 0,
-        millisecond: 0,
-      }).toString(),
-      end: Temporal.PlainDateTime.from({
-        year: 2001,
-        month: 1,
-        day: 2,
-        hour: 22,
-        minute: 30,
-        second: 0,
-        millisecond: 0,
-      }).toString(),
-      color: myHexCode,
-      room: myRoom,
-      roomClarification: undefined,
-      activity: myCustomActivity,
-    },
-  ]);
+describe("Event.eventInputs", () => {
+  beforeEach(() => {
+    // Set fixed system time to ensure consistency
+    vi.setSystemTime("2001-01-01T12:00:00.000Z"); // January 1st, 2001 at noon
+  });
+
+  afterEach(() => {
+    // Restore the original system time after each test
+    vi.useRealTimers();
+  });
+
+  test("returns correct event inputs", () => {
+    const myCustomActivity: CustomActivity = new CustomActivity(
+      COLOR_SCHEME_LIGHT_CONTRAST,
+    );
+    const myHexCode = "#611917"; // randomly generated hex code
+    const myTitle = "y8g0i81"; // random keysmashes
+    const myRoom = "ahouttoanhontjanota";
+    myCustomActivity.backgroundColor = myHexCode;
+    const myEvent: Event = new Event(
+      myCustomActivity,
+      myTitle,
+      [new Timeslot(6, 7), new Timeslot(57, 10)],
+      myRoom,
+    );
+
+    expect(myEvent.eventInputs).toStrictEqual([
+      {
+        contrastColor: "#ffffff",
+        title: myTitle,
+        start: Temporal.PlainDateTime.from({
+          year: 2001,
+          month: 1,
+          day: 1,
+          hour: 9,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        }).toString(),
+        end: Temporal.PlainDateTime.from({
+          year: 2001,
+          month: 1,
+          day: 1,
+          hour: 12,
+          minute: 30,
+          second: 0,
+          millisecond: 0,
+        }).toString(),
+        color: myHexCode,
+        room: myRoom,
+        roomClarification: undefined,
+        activity: myCustomActivity,
+      },
+      {
+        contrastColor: "#ffffff",
+        title: myTitle,
+        start: Temporal.PlainDateTime.from({
+          year: 2001,
+          month: 1,
+          day: 2,
+          hour: 17,
+          minute: 30,
+          second: 0,
+          millisecond: 0,
+        }).toString(),
+        end: Temporal.PlainDateTime.from({
+          year: 2001,
+          month: 1,
+          day: 2,
+          hour: 22,
+          minute: 30,
+          second: 0,
+          millisecond: 0,
+        }).toString(),
+        color: myHexCode,
+        room: myRoom,
+        roomClarification: undefined,
+        activity: myCustomActivity,
+      },
+    ]);
+  });
 });
 
 describe("CustomActivity", () => {
