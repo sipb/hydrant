@@ -26,6 +26,9 @@ const DISTANCE_WARNING_THRESHOLD = 2112;
 // Walking speed, in ft/s (~3 mph)
 const WALKING_SPEED = 4.4;
 
+// User's timezone (for converting between Date and Temporal.PlainDateTime)
+const USER_TZ = Temporal.Now.timeZoneId();
+
 /**
  * Calendar showing all the activities, including the buttons on top that
  * change the schedule option selected.
@@ -76,7 +79,14 @@ export function Calendar() {
       if (!beforeEvent.start || !beforeEvent.room) {
         continue;
       }
-      if (thisEvent.start.getTime() != new Date(beforeEvent.end).getTime()) {
+      if (
+        Temporal.Instant.compare(
+          thisEvent.start.toTemporalInstant(),
+          Temporal.PlainDateTime.from(beforeEvent.end)
+            .toZonedDateTime(USER_TZ)
+            .toInstant(),
+        ) !== 0
+      ) {
         continue;
       }
 
@@ -215,7 +225,7 @@ export function Calendar() {
       dayHeaderContent={({ text }) => text.toLocaleUpperCase()}
       dayHeaderInnerClass={styles["fc-day-header-inner"]}
       slotMinTime={
-        events.some((e) => new Date(e.start).getHours() < 8)
+        events.some((e) => Temporal.PlainDateTime.from(e.start).hour < 8)
           ? Temporal.Duration.from({ hours: 6 })
           : Temporal.Duration.from({ hours: 8 })
       }
@@ -230,13 +240,13 @@ export function Calendar() {
               Slot.fromStartDate(
                 e.start
                   .toTemporalInstant()
-                  .toZonedDateTimeISO(Temporal.Now.timeZoneId())
+                  .toZonedDateTimeISO(USER_TZ)
                   .toPlainDateTime(),
               ),
               Slot.fromStartDate(
                 e.end
                   .toTemporalInstant()
-                  .toZonedDateTimeISO(Temporal.Now.timeZoneId())
+                  .toZonedDateTimeISO(USER_TZ)
                   .toPlainDateTime(),
               ),
             ),

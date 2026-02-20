@@ -638,8 +638,7 @@ describe("Slot", () => {
 
   beforeEach(() => {
     // Set fixed system time to ensure consistency
-    const mockDate = new Date(2001, 0, 1, 12, 0, 0, 0); // January 1st, 2001 at noon
-    vi.setSystemTime(mockDate);
+    vi.setSystemTime("2001-01-01T12:00:00.000Z"); // January 1st, 2001 at noon
   });
 
   afterEach(() => {
