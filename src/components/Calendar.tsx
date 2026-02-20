@@ -120,14 +120,16 @@ export function Calendar() {
     titleClass,
     timeClass,
     isNarrow,
+    isShort,
   }: EventDisplayData) => {
     const room = event.extendedProps.room as string | undefined;
     const activity = event.extendedProps.activity as Activity;
     const distanceWarning = getDistanceWarning(event);
+    const smallText = isNarrow || isShort;
 
     const TitleText = () => (
       <Text
-        fontSize={isNarrow ? "xs" : "sm"}
+        fontSize={smallText ? "xs" : "sm"}
         fontWeight="medium"
         className={titleClass}
       >
@@ -136,7 +138,7 @@ export function Calendar() {
     );
 
     const RoomText = () => (
-      <Text fontSize={isNarrow ? "xxs" : "xs"} className={timeClass}>
+      <Text fontSize={smallText ? "2xs" : "xs"} className={timeClass}>
         {room}
       </Text>
     );
@@ -209,12 +211,16 @@ export function Calendar() {
       headerToolbar={false}
       height="auto"
       eventShortHeight={30}
-      initialDate={Temporal.Now.plainDateISO()
-        .subtract({ days: Temporal.Now.plainDateISO().dayOfWeek - 1 })
-        .toString()}
+      initialDate={(() => {
+        const now = Temporal.Now.plainDateISO();
+        return now.subtract({ days: now.dayOfWeek - 1 }).toString();
+      })()}
       slotDuration={Temporal.Duration.from({ minutes: 30 })}
-      slotHeaderContent={({ date }) => {
-        const hour = date.getHours();
+      slotHeaderContent={({ time }) => {
+        const milliseconds = time?.milliseconds ?? 0;
+        const hour = Temporal.Duration.from({ milliseconds }).total({
+          unit: "hour",
+        });
         return hour === 12
           ? "noon"
           : hour < 12
