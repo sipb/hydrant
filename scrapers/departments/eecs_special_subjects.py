@@ -1,0 +1,366 @@
+"""
+Temporary helper to parse EECS Subject Updates (Spring 2026).
+Intended to help generate override data for Course 6 special subjects.
+
+Imitates the structure of math_dept.py: scrape a departmental page, parse rows,
+and return a dict of overrides.
+
+Functions:
+* get_rows()
+* parse_schedule(schedule_line)
+* parse_header(text)
+* parse_many_timeslots(days, slot, is_pm_int)
+* make_raw_sections(days, slot, room, is_pm_int)
+* parse_row(row)
+* run()
+"""
+
+from __future__ import annotations
+
+import re
+from pprint import pprint
+from typing import Any, Dict, List, Literal, Optional, Tuple
+from urllib.request import Request, urlopen
+
+from bs4 import BeautifulSoup, Tag
+
+from scrapers.fireroad import parse_section, parse_timeslot
+from scrapers.utils import EVE_TIMES, TIMES
+
+# The EECS WordPress page renders its subject list by dynamically loading this HTML
+# fragment (see network request `.../plugins/subj_2026SP.html` in a browser).
+# `requests.get()` of the WordPress page often returns only navigation chrome, so
+# this script scrapes the source-of-truth fragment directly.
+URL = "https://eecsis.mit.edu/plugins/subj_2026SP.html"
+FRONTEND_URL = (
+    "https://www.eecs.mit.edu/academics/subject-updates/subject-updates-spring-2026/"
+)
+# Match a 6.S### subject header, optionally with an "(also ...)" clause.
+# Group 1: the 6.S### number
+# Group 2 (optional): comma-separated cross-list numbers (for the "same" field)
+# Group 3: the title text (excluding the "(also ...)" clause when present)
+COURSE_RE = re.compile(
+    r"\b(6\.S\d{3})\b"
+    r"(?:\s*\(\s*also(?: under)?\s+"
+    r"([A-Za-z]{0,5}\d{0,3}[A-Za-z]{0,3}\.[A-Za-z]{0,3}\d{1,4}[A-Za-z]?"
+    r"(?:\s*,\s*[A-Za-z]{0,5}\d{0,3}[A-Za-z]{0,3}\.[A-Za-z]{0,3}\d{1,4}[A-Za-z]?)*"
+    r")\s*\)\s*)?"
+    r"(.*)$",
+    re.IGNORECASE,
+)
+DAY_WORD = {
+    "monday": "M",
+    "tuesday": "T",
+    "wednesday": "W",
+    "thursday": "R",
+    "friday": "F",
+}
+
+
+Timeslot = Tuple[int, int]
+Section = Tuple[List[Timeslot], str]
+Units = Dict[
+    Literal["lectureUnits", "labUnits", "preparationUnits", "isVariableUnits"], Any
+]
+RawSectionFields = Dict[str, List[str]]
+SectionFields = Dict[str, List[Section]]
+
+
+def normalize_days(days_raw: str) -> str:
+    """
+    Normalize day strings into Fireroad-compatible day letters (MTWRF).
+
+    Examples:
+    - "TR" -> "TR"
+    - "Thursdays" -> "R"
+    """
+    assert days_raw, "empty day string"
+
+    if days_raw.isupper():
+        assert set(days_raw) <= set("MTWRF"), days_raw
+        return days_raw
+
+    key = days_raw.lower().rstrip("s")
+    assert key in DAY_WORD, days_raw
+    return DAY_WORD[key]
+
+
+def parse_many_timeslots(days: str, slot: str, is_pm_int: int) -> list[Timeslot]:
+    """
+    Parses many timeslots.
+
+    Args:
+    * days (str): A list of days (e.g. "TR")
+    * slot (str): The timeslot (e.g. "1-2.30" or "7-10 PM")
+    * is_pm_int (int): 0 for AM-ish slots, 1 for PM-ish slots
+
+    Returns:
+    * list[Timeslot]: All parsed timeslots
+    """
+    assert is_pm_int in (0, 1), is_pm_int
+    return [parse_timeslot(day, slot, bool(is_pm_int)) for day in days]
+
+
+def make_raw_sections(days: str, slot: str, room: str, is_pm_int: int) -> str:
+    """
+    Formats a raw section (same shape as math_dept.py).
+    """
+    assert days
+    assert slot
+    assert room
+    assert is_pm_int in (0, 1), is_pm_int
+
+    return f"{room}/{days}/{is_pm_int}/{slot}"
+
+
+def parse_schedule(
+    schedule_line: str,
+) -> tuple[RawSectionFields, SectionFields, list[str]]:
+    """
+    Parse a schedule value like:
+      "Lectures: TR2:30-4, room 34-101"
+      "Lecture: MW1-2:30, room 32-155; Recitations: Tuesdays 2-3p, room 36-112"
+      "Lectures: Thursdays 7-10pm, room 2-131"
+
+    Args:
+    * schedule_line (str): The raw schedule line
+
+    Returns:
+    * (RawSectionFields, SectionFields, list[str]):
+      - RawSectionFields: mapping like "lectureRawSections" -> list[str]
+      - SectionFields: mapping like "lectureSections" -> list[Section]
+
+      Both dicts are intended to be merged into the per-course `data` dict in
+      `parse_row()` via `data.update(...)`.
+    """
+    assert schedule_line and schedule_line != "TBD", schedule_line
+
+    chunks = list(filter(None, schedule_line.split(";")))
+    raw_fields: RawSectionFields = {}
+    section_fields: SectionFields = {}
+    kinds: list[str] = []
+
+    for idx, chunk in enumerate(chunks):
+        m = re.match(
+            r"^(?:(?P<kind>Lectures?|Lecture|Recitations?|Recitation|Labs?|Lab|"
+            r"Designs?|Design):\s*)?"
+            r"(?P<days>(?:[MTWRF]+)|(?:Monday|Tuesday|Wednesday|Thursday|Friday|"
+            r"Mondays|Tuesdays|Wednesdays|Thursdays|Fridays))\s*"
+            r"(?P<start>[0-9]+(?:[.:][0-9]{2})?)"
+            r"(?:\s*(?P<start_ampm>am|pm|a|p))?\s*-\s*"
+            r"(?P<end>[0-9]+(?:[.:][0-9]{2})?)"
+            r"(?:\s*(?P<end_ampm>am|pm|a|p))?\s*,\s*room\s+"
+            r"(?P<room>[A-Za-z0-9-]+)(?:\s+.*)?$",
+            chunk.strip(),
+            re.IGNORECASE,
+        )
+        assert m is not None, chunk
+
+        kind = "lecture"
+        if m.group("kind") is not None:
+            kind = m.group("kind").lower().rstrip("s")  # drop 's' in e.g. Lectures
+        else:
+            assert idx == 0, "Only the first chunk may omit its kind (assumed lecture)"
+
+        start = m.group("start").replace(":", ".")
+        end = m.group("end").replace(":", ".")
+
+        is_day = start in TIMES and end in TIMES
+        is_eve = start in EVE_TIMES and end in EVE_TIMES
+        assert is_day or is_eve, (start, end)
+        is_pm_int = 0 if is_day else 1
+
+        raw = make_raw_sections(
+            normalize_days(m.group("days")),
+            f"{start}-{end}" + (" PM" if is_pm_int == 1 else ""),
+            m.group("room"),
+            is_pm_int,
+        )
+        raw_fields.setdefault(f"{kind}RawSections", []).append(raw)
+        section_fields.setdefault(f"{kind}Sections", []).append(parse_section(raw))
+        kinds.append(kind)
+
+    return raw_fields, section_fields, kinds
+
+
+def get_rows() -> list[Tag]:
+    """
+    Scrapes the EECS subject updates page and returns "rows", each representing
+    one 6.S### entry as a list of text blocks (header + body).
+
+    Args: none
+
+    Returns:
+    * list[Tag]: BeautifulSoup tags for each detected 6.S### subject
+    """
+    request = Request(URL)
+    request.add_unredirected_header(
+        "User-Agent", "hydrant-scrapers (https://github.com/sipb/hydrant)"
+    )
+
+    with urlopen(request, timeout=15) as response:
+        page_html = response.read().decode("utf-8")
+
+    soup = BeautifulSoup(page_html, features="lxml")
+    page_text = soup.get_text(" ", strip=True)
+    assert COURSE_RE.search(page_text) is not None, f"No 6.S### entries found on {URL}"
+
+    # Each subject block begins with an h6 heading containing the subject number.
+    rows = soup.find_all("h6")
+    assert rows, "No <h6> course headings found"
+    return rows
+
+
+def parse_header(text: str) -> tuple[str, str, Optional[str]]:
+    """
+    Parse a header block containing a course number.
+
+    Returns:
+    * tuple[str, str, str | None]: (course_number, title_fragment, same_csv)
+    """
+    match = COURSE_RE.search(text)
+    assert match
+    course = match.group(1)
+    same_as = match.group(2)
+    title = match.group(3).lstrip(" :-–—\t").rstrip("§ ")
+    return course, title, same_as
+
+
+def parse_units(units_str: str) -> Units:
+    """
+    Parse units string like "3-0-9" or "12" into a dict suitable for `data.update(...)`.
+
+    Args:
+        units_str (str): Units string from the webpage
+
+    Returns:
+        Units:
+            Dict with keys: lectureUnits, labUnits, preparationUnits, isVariableUnits.
+            Raises ValueError if can't parse.
+    """
+    # Parse formats like "3-0-9"
+    if "-" in units_str:
+        parts = units_str.split("-")
+        if len(parts) == 3:
+            return {
+                "lectureUnits": int(parts[0]),
+                "labUnits": int(parts[1]),
+                "preparationUnits": int(parts[2]),
+                "isVariableUnits": False,
+            }
+        raise ValueError(f"Invalid units string: {units_str}")
+
+    # Single number like "12" - variable units
+    if units_str.isdigit():
+        return {
+            "lectureUnits": 0,
+            "labUnits": 0,
+            "preparationUnits": 0,
+            "isVariableUnits": True,
+        }
+
+    # Can't parse
+    raise ValueError(f"Invalid units string: {units_str}")
+
+
+def parse_level(level_str: str) -> str:
+    """
+    Parse level string to "U" or "G".
+
+    Args:
+        level_str (str): Level string from the webpage
+
+    Returns:
+        str: "U" for undergraduate, "G" for graduate
+    """
+    # Note: might be both "undergraduate" and "graduate"
+    level_str = level_str.lower()
+    if "graduate" in level_str and "undergrad" not in level_str:
+        return "G"
+    return "U"
+
+
+def parse_row(row: Tag) -> dict[str, dict[str, Any]]:
+    """
+    Parses a single row (one subject entry).
+
+    Args:
+    * row (Tag): header + body blocks
+
+    Returns:
+    * dict[str, dict[str, Any]]: A single-entry overrides dict
+    """
+    header = row.get_text(" ", strip=True)
+    course, title, same_as = parse_header(header)
+    data = {"url": f'{FRONTEND_URL}#{course.replace(".", "_", 1)}', "new": True}
+
+    if title:
+        data["name"] = title
+    if same_as:
+        data["same"] = same_as
+
+    # The fragment lays out each subject as:
+    #   <h6> ... </h6>
+    #   <hr/>
+    #   <table> key/value metadata </table>
+    #   <hr/>
+    #   <div> description ... </div>
+    table = row.find_next_sibling("table")
+    assert table is not None, f"Missing metadata table for {course}"
+
+    meta = {}
+    for tr in table.find_all("tr"):
+        tds = tr.find_all("td")
+        if len(tds) != 2:
+            continue
+        key = tds[0].get_text(" ", strip=True).rstrip(":")
+        val = tds[1].get_text(" ", strip=True)
+        if key and val:
+            meta[key] = val
+
+    # Parse Level (if present)
+    if "Level" in meta:
+        data["level"] = parse_level(meta["Level"])
+
+    # Parse Units (if present and parseable)
+    if "Units" in meta:
+        data.update(parse_units(meta["Units"]))
+
+    if "Instructors" in meta:
+        data["inCharge"] = meta["Instructors"].replace("\n", ", ")
+
+    if "Prereqs" in meta:
+        data["prereqs"] = meta["Prereqs"]
+
+    if "Schedule" in meta and meta["Schedule"] != "TBD":
+        schedule_data = parse_schedule(meta["Schedule"])
+        data.update(schedule_data[0])
+        data.update(schedule_data[1])
+        if schedule_data[2]:
+            data["sectionKinds"] = schedule_data[2]
+
+    desc_div = table.find_next_sibling("div")
+    assert desc_div is not None, f"Missing description block for {course}"
+    data["description"] = desc_div.get_text(" ", strip=True)
+
+    return {course: data}
+
+
+def run() -> dict[str, dict[str, Any]]:
+    """
+    The main entry point.
+
+    Args: none
+
+    Returns:
+    * dict[str, dict[str, Any]]: Overrides keyed by subject number.
+    """
+    rows = get_rows()
+    overrides = {}
+    for row in rows:
+        overrides.update(parse_row(row))
+    return overrides
+
+
+if __name__ == "__main__":
+    pprint(run())

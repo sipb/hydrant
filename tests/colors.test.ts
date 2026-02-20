@@ -91,7 +91,7 @@ describe("getDefaultColorScheme", () => {
     expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_DARK);
   });
 
-  test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
+  test("prefers-color-scheme = dark, prefers-constrast = more", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", true],

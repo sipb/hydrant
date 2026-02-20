@@ -17,9 +17,9 @@
     "paths": {
       "~/*": ["./src/*"]
     },
+    "customConditions": ["dev"],
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,

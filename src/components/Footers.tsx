@@ -69,11 +69,7 @@ function AboutDialog() {
                   <Text>
                     We'd like to thank CJ Quines '23 for creating Hydrant and
                     Edward Fan '19 for creating{" "}
-                    <ChakraLink
-                      href="https://firehose.guide/"
-                      colorPalette="blue"
-                      asChild
-                    >
+                    <ChakraLink colorPalette="blue" asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -83,11 +79,7 @@ function AboutDialog() {
                       </Link>
                     </ChakraLink>
                     , the basis for Hydrant. We'd also like to thank the{" "}
-                    <ChakraLink
-                      href="https://fireroad.mit.edu/"
-                      colorPalette="blue"
-                      asChild
-                    >
+                    <ChakraLink colorPalette="blue" asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -96,7 +88,17 @@ function AboutDialog() {
                         FireRoad
                       </Link>
                     </ChakraLink>{" "}
-                    team for collaborating with us.
+                    team and{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://physicaleducationandwellness.mit.edu/"
+                      >
+                        DAPER
+                      </Link>
+                    </ChakraLink>{" "}
+                    for collaborating with us.
                   </Text>
                 </Flex>
               </Dialog.Body>
@@ -137,17 +139,42 @@ function PrivacyPolicyDialog() {
               <Dialog.Body>
                 <Flex direction="column" gap={4}>
                   <Text>
-                    Hydrant does not store any of your data outside of your
-                    browser. Data is only transmitted upstream when you export
-                    to Google Calendar. When you export to Google Calendar,
-                    Hydrant sends calendar information to Google to place into
-                    your calendar.
+                    SIPB self-hosts an open-source analytics platform called{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://plausible.io/"
+                      >
+                        Plausible Analytics
+                      </Link>
+                    </ChakraLink>{" "}
+                    to track usage of Hydrant. A{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://plausible.io/data-policy"
+                      >
+                        limited amount of information
+                      </Link>
+                    </ChakraLink>
+                    , including page URLs, HTTP Referer strings, browser and
+                    operating system information, device type, and what city you
+                    are in, is sent anonymously for analytics purposes. No
+                    personally identifiable information is ever collected or
+                    stored, and none of this information ever leaves SIPB.
                   </Text>
                   <Text>
                     No data is transmitted otherwise. That means that our
-                    servers do not store your class or calendar information. If
-                    you never export to Google Calendar we never send your data
+                    servers do not store your class or calendar information, and
+                    all data stays on your device. If you never export your
+                    class data, such as to Matrix, we never send your data
                     anywhere else.
+                  </Text>
+                  <Text>
+                    We do not, and will never, share any user data with third
+                    parties without your explicit consent.
                   </Text>
                 </Flex>
               </Dialog.Body>

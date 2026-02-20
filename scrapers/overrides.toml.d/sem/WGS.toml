@@ -1,0 +1,6 @@
+#:schema ../override-schema.json
+
+["WGS.S30"]
+name = "Global South Feminisms"
+inCharge = "D. Ribeiro"
+new = true

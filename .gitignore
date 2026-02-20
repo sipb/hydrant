@@ -25,10 +25,7 @@ dist-ssr
 
 
 # artifacts
-scrapers/catalog.json
-scrapers/fireroad-sem.json
-scrapers/fireroad-presem.json
-scrapers/cim.json
+scrapers/*.json
 public/latest.json
 public/i26.json
 

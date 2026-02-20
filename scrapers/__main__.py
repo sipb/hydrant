@@ -10,7 +10,9 @@ Functions:
 from .catalog import run as catalog_run
 from .cim import run as cim_run
 from .fireroad import run as fireroad_run
+from .locations import run as locations_run
 from .package import run as package_run
+from .pe import run as pe_run
 
 
 def run():
@@ -18,13 +20,17 @@ def run():
     This function is the entry point. There are no arguments.
     """
     print("=== Update fireroad data (pre-semester) ===")
-    fireroad_run(False)
+    fireroad_run("presem")
     print("=== Update fireroad data (semester) ===")
-    fireroad_run(True)
+    fireroad_run("sem")
     print("=== Update catalog data ===")
     catalog_run()
     print("=== Update CI-M data ===")
     cim_run()
+    print("=== Update locations data ===")
+    locations_run()
+    print("=== Update PE data ===")
+    pe_run()
     print("=== Packaging ===")
     package_run()
 

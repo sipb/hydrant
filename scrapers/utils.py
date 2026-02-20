@@ -1,7 +1,7 @@
 """
 Utility data and functions for the scrapers folder.
 
-Data:
+Constants:
     GIR_REWRITE: dict[str, str]
     TIMESLOTS: int
     DAYS: dict[str, int]
@@ -13,14 +13,20 @@ Functions:
     find_timeslot(day, slot, pm)
     zip_strict(*iterables)
     grouper(iterable, n)
-    get_term_info()
+    get_term_info(sem_term)
+    url_name_to_term(url_name)
 """
 
+from __future__ import annotations
+
+import csv
 import json
 import os.path
 from enum import Enum
 from itertools import zip_longest
-from typing import Any, Dict, Generator, Iterable, Tuple
+from typing import Any, Generator, Iterable, Literal
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
 GIR_REWRITE = {
     "GIR:CAL1": "Calculus I (GIR)",
@@ -142,7 +148,7 @@ def find_timeslot(day: str, slot: str, is_slot_pm: bool) -> int:
     return DAYS[day] + time_dict[slot]
 
 
-def zip_strict(*iterables: Iterable[Any]) -> Generator[Tuple[Any, ...], Any, None]:
+def zip_strict(*iterables: Iterable[Any]) -> Generator[tuple[Any, ...], Any, None]:
     """
     Helper function for grouper.
     Groups values of the iterator on the same iteration together.
@@ -162,7 +168,7 @@ def zip_strict(*iterables: Iterable[Any]) -> Generator[Tuple[Any, ...], Any, Non
 
 def grouper(
     iterable: Iterable[Any], group_size: int
-) -> Generator[Tuple[Any, ...], Any, None]:
+) -> Generator[tuple[Any, ...], Any, None]:
     """
     Groups items of the iterable in equally spaced blocks of group_size items.
     If the iterable's length ISN'T a multiple of group_size, you'll get a
@@ -185,14 +191,14 @@ def grouper(
     return zip_strict(*args)
 
 
-def get_term_info(is_semester_term: bool) -> Dict[str, Any]:
+def get_term_info(sem_term: Literal["sem", "presem"]) -> dict[str, Any]:
     """
     Gets the latest term info from "../public/latestTerm.json" as a dictionary.
-    If is_semester_term = True, looks at semester term (fall/spring).
-    If is_semester_term = False, looks at pre-semester term (summer/IAP)
+    If sem_term = "sem", looks at semester term (fall/spring).
+    If sem_term = "presem", looks at pre-semester term (summer/IAP)
 
     Args:
-        is_semester_term (bool): whether to look at the semester
+        is_semester_term (Literal["sem", "presem"]): whether to look at the semester
             or the pre-semester term.
 
     Returns:
@@ -201,9 +207,9 @@ def get_term_info(is_semester_term: bool) -> Dict[str, Any]:
     fname = os.path.join(os.path.dirname(__file__), "../public/latestTerm.json")
     with open(fname, encoding="utf-8") as latest_term_file:
         term_info = json.load(latest_term_file)
-    if is_semester_term:
-        return term_info["semester"]
 
+    if sem_term == "sem":
+        return term_info["semester"]
     return term_info["preSemester"]
 
 
@@ -233,3 +239,53 @@ def url_name_to_term(url_name: str) -> Term:
         return Term.SU
 
     raise ValueError(f"Invalid term {url_name[0]}")
+
+
+def is_url(path_string: str) -> bool:
+    """Check if the string has a URL-like scheme and network location."""
+    try:
+        result = urlparse(path_string)
+        # Check if both a scheme (e.g., 'http', 'https')
+        # AND a network location (e.g., 'www.google.com') are present
+        return bool(result.scheme and result.netloc)
+    except ValueError:
+        return False
+
+
+def read_csv(path: str, types_dict: type) -> list:
+    """
+    Parses data from file according to a specific format from a CSV
+
+    Args:
+        filepath (str): The path to the CSV file, either file path or URL
+        types_dict (type): The TypedDict type representing the data format
+
+    Returns:
+        list[types_dict]: A list of TypedDict dictionaries representing the parsed data
+    """
+
+    assert hasattr(types_dict, "__annotations__"), "types_dict must be a TypedDict type"
+
+    data = []
+    cols = getattr(types_dict, "__annotations__").keys()
+
+    path_is_url = is_url(path)
+
+    if path_is_url:
+        with_open = urlopen(path, timeout=15)
+    else:
+        with_open = open(path, mode="r", newline="", encoding="utf-8")
+
+    with with_open as csvfile:
+        reader = csv.DictReader(
+            csvfile
+            if not path_is_url
+            else csvfile.read().decode("utf-8")[1:].splitlines()  # type: ignore
+        )
+        for row in reader:
+            assert all(
+                col in row for col in cols
+            ), f"Missing columns in CSV file: {path}"
+            data.append({col: row[col] for col in cols})  # type: ignore
+
+    return data

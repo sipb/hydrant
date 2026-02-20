@@ -1,7 +1,16 @@
-import { Timeslot, Event } from "./activity";
+import { Event, Sections, type BaseActivity, type Section } from "./activity";
 import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
-import type { RawClass, RawSection } from "./rawClass";
+import {
+  CI,
+  GIR,
+  HASS,
+  Level,
+  SectionKind,
+  TermCode,
+  type RawClass,
+  type RawSection,
+} from "./raw";
 
 import nonextImg from "../assets/nonext.gif";
 import underImg from "../assets/under.gif";
@@ -26,15 +35,6 @@ import hassSImg from "../assets/hassS.gif";
 import hassEImg from "../assets/hassE.gif";
 import cihImg from "../assets/cih.gif";
 import cihwImg from "../assets/cihw.gif";
-
-// This isn't exported intentionally. Instead of using this, can you use
-// Sections directly?
-enum SectionKind {
-  LECTURE,
-  RECITATION,
-  LAB,
-  DESIGN,
-}
 
 /** Flags. */
 export interface Flags {
@@ -113,85 +113,9 @@ export const getFlagImg = (flag: keyof Flags): string => {
   return flagImages[flag] ?? "";
 };
 
-/**
- * A section is an array of timeslots that meet in the same room for the same
- * purpose. Sections can be lectures, recitations, or labs, for a given class.
- * All instances of Section belong to a Sections.
- */
-export class Section {
-  /** Group of sections this section belongs to */
-  secs: Sections;
-  /** Timeslots this section meets */
-  timeslots: Timeslot[];
-  /** String representing raw timeslots, e.g. MW9-11 or T2,F1. */
-  rawTime: string;
-  /** Room this section meets in */
-  room: string;
-
-  /** @param section - raw section info (timeslot and room) */
-  constructor(secs: Sections, rawTime: string, section: RawSection) {
-    this.secs = secs;
-    this.rawTime = rawTime;
-    const [rawSlots, room] = section;
-    this.timeslots = rawSlots.map((slot) => new Timeslot(...slot));
-    this.room = room;
-  }
-
-  /** Get the parsed time for this section in a format similar to the Registrar. */
-  get parsedTime(): string {
-    const [room, days, eveningBool, times] = this.rawTime.split("/");
-
-    const isEvening = eveningBool === "1";
-
-    if (isEvening) {
-      return `${days} EVE (${times}) (${room})`;
-    }
-
-    return `${days}${times} (${room})`;
-  }
-
-  /**
-   * @param currentSlots - array of timeslots currently occupied
-   * @returns number of conflicts this section has with currentSlots
-   */
-  countConflicts(currentSlots: Timeslot[]): number {
-    let conflicts = 0;
-    for (const slot of this.timeslots) {
-      for (const otherSlot of currentSlots) {
-        conflicts += slot.conflicts(otherSlot) ? 1 : 0;
-      }
-    }
-    return conflicts;
-  }
-}
-
-/** The non-section options for a manual section time. */
-export const LockOption = {
-  Auto: "Auto",
-  None: "None",
-} as const;
-
-/** The type of {@link LockOption}. */
-type TLockOption = (typeof LockOption)[keyof typeof LockOption];
-
-/** All section options for a manual section time. */
-export type SectionLockOption = Section | TLockOption;
-
-/**
- * A group of {@link Section}s, all the same kind (like lec, rec, or lab). At
- * most one of these can be selected at a time, and that selection is possibly
- * locked.
- */
-export class Sections {
-  cls: Class;
-  kind: SectionKind;
-  sections: Section[];
-  /** Are these sections locked? None counts as locked. */
-  locked: boolean;
-  /** Currently selected section out of these. None is null. */
-  selected: Section | null;
-  /** Overridden location for this particular section. */
-  roomOverride = "";
+export class ClassSections extends Sections {
+  declare cls: Class;
+  declare kind: SectionKind;
 
   setRoomOverride(room: string) {
     this.roomOverride = room;
@@ -205,77 +129,59 @@ export class Sections {
     locked?: boolean,
     selected?: Section | null,
   ) {
-    this.cls = cls;
+    super(cls, rawTimes, secs, kind, locked, selected);
     this.kind = kind;
-    this.sections = secs.map((sec, i) => new Section(this, rawTimes[i], sec));
-    this.locked = locked ?? false;
-    this.selected = selected ?? null;
   }
 
-  /** Short name for the kind of sections these are. */
   get shortName(): string {
     switch (this.kind) {
       case SectionKind.LECTURE:
         return "lec";
       case SectionKind.RECITATION:
         return "rec";
-      case SectionKind.DESIGN:
-        return "des";
       case SectionKind.LAB:
         return "lab";
+      case SectionKind.DESIGN:
+        return "des";
     }
   }
 
-  /** Name for the kind of sections these are. */
+  get priority(): number {
+    switch (this.kind) {
+      case SectionKind.LECTURE:
+        return 0;
+      case SectionKind.RECITATION:
+        return 1;
+      case SectionKind.LAB:
+        return 2;
+      case SectionKind.DESIGN:
+        return 3;
+    }
+  }
+
   get name(): string {
     switch (this.kind) {
       case SectionKind.LECTURE:
         return "Lecture";
       case SectionKind.RECITATION:
         return "Recitation";
-      case SectionKind.DESIGN:
-        return "Design";
       case SectionKind.LAB:
         return "Lab";
-    }
-  }
-
-  /** The event (possibly none) for this group of sections. */
-  get event(): Event | null {
-    return this.selected
-      ? new Event(
-          this.cls,
-          `${this.cls.number} ${this.shortName}`,
-          this.selected.timeslots,
-          this.roomOverride || this.selected.room,
-          this.cls.half,
-        )
-      : null;
-  }
-
-  /** Lock a specific section of this class. Does not validate. */
-  lockSection(sec: SectionLockOption): void {
-    if (sec === LockOption.Auto) {
-      this.locked = false;
-    } else if (sec === LockOption.None) {
-      this.locked = true;
-      this.selected = null;
-    } else {
-      this.locked = true;
-      this.selected = sec;
+      case SectionKind.DESIGN:
+        return "Design";
     }
   }
 }
 
 /** An entire class, e.g. 6.036, and its selected sections. */
-export class Class {
+export class Class implements BaseActivity {
   /**
    * The RawClass being wrapped around. Nothing outside Class should touch
    * this; instead use the Class getters like cls.id, cls.number, etc.
    */
   readonly rawClass: RawClass;
   /** The sections associated with this class. */
-  readonly sections: Sections[];
+  readonly sections: ClassSections[];
   /** The background color for the class, used for buttons and calendar. */
   backgroundColor: string;
   /** Is the color set by the user (as opposed to chosen automatically?) */
@@ -288,37 +194,37 @@ export class Class {
     this.sections = rawClass.sectionKinds
       .map((kind) => {
         switch (kind) {
-          case "lecture":
-            return new Sections(
+          case SectionKind.LECTURE:
+            return new ClassSections(
               this,
               SectionKind.LECTURE,
               rawClass.lectureRawSections,
               rawClass.lectureSections,
             );
-          case "recitation":
-            return new Sections(
+          case SectionKind.RECITATION:
+            return new ClassSections(
               this,
               SectionKind.RECITATION,
               rawClass.recitationRawSections,
               rawClass.recitationSections,
             );
-          case "design":
-            return new Sections(
-              this,
-              SectionKind.DESIGN,
-              rawClass.designRawSections,
-              rawClass.designSections,
-            );
-          case "lab":
-            return new Sections(
+          case SectionKind.LAB:
+            return new ClassSections(
               this,
               SectionKind.LAB,
               rawClass.labRawSections,
               rawClass.labSections,
             );
+          case SectionKind.DESIGN:
+            return new ClassSections(
+              this,
+              SectionKind.DESIGN,
+              rawClass.designRawSections,
+              rawClass.designSections,
+            );
         }
       })
-      .sort((a, b) => a.kind - b.kind);
+      .sort((a, b) => a.priority - b.priority);
     this.backgroundColor = fallbackColor(colorScheme);
   }
 
@@ -327,7 +233,7 @@ export class Class {
     return this.number;
   }
 
-  /** Name, e.g. "Introduction to Machine Learning". */
+  /** Name; e.g. "Introduction to Machine Learning". */
   get name(): string {
     if (this.rawClass.oldNumber) {
       return `[${this.rawClass.oldNumber}] ${this.rawClass.name}`;
@@ -402,33 +308,41 @@ export class Class {
       .filter((event): event is Event => event instanceof Event);
   }
 
+  get start(): [number, number] | undefined {
+    return this.rawClass.quarterInfo?.start;
+  }
+
+  get end(): [number, number] | undefined {
+    return this.rawClass.quarterInfo?.end;
+  }
+
   /** Object of boolean properties of class, used for filtering. */
   get flags(): Flags {
     return {
       nonext: this.rawClass.nonext,
-      under: this.rawClass.level === "U",
-      grad: this.rawClass.level === "G",
-      fall: this.rawClass.terms.includes("FA"),
-      iap: this.rawClass.terms.includes("JA"),
-      spring: this.rawClass.terms.includes("SP"),
-      summer: this.rawClass.terms.includes("SU"),
+      under: this.rawClass.level === Level.U,
+      grad: this.rawClass.level === Level.G,
+      fall: this.rawClass.terms.includes(TermCode.FA),
+      iap: this.rawClass.terms.includes(TermCode.JA),
+      spring: this.rawClass.terms.includes(TermCode.SP),
+      summer: this.rawClass.terms.includes(TermCode.SU),
       repeat: this.rawClass.repeat,
-      bio: this.rawClass.gir === "BIOL",
-      calc1: this.rawClass.gir === "CAL1",
-      calc2: this.rawClass.gir === "CAL2",
-      chem: this.rawClass.gir === "CHEM",
-      lab: this.rawClass.gir === "LAB",
-      partLab: this.rawClass.gir === "LAB2",
-      phys1: this.rawClass.gir === "PHY1",
-      phys2: this.rawClass.gir === "PHY2",
-      rest: this.rawClass.gir === "REST",
+      bio: this.rawClass.gir === GIR.BIOL,
+      calc1: this.rawClass.gir === GIR.CAL1,
+      calc2: this.rawClass.gir === GIR.CAL2,
+      chem: this.rawClass.gir === GIR.CHEM,
+      lab: this.rawClass.gir === GIR.LAB,
+      partLab: this.rawClass.gir === GIR.LAB2,
+      phys1: this.rawClass.gir === GIR.PHY1,
+      phys2: this.rawClass.gir === GIR.PHY2,
+      rest: this.rawClass.gir === GIR.REST,
       hass: this.rawClass.hass.length > 0,
-      hassH: this.rawClass.hass.includes("H"),
-      hassA: this.rawClass.hass.includes("A"),
-      hassS: this.rawClass.hass.includes("S"),
-      hassE: this.rawClass.hass.includes("E"),
-      cih: this.rawClass.comms === "CI-H",
-      cihw: this.rawClass.comms === "CI-HW",
+      hassH: this.rawClass.hass.includes(HASS.H),
+      hassA: this.rawClass.hass.includes(HASS.A),
+      hassS: this.rawClass.hass.includes(HASS.S),
+      hassE: this.rawClass.hass.includes(HASS.E),
+      cih: this.rawClass.comms === CI.CIH,
+      cihw: this.rawClass.comms === CI.CIHW,
       notcih: !this.rawClass.comms,
       cim: !!this.rawClass.cim?.length,
       final: this.rawClass.final,

@@ -25,12 +25,17 @@ const CLASS_REGEX = new RegExp(
 
 /** Three-way comparison for class numbers. */
 export function classSort(
-  a: string | null | undefined,
-  b: string | null | undefined,
+  a: string | number | null | undefined,
+  b: string | number | null | undefined,
 ) {
   if (!a && !b) return 0;
   if (!a) return 1;
   if (!b) return -1;
+  if (typeof a === "number" && typeof b === "number") {
+    return a - b;
+  }
+  a = String(a);
+  b = String(b);
   const aGroups = CLASS_REGEX.exec(a)?.groups;
   const bGroups = CLASS_REGEX.exec(b)?.groups;
   if (!aGroups || !bGroups) return 0;
@@ -97,9 +102,19 @@ export function sum(arr: number[]): number {
 }
 
 export function urlencode(obj: unknown): string {
-  return pack(obj).toString("base64");
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64
+  // return pack(obj).toBase64();
+  return btoa(String.fromCharCode(...pack(obj)));
 }
 
 export function urldecode(obj: string): unknown {
-  return unpack(Buffer.from(obj, "base64"));
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64
+  // return unpack(Uint8Array.fromBase64(obj));
+  return unpack(
+    Uint8Array.from(
+      atob(obj)
+        .split("")
+        .map((c) => c.charCodeAt(0)),
+    ),
+  );
 }

@@ -17,6 +17,7 @@ import {
   ExternalFilterModule,
   RenderApiModule,
   CellStyleModule,
+  RowStyleModule,
   themeQuartz,
   type IRowNode,
   type ColDef,
@@ -31,6 +32,7 @@ import {
   Button,
   ButtonGroup,
   InputGroup,
+  CloseButton,
 } from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
@@ -40,9 +42,11 @@ import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { TSemester } from "../lib/dates";
-import "./ClassTable.scss";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
+import { ColorStyles } from "../lib/colors";
+
+import styles from "./ClassTable.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",
@@ -61,25 +65,18 @@ const GRID_MODULES: Module[] = [
   ExternalFilterModule,
   CellStyleModule,
   RenderApiModule,
+  RowStyleModule,
   ...(import.meta.env.DEV ? [ValidationModule] : []),
 ];
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-enum ColorEnum {
-  Muted = "ag-cell-muted-text",
-  Success = "ag-cell-success-text",
-  Warning = "ag-cell-warning-text",
-  Error = "ag-cell-error-text",
-  Normal = "ag-cell-normal-text",
-}
-
 const getRatingColor = (rating?: string | null) => {
-  if (!rating || rating === "N/A") return ColorEnum.Muted;
+  if (!rating || rating === "N/A") return ColorStyles.Muted;
   const ratingNumber = Number(rating);
-  if (ratingNumber >= 6) return ColorEnum.Success;
-  if (ratingNumber >= 5) return ColorEnum.Warning;
-  return ColorEnum.Error;
+  if (ratingNumber >= 6) return ColorStyles.Success;
+  if (ratingNumber >= 5) return ColorStyles.Warning;
+  return ColorStyles.Error;
 };
 
 const getHoursColor = (
@@ -88,9 +85,9 @@ const getHoursColor = (
   term: TSemester,
   half: number | undefined,
 ) => {
-  if (!hours || hours === "N/A") return ColorEnum.Muted;
-  if (totalUnits === undefined) return ColorEnum.Muted;
-  if (totalUnits === 0) return ColorEnum.Normal;
+  if (!hours || hours === "N/A") return ColorStyles.Muted;
+  if (totalUnits === undefined) return ColorStyles.Muted;
+  if (totalUnits === 0) return ColorStyles.Normal;
 
   const hoursNumber = Number(hours);
   let weeksInTerm = 0;
@@ -114,9 +111,9 @@ const getHoursColor = (
   const expectedHours = totalUnits * (weeksInTerm / 14) * (half ? 2 : 1);
   const proportion = hoursNumber / expectedHours;
 
-  if (proportion < 0.8) return ColorEnum.Success;
-  if (proportion >= 0.8 && proportion <= 1.2) return ColorEnum.Warning;
-  return ColorEnum.Error;
+  if (proportion < 0.8) return ColorStyles.Success;
+  if (proportion >= 0.8 && proportion <= 1.2) return ColorStyles.Warning;
+  return ColorStyles.Error;
 };
 
 /** A single row in the class table. */
@@ -148,6 +145,7 @@ function ClassInput(props: {
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
   const searchResults = useRef<
@@ -208,6 +206,17 @@ function ClassInput(props: {
     }
   };
 
+  const clearButton = classInput ? (
+    <CloseButton
+      size="xs"
+      onClick={() => {
+        onClassInputChange("");
+        inputRef.current?.focus();
+      }}
+      me="-2"
+    />
+  ) : undefined;
+
   return (
     <Flex justify="center">
       <form
@@ -217,13 +226,18 @@ function ClassInput(props: {
         }}
         style={{ width: "100%", maxWidth: "30em" }}
       >
-        <InputGroup startElement={<LuSearch />} width="fill-available">
+        <InputGroup
+          startElement={<LuSearch />}
+          endElement={clearButton}
+          width="fill-available"
+        >
           <Input
             type="search"
             aria-label="Search for a class"
             id="class-search"
             placeholder="Class number, name, or instructor"
             value={classInput}
+            ref={inputRef}
             onChange={(e) => {
               onClassInputChange(e.target.value);
             }}
@@ -520,6 +534,7 @@ export function ClassTable() {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
+        cellClass: styles["underline-on-hover"],
         ...sortProps,
       },
       {
@@ -545,7 +560,7 @@ export function ClassTable() {
         sortable: false,
         flex: 1,
         valueFormatter: (params) =>
-          `${params.data?.class.new ? "✨ " : ""}${params.value ?? ""}`,
+          (params.data?.class.new ? "✨ " : "") + (params.value ?? ""),
       },
     ];
   }, [state]);
@@ -599,6 +614,7 @@ export function ClassTable() {
         <AgGridReact<ClassTableRow>
           theme={hydrantTheme}
           ref={gridRef}
+          rowClass={styles.row}
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={rowData}

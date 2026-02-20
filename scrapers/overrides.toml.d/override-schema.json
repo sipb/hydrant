@@ -45,7 +45,24 @@
         "description": "Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist",
         "items": {
           "type": "string",
-          "enum": ["lecture", "recitation", "lab", "design"]
+          "oneOf": [
+            {
+              "const": "lecture",
+              "title": "Lecture"
+            },
+            {
+              "const": "recitation",
+              "title": "Recitation"
+            },
+            {
+              "const": "lab",
+              "title": "Lab"
+            },
+            {
+              "const": "design",
+              "title": "Design"
+            }
+          ]
         }
       },
       "lectureSections": {
@@ -122,7 +139,24 @@
         "description": "HASS designation (if any)",
         "items": {
           "type": "string",
-          "enum": ["H", "A", "S", "E"]
+          "oneOf": [
+            {
+              "const": "H",
+              "title": "HASS-H"
+            },
+            {
+              "const": "A",
+              "title": "HASS-A"
+            },
+            {
+              "const": "S",
+              "title": "HASS-S"
+            },
+            {
+              "const": "E",
+              "title": "HASS-E"
+            }
+          ]
         },
         "uniqueItems": true
       },
@@ -130,23 +164,66 @@
         "type": "string",
         "title": "CI-H",
         "description": "Communications Intensive designation",
-        "enum": ["", "CI-H", "CI-HW"]
+        "oneOf": [
+          {
+            "const": "",
+            "title": "Not a CI"
+          },
+          {
+            "const": "CI-H",
+            "title": "CI-H"
+          },
+          {
+            "const": "CI-HW",
+            "title": "CI-HW"
+          }
+        ]
       },
       "gir": {
         "type": "string",
         "title": "GIR",
         "description": "GIR designation",
-        "enum": [
-          "",
-          "BIOL",
-          "CAL1",
-          "CAL2",
-          "CHEM",
-          "LAB",
-          "LAB2",
-          "PHY1",
-          "PHY2",
-          "REST"
+        "oneOf": [
+          {
+            "const": "",
+            "title": "Not a GIR"
+          },
+          {
+            "const": "BIOL",
+            "title": "Biology"
+          },
+          {
+            "const": "CAL1",
+            "title": "Calculus 1"
+          },
+          {
+            "const": "CAL2",
+            "title": "Calculus 2"
+          },
+          {
+            "const": "CHEM",
+            "title": "Chemistry"
+          },
+          {
+            "const": "LAB",
+            "title": "Institute Lab"
+          },
+          {
+            "const": "LAB2",
+            "title": "Partial Lab"
+          },
+          {
+            "const": "PHY1",
+            "title": "Physics 1"
+          },
+          {
+            "const": "PHY2",
+            "title": "Physics 2"
+          },
+          {
+            "const": "REST",
+            "title": "REST"
+          }
         ]
       },
       "cim": {
@@ -158,30 +235,42 @@
         }
       },
       "lectureUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Lecture units",
-        "description": "Lecture or recitation units"
+        "description": "Lecture or recitation units",
+        "minimum": 0
       },
       "labUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Lab units",
-        "description": "Lab or field work units"
+        "description": "Lab or field work units",
+        "minimum": 0
       },
       "preparationUnits": {
-        "type": "number",
+        "type": "integer",
         "title": "Preparation units",
-        "description": "Outside class units"
+        "description": "Outside class units",
+        "minimum": 0
       },
       "isVariableUnits": {
         "type": "boolean",
         "title": "Units arranged",
-        "description": "Does this class have an arranged number of units?\nIf true, lectureUnits, labUnits, preparationUnits are set to zero."
+        "description": "Does this class have an arranged number of units? If true, lectureUnits, labUnits, preparationUnits are set to zero."
       },
       "level": {
         "type": "string",
         "title": "Level",
         "description": "Subject level (\"U\" or \"G\")",
-        "enum": ["U", "G"]
+        "oneOf": [
+          {
+            "const": "U",
+            "title": "Undergraduate"
+          },
+          {
+            "const": "G",
+            "title": "Graduate"
+          }
+        ]
       },
       "same": {
         "type": "string",
@@ -200,7 +289,24 @@
         "description": "Terms class is offered",
         "items": {
           "type": "string",
-          "enum": ["FA", "JA", "SP", "SU"]
+          "oneOf": [
+            {
+              "const": "FA",
+              "title": "Fall"
+            },
+            {
+              "const": "JA",
+              "title": "January (IAP)"
+            },
+            {
+              "const": "SP",
+              "title": "Spring"
+            },
+            {
+              "const": "SU",
+              "title": "Summer"
+            }
+          ]
         }
       },
       "prereqs": {
@@ -256,12 +362,19 @@
         "description": "1 or 2 if first / second half",
         "oneOf": [
           {
-            "type": "number",
-            "enum": [1, 2]
+            "type": "integer",
+            "const": 1,
+            "title": "First Half"
+          },
+          {
+            "type": "integer",
+            "const": 2,
+            "title": "Second Half"
           },
           {
             "type": "boolean",
-            "enum": [false]
+            "const": false,
+            "title": "Full Semester"
           }
         ]
       },
@@ -278,105 +391,165 @@
       "rating": {
         "type": "number",
         "title": "Rating",
-        "description": "Rating (out of 7.0) from evals"
+        "description": "Rating (out of 7.0) from evals",
+        "multipleOf": 0.01,
+        "minimum": 0,
+        "maximum": 7
       },
       "hours": {
         "type": "number",
         "title": "Hours",
-        "description": "Hours per week from evals"
+        "description": "Hours per week from evals",
+        "multipleOf": 0.01,
+        "minimum": 0
       },
       "size": {
         "type": "number",
         "title": "Size",
-        "description": "Class size from evals"
+        "description": "Class size from evals",
+        "multipleOf": 0.01,
+        "minimum": 0
       },
       "quarterInfo": {
         "title": "Quarter Info",
         "type": "object",
-        "anyOf": [
-          {
-            "additionalProperties": false,
-            "properties": {}
+        "properties": {
+          "start": {
+            "title": "Start Date",
+            "$ref": "#/$defs/quarterDate"
           },
-          {
-            "required": ["start"],
-            "additionalProperties": false,
-            "properties": {
-              "start": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
-              }
-            },
-            "default": {
-              "start": [0, 0]
-            }
-          },
-          {
-            "required": ["end"],
-            "additionalProperties": false,
-            "properties": {
-              "end": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
-              }
-            },
-            "default": {
-              "end": [0, 0]
-            }
-          },
-          {
-            "required": ["start", "end"],
-            "additionalProperties": false,
-            "properties": {
-              "start": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
-              },
-              "end": {
-                "type": "array",
-                "minItems": 2,
-                "items": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ]
-              }
-            },
-            "default": {
-              "start": [0, 0],
-              "end": [0, 0]
-            }
+          "end": {
+            "title": "End Date",
+            "$ref": "#/$defs/quarterDate"
           }
-        ]
+        }
+      },
+      "include": {
+        "type": "boolean",
+        "title": "Include",
+        "description": "True if class should be included in final output, even if not in catalog"
       }
-    }
+    },
+    "allOf": [
+      {
+        "if": {
+          "anyOf": [
+            {
+              "properties": {
+                "lectureUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["lectureUnits"]
+            },
+            {
+              "properties": {
+                "labUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["labUnits"]
+            },
+            {
+              "properties": {
+                "preparationUnits": {
+                  "not": {
+                    "const": 0
+                  }
+                }
+              },
+              "required": ["preparationUnits"]
+            }
+          ]
+        },
+        "then": {
+          "properties": {
+            "isVariableUnits": {
+              "const": false
+            }
+          },
+          "required": [
+            "lectureUnits",
+            "labUnits",
+            "preparationUnits",
+            "isVariableUnits"
+          ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "isVariableUnits": {
+              "const": true
+            }
+          },
+          "required": ["isVariableUnits"]
+        },
+        "then": {
+          "properties": {
+            "lectureUnits": {
+              "const": 0
+            },
+            "labUnits": {
+              "const": 0
+            },
+            "preparationUnits": {
+              "const": 0
+            }
+          },
+          "required": ["lectureUnits", "labUnits", "preparationUnits"]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "include": {
+              "const": true
+            }
+          },
+          "required": ["include"]
+        },
+        "then": {
+          "required": [
+            "nonext",
+            "repeat",
+            "url",
+            "final",
+            "half",
+            "limited",
+            "new",
+            "number",
+            "course",
+            "subject",
+            "terms",
+            "prereqs",
+            "sectionKinds",
+            "tba",
+            "hass",
+            "comms",
+            "gir",
+            "lectureUnits",
+            "labUnits",
+            "preparationUnits",
+            "level",
+            "isVariableUnits",
+            "same",
+            "meets",
+            "description",
+            "name",
+            "inCharge",
+            "virtualStatus",
+            "rating",
+            "hours",
+            "size"
+          ]
+        }
+      }
+    ]
   },
   "$defs": {
     "rawTimeSlot": {
@@ -385,13 +558,17 @@
       "description": "Raw timeslot format: [start slot, length of timeslot].",
       "items": [
         {
-          "type": "number"
+          "type": "integer",
+          "minimum": 0,
+          "exclusiveMaximum": 170
         },
         {
-          "type": "number"
+          "type": "integer",
+          "minimum": 0
         }
       ],
-      "minItems": 2
+      "minItems": 2,
+      "maxItems": 2
     },
     "rawSection": {
       "type": "array",
@@ -408,7 +585,28 @@
           "type": "string"
         }
       ],
-      "minItems": 2
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "quarterDate": {
+      "type": "array",
+      "title": "Quarter date",
+      "description": "Date format for calendar day: [month, day].",
+      "additionalItems": false,
+      "items": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 31
+        }
+      ],
+      "minItems": 2,
+      "maxItems": 2
     }
   }
 }
