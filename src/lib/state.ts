@@ -99,6 +99,10 @@ export class State {
     this.initState();
   }
 
+  setFitsScheduleCallback(callback: () => void): void {
+    this.fitsScheduleCallback = callback;
+  }
+
   /** All activities. */
   get selectedActivities(): Activity[] {
     return [
@@ -393,7 +397,7 @@ export class State {
     );
   }
 
-  set showBanner(show: boolean) {
+  setShowBanner(show: boolean) {
     this.preferences.showBanner = show;
     this.preferences.showBannerChanged = new Date().valueOf();
     this.updateState();

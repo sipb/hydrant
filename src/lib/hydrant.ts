@@ -70,6 +70,7 @@ export function useHydrant({ globalState }: { globalState: State }): {
       }
     };
     state.updateState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colorMode, state]);
 
   return { state, hydrantState };

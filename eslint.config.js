@@ -20,7 +20,7 @@ export default defineConfig(
       js.configs.recommended,
       tseslint.configs.strictTypeChecked,
       tseslint.configs.stylisticTypeChecked,
-      // reactHooks.configs.flat.recommended,
+      reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
       eslintConfigPrettier,
     ],
