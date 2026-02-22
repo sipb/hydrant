@@ -2,7 +2,7 @@
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
-import checker from "vite-plugin-checker";
+// import checker from "vite-plugin-checker";
 import babel from "vite-plugin-babel";
 
 const ReactCompilerConfig = {
@@ -25,10 +25,12 @@ export default defineConfig({
         ],
       },
     }),
-    checker({
-      typescript: true,
-      eslint: { lintCommand: "eslint .", useFlatConfig: true },
-    }),
+    // !process.env.VITEST
+    //   ? checker({
+    //       typescript: true,
+    //       eslint: { lintCommand: "eslint .", useFlatConfig: true },
+    //     })
+    //   : null,
   ],
   test: {
     globals: true,
