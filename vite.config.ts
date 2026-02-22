@@ -10,10 +10,12 @@ export default defineConfig({
   plugins: [
     reactRouter(),
     tsconfigPaths(),
-    checker({
-      typescript: true,
-      eslint: { lintCommand: "eslint .", useFlatConfig: true },
-    }),
+    !process.env.VITEST
+      ? checker({
+          typescript: true,
+          eslint: { lintCommand: "eslint .", useFlatConfig: true },
+        })
+      : null,
   ],
   test: {
     globals: true,
