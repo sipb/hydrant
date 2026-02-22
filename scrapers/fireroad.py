@@ -189,7 +189,7 @@ def decode_quarter_date(date: str) -> tuple[int, int] | None:
 
 
 def parse_quarter_info(
-    course: Mapping[str, CourseValues],
+    course: Mapping[str, CourseValues], term: Term
 ) -> dict[str, dict[str, tuple[int, int]]]:
     """
     Parses quarter info from the course.
@@ -205,12 +205,23 @@ def parse_quarter_info(
 
     Args:
         course (Mapping[str, CourseValues]): The course object.
+        term (Term): The current term (fall, IAP, spring, or summer).
 
     Returns:
         dict[str, dict[str, tuple[int, int]]]: The parsed quarter info.
     """
 
-    quarter_info: str = course.get("quarter_information", "")  # type: ignore
+    quarter_info: str
+
+    if any(f"quarter_information_{t.value}" in course for t in Term):
+        # This course has quarter information by term, so look up the one for this term
+        quarter_info = course.get(
+            f"quarter_information_{term.value}", ""  # type: ignore
+        )
+    else:
+        # Fall back to general quarter information
+        quarter_info = course.get("quarter_information", "")  # type: ignore
+
     if quarter_info:
         quarter_info_list = quarter_info.split(",")
 
@@ -348,30 +359,29 @@ def get_course_data(
     if term.name not in raw_class["terms"]:  # type: ignore
         return False
 
-    has_schedule = "schedule" in course
+    has_schedule = True
 
     # tba, sectionKinds, lectureSections, recitationSections, labSections,
     # designSections, lectureRawSections, recitationRawSections, labRawSections,
     # designRawSections
-    if has_schedule:
-        try:
-            if term == Term.FA and "schedule_fall" in course:
-                raw_class.update(
-                    parse_schedule(course["schedule_fall"])  # type: ignore
-                )
-            elif term == Term.JA and "schedule_IAP" in course:
-                raw_class.update(parse_schedule(course["schedule_IAP"]))  # type: ignore
-            elif term == Term.SP and "schedule_spring" in course:
-                raw_class.update(
-                    parse_schedule(course["schedule_spring"])  # type: ignore
-                )
-            else:
-                raw_class.update(parse_schedule(course["schedule"]))  # type: ignore
-        except ValueError as val_err:
-            # if we can't parse the schedule, warn
-            # NOTE: parse_schedule will raise a ValueError
-            print(f"Can't parse schedule {course_code}: {val_err!r}")
-            has_schedule = False
+    try:
+        if any(f"schedule_{t.value}" in course for t in Term):
+            # This course has schedule information by term,
+            # so look up the one for this term
+            raw_class.update(
+                parse_schedule(course[f"schedule_{term.value}"])  # type: ignore
+            )
+        else:
+            # Fall back to general quarter information
+            raw_class.update(parse_schedule(course["schedule"]))  # type: ignore
+    except KeyError:
+        has_schedule = False
+    except ValueError as val_err:
+        # if we can't parse the schedule, warn
+        # NOTE: parse_schedule will raise a ValueError
+        print(f"Can't parse schedule {course_code}: {val_err!r}")
+        has_schedule = False
+
     if not has_schedule:
         raw_class.update(
             {
@@ -415,7 +425,7 @@ def get_course_data(
         assert raw_class["preparationUnits"] == 0
 
     # Get quarter info if available
-    raw_class.update(parse_quarter_info(course))
+    raw_class.update(parse_quarter_info(course, term))
 
     raw_class.update(
         {

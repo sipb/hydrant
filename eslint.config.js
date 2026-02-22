@@ -3,9 +3,9 @@ import globals from "globals";
 
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
-import reactHooks from "eslint-plugin-react-hooks";
+// import reactHooks from "eslint-plugin-react-hooks";
 import vitest from "@vitest/eslint-plugin";
-import reactRefresh from "eslint-plugin-react-refresh";
+import { reactRefresh } from "eslint-plugin-react-refresh";
 
 import { includeIgnoreFile } from "@eslint/compat";
 import { defineConfig } from "eslint/config";
@@ -15,21 +15,20 @@ const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url));
 
 export default defineConfig(
   includeIgnoreFile(gitignorePath),
+  js.configs.recommended,
+  tseslint.configs.strictTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
+  // reactHooks.configs.flat.recommended,
+  reactRefresh.configs.vite(),
+  eslintConfigPrettier,
   {
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.strictTypeChecked,
-      tseslint.configs.stylisticTypeChecked,
-      // reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-      eslintConfigPrettier,
-    ],
-    files: ["src/**", "tests/**"],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
       parserOptions: {
-        projectService: true,
+        projectService: {
+          allowDefaultProject: ["*.js"],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -52,7 +51,7 @@ export default defineConfig(
     },
   },
   {
-    files: ["tests/**"], // or any other pattern
+    files: ["tests/**"],
     plugins: {
       vitest,
     },
