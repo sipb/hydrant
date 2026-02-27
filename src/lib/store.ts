@@ -3,12 +3,12 @@ import type { Preferences, Save } from "./schema";
 export interface TermStore {
   saves: Save[];
   /** Array of class numbers that are starred */
-  starredClasses: string[];
   [saveId: string]: unknown[];
 }
 
 export interface GlobalStore {
   preferences: Preferences;
+  starredClasses: string[];
 }
 
 /** Generic storage. */
@@ -48,5 +48,13 @@ export class Store {
   /** Set the corresponding global saved value. */
   globalSet<T extends keyof GlobalStore>(key: T, value: GlobalStore[T]): void {
     localStorage.setItem(this.toKey(key, true), JSON.stringify(value));
+  }
+
+  delete(key: keyof TermStore): void {
+    localStorage.removeItem(this.toKey(key.toString(), false));
+  }
+
+  globalDelete(key: keyof GlobalStore): void {
+    localStorage.removeItem(this.toKey(key, true));
   }
 }
