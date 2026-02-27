@@ -252,7 +252,7 @@ def is_url(path_string: str) -> bool:
         return False
 
 
-def read_csv(path: str, types_dict: type) -> list:
+def read_csv(path: str, types_dict: type, encoding: str = "utf-8") -> list:
     """
     Parses data from file according to a specific format from a CSV
 
@@ -274,18 +274,18 @@ def read_csv(path: str, types_dict: type) -> list:
     if path_is_url:
         with_open = urlopen(path, timeout=15)
     else:
-        with_open = open(path, mode="r", newline="", encoding="utf-8")
+        with_open = open(path, mode="r", newline="", encoding=encoding)
 
     with with_open as csvfile:
         reader = csv.DictReader(
             csvfile
             if not path_is_url
-            else csvfile.read().decode("utf-8")[1:].splitlines()  # type: ignore
+            else csvfile.read().decode(encoding)[1:].splitlines()  # type: ignore
         )
         for row in reader:
             assert all(
                 col in row for col in cols
-            ), f"Missing columns in CSV file: {path}"
+            ), f"Missing columns in CSV file: {[col for col in cols if col not in row]}"
             data.append({col: row[col] for col in cols})  # type: ignore
 
     return data
