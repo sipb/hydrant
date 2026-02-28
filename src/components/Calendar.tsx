@@ -1,25 +1,33 @@
 import { useContext, useMemo } from "react";
 
-import { Box, Circle, Float, Text } from "@chakra-ui/react";
+import { Circle, Float, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
 
-import FullCalendar from "@fullcalendar/react";
-import type { EventContentArg, EventApi } from "@fullcalendar/core";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import FullCalendar, {
+  type EventDisplayData,
+  type EventApi,
+} from "@fullcalendar/react";
+import themePlugin from "@fullcalendar/react/themes/monarch";
+import timeGridPlugin from "@fullcalendar/react/timegrid";
+import interactionPlugin from "@fullcalendar/react/interaction";
 
 import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { HydrantContext } from "../lib/hydrant";
 
-import "./Calendar.css";
+import "@fullcalendar/react/skeleton.css";
+import "@fullcalendar/react/themes/monarch/theme.css";
+import styles from "./Calendar.module.css";
 
 // Threshold at which to display a distance warning, in feet (650 meters)
 const DISTANCE_WARNING_THRESHOLD = 2112;
 
 // Walking speed, in ft/s (~3 mph)
 const WALKING_SPEED = 4.4;
+
+// User's timezone (for converting between Date and Temporal.PlainDateTime)
+const USER_TZ = Temporal.Now.timeZoneId();
 
 /**
  * Calendar showing all the activities, including the buttons on top that
@@ -71,7 +79,14 @@ export function Calendar() {
       if (!beforeEvent.start || !beforeEvent.room) {
         continue;
       }
-      if (thisEvent.start.getTime() != beforeEvent.end.getTime()) {
+      if (
+        Temporal.Instant.compare(
+          thisEvent.start.toTemporalInstant(),
+          Temporal.PlainDateTime.from(beforeEvent.end)
+            .toZonedDateTime(USER_TZ)
+            .toInstant(),
+        ) !== 0
+      ) {
         continue;
       }
 
@@ -100,59 +115,60 @@ export function Calendar() {
     return undefined;
   };
 
-  const renderEvent = ({ event }: EventContentArg) => {
+  const renderEvent = ({
+    event,
+    titleClass,
+    timeClass,
+    isNarrow,
+    isShort,
+  }: EventDisplayData) => {
+    const room = event.extendedProps.room as string | undefined;
+    const activity = event.extendedProps.activity as Activity;
+    const distanceWarning = getDistanceWarning(event);
+    const smallText = isNarrow || isShort;
+
     const TitleText = () => (
       <Text
-        fontSize="sm"
+        fontSize={smallText ? "xs" : "sm"}
         fontWeight="medium"
-        overflow="hidden"
-        textOverflow="clip"
-        whiteSpace="nowrap"
+        className={titleClass}
       >
         {event.title}
       </Text>
     );
 
-    const room = event.extendedProps.room as string | undefined;
-    const activity = event.extendedProps.activity as Activity;
-    const distanceWarning = getDistanceWarning(event);
+    const RoomText = () => (
+      <Text fontSize={smallText ? "2xs" : "xs"} className={timeClass}>
+        {room}
+      </Text>
+    );
 
     return (
       <>
-        <Box
-          color={event.textColor}
-          overflow="hidden"
-          p={0.5}
-          lineHeight={1.3}
-          cursor="pointer"
-          height="100%"
-          position="relative"
-        >
-          {!(activity instanceof CustomActivity) ? (
-            <Tooltip
-              content={activity.name}
-              portalled
-              positioning={{ placement: "top" }}
-            >
-              {TitleText()}
-            </Tooltip>
-          ) : (
-            <TitleText />
-          )}
-          {event.extendedProps.roomClarification ? (
-            <Tooltip
-              content={event.extendedProps.roomClarification as string}
-              portalled
-              positioning={{ placement: "top" }}
-            >
-              <Text fontSize="xs">{room}</Text>
-            </Tooltip>
-          ) : (
-            <Text fontSize="xs">{room}</Text>
-          )}
-        </Box>
+        {!(activity instanceof CustomActivity) ? (
+          <Tooltip
+            content={activity.name}
+            portalled
+            positioning={{ placement: "top" }}
+          >
+            {TitleText()}
+          </Tooltip>
+        ) : (
+          <TitleText />
+        )}
+        {event.extendedProps.roomClarification ? (
+          <Tooltip
+            content={event.extendedProps.roomClarification as string}
+            portalled
+            positioning={{ placement: "top" }}
+          >
+            {RoomText()}
+          </Tooltip>
+        ) : (
+          <RoomText />
+        )}
         {distanceWarning ? (
-          <Float placement="top-end">
+          <Float placement="top-end" offsetX={1.5} offsetY={-0.5}>
             <Tooltip
               content={distanceWarning}
               portalled
@@ -163,6 +179,9 @@ export function Calendar() {
                 bg="orange.solid"
                 color="orange.contrast"
                 boxShadow="lg"
+                cursor={"initial"}
+                colorPalette={"orange"}
+                _print={{ boxShadow: "none" }}
               >
                 !
               </Circle>
@@ -175,12 +194,15 @@ export function Calendar() {
 
   return (
     <FullCalendar
-      plugins={[timeGridPlugin, interactionPlugin]}
+      plugins={[themePlugin, timeGridPlugin, interactionPlugin]}
+      borderless={true}
       initialView="timeGridWeek"
       allDaySlot={false}
       dayHeaderFormat={{ weekday: "short" }}
       editable={false}
       events={events}
+      eventClass={styles["fc-event"]}
+      eventInnerClass={styles["fc-event-inner"]}
       eventContent={renderEvent}
       eventClick={(e) => {
         // extendedProps: non-standard props of {@link Event.eventInputs}
@@ -188,23 +210,32 @@ export function Calendar() {
       }}
       headerToolbar={false}
       height="auto"
-      // a date that is, conveniently enough, a monday
-      initialDate="2001-01-01"
-      slotDuration="00:30:00"
-      slotLabelFormat={({ date }) => {
-        const { hour } = date;
+      eventShortHeight={30}
+      initialDate={(() => {
+        const now = Temporal.Now.plainDateISO();
+        return now.subtract({ days: now.dayOfWeek - 1 }).toString();
+      })()}
+      slotDuration={Temporal.Duration.from({ minutes: 30 })}
+      slotHeaderContent={({ time }) => {
+        const milliseconds = time?.milliseconds ?? 0;
+        const hour = Temporal.Duration.from({ milliseconds }).total({
+          unit: "hour",
+        });
         return hour === 12
           ? "noon"
           : hour < 12
             ? `${hour.toString()} AM`
             : `${(hour - 12).toString()} PM`;
       }}
+      slotHeaderInnerClass={styles["fc-slot-header-inner"]}
+      dayHeaderContent={({ text }) => text.toLocaleUpperCase()}
+      dayHeaderInnerClass={styles["fc-day-header-inner"]}
       slotMinTime={
-        events.some((e) => (e.start as Date).getHours() < 8)
-          ? "06:00:00"
-          : "08:00:00"
+        events.some((e) => Temporal.PlainDateTime.from(e.start).hour < 8)
+          ? Temporal.Duration.from({ hours: 6 })
+          : Temporal.Duration.from({ hours: 8 })
       }
-      slotMaxTime="22:00:00"
+      slotMaxTime={Temporal.Duration.from({ hours: 22 })}
       weekends={false}
       selectable={viewedActivity instanceof CustomActivity}
       select={(e) => {
@@ -212,8 +243,18 @@ export function Calendar() {
           state.addTimeslot(
             viewedActivity,
             Timeslot.fromStartEnd(
-              Slot.fromStartDate(e.start),
-              Slot.fromStartDate(e.end),
+              Slot.fromStartDate(
+                e.start
+                  .toTemporalInstant()
+                  .toZonedDateTimeISO(USER_TZ)
+                  .toPlainDateTime(),
+              ),
+              Slot.fromStartDate(
+                e.end
+                  .toTemporalInstant()
+                  .toZonedDateTimeISO(USER_TZ)
+                  .toPlainDateTime(),
+              ),
             ),
           );
         }

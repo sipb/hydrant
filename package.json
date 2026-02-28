@@ -10,10 +10,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
     "@fontsource-variable/inter": "^5.2.8",
-    "@fullcalendar/core": "^6.1.20",
-    "@fullcalendar/interaction": "^6.1.20",
-    "@fullcalendar/react": "^6.1.20",
-    "@fullcalendar/timegrid": "^6.1.20",
+    "@fullcalendar/react": "^7.0.0-beta.7",
     "@react-router/node": "^7.13.0",
     "@rjsf/chakra-ui": "^6.3.1",
     "@rjsf/core": "^6.3.1",
@@ -31,8 +28,9 @@
     "react-icons": "^5.5.0",
     "react-router": "^7.13.0",
     "react-use": "^17.6.0",
-    "rrule": "^2.8.1",
+    "rrule-temporal": "^1.4.6",
     "smol-toml": "^1.6.0",
+    "temporal-polyfill": "^0.3.0",
     "timezones-ical-library": "^2.1.2"
   },
   "scripts": {

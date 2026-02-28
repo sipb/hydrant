@@ -1,6 +1,6 @@
 import type { ICalEventData } from "ical-generator";
 import { ICalCalendar } from "ical-generator";
-import { RRule, RRuleSet } from "rrule";
+import { RRuleTemporal } from "rrule-temporal";
 import { tzlib_get_ical_block } from "timezones-ical-library";
 
 import type { Activity } from "./activity";
@@ -8,7 +8,7 @@ import type { Term } from "./dates";
 import type { State } from "./state";
 import { Class } from "./class";
 
-/** Timezone string. */
+/** MIT's Timezone string. */
 const TIMEZONE = "America/New_York";
 
 /** Downloads a file with the given text data */
@@ -28,6 +28,7 @@ function download(filename: string, text: string) {
   document.body.removeChild(element);
 }
 
+// TODO: add tests for this...
 function toICalEvents(activity: Activity, term: Term): ICalEventData[] {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {
@@ -53,29 +54,21 @@ function toICalEvents(activity: Activity, term: Term): ICalEventData[] {
       const exDates = term.exDatesFor(slot.startSlot);
       const rDate = term.rDateFor(slot.startSlot);
 
-      const rrule = new RRule({
-        freq: RRule.WEEKLY,
-        until: endDate,
+      const rrule = new RRuleTemporal({
+        freq: "WEEKLY",
+        dtstart: startDate.toZonedDateTime(TIMEZONE),
+        until: endDate.toZonedDateTime(TIMEZONE),
+        exDate: exDates.map((date) => date.toZonedDateTime(TIMEZONE)),
+        rDate: rDate ? [rDate.toZonedDateTime(TIMEZONE)] : undefined,
       });
-
-      const rruleSet = new RRuleSet();
-      rruleSet.rrule(rrule);
-
-      for (const exdate of exDates) {
-        rruleSet.exdate(exdate);
-      }
-
-      if (rDate) {
-        rruleSet.rdate(rDate);
-      }
 
       return {
         summary: event.name,
         location: event.room,
-        start: startDate,
-        end: startDateEnd,
+        start: startDate.toString(),
+        end: startDateEnd.toString(),
         timezone: TIMEZONE,
-        repeating: rruleSet,
+        repeating: rrule.toString(),
       } satisfies ICalEventData;
     }),
   );

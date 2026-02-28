@@ -9,6 +9,10 @@ import {
 } from "../src/lib/dates";
 import { JSDOM } from "jsdom";
 
+if (!("Temporal" in globalThis)) {
+  await import("temporal-polyfill/global");
+}
+
 test("parseUrlName", () => {
   expect(parseUrlName("f22")).toStrictEqual({
     year: "22",
@@ -94,12 +98,24 @@ describe("Term", () => {
       });
       expect(myTerm.year).toBe("42");
       expect(myTerm.semester).toBe("f");
-      expect(myTerm.start).toStrictEqual(new Date(2042, 3, 20, 0));
-      expect(myTerm.h1End).toStrictEqual(new Date(2042, 3, 21, 0));
-      expect(myTerm.h2Start).toStrictEqual(new Date(2042, 3, 22, 0));
-      expect(myTerm.mondaySchedule).toStrictEqual(new Date(2042, 3, 23, 0));
-      expect(myTerm.holidays).toStrictEqual([new Date(2042, 3, 24, 0)]);
-      expect(myTerm.end).toStrictEqual(new Date(2042, 3, 25, 0));
+      expect(myTerm.start).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 20 }),
+      );
+      expect(myTerm.h1End).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 21 }),
+      );
+      expect(myTerm.h2Start).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 22 }),
+      );
+      expect(myTerm.mondaySchedule).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 23 }),
+      );
+      expect(myTerm.holidays).toStrictEqual([
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 24 }),
+      ]);
+      expect(myTerm.end).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 25 }),
+      );
     });
 
     test("no half", () => {
@@ -112,12 +128,20 @@ describe("Term", () => {
       });
       expect(myTerm.year).toBe("42");
       expect(myTerm.semester).toBe("f");
-      expect(myTerm.start).toStrictEqual(new Date(2042, 3, 20, 0));
+      expect(myTerm.start).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 20 }),
+      );
       expect(myTerm.h1End).toBeUndefined();
       expect(myTerm.h2Start).toBeUndefined();
-      expect(myTerm.mondaySchedule).toStrictEqual(new Date(2042, 3, 23, 0));
-      expect(myTerm.holidays).toStrictEqual([new Date(2042, 3, 24, 0)]);
-      expect(myTerm.end).toStrictEqual(new Date(2042, 3, 25, 0));
+      expect(myTerm.mondaySchedule).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 23 }),
+      );
+      expect(myTerm.holidays).toStrictEqual([
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 24 }),
+      ]);
+      expect(myTerm.end).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 4, day: 25 }),
+      );
     });
 
     test("no optional dates", () => {
@@ -126,12 +150,16 @@ describe("Term", () => {
       });
       expect(myTerm.year).toBe("42");
       expect(myTerm.semester).toBe("f");
-      expect(myTerm.start).toStrictEqual(new Date(2042, 0, 1, 0));
+      expect(myTerm.start).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 1, day: 1 }),
+      );
       expect(myTerm.h1End).toBeUndefined();
       expect(myTerm.h2Start).toBeUndefined();
       expect(myTerm.mondaySchedule).toBeUndefined();
       expect(myTerm.holidays).toStrictEqual([]);
-      expect(myTerm.end).toStrictEqual(new Date(2042, 11, 31, 0));
+      expect(myTerm.end).toStrictEqual(
+        Temporal.PlainDate.from({ year: 2042, month: 12, day: 31 }),
+      );
     });
   });
 
@@ -187,7 +215,15 @@ describe("Term", () => {
           false,
           undefined,
         ),
-      ).toStrictEqual(new Date(2044, 9, 19, 6, 30));
+      ).toStrictEqual(
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 10,
+          day: 19,
+          hour: 6,
+          minute: 30,
+        }),
+      );
     });
 
     test("secondHalf false, startDay undefined, slot.weekday doesn't match", () => {
@@ -198,7 +234,13 @@ describe("Term", () => {
           undefined,
         ),
       ).toStrictEqual(
-        new Date(2044, 9, 25, 19, 30), // bump to next Tuesday, October 25, 2044
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 10,
+          day: 25,
+          hour: 19,
+          minute: 30,
+        }),
       );
     });
 
@@ -209,7 +251,15 @@ describe("Term", () => {
           false,
           [11, 4], // this would mean Friday, November 4, 2044
         ),
-      ).toStrictEqual(new Date(2044, 10, 4, 22));
+      ).toStrictEqual(
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 11,
+          day: 4,
+          hour: 22,
+          minute: 0,
+        }),
+      );
     });
 
     test("secondHalf false, startDay defined, slot.weekday doesn't match", () => {
@@ -220,7 +270,13 @@ describe("Term", () => {
           [11, 4],
         ),
       ).toStrictEqual(
-        new Date(2044, 10, 7, 20), // bumps to next Monday, November 7, 2044
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 11,
+          day: 7,
+          hour: 20,
+          minute: 0,
+        }),
       );
     });
 
@@ -231,7 +287,15 @@ describe("Term", () => {
           true,
           undefined,
         ),
-      ).toStrictEqual(new Date(2044, 10, 21, 6, 30));
+      ).toStrictEqual(
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 11,
+          day: 21,
+          hour: 6,
+          minute: 30,
+        }),
+      );
     });
 
     test("secondHalf true, startDay undefined, slot.weekday doesn't match", () => {
@@ -242,7 +306,13 @@ describe("Term", () => {
           undefined,
         ),
       ).toStrictEqual(
-        new Date(2044, 10, 22, 6, 30), // bump to next day
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 11,
+          day: 22,
+          hour: 6,
+          minute: 30,
+        }), // bump to next day
       );
     });
 
@@ -253,7 +323,15 @@ describe("Term", () => {
           true,
           [11, 14], // Monday, November 14, 2044
         ),
-      ).toStrictEqual(new Date(2044, 10, 14, 6, 30));
+      ).toStrictEqual(
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 11,
+          day: 14,
+          hour: 6,
+          minute: 30,
+        }),
+      );
     });
 
     test("secondHalf true, startDay defined, slot.weekday doesn't match", () => {
@@ -264,7 +342,13 @@ describe("Term", () => {
           [11, 14],
         ),
       ).toStrictEqual(
-        new Date(2044, 10, 15, 6, 30), // bump to next day
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 11,
+          day: 15,
+          hour: 6,
+          minute: 30,
+        }), // bump to next day
       );
     });
   });
@@ -285,52 +369,114 @@ describe("Term", () => {
     test("firstHalf false, endDay undefined, slot.weekday matches", () => {
       expect(
         myTerm.endDateFor(new Slot(1), false, undefined), // NOTE: slot 1 = Monday at 6:30 AM
-      ).toStrictEqual(new Date(2044, 10, 22, 6, 30, 0, 0));
+      ).toStrictEqual(
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 11,
+          day: 22,
+          hour: 6,
+          minute: 30,
+        }),
+      );
     });
 
     test("firstHalf false, endDay undefined, slot.weekday doesn't match", () => {
       expect(
         myTerm.endDateFor(new Slot(68), false, undefined), // NOTE: slot 68 = Wednesday at 6:00 AM
       ).toStrictEqual(
-        new Date(2044, 10, 17, 6, 0, 0, 0), // NOTE: 2044-11-17 is a Thursday
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 11,
+          day: 17,
+          hour: 6,
+          minute: 0,
+        }),
       );
     });
 
     test("firstHalf true, endDay undefined, slot.weekday matches", () => {
       expect(
         myTerm.endDateFor(new Slot(94), true, undefined), // NOTE: slot 94 = Wednesday at 7:00 PM
-      ).toStrictEqual(new Date(2044, 9, 20, 19, 0, 0, 0));
+      ).toStrictEqual(
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 10,
+          day: 20,
+          hour: 19,
+          minute: 0,
+        }),
+      );
     });
 
     test("firstHalf true, endDay undefined, slot.weekday doesn't match", () => {
       expect(
         myTerm.endDateFor(new Slot(4), true, undefined), // NOTE: slot 4 = Monday at 8:00 PM
       ).toStrictEqual(
-        new Date(2044, 9, 18, 8, 0, 0, 0), // NOTE: 2044-10-18 is a Tuesday
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 10,
+          day: 18,
+          hour: 8,
+          minute: 0,
+        }), // NOTE: 2044-10-18 is a Tuesday
       );
     });
 
     test("firstHalf false, endDay defined, slot.weekday matches", () => {
       expect(
         myTerm.endDateFor(new Slot(0), false, [9, 5]), // NOTE: 2044-09-05 is a Monday
-      ).toStrictEqual(new Date(2044, 8, 6, 6, 0, 0, 0));
+      ).toStrictEqual(
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 9,
+          day: 6,
+          hour: 6,
+          minute: 0,
+        }),
+      );
     });
 
     test("firstHalf true, endDay defined, slot.weekday matches", () => {
       expect(myTerm.endDateFor(new Slot(0), true, [9, 5])).toStrictEqual(
-        new Date(2044, 8, 6, 6, 0, 0, 0),
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 9,
+          day: 6,
+          hour: 6,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        }),
       );
     });
 
     test("firstHalf false, endDay defined, slot.weekday doesn't match", () => {
       expect(
         myTerm.endDateFor(new Slot(69), false, [9, 5]), // NOTE: slot 69 = Wednesday at 6:30 AM
-      ).toStrictEqual(new Date(2044, 8, 1, 6, 30, 0, 0));
+      ).toStrictEqual(
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 9,
+          day: 1,
+          hour: 6,
+          minute: 30,
+          second: 0,
+          millisecond: 0,
+        }),
+      );
     });
 
     test("firstHalf true, endDay defined, slot.weekday doesn't match", () => {
       expect(myTerm.endDateFor(new Slot(69), true, [9, 5])).toStrictEqual(
-        new Date(2044, 8, 1, 6, 30, 0, 0),
+        Temporal.PlainDateTime.from({
+          year: 2044,
+          month: 9,
+          day: 1,
+          hour: 6,
+          minute: 30,
+          second: 0,
+          millisecond: 0,
+        }),
       );
     });
   });
@@ -350,8 +496,20 @@ describe("Term", () => {
       expect(
         myTerm.exDatesFor(new Slot(40)), // NOTE: slot 40 = Tuesday at 9:00 AM
       ).toStrictEqual([
-        new Date(2079, 7, 8, 9, 0, 0, 0),
-        new Date(2079, 7, 11, 9, 0, 0, 0),
+        Temporal.PlainDateTime.from({
+          year: 2079,
+          month: 8,
+          day: 8,
+          hour: 9,
+          minute: 0,
+        }),
+        Temporal.PlainDateTime.from({
+          year: 2079,
+          month: 8,
+          day: 11,
+          hour: 9,
+          minute: 0,
+        }),
       ]);
     });
 
@@ -363,7 +521,15 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(100)), // NOTE: slot 100 = Wednesday at 10:00 PM
-      ).toStrictEqual([new Date(2079, 7, 9, 22, 0, 0, 0)]);
+      ).toStrictEqual([
+        Temporal.PlainDateTime.from({
+          year: 2079,
+          month: 8,
+          day: 9,
+          hour: 22,
+          minute: 0,
+        }),
+      ]);
     });
 
     test("has non-matching holiday, tuesday on monday schedule", () => {
@@ -374,7 +540,15 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(41)), // NOTE: slot 41 = Tuesday at 9:30 AM
-      ).toStrictEqual([new Date(2079, 7, 11, 9, 30, 0, 0)]);
+      ).toStrictEqual([
+        Temporal.PlainDateTime.from({
+          year: 2079,
+          month: 8,
+          day: 11,
+          hour: 9,
+          minute: 30,
+        }),
+      ]);
     });
 
     test("has non-matching holiday, not monday schedule", () => {
@@ -395,9 +569,15 @@ describe("Term", () => {
       });
       expect(
         myTerm.exDatesFor(new Slot(34)), // NOTE: slot 34 = Tuesday at 6:00 AM
-      ).toStrictEqual(
-        [new Date(2079, 0, 1, 6, 0, 0, 0)], // NOTE: in some timezones this shifts to 2000-01-01 so we hardcode "America/New_York" for reproducibility
-      );
+      ).toStrictEqual([
+        Temporal.PlainDateTime.from({
+          year: 2079,
+          month: 1,
+          day: 1,
+          hour: 6,
+          minute: 0,
+        }),
+      ]);
     });
 
     test("no holidays, not monday schedule", () => {
@@ -421,7 +601,13 @@ describe("Term", () => {
         mondayScheduleDate: "2056-04-24",
       });
       expect(myTerm.rDateFor(new Slot(0))).toStrictEqual(
-        new Date(2056, 3, 24, 6, 0, 0, 0),
+        Temporal.PlainDateTime.from({
+          year: 2056,
+          month: 4,
+          day: 24,
+          hour: 6,
+          minute: 0,
+        }),
       );
     });
 
@@ -449,13 +635,32 @@ describe("Slot", () => {
   /**
    * Test each method separately (most of them don't need to be partitioned)
    */
+
+  beforeEach(() => {
+    // Set fixed system time to ensure consistency
+    vi.setSystemTime("2001-01-01T12:00:00.000Z"); // January 1st, 2001 at noon
+  });
+
+  afterEach(() => {
+    // Restore the original system time after each test
+    vi.useRealTimers();
+  });
+
   test("Slot.fromSlotNumber", () => {
     const mySlot: Slot = Slot.fromSlotNumber(42);
     expect(mySlot.slot).toBe(42);
   });
 
   test("Slot.fromStartDate", () => {
-    const myDate: Date = new Date(2001, 6, 19, 22, 1, 52, 23); // randomly chosen date
+    const myDate = Temporal.PlainDateTime.from({
+      year: 2001,
+      month: 7,
+      day: 19,
+      hour: 22,
+      minute: 1,
+      second: 52,
+      millisecond: 23,
+    }); // randomly chosen date
     const mySlot: Slot = Slot.fromStartDate(myDate);
     expect(mySlot.slot).toBe(134); // note: this was a Thursday (July 19, 2001), slot number 32
   });
@@ -473,18 +678,46 @@ describe("Slot", () => {
 
   test("Slot.onDate", () => {
     const mySlot: Slot = new Slot(125); // Thursday, 5:30 PM
-    const myDate: Date = new Date(2068, 8, 6); // this is also a Thursday
-    expect(mySlot.onDate(myDate)).toStrictEqual(new Date(2068, 8, 6, 17, 30));
+    const myDate = Temporal.PlainDate.from({
+      year: 2068,
+      month: 9,
+      day: 6,
+    }); // this is also a Thursday
+    expect(mySlot.onDate(myDate)).toStrictEqual(
+      Temporal.PlainDateTime.from({
+        year: 2068,
+        month: 9,
+        day: 6,
+        hour: 17,
+        minute: 30,
+      }),
+    );
   });
 
   test("Slot.startDate", () => {
     const mySlot: Slot = new Slot(62); // Tuesday, 8:00 PM
-    expect(mySlot.startDate).toStrictEqual(new Date(2001, 0, 2, 20, 0));
+    expect(mySlot.startDate).toStrictEqual(
+      Temporal.PlainDateTime.from({
+        year: 2001,
+        month: 1,
+        day: 2,
+        hour: 20,
+        minute: 0,
+      }),
+    );
   });
 
   test("Slot.endDate", () => {
     const mySlot: Slot = new Slot(130); // Thursday, 8:00 PM
-    expect(mySlot.endDate).toStrictEqual(new Date(2001, 0, 4, 20, 30));
+    expect(mySlot.endDate).toStrictEqual(
+      Temporal.PlainDateTime.from({
+        year: 2001,
+        month: 1,
+        day: 4,
+        hour: 20,
+        minute: 30,
+      }),
+    );
   });
 
   test("Slot.weekday", () => {

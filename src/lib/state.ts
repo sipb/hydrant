@@ -395,7 +395,8 @@ export class State {
 
   set showBanner(show: boolean) {
     this.preferences.showBanner = show;
-    this.preferences.showBannerChanged = new Date().valueOf();
+    this.preferences.showBannerChanged =
+      Temporal.Now.instant().epochMilliseconds;
     this.updateState();
   }
 
