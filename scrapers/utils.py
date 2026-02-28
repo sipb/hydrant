@@ -292,9 +292,9 @@ def read_csv(path: str, types_dict: type, encoding: str = "utf-8") -> list:
                     and type(None) in get_args(types[col])
                 )
             ]
-            assert all(
-                col in row for col in cols_needed
-            ), f"Missing columns in CSV file: {[col for col in cols_needed if col not in row]}"
+            assert (
+                set(cols_needed) - set(row.keys()) == set()
+            ), f"Missing columns in CSV file: {set(cols_needed) - set(row.keys())}"
             data.append({col: row[col] for col in cols if col in row})  # type: ignore
 
     return data
