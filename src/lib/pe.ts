@@ -187,6 +187,14 @@ export class PEClass implements BaseActivity {
     };
   }
 
+  get description() {
+    return {
+      description: this.rawClass.description,
+      inCharge: this.rawClass.inCharge,
+      extraUrls: [],
+    };
+  }
+
   /** Deflate a class to something JSONable. */
   deflate() {
     const sections = this.sections.map((secs) =>

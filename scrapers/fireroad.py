@@ -115,7 +115,11 @@ def parse_section(section: str) -> tuple[list[tuple[int, int]], str]:
 
     for weekdays, is_pm_int, slot in grouper(infos, 3):
         for day in weekdays:
+            # saturday
             if day == "S":
+                continue
+            # sunday
+            if day == "U":
                 continue
             slots.append(parse_timeslot(day, slot, bool(int(is_pm_int))))
 

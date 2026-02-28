@@ -319,7 +319,8 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
   const { fee, startDate, endDate } = cls;
-  const { number, name, prereqs, equipment, description } = cls.rawClass;
+  const { number, name, prereqs, equipment } = cls.rawClass;
+  const { description, inCharge } = cls.description;
 
   const fmt = new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -383,6 +384,7 @@ function PEClassDescription(props: { cls: PEClass }) {
             {equipment}
           </Span>
         </Text>
+        {inCharge !== "" && <Text>In-charge: {inCharge}.</Text>}
       </Flex>
       <Flex gap={4}>
         {urls.map(({ label, url }) => (

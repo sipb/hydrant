@@ -437,11 +437,7 @@ export class Class implements BaseActivity {
    * that should appear after the class description, like "Course Catalog" or
    * "Class Evaluations".
    */
-  get description(): {
-    description: string;
-    inCharge: string;
-    extraUrls: { label: string; url: string }[];
-  } {
+  get description() {
     const extraUrls = [
       {
         label: "Course Catalog",
