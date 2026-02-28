@@ -93,6 +93,7 @@ export class State {
     });
     Object.values(rawPEClasses).forEach((map) => {
       map.forEach((cls, number) => {
+        // TODO: make sure to account for same class in multiple quarters
         this.peClasses.set(number, new PEClass(cls, this.colorScheme));
       });
     });
