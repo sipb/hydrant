@@ -87,6 +87,11 @@ export interface BaseActivity {
   deflate(): unknown;
   inflate?(parsed: unknown): void;
   half?: number;
+  description?: {
+    description: string;
+    inCharge: string;
+    extraUrls: { label: string; url: string }[];
+  };
 }
 
 export type Activity = Class | PEClass | CustomActivity;

@@ -242,6 +242,11 @@ export interface RawPEClass {
   description: string;
   /** Quarter of class */
   quarter: number;
+
+  /** Person in charge */
+  inCharge: string;
+  /** Waiver information, no specific format */
+  waiver: string;
 }
 
 /** The building information format produced by scrapers/location.py */

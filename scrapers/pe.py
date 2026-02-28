@@ -9,7 +9,7 @@ import os
 import time as time_c
 from datetime import date, time
 from functools import lru_cache
-from typing import Literal, TypedDict
+from typing import Literal, Optional, TypedDict
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -50,6 +50,7 @@ PEWFile = TypedDict(
         "Term": str,
         "Section": str,
         "Title": str,
+        "Instructors": Optional[str],
         "Capacity": str,
         "Day": str,
         "Time": str,
@@ -58,6 +59,7 @@ PEWFile = TypedDict(
         "End Date": str,
         "Prerequisites": str,
         "Equipment": str,
+        "Waivers": Optional[str],
         "GIR Points": str,
         "Swim GIR": str,
         "Fee Amount": str,
@@ -91,6 +93,8 @@ class PEWSchema(TypedDict):
     fee: str
     description: str
     quarter: int
+    inCharge: str
+    waiver: str
 
 
 def parse_bool(value: str) -> bool:
@@ -134,6 +138,9 @@ def augment_location(location: str) -> str:
 
     >>> augment_location("Du Pont T Club Lounge and 26-100")
     'Du Pont T Club Lounge and 26-100'
+
+    >>> augment_location("Johnson Indoor Track/Steinbrenner Track")
+    'W35+ - Johnson Indoor Track or Steinbrenner Track'
     """
     buildings = {
         "Du Pont": "W35+",
@@ -144,6 +151,9 @@ def augment_location(location: str) -> str:
 
     if " and " in location:
         return location
+
+    if "/" in location:
+        location = location.replace("/", " or ")
 
     for loc, building in buildings.items():
         if location.startswith(loc):
@@ -271,7 +281,7 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
         location (str): Location of the class
 
     Returns:
-        str: Formatted raw section string
+        str: Formatted raw section string or None if start_time is empty
     """
     start_c = time_c.strptime(start_time, "%I:%M %p")
     start = time(start_c.tm_hour, start_c.tm_min)
@@ -325,6 +335,8 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "fee": row["Fee Amount"],
         "description": get_pe_catalog_descriptions().get(number, ""),
         "quarter": quarter,
+        "inCharge": row.get("Instructor", ""),
+        "waiver": row.get("Waiver", "None"),
     }
 
 
