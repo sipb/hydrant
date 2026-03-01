@@ -54,7 +54,7 @@
     "@chakra-ui/cli": "^3.33.0",
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^10.0.1",
-    "@react-router/dev": "^7.13.0",
+    "@react-router/dev": "^7.13.1",
     "@react-router/fs-routes": "^7.13.0",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^22.19.11",
