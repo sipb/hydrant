@@ -15,7 +15,7 @@ import {
   parseColor,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithRef, SubmitEventHandler } from "react";
-import { useContext, useLayoutEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 import { ColorPickerInput } from "./ui/colorpicker-input";
 
@@ -74,7 +74,7 @@ function OverrideLocations(props: { secs: Sections }) {
     setRoom(secs.roomOverride);
   };
   const onConfirm = () => {
-    secs.roomOverride = room.trim();
+    secs.setRoomOverride(room.trim());
     setIsOverriding(false);
     state.updateActivities();
   };
@@ -115,6 +115,7 @@ function OverrideLocations(props: { secs: Sections }) {
 
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class | PEClass }) {
+  "use no memo";
   const { cls } = props;
   const { state } = useContext(HydrantContext);
   const genSelected = (cls: Class | PEClass) =>
@@ -126,26 +127,23 @@ function ClassManualSections(props: { cls: Class | PEClass }) {
         : LockOption.Auto,
     );
   const [selected, setSelected] = useState(genSelected(cls));
-  useLayoutEffect(() => {
-    setSelected(genSelected(cls));
-  }, [cls]);
 
-  const RenderOptions = () => {
-    const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
-      if (sec === LockOption.Auto) {
-        return humanReadable ? "Auto (default)" : LockOption.Auto;
-      } else if (sec === LockOption.None) {
-        return LockOption.None;
-      } else if (!humanReadable) {
-        return sec.rawTime;
-      } else if (sec instanceof PESection) {
-        return `${sec.sectionNumber}: ${sec.parsedTime}`;
-      } else {
-        return sec.parsedTime;
-      }
-    };
+  const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
+    if (sec === LockOption.Auto) {
+      return humanReadable ? "Auto (default)" : LockOption.Auto;
+    } else if (sec === LockOption.None) {
+      return LockOption.None;
+    } else if (!humanReadable) {
+      return sec.rawTime;
+    } else if (sec instanceof PESection) {
+      return `${sec.sectionNumber}: ${sec.parsedTime}`;
+    } else {
+      return sec.parsedTime;
+    }
+  };
 
-    return (
+  return (
+    <Flex>
       <>
         {cls.sections.map((secs, sectionIndex) => {
           const options = [LockOption.Auto, LockOption.None, ...secs.sections];
@@ -192,12 +190,6 @@ function ClassManualSections(props: { cls: Class | PEClass }) {
           );
         })}
       </>
-    );
-  };
-
-  return (
-    <Flex>
-      <RenderOptions />
     </Flex>
   );
 }
@@ -257,8 +249,9 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
 
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class | PEClass }) {
+  "use no memo";
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state, hydrantState } = useContext(HydrantContext);
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -296,7 +289,9 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
           </ToggleButton>
         )}
       </ButtonGroup>
-      {isSelected && showManual && <ClassManualSections cls={cls} />}
+      {isSelected && showManual && (
+        <ClassManualSections cls={cls} key={cls.id + hydrantState.saveId} />
+      )}
       {isSelected && showColors && (
         <ActivityColor
           activity={cls}
@@ -308,6 +303,29 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
     </Flex>
   );
 }
+
+const RenderCheckboxes = (props: {
+  days: Record<string, boolean>;
+  setDays: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+}) => {
+  const { days, setDays } = props;
+
+  return (
+    <>
+      {WEEKDAY_STRINGS.map((day) => (
+        <Checkbox
+          key={day}
+          checked={days[day]}
+          onCheckedChange={(e) => {
+            setDays({ ...days, [day]: !!e.checked });
+          }}
+        >
+          {day}
+        </Checkbox>
+      ))}
+    </>
+  );
+};
 
 /** Form to add a timeslot to a custom activity. */
 function CustomActivityAddTime(props: { activity: CustomActivity }) {
@@ -330,24 +348,6 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
         ),
       );
     }
-  };
-
-  const RenderCheckboxes = () => {
-    return (
-      <>
-        {WEEKDAY_STRINGS.map((day) => (
-          <Checkbox
-            key={day}
-            checked={days[day]}
-            onCheckedChange={(e) => {
-              setDays({ ...days, [day]: !!e.checked });
-            }}
-          >
-            {day}
-          </Checkbox>
-        ))}
-      </>
-    );
   };
 
   const timesCollection = createListCollection({
@@ -395,7 +395,7 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
           Add time
         </Button>
         <Group wrap="wrap">
-          <RenderCheckboxes />
+          <RenderCheckboxes days={days} setDays={setDays} />
         </Group>
         <Flex align="center" gap={1}>
           {renderTimeDropdown("start")} to {renderTimeDropdown("end")}

@@ -115,7 +115,11 @@ export const getFlagImg = (flag: keyof Flags): string => {
 
 export class ClassSections extends Sections {
   declare cls: Class;
-  declare kind: SectionKind;
+  kind: SectionKind;
+
+  setRoomOverride(room: string) {
+    this.roomOverride = room;
+  }
 
   constructor(
     cls: Class,
