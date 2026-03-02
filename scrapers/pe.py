@@ -317,6 +317,16 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
     )
     section = parse_section(raw_section)
 
+    wellness = (
+        any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES)
+        or row.get("Tags", "").lower().find("wellness") != -1
+    )
+    pirate = (
+        any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES)
+        or row.get("Tags", "").lower().find("pirate") != -1
+    )
+    swim = parse_bool(row["Swim GIR"]) or row.get("Tags", "").lower().find("swim") != -1
+
     return {
         "number": number,
         "name": row["Title"],
@@ -327,12 +337,9 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "startDate": parse_date(row["Start Date"]).isoformat(),
         "endDate": parse_date(row["End Date"]).isoformat(),
         "points": int(row["GIR Points"]),
-        "wellness": any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES)
-        or row.get("Tags", "").lower().find("wellness") != -1,
-        "pirate": any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES)
-        or row.get("Tags", "").lower().find("pirate") != -1,
-        "swimGIR": parse_bool(row["Swim GIR"])
-        or row.get("Tags", "").lower().find("swim") != -1,
+        "wellness": wellness,
+        "pirate": pirate,
+        "swimGIR": swim,
         "remote": row["Title"].lower().find("remote") != -1,
         "prereqs": row["Prerequisites"] or "None",
         "equipment": row["Equipment"],
