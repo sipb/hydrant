@@ -417,7 +417,7 @@ export function PEClassTable() {
         maxWidth: 128,
         cellClass: styles["underline-on-hover"],
         valueFormatter: (params) =>
-          `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter ?? ""})`,
+          `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
         ...sortProps,
       },
       {
