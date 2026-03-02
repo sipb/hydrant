@@ -50,7 +50,6 @@ PEWFile = TypedDict(
         "Term": str,
         "Section": str,
         "Title": str,
-        "Instructors": Optional[str],
         "Capacity": str,
         "Day": str,
         "Time": str,
@@ -60,9 +59,11 @@ PEWFile = TypedDict(
         "Prerequisites": str,
         "Equipment": str,
         "Waivers": Optional[str],
+        "HealthForms": Optional[str],
         "GIR Points": str,
         "Swim GIR": str,
         "Fee Amount": str,
+        "Tags": Optional[str],
     },
 )
 """
@@ -93,8 +94,8 @@ class PEWSchema(TypedDict):
     fee: str
     description: str
     quarter: int
-    inCharge: str
     waiver: str
+    healthForms: str
 
 
 def parse_bool(value: str) -> bool:
@@ -326,17 +327,20 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "startDate": parse_date(row["Start Date"]).isoformat(),
         "endDate": parse_date(row["End Date"]).isoformat(),
         "points": int(row["GIR Points"]),
-        "wellness": any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES),
-        "pirate": any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES),
-        "swimGIR": parse_bool(row["Swim GIR"]),
+        "wellness": any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES)
+        or row.get("Tags", "").lower().find("wellness") != -1,
+        "pirate": any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES)
+        or row.get("Tags", "").lower().find("pirate") != -1,
+        "swimGIR": parse_bool(row["Swim GIR"])
+        or row.get("Tags", "").lower().find("swim") != -1,
         "remote": row["Title"].lower().find("remote") != -1,
         "prereqs": row["Prerequisites"] or "None",
         "equipment": row["Equipment"],
         "fee": row["Fee Amount"],
         "description": get_pe_catalog_descriptions().get(number, ""),
         "quarter": quarter,
-        "inCharge": row.get("Instructor", ""),
         "waiver": row.get("Waiver", "None"),
+        "healthForms": row.get("HealthForms", "None"),
     }
 
 

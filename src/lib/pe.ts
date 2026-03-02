@@ -190,7 +190,7 @@ export class PEClass implements BaseActivity {
   get description() {
     return {
       description: this.rawClass.description,
-      inCharge: this.rawClass.inCharge,
+      inCharge: "",
       extraUrls: [],
     };
   }
