@@ -405,6 +405,31 @@ export class State {
     this.updateState();
   }
 
+  /** Get latest quarter of PE classes */
+  get latestQuarter(): number {
+    const allQuarters = new Set<number>();
+    this.peClasses.forEach((cls) => {
+      const quarter = cls.rawClass.quarter;
+      allQuarters.add(quarter);
+    });
+
+    // for 1 < 2 < 5 < 3 < 4
+    const quarterOrder: Record<number, number> = {
+      1: 0,
+      2: 1,
+      // 5 is iap for some reason :(
+      5: 2,
+      3: 3,
+      4: 4,
+    };
+
+    const sortedQuarters = Array.from(allQuarters).sort((a, b) => {
+      return quarterOrder[a] - quarterOrder[b];
+    });
+
+    return sortedQuarters[sortedQuarters.length - 1];
+  }
+
   //========================================================================
   // Loading and saving
 
