@@ -414,8 +414,10 @@ export function PEClassTable() {
         headerName: "Class",
         comparator: classSort,
         initialSort,
-        maxWidth: 93,
+        maxWidth: 128,
         cellClass: styles["underline-on-hover"],
+        valueFormatter: (params) =>
+          `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
         ...sortProps,
       },
       {

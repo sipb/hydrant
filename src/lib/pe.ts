@@ -62,8 +62,8 @@ export class PESections extends Sections {
 
   public get longName() {
     return this.selected
-      ? `${this.cls.id}-${this.selected.sectionNumber}`
-      : this.cls.id;
+      ? `${this.cls.shortName}-${this.selected.sectionNumber}`
+      : this.cls.shortName;
   }
 
   get priority(): number {
@@ -109,6 +109,11 @@ export class PEClass implements BaseActivity {
 
   /** ID unique over all Activities. */
   get id(): string {
+    return `Q${this.rawClass.quarter.toString()}.${this.rawClass.number}`;
+  }
+
+  /** Short name to be displayed on the schedule. */
+  get shortName(): string {
     return this.rawClass.number;
   }
 
@@ -184,6 +189,14 @@ export class PEClass implements BaseActivity {
       remote: this.rawClass.remote,
       nofee: this.fee == 0,
       nopreq: this.rawClass.prereqs == "None",
+    };
+  }
+
+  get description() {
+    return {
+      description: this.rawClass.description,
+      inCharge: "",
+      extraUrls: [],
     };
   }
 

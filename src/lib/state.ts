@@ -91,9 +91,12 @@ export class State {
     rawClasses.forEach((cls, number) => {
       this.classes.set(number, new Class(cls, this.colorScheme));
     });
-    Object.values(rawPEClasses).forEach((map) => {
+    Object.entries(rawPEClasses).forEach(([quarter, map]) => {
       map.forEach((cls, number) => {
-        this.peClasses.set(number, new PEClass(cls, this.colorScheme));
+        this.peClasses.set(
+          `Q${quarter}.${number}`,
+          new PEClass(cls, this.colorScheme),
+        );
       });
     });
     this.initState();
@@ -380,9 +383,12 @@ export class State {
 
   /** Get all starred classes */
   getStarredPEClasses(): PEClass[] {
-    return Array.from(this.starredPEClasses)
-      .map((id) => this.peClasses.get(id))
-      .filter((cls): cls is PEClass => cls !== undefined);
+    return (
+      Array.from(this.starredPEClasses)
+        // also look up Q3 for backwards compatibility
+        .map((id) => this.peClasses.get(id) ?? this.peClasses.get(`Q3.${id}`))
+        .filter((cls): cls is PEClass => cls !== undefined)
+    );
   }
 
   get showBanner(): boolean {
@@ -461,10 +467,14 @@ export class State {
     }
     this.selectedOption = selectedOption ?? 0;
     for (const deflated of peClasses ?? []) {
+      // also look up Q3 for backwards compatibility
       const cls =
         typeof deflated === "string"
-          ? this.peClasses.get(deflated)
-          : this.peClasses.get((deflated as string[])[0]);
+          ? (this.peClasses.get(deflated) ??
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            this.peClasses.get(`Q3.${deflated}`))
+          : (this.peClasses.get((deflated as string[])[0]) ??
+            this.peClasses.get(`Q3.${(deflated as string[])[0]}`));
       if (!cls) continue;
       cls.inflate(deflated);
       this.selectedPEClasses.push(cls);

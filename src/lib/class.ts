@@ -229,6 +229,11 @@ export class Class implements BaseActivity {
     return this.number;
   }
 
+  /** Short name to be displayed on the schedule. */
+  get shortName(): string {
+    return this.number;
+  }
+
   /** Name; e.g. "Introduction to Machine Learning". */
   get name(): string {
     if (this.rawClass.oldNumber) {
@@ -437,11 +442,7 @@ export class Class implements BaseActivity {
    * that should appear after the class description, like "Course Catalog" or
    * "Class Evaluations".
    */
-  get description(): {
-    description: string;
-    inCharge: string;
-    extraUrls: { label: string; url: string }[];
-  } {
+  get description() {
     const extraUrls = [
       {
         label: "Course Catalog",
