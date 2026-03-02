@@ -319,13 +319,16 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
 
     wellness = (
         any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES)
-        or row.get("Tags", "").lower().find("wellness") != -1
+        or (row.get("Tags", "") or "").lower().find("wellness") != -1
     )
     pirate = (
         any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES)
-        or row.get("Tags", "").lower().find("pirate") != -1
+        or (row.get("Tags", "") or "").lower().find("pirate") != -1
     )
-    swim = parse_bool(row["Swim GIR"]) or row.get("Tags", "").lower().find("swim") != -1
+    swim = (
+        parse_bool(row["Swim GIR"])
+        or (row.get("Tags", "") or "").lower().find("swim") != -1
+    )
 
     return {
         "number": number,
@@ -347,7 +350,7 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "description": get_pe_catalog_descriptions().get(number, ""),
         "quarter": quarter,
         "waiver": row.get("Waiver", "None"),
-        "healthForms": row.get("HealthForms", "None"),
+        "healthForms": row.get("HealthForms", "None") or "None",
     }
 
 
