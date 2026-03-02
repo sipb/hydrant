@@ -73,6 +73,7 @@ export class Timeslot {
 export interface BaseActivity {
   id: string;
   name: string;
+  shortName: string;
   backgroundColor: string;
   manualColor: boolean;
   hours: number;
@@ -166,6 +167,11 @@ export class CustomActivity implements BaseActivity {
   constructor(colorScheme: ColorScheme) {
     this.id = nanoid(8);
     this.backgroundColor = fallbackColor(colorScheme);
+  }
+
+  /** Short name to be displayed on the schedule. */
+  get shortName(): string {
+    return this.id;
   }
 
   /** Name that appears when it's on a button. */
@@ -343,7 +349,7 @@ export class Sections {
 
   /** Full display name for this section on the calendar. */
   get longName(): string {
-    return `${this.cls.id} ${this.shortName}`;
+    return `${this.cls.shortName} ${this.shortName}`;
   }
 
   /** The event (possibly none) for this group of sections. */

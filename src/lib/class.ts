@@ -229,6 +229,11 @@ export class Class implements BaseActivity {
     return this.number;
   }
 
+  /** Short name to be displayed on the schedule. */
+  get shortName(): string {
+    return this.number;
+  }
+
   /** Name; e.g. "Introduction to Machine Learning". */
   get name(): string {
     if (this.rawClass.oldNumber) {
