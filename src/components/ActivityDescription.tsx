@@ -319,7 +319,8 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
   const { fee, startDate, endDate } = cls;
-  const { number, name, prereqs, equipment, description } = cls.rawClass;
+  const { number, name, prereqs, equipment, quarter } = cls.rawClass;
+  const { description } = cls.description;
 
   const fmt = new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -352,7 +353,7 @@ function PEClassDescription(props: { cls: PEClass }) {
   return (
     <Flex direction="column" gap={4}>
       <Heading size="md">
-        {number}: {name}
+        {number}: {name} (Quarter {quarter})
       </Heading>
       <Flex direction="column" gap={0.5}>
         <PEClassTypes cls={cls} />

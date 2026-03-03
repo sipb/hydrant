@@ -204,6 +204,7 @@ function ClassInput(props: {
 const filtersNonFlags = {
   fits: (state, cls) => state.fitsSchedule(cls),
   starred: (state, cls) => state.isPEClassStarred(cls),
+  latest: (state, cls) => cls.rawClass.quarter === state.latestQuarter,
 } satisfies Record<string, (state: State, cls: PEClass) => boolean>;
 
 type Filter = keyof PEFlags | keyof typeof filtersNonFlags;
@@ -212,6 +213,7 @@ type FilterGroup = [Filter, string, ReactNode?][];
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
   ["starred", "Starred", <LuStar fill="currentColor" />],
+  ["latest", "Latest quarter"],
   ["nofee", "No fee"],
   ["nopreq", "No prereq"],
   ["fits", "Fits schedule"],
@@ -414,8 +416,10 @@ export function PEClassTable() {
         headerName: "Class",
         comparator: classSort,
         initialSort,
-        maxWidth: 93,
+        maxWidth: 128,
         cellClass: styles["underline-on-hover"],
+        valueFormatter: (params) =>
+          `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
         ...sortProps,
       },
       {
