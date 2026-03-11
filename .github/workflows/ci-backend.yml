@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: pip install .[dev]
       - name: Format code with black
-        run: black .
+        run: black --check .
   pylint:
     name: Pylint
     runs-on: ubuntu-24.04
