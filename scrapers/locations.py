@@ -130,7 +130,7 @@ def run():
 
     try:
         rows = get_raw_data()
-    except (URLError, socket.timeout) as e:
+    except (URLError, socket.timeout, UnicodeDecodeError) as e:
         print(f"Unable to scrape locations data: {e}")
         if not os.path.exists(fname):
             with open(fname, "w", encoding="utf-8") as location_file:

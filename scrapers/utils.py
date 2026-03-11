@@ -24,7 +24,7 @@ import json
 import os.path
 from enum import Enum
 from itertools import zip_longest
-from typing import Any, Generator, Iterable, Literal
+from typing import Any, Generator, Iterable, Literal, Union, get_args, get_origin
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
@@ -252,7 +252,7 @@ def is_url(path_string: str) -> bool:
         return False
 
 
-def read_csv(path: str, types_dict: type) -> list:
+def read_csv(path: str, types_dict: type, encoding: str = "utf-8") -> list:
     """
     Parses data from file according to a specific format from a CSV
 
@@ -267,25 +267,34 @@ def read_csv(path: str, types_dict: type) -> list:
     assert hasattr(types_dict, "__annotations__"), "types_dict must be a TypedDict type"
 
     data = []
-    cols = getattr(types_dict, "__annotations__").keys()
+    types = getattr(types_dict, "__annotations__")
+    cols = types.keys()
 
     path_is_url = is_url(path)
 
     if path_is_url:
         with_open = urlopen(path, timeout=15)
     else:
-        with_open = open(path, mode="r", newline="", encoding="utf-8")
+        with_open = open(path, mode="r", newline="", encoding=encoding)
 
     with with_open as csvfile:
         reader = csv.DictReader(
             csvfile
             if not path_is_url
-            else csvfile.read().decode("utf-8")[1:].splitlines()  # type: ignore
+            else csvfile.read().decode(encoding)[1:].splitlines()  # type: ignore
         )
         for row in reader:
-            assert all(
-                col in row for col in cols
-            ), f"Missing columns in CSV file: {path}"
-            data.append({col: row[col] for col in cols})  # type: ignore
+            cols_needed = [
+                col
+                for col in cols
+                if not (
+                    get_origin(types[col]) is Union
+                    and type(None) in get_args(types[col])
+                )
+            ]
+            assert (
+                set(cols_needed) - set(row.keys()) == set()
+            ), f"Missing columns in CSV file: {set(cols_needed) - set(row.keys())}"
+            data.append({col: row[col] for col in cols if col in row})  # type: ignore
 
     return data
