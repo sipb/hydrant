@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version: ${{ vars.PYTHON_VERSION }}
           cache: "pip"
       - name: Install dependencies
         run: pip install .[dev]
@@ -44,7 +44,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version: ${{ vars.PYTHON_VERSION }}
           cache: "pip"
       - name: Install dependencies
         run: pip install .[dev]
@@ -59,7 +59,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version: ${{ vars.PYTHON_VERSION }}
           cache: "pip"
       - name: Install dependencies
         run: pip install .[dev]
@@ -73,7 +73,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version: ${{ vars.PYTHON_VERSION }}
           cache: "pip"
       - name: Install dependencies
         run: pip install .
