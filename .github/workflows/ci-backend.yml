@@ -32,7 +32,10 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
           cache: "pip"
-      - uses: psf/black@24.8.0 # pinned due to python 8 support
+      - name: Install dependencies
+        run: pip install .[dev]
+      - name: Format code with black
+        run: black .
   pylint:
     name: Pylint
     runs-on: ubuntu-24.04
