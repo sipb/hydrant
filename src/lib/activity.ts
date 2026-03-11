@@ -317,6 +317,10 @@ export class Sections {
   /** Overridden location for this particular section. */
   roomOverride = "";
 
+  setRoomOverride(room: string) {
+    this.roomOverride = room;
+  }
+
   constructor(
     cls: BaseActivity,
     rawTimes: string[],
