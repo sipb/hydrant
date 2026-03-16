@@ -12,7 +12,7 @@ import {
   Portal,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 import type { Save } from "../lib/schema";
 import { HydrantContext } from "../lib/hydrant";
@@ -249,9 +249,18 @@ export function ScheduleSwitcher() {
   const [name, setName] = useState(currentName);
   const defaultScheduleId = state.defaultSchedule;
 
-  useEffect(() => {
+  const [prevSaves, setPrevSaves] = useState(saves);
+  const [prevSaveId, setPrevSaveId] = useState(saveId);
+
+  if (prevSaves !== saves) {
+    setPrevSaves(saves);
     setName(saves.find((save) => save.id === saveId)?.name ?? "");
-  }, [saves, saveId]);
+  }
+
+  if (prevSaveId !== saveId) {
+    setPrevSaveId(saveId);
+    setName(saves.find((save) => save.id === saveId)?.name ?? "");
+  }
 
   const [renderHeading, renderButtons] = (() => {
     if (isRenaming) {
