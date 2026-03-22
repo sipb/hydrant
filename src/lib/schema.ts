@@ -8,7 +8,9 @@ export enum ClassType {
 }
 
 /** The date the content of the banner was last changed. */
-export const BANNER_LAST_CHANGED = new Date("2026-03-02T12:00:00Z").valueOf();
+export const BANNER_LAST_CHANGED = Temporal.Instant.from(
+  "2026-03-02T12:00:00Z",
+).epochMilliseconds;
 export const BANNER_MESSAGE =
   "Q4 Physical Education and Wellness classes are now available on Hydrant! Registration opens March 4 on the PE&W website.";
 
