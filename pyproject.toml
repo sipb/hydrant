@@ -14,8 +14,9 @@ dependencies = [
 ]
 authors = [{ name = "SIPB Hydrant Team", email = "sipb-hydrant@mit.edu" }]
 
+# pin black to a specific version to not break ci
 [project.optional-dependencies]
-dev = ["pytest>=8.3.5", "pylint>=3.2.7", "black>=24.8.0"]
+dev = ["pytest>=8.3.5", "pylint>=3.2.7", "black==24.8.0"]
 
 [project.urls]
 "Homepage" = "https://hydrant.mit.edu/"
