@@ -33,6 +33,8 @@ meets = "CMS.840"
 
 ["21L.471"]
 name = "Novels of Mystery, Detection and Suspense: Major Novels"
+"lectureRawSections" = ["14N-325/TR/1/7-8.30 PM"]
+"lectureSections" = [[[[60, 3], [128, 3]], "14N-325"]]
 
 ["21L.486"]
 name = "Gender and Performance: Modern Drama"
