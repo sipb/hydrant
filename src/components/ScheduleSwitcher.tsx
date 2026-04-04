@@ -10,7 +10,7 @@ import {
   Select,
   Menu,
   Portal,
-  Clipboard
+  Clipboard,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { useContext, useEffect, useState } from "react";
