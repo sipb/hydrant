@@ -65,8 +65,8 @@ function toICalEvents(activity: Activity, term: Term): ICalEventData[] {
       return {
         summary: event.name,
         location: event.room,
-        start: startDate.toString(),
-        end: startDateEnd.toString(),
+        start: startDate,
+        end: startDateEnd,
         timezone: TIMEZONE,
         repeating: rrule.toString(),
       } satisfies ICalEventData;
