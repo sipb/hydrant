@@ -10,6 +10,7 @@ import {
   Select,
   Menu,
   Portal,
+  Clipboard,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { useContext, useEffect, useState } from "react";
@@ -28,8 +29,6 @@ import {
   LuShare2,
   LuTrash2,
 } from "react-icons/lu";
-
-import useCopyToClipboard from "react-use/lib/useCopyToClipboard.js";
 
 function SmallButton(props: ComponentPropsWithoutRef<"button">) {
   const { children, ...otherProps } = props;
@@ -197,7 +196,6 @@ function ExportDialog(props: { children: ReactNode }) {
   const { state } = useContext(HydrantContext);
   const [show, setShow] = useState(false);
   const link = state.urlify();
-  const [clipboardState, copyToClipboard] = useCopyToClipboard();
 
   return (
     <Dialog.Root
@@ -225,13 +223,14 @@ function ExportDialog(props: { children: ReactNode }) {
               <Dialog.ActionTrigger asChild>
                 <Button>Close</Button>
               </Dialog.ActionTrigger>
-              <Button
-                onClick={() => {
-                  copyToClipboard(link);
-                }}
-              >
-                {clipboardState.value === link ? "Copied!" : "Copy"}
-              </Button>
+              <Clipboard.Root value={link}>
+                <Clipboard.Trigger asChild>
+                  <Button>
+                    <Clipboard.Indicator />
+                    <Clipboard.CopyText />
+                  </Button>
+                </Clipboard.Trigger>
+              </Clipboard.Root>
             </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Positioner>
