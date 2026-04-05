@@ -56,7 +56,7 @@ const baseRawClass: RawClass = {
   nonext: false,
   repeat: false,
   url: "",
-  final: false,   
+  final: false,
   half: false,
   limited: false,
   oldNumber: "",
@@ -65,7 +65,12 @@ const baseRawClass: RawClass = {
 
 function makeClass(number: string, hasFinal: boolean): Class {
   return new Class(
-    { ...baseRawClass, number, subject: number.split(".")[1] ?? number, final: hasFinal },
+    {
+      ...baseRawClass,
+      number,
+      subject: number.split(".")[1] ?? number,
+      final: hasFinal,
+    },
     COLOR_SCHEME_LIGHT,
   );
 }
@@ -77,7 +82,6 @@ function makeStateWithClasses(classes: Class[]): State {
 }
 
 describe("State.finalsCount", () => {
-
   test("no selected classes → 0", () => {
     const state = makeStateWithClasses([]);
     expect(state.finalsCount).toBe(0);
@@ -86,8 +90,8 @@ describe("State.finalsCount", () => {
   test("selected classes, none with finals = 0", () => {
     const state = makeStateWithClasses([
       makeClass("6.100A", false),
-      makeClass("18.06",  false),
-      makeClass("8.01",   false),
+      makeClass("18.06", false),
+      makeClass("8.01", false),
     ]);
     expect(state.finalsCount).toBe(0);
   });
@@ -102,17 +106,15 @@ describe("State.finalsCount", () => {
 
   test("mixed finals: 2 with finals, 1 without = 2", () => {
     const state = makeStateWithClasses([
-      makeClass("6.031",  true),
-      makeClass("6.036",  false),
-      makeClass("6.046",  true),
+      makeClass("6.031", true),
+      makeClass("6.036", false),
+      makeClass("6.046", true),
     ]);
     expect(state.finalsCount).toBe(2);
   });
 
   test("exactly 1 class with a final = 1", () => {
-    const state = makeStateWithClasses([
-      makeClass("6.009", true),
-    ]);
+    const state = makeStateWithClasses([makeClass("6.009", true)]);
     expect(state.finalsCount).toBe(1);
   });
 });
