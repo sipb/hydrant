@@ -15,6 +15,12 @@ import { Provider } from "./components/ui/provider";
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
 import "@fontsource-variable/inter/index.css";
+import {
+  destroySession,
+  FIREROAD_VERIFY_URL,
+  getSession,
+  SessionContext,
+} from "./lib/auth";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
@@ -80,8 +86,35 @@ export const Layout = withEmotionCache((props: LayoutProps, cache) => {
   );
 });
 
-export default function Root() {
-  return <Outlet />;
+// eslint-disable-next-line react-refresh/only-export-components
+export async function clientLoader() {
+  const session = await getSession(document.cookie);
+
+  if (session.has("access_token")) {
+    const response = await fetch(FIREROAD_VERIFY_URL, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session.get("access_token") ?? ""}`,
+      },
+    });
+
+    if (!response.ok) {
+      // token expired
+      console.log("Token expired!");
+      document.cookie = await destroySession(session);
+      return { session: null };
+    }
+  }
+
+  return { session };
+}
+
+export default function Root({ loaderData }: Route.ComponentProps) {
+  return (
+    <SessionContext value={loaderData.session}>
+      <Outlet />
+    </SessionContext>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
