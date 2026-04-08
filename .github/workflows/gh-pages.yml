@@ -29,12 +29,12 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ vars.NODE_VERSION }}
+          node-version-file: "package.json"
           cache: "npm"
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ vars.PYTHON_VERSION }}
+          python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
         run: |
