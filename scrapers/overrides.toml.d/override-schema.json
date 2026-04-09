@@ -388,6 +388,11 @@
         "title": "New",
         "description": "True if subject is new"
       },
+      "is_half_class": {
+        "type": "boolean",
+        "title": "Half HASS-A",
+        "description": "True if class counts as half HASS-A"
+      },
       "rating": {
         "type": "number",
         "title": "Rating",
