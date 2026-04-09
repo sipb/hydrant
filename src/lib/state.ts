@@ -131,6 +131,11 @@ export class State {
     return getDefaultMeasurementSystem();
   }
 
+  /** The count of number of finals a student has. */
+  get finalsCount(): number {
+    return this.selectedClasses.filter((cls) => cls.flags.final).length;
+  }
+
   //========================================================================
   // Activity handlers
 
