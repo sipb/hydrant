@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { decode } from "html-entities";
+import { HASS } from "../lib/raw";
 
 import {
   Flex,
@@ -110,7 +111,12 @@ function ClassTypes(props: { cls: Class }) {
     ["phys2", "Physics 2"],
     ["rest", "REST"],
     ["hassH", "HASS-H"],
-    ["hassA", "HASS-A"],
+    [
+      "hassA",
+      cls.rawClass.hass.includes(HASS.A) && cls.rawClass.is_half_class
+        ? "HASS-A (half)"
+        : "HASS-A",
+    ],
     ["hassS", "HASS-S"],
     ["hassE", "HASS-E"],
     ["cih", "CI-H"],

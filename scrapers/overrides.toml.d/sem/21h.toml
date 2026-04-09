@@ -15,3 +15,6 @@ inCharge = "I. Kumekawa"
 url = "https://history.mit.edu/subjects/special-subject-history-4/"
 hass = ["H"]
 new = true
+
+["21M.460"]
+is_half_class = true
