@@ -1,0 +1,27 @@
+#:schema ../override-schema.json
+
+["21M.389"]
+oldNumber = "Studies in Music Technology"
+hass = ["A"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+level = "U"
+meets = "21M.589"
+description = "This class will cover an extensive range of topics that relate to sound and vibration analysis, focusing on computational tools needed to process such data, and exploring applications in various disciplines. Material covered will include basic signal processing, vibration and acoustical simulations and measurements, machine learning audio, microphone and speaker arrays, signal enhancement and restoration, and psychoacoustics. Applications will be drawn from fields including music, phonetics, mechanical and electrical engineering, architecture, medicine, and more. This class will cover applications such as 3D audio, classifiers for sound events, basic speech recognition, auto-tuners and other music production tools, audio compression, modeling of voice, instruments and rooms, real-time audio applications, denoising and source separation, and how to localize and isolate sounds. Students taking the graduate version will complete additional assignments."
+name = "Studies in Music Technology: Audio Computing: Processing Sound in Engineering, Science, and the Arts"
+inCharge = "Mark Rau & Paris Smaragdis"
+
+["21M.500"]
+oldNumber = "Advanced Seminar in Music"
+hass = ["A"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+level = "U"
+meets = "21M.526"
+description = "In this seminar we will be taking a global-historical approach to the “baroque,” decentering our understanding of its associated music-makings in the 16th to 18th centuries as well as its postcolonial continuities in our present time. By adopting a polycentric perspective, we will study the history of what is often referred to as “Western music” and its relationship to European colonialism, trade, and missionizing in this period. These global networks of power will be explored through a series of connected vignettes ranging from the early modern imperial courts and trading ports of South, Southeast, and East Asia, to the reducciones of South America and beyond. A focus on surviving repertoire from these regions will encourage you to think not only about a more diverse range of music-makers in history, but to also question the “Europeanness” of these musical traditions both past and present, taking seriously Indigenous contributions to and ownership of these musics. "
+name = "Advanced Seminar in Music: Global Baroque"
+inCharge = "Makoto Takao"
