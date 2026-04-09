@@ -154,7 +154,7 @@ def run() -> None:
         for course_num, course in courses.items():
             if course_num.startswith("21M.1") or course_num.startswith("21M.4"):
                 course["is_half_class"] = True
-        
+
         term_info = get_term_info(sem)
         url_name = term_info["urlName"]
 

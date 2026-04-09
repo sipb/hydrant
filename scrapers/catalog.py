@@ -239,7 +239,7 @@ def get_course_data(filtered_html: BeautifulSoup) -> dict[str, bool | int | str]
         "final": has_final(filtered_html),
         "half": get_half(filtered_html),
         "limited": is_limited(filtered_html),
-        "new": is_new(filtered_html)
+        "new": is_new(filtered_html),
     }
 
 
