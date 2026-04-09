@@ -1,5 +1,13 @@
 import { useContext, useState } from "react";
-import { Center, Flex, Text, Box, Float, Presence, CloseButton } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Text,
+  Box,
+  Float,
+  Presence,
+  CloseButton,
+} from "@chakra-ui/react";
 
 import { HydrantContext } from "../lib/hydrant";
 import { BANNER_MESSAGE } from "~/lib/schema";
@@ -61,14 +69,17 @@ export const Banner = () => {
           >
             <Flex align="center" textStyle="sm">
               <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
-                Unknown subjects: {unknownSubjects.join(", ")} may not be in Hydrant's database.
+                Unknown subjects: {unknownSubjects.join(", ")} may not be in
+                Hydrant's database.
               </Text>
               <CloseButton
                 hideFrom="sm"
                 variant="ghost"
                 color="whiteAlpha.900"
                 _hover={{ bg: "blackAlpha.300" }}
-                onClick={() => setUnknownVisible(false)}
+                onClick={() => {
+                  setUnknownVisible(false);
+                }}
               />
             </Flex>
           </Center>

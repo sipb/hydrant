@@ -126,9 +126,9 @@ export const meta: Route.MetaFunction = () => [
 export default function App({ loaderData }: Route.ComponentProps) {
   const { globalState } = loaderData;
   const hydrantData = useHydrant({ globalState });
-  
-  (window as any).State = State;
-  (window as any).hydrantState = loaderData.globalState;
+
+  window.State = State;
+  window.hydrantState = loaderData.globalState;
 
   return (
     <HydrantContext value={hydrantData}>

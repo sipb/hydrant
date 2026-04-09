@@ -38,7 +38,7 @@ export class State {
   /** Browser-specific saved state. */
   store: Store;
   /** Stores unknown subjects */
-  unknownSubjects: Set<string> = new Set();
+  unknownSubjects = new Set<string>();
 
   // The following are React state, so should be private. Even if we pass the
   // State object to React components, they shouldn't be looking at these
@@ -494,9 +494,7 @@ export class State {
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
         const subject =
-          typeof deflated === "string"
-            ? deflated
-            : (deflated as string[])[0];
+          typeof deflated === "string" ? deflated : (deflated as string[])[0];
 
         this.unknownSubjects.add(subject);
         continue;
@@ -525,9 +523,7 @@ export class State {
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
         const subject =
-          typeof deflated === "string"
-            ? deflated
-            : (deflated as string[])[0];
+          typeof deflated === "string" ? deflated : (deflated as string[])[0];
 
         this.unknownSubjects.add(subject);
         continue;
