@@ -37,7 +37,6 @@ export class State {
   conflicts = 0;
   /** Browser-specific saved state. */
   store: Store;
-
   /** Stores unknown subjects */
   unknownSubjects: Set<string> = new Set();
 
@@ -132,6 +131,11 @@ export class State {
 
     // If no measurement system is set, use the default one
     return getDefaultMeasurementSystem();
+  }
+
+  /** The count of number of finals a student has. */
+  get finalsCount(): number {
+    return this.selectedClasses.filter((cls) => cls.flags.final).length;
   }
 
   //========================================================================
@@ -476,7 +480,6 @@ export class State {
   ): void {
     if (!obj) return;
     this.reset();
-    this.unknownSubjects.clear();
     const [classes, customActivities, selectedOption, peClasses] = obj as [
       (string | number | string[])[][],
       (string | RawTimeslot[])[][] | null,
@@ -488,7 +491,6 @@ export class State {
         typeof deflated === "string"
           ? this.classes.get(deflated)
           : this.classes.get((deflated as string[])[0]);
-      // if (!cls) continue;
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
         const subject =
@@ -520,7 +522,6 @@ export class State {
             this.peClasses.get(`Q3.${deflated}`))
           : (this.peClasses.get((deflated as string[])[0]) ??
             this.peClasses.get(`Q3.${(deflated as string[])[0]}`));
-      // if (!cls) continue;
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
         const subject =
@@ -531,6 +532,7 @@ export class State {
         this.unknownSubjects.add(subject);
         continue;
       }
+
       cls.inflate(deflated);
       this.selectedPEClasses.push(cls);
     }
