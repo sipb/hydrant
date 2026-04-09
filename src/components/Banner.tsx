@@ -1,5 +1,4 @@
-import { useContext } from "react";
-
+import { useContext, useState } from "react";
 import {
   Center,
   Flex,
@@ -15,6 +14,8 @@ import { BANNER_MESSAGE } from "~/lib/schema";
 
 export const Banner = () => {
   const { state } = useContext(HydrantContext);
+  const unknownSubjects = Array.from(state.unknownSubjects);
+  const [unknownVisible, setUnknownVisible] = useState(true);
 
   return (
     <Presence
@@ -26,6 +27,7 @@ export const Banner = () => {
       animationDuration="moderate"
     >
       <Box position="relative">
+        {/* Main banner */}
         <Center
           py="2"
           px="3"
@@ -51,6 +53,38 @@ export const Banner = () => {
             />
           </Flex>
         </Center>
+
+        {/* Unknown subjects warning, same style as banner */}
+        {unknownSubjects.length > 0 && unknownVisible && (
+          <Center
+            py="2"
+            px="3"
+            bgGradient="to-r"
+            gradientFrom="orange.500"
+            gradientVia="yellow.400"
+            gradientTo="orange.500"
+            color="white"
+            textAlign="center"
+            mt={2}
+          >
+            <Flex align="center" textStyle="sm">
+              <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
+                Unknown subjects: {unknownSubjects.join(", ")} may not be in
+                Hydrant's database.
+              </Text>
+              <CloseButton
+                hideFrom="sm"
+                variant="ghost"
+                color="whiteAlpha.900"
+                _hover={{ bg: "blackAlpha.300" }}
+                onClick={() => {
+                  setUnknownVisible(false);
+                }}
+              />
+            </Flex>
+          </Center>
+        )}
+
         <Float placement="middle-end" offset="8" hideBelow="sm">
           <CloseButton
             variant="ghost"
