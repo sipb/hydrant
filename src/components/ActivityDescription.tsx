@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { decode } from "html-entities";
 
 import {
   Flex,
   Heading,
+  IconButton,
   Image,
   Link,
   Text,
@@ -20,7 +21,7 @@ import { linkClasses } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 
 import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
-import { LuExternalLink } from "react-icons/lu";
+import { LuExternalLink, LuStar } from "react-icons/lu";
 import { type PEFlags } from "../lib/pe";
 import { PEClass, getPEFlagEmoji } from "../lib/pe";
 
@@ -270,12 +271,28 @@ function ClassBody(props: { cls: Class }) {
 /** Full class description, from title to URLs at the end. */
 function ClassDescription(props: { cls: Class }) {
   const { cls } = props;
+  const { state } = useContext(HydrantContext);
+  const [, setTick] = useState(0);
+  const isStarred = state.isClassStarred(cls);
 
   return (
     <Flex direction="column" gap={4}>
-      <Heading size="md">
-        {cls.number}: {cls.name}
-      </Heading>
+      <Flex align="center" gap={2}>
+        <Heading size="md" flex="1">
+          {cls.number}: {cls.name}
+        </Heading>
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-label={isStarred ? "Unstar class" : "Star class"}
+          onClick={() => {
+            state.toggleStarClass(cls);
+            setTick((t) => t + 1);
+          }}
+        >
+          <LuStar fill={isStarred ? "currentColor" : "none"} />
+        </Button>
+      </Flex>
       <Flex direction="column" gap={0.5}>
         <ClassTypes cls={cls} />
         <ClassRelated cls={cls} />
@@ -318,6 +335,9 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
 /** Full PE&W class description, from title to URLs at the end. */
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
+  const { state } = useContext(HydrantContext);
+  const [, setTick] = useState(0);              
+  const isStarred = state.isPEClassStarred(cls);
   const { fee, startDate, endDate } = cls;
   const { number, name, prereqs, equipment, quarter } = cls.rawClass;
   const { description } = cls.description;
@@ -352,6 +372,22 @@ function PEClassDescription(props: { cls: PEClass }) {
 
   return (
     <Flex direction="column" gap={4}>
+      <Flex align="center" gap={2}>
+        <Heading size="md" flex="1">
+          {number}: {name} (Quarter {quarter})
+        </Heading>
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-label={isStarred ? "Unstar class" : "Star class"}
+          onClick={() => {
+            state.toggleStarPEClass(cls);
+            setTick((t) => t + 1);
+          }}
+        >
+          <LuStar fill={isStarred ? "currentColor" : "none"} />
+        </Button>
+      </Flex>
       <Heading size="md">
         {number}: {name} (Quarter {quarter})
       </Heading>
