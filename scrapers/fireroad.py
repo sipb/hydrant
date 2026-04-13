@@ -380,7 +380,7 @@ def get_course_data(
             raw_class.update(parse_schedule(course["schedule"]))  # type: ignore
     except KeyError:
         has_schedule = False
-    except ValueError as val_err:
+    except (ValueError, AssertionError) as val_err:
         # if we can't parse the schedule, warn
         # NOTE: parse_schedule will raise a ValueError
         print(f"Can't parse schedule {course_code}: {val_err!r}")

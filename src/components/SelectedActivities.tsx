@@ -64,6 +64,9 @@ export function SelectedActivities() {
       <Flex gap={8} justify="center">
         <Text>{units} units</Text>
         <Text>{hours.toFixed(1)} hours</Text>
+        <Text>
+          {state.finalsCount} final{state.finalsCount == 1 ? "" : "s"}
+        </Text>
       </Flex>
       <ButtonGroup gap={0} wrap="wrap">
         {selectedActivities.map((activity) => (
