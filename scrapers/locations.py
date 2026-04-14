@@ -36,30 +36,27 @@ from scrapers.utils import read_csv
 # pylint: disable=line-too-long
 LOCATIONS_URL = "https://hub.arcgis.com/api/download/v1/items/b935e99782064e2da7cc8e08ba10c1cb/csv?layers=3"
 
-AccessPoint = TypedDict(
-    "AccessPoint",
-    {
-        "FID": str,
-        "OBJECTID": str,
-        "X_Coord": str,
-        "Y_Coord": str,
-        "Location": str,
-        "FACILITY": str,
-        "Display": str,
-        "Level": str,
-        "Visitor": str,
-        "Public": str,
-        "Kiosk": str,
-        "QR_Code": str,
-        "Accessible": str,
-        "Power": str,
-        "x": str,
-        "y": str,
-    },
-)
-"""
-A row from the raw CSV data fetched from ArcGIS.
-"""
+class AccessPoint(TypedDict):
+    """
+    A row from the raw CSV data fetched from ArcGIS.
+    """
+
+    FID: str
+    OBJECTID: str
+    X_Coord: str
+    Y_Coord: str
+    Location: str
+    FACILITY: str
+    Display: str
+    Level: str
+    Visitor: str
+    Public: str
+    Kiosk: str
+    QR_Code: str
+    Accessible: str
+    Power: str
+    x: str
+    y: str
 
 
 class BuildingInfo(TypedDict):
