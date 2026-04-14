@@ -2,6 +2,10 @@ import type { Activity } from "./activity";
 import type { ColorScheme } from "./colors";
 import type { MeasurementSystem } from "./measurement";
 
+if (!("Temporal" in globalThis)) {
+  await import("temporal-polyfill/global");
+}
+
 export enum ClassType {
   ACADEMIC = "Academic",
   PEW = "PE & Wellness",

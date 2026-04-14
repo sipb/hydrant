@@ -12,10 +12,6 @@ import {
   type RawClass,
 } from "../src/lib/raw";
 
-if (!("Temporal" in globalThis)) {
-  await import("temporal-polyfill/global");
-}
-
 const baseRawClass: RawClass = {
   number: "21H.143",
   course: "21H",
