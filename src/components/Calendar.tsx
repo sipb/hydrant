@@ -4,7 +4,7 @@ import { Circle, Float, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
 
 import FullCalendar, {
-  type EventDisplayData,
+  type EventDisplayInfo,
   type EventApi,
 } from "@fullcalendar/react";
 import themePlugin from "@fullcalendar/react/themes/monarch";
@@ -121,7 +121,7 @@ export function Calendar() {
     timeClass,
     isNarrow,
     isShort,
-  }: EventDisplayData) => {
+  }: EventDisplayInfo) => {
     const room = event.extendedProps.room as string | undefined;
     const activity = event.extendedProps.activity as Activity;
     const distanceWarning = getDistanceWarning(event);
