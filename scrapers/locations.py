@@ -36,6 +36,7 @@ from scrapers.utils import read_csv
 # pylint: disable=line-too-long
 LOCATIONS_URL = "https://hub.arcgis.com/api/download/v1/items/b935e99782064e2da7cc8e08ba10c1cb/csv?layers=3"
 
+
 class AccessPoint(TypedDict):
     """
     A row from the raw CSV data fetched from ArcGIS.
