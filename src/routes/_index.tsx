@@ -127,9 +127,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const { globalState } = loaderData;
   const hydrantData = useHydrant({ globalState });
 
-  window.State = State;
-  window.hydrantState = loaderData.globalState;
-
   return (
     <HydrantContext value={hydrantData}>
       <HydrantApp />
