@@ -182,10 +182,10 @@ describe("State.getStarredClasses", () => {
   test("multiple starred classes", () => {
     const cls1 = makeClass("8.01", false);
     const cls2 = makeClass("18.06", false);
-    const state = makeStateWithStarredClasses(
-      new Set(["8.01", "18.06"]),
-      [cls1, cls2],
-    );
+    const state = makeStateWithStarredClasses(new Set(["8.01", "18.06"]), [
+      cls1,
+      cls2,
+    ]);
     expect(state.getStarredClasses()).toStrictEqual([cls1, cls2]);
   });
 });

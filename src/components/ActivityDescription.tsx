@@ -336,7 +336,7 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
-  const [, setTick] = useState(0);              
+  const [, setTick] = useState(0);
   const isStarred = state.isPEClassStarred(cls);
   const { fee, startDate, endDate } = cls;
   const { number, name, prereqs, equipment, quarter } = cls.rawClass;
