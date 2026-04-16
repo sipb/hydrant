@@ -29,12 +29,12 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ vars.NODE_VERSION }}
+          node-version-file: "package.json"
           cache: "npm"
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ vars.PYTHON_VERSION }}
+          python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
         run: |
@@ -49,7 +49,7 @@ jobs:
         env:
           SUBDIR: "/${{ github.event.repository.name }}/"
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
@@ -57,4 +57,4 @@ jobs:
           path: "./build/client"
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

@@ -11,11 +11,7 @@ import {
 } from "react";
 import { createEmotionCache } from "./emotion-cache";
 
-export interface ClientStyleContextData {
-  reset: () => void;
-}
-
-export const ClientStyleContext = createContext<ClientStyleContextData>({
+export const ClientStyleContext = createContext({
   reset: () => {
     /* empty */
   },

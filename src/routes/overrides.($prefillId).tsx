@@ -111,9 +111,9 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 export default function App({ loaderData }: Route.ComponentProps) {
   const { prefillData, prefillId } = loaderData;
 
-  const [data, setData] = useState<Record<string, unknown>[]>(prefillData);
-  const [error, setError] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string[]>([prefillId]);
+  const [data, setData] = useState(prefillData);
+  const [error, setError] = useState(false);
+  const [selected, setSelected] = useState([prefillId]);
 
   // TODO IN NEXT COMMIT: Make ui schema match what it did before :(
   const uischema = useMemo<UiSchema>(() => {

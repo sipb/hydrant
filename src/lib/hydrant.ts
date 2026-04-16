@@ -43,9 +43,9 @@ export function useHydrant({ globalState }: { globalState: State }): {
   state: State;
   hydrantState: HydrantState;
 } {
-  const stateRef = useRef<State>(globalState);
+  const stateRef = useRef(globalState);
 
-  const [hydrantState, setHydrantState] = useState<HydrantState>(DEFAULT_STATE);
+  const [hydrantState, setHydrantState] = useState(DEFAULT_STATE);
   const { colorMode, setColorMode, toggleColorMode } = useColorMode();
 
   const state = stateRef.current;
@@ -76,7 +76,7 @@ export function useHydrant({ globalState }: { globalState: State }): {
   return { state, hydrantState };
 }
 
-export const HydrantContext = createContext<ReturnType<typeof useHydrant>>({
+export const HydrantContext = createContext({
   hydrantState: DEFAULT_STATE,
   state: {} as State,
 });
