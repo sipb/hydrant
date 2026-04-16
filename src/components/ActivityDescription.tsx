@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { decode } from "html-entities";
 
 import {
@@ -271,7 +271,6 @@ function ClassBody(props: { cls: Class }) {
 function ClassDescription(props: { cls: Class }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
-  const [, setTick] = useState(0);
   const isStarred = state.isClassStarred(cls);
 
   return (
@@ -286,7 +285,6 @@ function ClassDescription(props: { cls: Class }) {
           aria-label={isStarred ? "Unstar class" : "Star class"}
           onClick={() => {
             state.toggleStarClass(cls);
-            setTick((t) => t + 1);
           }}
         >
           <LuStar fill={isStarred ? "currentColor" : "none"} />
@@ -335,7 +333,6 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
   const { state } = useContext(HydrantContext);
-  const [, setTick] = useState(0);
   const isStarred = state.isPEClassStarred(cls);
   const { fee, startDate, endDate } = cls;
   const { number, name, prereqs, equipment, quarter } = cls.rawClass;
@@ -381,15 +378,11 @@ function PEClassDescription(props: { cls: PEClass }) {
           aria-label={isStarred ? "Unstar class" : "Star class"}
           onClick={() => {
             state.toggleStarPEClass(cls);
-            setTick((t) => t + 1);
           }}
         >
           <LuStar fill={isStarred ? "currentColor" : "none"} />
         </Button>
       </Flex>
-      <Heading size="md">
-        {number}: {name} (Quarter {quarter})
-      </Heading>
       <Flex direction="column" gap={0.5}>
         <PEClassTypes cls={cls} />
         {fee ? <Text>${fee.toFixed(2)} enrollment fee</Text> : null}
