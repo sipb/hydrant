@@ -4,7 +4,6 @@ import { decode } from "html-entities";
 import {
   Flex,
   Heading,
-  IconButton,
   Image,
   Link,
   Text,
