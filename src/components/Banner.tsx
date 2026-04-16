@@ -41,6 +41,15 @@ export const AnnouncementsBanner = () => {
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
               {BANNER_MESSAGE}
             </Text>
+            <CloseButton
+              hideFrom="sm"
+              variant="ghost"
+              color="whiteAlpha.900"
+              _hover={{ bg: "blackAlpha.300" }}
+              onClick={() => {
+                state.showBanner = false;
+              }}
+            />
           </Flex>
         </Center>
         <Float placement="middle-end" offset="8" hideBelow="sm">
@@ -89,6 +98,15 @@ export const UnknownSubjectsBanner = () => {
               Unknown subjects: {unknownSubjects.join(", ")} may not be in
               Hydrant's database.
             </Text>
+            <CloseButton
+              hideFrom="sm"
+              variant="ghost"
+              color="whiteAlpha.900"
+              _hover={{ bg: "blackAlpha.300" }}
+              onClick={() => {
+                setUnknownVisible(false);
+              }}
+            />
           </Flex>
         </Center>
         <Float placement="middle-end" offset="8" hideBelow="sm">
