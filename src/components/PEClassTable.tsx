@@ -236,6 +236,7 @@ function ClassFlags(props: {
   /** Callback for updating the grid filter manually. */
   updateFilter: () => void;
 }) {
+  "use no memo";
   const { setFlagsFilter, updateFilter } = props;
   const { state } = useContext(HydrantContext);
 
