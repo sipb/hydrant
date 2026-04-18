@@ -10,6 +10,8 @@ export interface RawClass {
   subject: string;
   /** True if some section is not scheduled yet */
   tba: boolean;
+  /** True if this counts as half of a HASS-A class */
+  is_half_class?: boolean;
 
   /** Kinds of sections (among LECTURE, RECITATION, LAB, DESIGN) that exist */
   sectionKinds: SectionKind[];

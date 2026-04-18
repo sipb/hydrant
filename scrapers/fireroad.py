@@ -437,6 +437,7 @@ def get_course_data(
             "name": course.get("title", ""),
             "inCharge": ",".join(course.get("instructors", [])),  # type: ignore
             "virtualStatus": course.get("virtual_status", "") == "Virtual",
+            "is_half_class": course.get("is_half_class", False),
         }
     )
 
