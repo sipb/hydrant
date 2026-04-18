@@ -236,6 +236,7 @@ function ClassFlags(props: {
   /** Callback for updating the grid filter manually. */
   updateFilter: () => void;
 }) {
+  "use no memo";
   const { setFlagsFilter, updateFilter } = props;
   const { state } = useContext(HydrantContext);
 
@@ -254,11 +255,11 @@ function ClassFlags(props: {
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
   useEffect(() => {
-    state.fitsScheduleCallback = () => {
+    state.setFitsScheduleCallback(() => {
       if (flags.get("fits")) {
         updateFilter();
       }
-    };
+    });
   }, [state, flags, updateFilter]);
 
   const onChange = (flag: Filter, value: boolean) => {
@@ -447,7 +448,7 @@ export function PEClassTable() {
             .join(" "),
       },
     ];
-  }, [state]);
+  }, []);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
     return {

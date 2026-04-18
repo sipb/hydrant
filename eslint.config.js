@@ -3,7 +3,7 @@ import globals from "globals";
 
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
-// import reactHooks from "eslint-plugin-react-hooks";
+import reactHooks from "eslint-plugin-react-hooks";
 import vitest from "@vitest/eslint-plugin";
 import { reactRefresh } from "eslint-plugin-react-refresh";
 
@@ -18,7 +18,7 @@ export default defineConfig(
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
-  // reactHooks.configs.flat.recommended,
+  reactHooks.configs.flat.recommended,
   reactRefresh.configs.vite(),
   eslintConfigPrettier,
   {
