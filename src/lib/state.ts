@@ -37,6 +37,8 @@ export class State {
   conflicts = 0;
   /** Browser-specific saved state. */
   store: Store;
+  /** Stores unknown subjects */
+  unknownSubjects = new Set<string>();
 
   // The following are React state, so should be private. Even if we pass the
   // State object to React components, they shouldn't be looking at these
@@ -275,11 +277,16 @@ export class State {
       units: sum(this.selectedClasses.map((cls) => cls.totalUnits)),
       hours: sum(this.selectedActivities.map((activity) => activity.hours)),
       warnings: Array.from(
-        new Set(
-          this.selectedActivities.flatMap((cls) =>
+        new Set([
+          ...this.selectedActivities.flatMap((cls) =>
             "warnings" in cls ? cls.warnings.messages : [],
           ),
-        ),
+          ...(this.unknownSubjects.size > 0
+            ? [
+                `Unknown subjects: ${Array.from(this.unknownSubjects).join(", ")}`,
+              ]
+            : []),
+        ]),
       ),
       saveId: this.saveId,
       saves: this.saves,
@@ -484,7 +491,15 @@ export class State {
         typeof deflated === "string"
           ? this.classes.get(deflated)
           : this.classes.get((deflated as string[])[0]);
-      if (!cls) continue;
+      // if we can't find the class, add it to unknownSubjects so we can show a warning
+      if (!cls) {
+        const subject =
+          typeof deflated === "string" ? deflated : (deflated as string[])[0];
+
+        this.unknownSubjects.add(subject);
+        continue;
+      }
+
       cls.inflate(deflated);
       this.selectedClasses.push(cls);
     }
@@ -505,7 +520,15 @@ export class State {
             this.peClasses.get(`Q3.${deflated}`))
           : (this.peClasses.get((deflated as string[])[0]) ??
             this.peClasses.get(`Q3.${(deflated as string[])[0]}`));
-      if (!cls) continue;
+      // if we can't find the class, add it to unknownSubjects so we can show a warning
+      if (!cls) {
+        const subject =
+          typeof deflated === "string" ? deflated : (deflated as string[])[0];
+
+        this.unknownSubjects.add(subject);
+        continue;
+      }
+
       cls.inflate(deflated);
       this.selectedPEClasses.push(cls);
     }
