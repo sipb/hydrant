@@ -12,12 +12,19 @@ export function ColorButton(
   props: ComponentPropsWithoutRef<"button"> & { color: string },
 ) {
   const { children, color, style, ...otherProps } = props;
+  const contractColor = textColor(color);
   return (
     <Button
       {...otherProps}
       backgroundColor={color}
+      _hover={{
+        backgroundColor: `color-mix(in oklab, ${color} 92%, ${contractColor})`,
+      }}
+      _active={{
+        backgroundColor: `color-mix(in oklab, ${color} 85%, ${contractColor}) !important`,
+      }}
       borderColor={color}
-      color={textColor(color)}
+      color={contractColor}
       style={{
         ...style,
       }}

@@ -2,13 +2,19 @@ import type { Activity } from "./activity";
 import type { ColorScheme } from "./colors";
 import type { MeasurementSystem } from "./measurement";
 
+if (!("Temporal" in globalThis)) {
+  await import("temporal-polyfill/global");
+}
+
 export enum ClassType {
   ACADEMIC = "Academic",
   PEW = "PE & Wellness",
 }
 
 /** The date the content of the banner was last changed. */
-export const BANNER_LAST_CHANGED = new Date("2026-04-23T17:00:00Z").valueOf();
+export const BANNER_LAST_CHANGED = Temporal.Instant.from(
+  "2026-04-23T17:00:00Z",
+).epochMilliseconds;
 export const BANNER_MESSAGE =
   "Fall 2026 classes are now available on Hydrant! Pre-registration opens on May 1 on WebSIS.";
 
