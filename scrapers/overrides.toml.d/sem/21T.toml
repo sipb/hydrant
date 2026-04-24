@@ -1,0 +1,14 @@
+#:schema ../override-schema.json
+
+["21T.424"]
+oldNumber = "Topics in Performance Studies"
+hass = ["A"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+level = "U"
+meets = "21T.524"
+description = "Designed as a forum for the next generation of makers; to expand, diversify and reflect on what we build and the effect it has in the world. The foundation for the course is literary sources across fields: in science, society and technology, embodiment and cognition, sustainability, colonial histories and feminist studies, data studies, and cybernetics. We also examine creative projects that challenge contemporary socio-technical systems such as data governance and surveillance, climate and environmental degradation, policing, carceral and correctional systems, class and labor disparities, discrimination, computation and (social) media. [Through close readings, creative prototyping, research methods and personal experience, students respond to quandaries such as: What happens when the project that you make does not turn out as you intended? What methods and tools (conceptual + practical) for reflection and iteration can you engage as you build? This course provides students opportunities to consider the interrelated impacts of changes in technology, culture, and society - while guiding students to identify, interpret and build creative responses to issues that arise.] "
+name = "Topics in Performance Studies:What are we Building?: Culture, Methods, and Alternative Visions to Sociotechnical Futures"
+inCharge = "Grisha Coleman"

@@ -118,3 +118,74 @@ describe("State.finalsCount", () => {
     expect(state.finalsCount).toBe(1);
   });
 });
+
+function makeStateWithStarredClasses(
+  starredClasses: Set<string>,
+  classes: Class[],
+): State {
+  const state = Object.create(State.prototype) as State;
+  (state as unknown as { starredClasses: Set<string> }).starredClasses =
+    starredClasses;
+  (state as unknown as { store: { set: () => void } }).store = {
+    set: () => undefined,
+  };
+  (state as unknown as { updateState: () => void }).updateState = () =>
+    undefined;
+  (state as unknown as { classes: Map<string, Class> }).classes = new Map(
+    classes.map((cls) => [cls.number, cls]),
+  );
+  return state;
+}
+
+describe("State.isClassStarred", () => {
+  test("class is not starred", () => {
+    const cls = makeClass("6.009", false);
+    const state = makeStateWithStarredClasses(new Set(), [cls]);
+    expect(state.isClassStarred(cls)).toBe(false);
+  });
+
+  test("class is starred", () => {
+    const cls = makeClass("6.009", false);
+    const state = makeStateWithStarredClasses(new Set(["6.009"]), [cls]);
+    expect(state.isClassStarred(cls)).toBe(true);
+  });
+});
+
+describe("State.toggleStarClass", () => {
+  test("starring an unstarred class", () => {
+    const cls = makeClass("6.031", false);
+    const state = makeStateWithStarredClasses(new Set(), [cls]);
+    state.toggleStarClass(cls);
+    expect(state.isClassStarred(cls)).toBe(true);
+  });
+
+  test("unstarring a starred class", () => {
+    const cls = makeClass("6.031", false);
+    const state = makeStateWithStarredClasses(new Set(["6.031"]), [cls]);
+    state.toggleStarClass(cls);
+    expect(state.isClassStarred(cls)).toBe(false);
+  });
+});
+
+describe("State.getStarredClasses", () => {
+  test("no starred classes", () => {
+    const state = makeStateWithStarredClasses(new Set(), []);
+    expect(state.getStarredClasses()).toStrictEqual([]);
+  });
+
+  test("one starred class", () => {
+    const cls = makeClass("8.01", false);
+    const state = makeStateWithStarredClasses(new Set(["8.01"]), [cls]);
+    expect(state.getStarredClasses()).toStrictEqual([cls]);
+  });
+
+  test("multiple starred classes", () => {
+    const cls1 = makeClass("8.01", false);
+    const cls2 = makeClass("18.06", false);
+    const state = makeStateWithStarredClasses(new Set(["8.01", "18.06"]), [
+      cls1,
+      cls2,
+    ]);
+    expect(state.getStarredClasses()).toStrictEqual([cls1, cls2]);
+  });
+});
