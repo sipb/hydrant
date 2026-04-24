@@ -10,7 +10,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
     "@fontsource-variable/inter": "^5.2.8",
-    "@fullcalendar/react": "7.0.0-rc.1",
+    "@fullcalendar/react": "7.0.0-rc.2",
     "@react-router/node": "^7.14.1",
     "@rjsf/chakra-ui": "^6.4.2",
     "@rjsf/core": "^6.4.2",
