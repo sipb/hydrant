@@ -54,7 +54,7 @@
     "@eslint/compat": "^2.0.4",
     "@eslint/js": "^10.0.1",
     "@react-router/dev": "^7.14.1",
-    "@react-router/fs-routes": "^7.14.1",
+    "@react-router/fs-routes": "^7.14.2",
     "@types/jsdom": "^28.0.1",
     "@types/node": "^22.19.15",
     "@types/react": "^19.2.14",
