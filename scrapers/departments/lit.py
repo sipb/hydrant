@@ -1,4 +1,11 @@
-# get all classes for 21L along with their human-readable schedule
+"""
+get all classes for 21L along with their human-readable schedule
+
+Functions:
+    run()
+"""
+
+from __future__ import annotations
 
 from collections.abc import Mapping, MutableMapping
 
@@ -11,29 +18,28 @@ from scrapers.fireroad import (
 )
 
 
-def run():
-    data = get_raw_data()
-    courses: MutableMapping[str, Mapping[str, CourseValues]] = {}
-    term = url_name_to_term(get_term_info("sem")["urlName"])
-    missing = 0
+def get_lit_course_key(course: str, same: str, name: str) -> str:
+    """
+    Gets the key for a 21L course,
+    which is the course name with a [J] if it has a joint section.
 
-    for course in data:
-        included = get_course_data(courses, course, term)
-        if not included:
-            missing += 1
+    Meant to look like "21L.001 [J] Introduction to Poetry"
+    or "21L.002 Introduction to Fiction", like in the Subject Listing.
+    """
+    return course + ("[J]" if len(same) > 0 else "") + " " + name
 
-    lit_courses: list[str] = []
-    for course in courses:
-        if course.startswith("21L"):
-            lit_courses.append(course)
+
+def make_lit_schedule(
+    lit_courses: list[str], courses: MutableMapping[str, Mapping[str, CourseValues]]
+) -> Mapping[str, list[str]]:
+    """]
+    Makes a mapping from course name to a
+    human-readable schedule for all 21L courses.
+    """
 
     lit_schedules: Mapping[str, list[str]] = {}
     for lit_course in lit_courses:
         course_data = courses[lit_course]
-        course_name = course_data["name"]
-        same_subjects = course_data["same"]
-        assert isinstance(course_name, str)
-        assert isinstance(same_subjects, str)
 
         schedule: list[str] = []
         if course_data["tba"]:
@@ -47,21 +53,42 @@ def run():
                 assert isinstance(section_datas, list)
                 for section_data in section_datas:
                     room, days, eve, time = section_data.split("/")
-                    if eve == "0":
-                        schedule_text = f"{days}{time} ({room})"
-                    else:
-                        schedule_text = f"{days} EVE ({time}) ({room})"
 
                     if full_section_text[-2:] != ": ":
                         full_section_text += " or "
 
-                    full_section_text += schedule_text
+                    if eve == "0":
+                        full_section_text += f"{days}{time} ({room})"
+                    else:
+                        full_section_text += f"{days} EVE ({time}) ({room})"
+
                 schedule.append(full_section_text)
 
         if schedule:
             lit_schedules[
-                f"{lit_course}{'[J]' if len(same_subjects) > 0 else ''} {course_name}"
+                get_lit_course_key(
+                    lit_course, str(course_data["same"]), str(course_data["name"])
+                )
             ] = schedule
+
+    return lit_schedules
+
+
+def run():
+    """Gets all classes for 21L along with their human-readable schedule."""
+    data = get_raw_data()
+    courses: MutableMapping[str, Mapping[str, CourseValues]] = {}
+    term = url_name_to_term(get_term_info("sem")["urlName"])
+
+    for course in data:
+        get_course_data(courses, course, term)
+
+    lit_courses: list[str] = []
+    for course in courses:
+        if course.startswith("21L"):
+            lit_courses.append(course)
+
+    lit_schedules = make_lit_schedule(lit_courses, courses)
 
     # format nicely and output to file
     file_output = ""
