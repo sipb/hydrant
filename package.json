@@ -47,7 +47,7 @@
     "ci-all": "npm run typecheck && npm test && npm run ci-eslint && npm run ci-prettier"
   },
   "engines": {
-    "node": ">=22"
+    "node": "^22.13.0 || >=24"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^3.35.0",

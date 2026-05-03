@@ -36,6 +36,19 @@ jobs:
         run: pip install .[dev]
       - name: Format code with black
         run: black --check .
+  isort:
+    name: isort
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install .[dev]
+      - name: Format code with isort
+        run: isort --check-only .
   pylint:
     name: Pylint
     runs-on: ubuntu-24.04
