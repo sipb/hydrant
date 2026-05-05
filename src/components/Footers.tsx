@@ -217,14 +217,14 @@ function LicenseDialog() {
                   <Text>
                     Hydrant is created and maintained by the MIT Student
                     Information Processing Board (SIPB) with the help of student
-                    volunteers volunteers.
+                    volunteers.
                   </Text>
                   <Text>
-                    By using Hydrant both for your own personal purposes or for
+                    By using Hydrant, both for your own personal purposes or for
                     your own software development, you agree that any software
                     created using any element of Hydrant will be and shall
-                    forever remain open-source and free (as in freedom) for any
-                    purpose. See the{" "}
+                    forever remain open-source and free-to-use for any purpose.
+                    See the{" "}
                     <ChakraLink colorPalette="blue" asChild>
                       <Link
                         target="_blank"
