@@ -81,3 +81,9 @@ Try not to introduce new technologies that must be separately understood to keep
   - e.g. msgpack is only used for URL encoding, nanoid is only used to make IDs
 - it's a big, popular, well-documented project that's been around for several years
   - e.g. FullCalendar has been around since 2010, Chakra UI has a large community
+
+### License
+
+Hydrant is [licensed](./LICENSE.txt) under GPLv3 (or later). Additionally, if you are interested in using Hydrant (or the Hydrant name) for your own project, pleae contact us at <sipb-hydrant@mit.edu>.
+
+Any project using the Hydrant name without explicit authorization should not be considered to be affiliated or associated with SIPB, Hydrant, or MIT.

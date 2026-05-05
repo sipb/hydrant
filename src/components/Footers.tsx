@@ -232,7 +232,7 @@ function LicenseDialog() {
                       <Link
                         target="_blank"
                         rel="noreferrer"
-                        to="https://github.com/sipb/hydrant/blob/main/LICENSE.txt"
+                        to="https://github.com/sipb/hydrant#license"
                       >
                         official license
                       </Link>
