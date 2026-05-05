@@ -191,6 +191,66 @@ function PrivacyPolicyDialog() {
   );
 }
 
+function LicenseDialog() {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <Dialog.Root
+        open={visible}
+        onOpenChange={(e) => {
+          setVisible(e.open);
+        }}
+      >
+        <Dialog.Trigger asChild>
+          <ChakraLink colorPalette="blue">Terms of Use</ChakraLink>
+        </Dialog.Trigger>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>Terms of Use</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Flex direction="column" gap={4}>
+                  <Text>
+                    Hydrant is created and maintained by the MIT Student
+                    Information Processing Board (SIPB) with the help of student
+                    volunteers volunteers.
+                  </Text>
+                  <Text>
+                    By using Hydrant both for your own personal purposes or for
+                    your own software development, you agree that any software
+                    created using any element of Hydrant will be and shall
+                    forever remain open-source and free (as in freedom) for any
+                    purpose. See the{" "}
+                    <ChakraLink colorPalette="blue" asChild>
+                      <Link
+                        target="_blank"
+                        rel="noreferrer"
+                        to="https://github.com/sipb/hydrant/blob/main/LICENSE.txt"
+                      >
+                        official license
+                      </Link>
+                    </ChakraLink>{" "}
+                    on GitHub, and reach out to us if you have any questions!
+                  </Text>
+                </Flex>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.ActionTrigger asChild>
+                  <Button>Close</Button>
+                </Dialog.ActionTrigger>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
+    </>
+  );
+}
+
 /** The footer on the bottom of the calendar. */
 export function LeftFooter() {
   const { state } = useContext(HydrantContext);
@@ -212,6 +272,7 @@ export function LeftFooter() {
             <Link to="mailto:sipb-hydrant@mit.edu">Contact</Link>
           </ChakraLink>
           <PrivacyPolicyDialog />
+          <LicenseDialog />
           <ChakraLink colorPalette="blue" asChild>
             <Link to="https://accessibility.mit.edu/">Accessibility</Link>
           </ChakraLink>
