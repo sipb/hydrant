@@ -223,7 +223,10 @@ function LicenseDialog() {
                     By using Hydrant, both for your own personal purposes or for
                     your own software development, you agree that any software
                     created using any element of Hydrant will be and shall
-                    forever remain open-source and free-to-use for any purpose.
+                    forever remain open-source and free (as in freedom) for any
+                    purpose.
+                  </Text>
+                  <Text>
                     See the{" "}
                     <ChakraLink colorPalette="blue" asChild>
                       <Link
