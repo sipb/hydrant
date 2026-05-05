@@ -8,9 +8,9 @@ export enum ClassType {
 }
 
 /** The date the content of the banner was last changed. */
-export const BANNER_LAST_CHANGED = new Date("2026-04-23T17:00:00Z").valueOf();
+export const BANNER_LAST_CHANGED = new Date("2026-05-05T19:00:00Z").valueOf();
 export const BANNER_MESSAGE =
-  "Fall 2026 classes are now available on Hydrant! Pre-registration opens on May 1 on WebSIS.";
+  "Pre-registration for Fall 2026 is now open! PE&W classes will be available before Q1 2026 registration in September.";
 
 /** A save has an ID and a name. */
 export interface Save {
