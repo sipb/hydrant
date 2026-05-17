@@ -7,14 +7,13 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import vitest from "@vitest/eslint-plugin";
 import { reactRefresh } from "eslint-plugin-react-refresh";
 
-import { includeIgnoreFile } from "@eslint/compat";
-import { defineConfig } from "eslint/config";
+import { defineConfig, includeIgnoreFile } from "eslint/config";
 import { fileURLToPath } from "node:url";
 
 const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url));
 
 export default defineConfig(
-  includeIgnoreFile(gitignorePath),
+  includeIgnoreFile(gitignorePath, { gitignoreResolution: true }),
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
