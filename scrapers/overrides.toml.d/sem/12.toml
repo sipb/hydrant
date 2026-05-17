@@ -1,0 +1,9 @@
+#:schema ../override-schema.json
+
+["12.390"]
+lectureRawSections = ["54-823/MW/0/9-10.30"]
+lectureSections = [[[[6, 3], [74, 3]], "54-823"]]
+
+["12.800"]
+lectureRawSections = ["54-823/MW/0/9-10.30"]
+lectureSections = [[[[6, 3], [74, 3]], "54-823"]]
