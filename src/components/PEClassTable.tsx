@@ -440,9 +440,14 @@ export function PEClassTable() {
         sortable: false,
         flex: 1,
         valueFormatter: (params) =>
-          Object.entries(params.data?.class.flags ?? ({} as PEFlags))
+          (
+            Object.entries(params.data?.class.flags ?? {}) as [
+              keyof PEFlags,
+              PEFlags[keyof PEFlags],
+            ][]
+          )
             .filter(([_, val]) => val)
-            .map(([flag]) => getPEFlagEmoji(flag as keyof PEFlags))
+            .map(([flag]) => getPEFlagEmoji(flag))
             .concat([params.value?.toString() ?? ""])
             .join(" "),
       },
