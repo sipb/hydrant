@@ -2,13 +2,19 @@ import type { Activity } from "./activity";
 import type { ColorScheme } from "./colors";
 import type { MeasurementSystem } from "./measurement";
 
+if (!("Temporal" in globalThis)) {
+  await import("temporal-polyfill/global");
+}
+
 export enum ClassType {
   ACADEMIC = "Academic",
   PEW = "PE & Wellness",
 }
 
 /** The date the content of the banner was last changed. */
-export const BANNER_LAST_CHANGED = new Date("2026-05-05T19:00:00Z").valueOf();
+export const BANNER_LAST_CHANGED = Temporal.Instant.from(
+  "2026-05-05T19:00:00Z",
+).epochMilliseconds;
 export const BANNER_MESSAGE =
   "Pre-registration for Fall 2026 is now open! PE&W classes will be available before Q1 2026 registration in September.";
 

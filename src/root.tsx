@@ -16,6 +16,10 @@ import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
 import "@fontsource-variable/inter/index.css";
 
+if (!("Temporal" in globalThis)) {
+  await import("temporal-polyfill/global");
+}
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
   {
