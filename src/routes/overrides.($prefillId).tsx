@@ -107,6 +107,8 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   return { prefillData, prefillId };
 }
 
+clientLoader.hydrate = true as const;
+
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
   const { prefillData, prefillId } = loaderData;
