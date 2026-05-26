@@ -559,6 +559,7 @@ export function ClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
+        cellClass: styles.overflow,
         valueFormatter: (params) =>
           (params.data?.class.new ? "✨ " : "") + (params.value ?? ""),
       },
@@ -566,9 +567,7 @@ export function ClassTable() {
   }, [state]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
-    return {
-      resizable: false,
-    };
+    return { resizable: false };
   }, []);
 
   // Setup rows
