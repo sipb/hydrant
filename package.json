@@ -18,7 +18,7 @@
     "@rjsf/chakra-ui": "^6.5.3",
     "@rjsf/core": "^6.5.3",
     "@rjsf/utils": "^6.5.3",
-    "@rjsf/validator-ajv8": "^6.5.3",
+    "@rjsf/validator-ajv8": "^6.6.1",
     "ag-grid-react": "^35.3.0",
     "html-entities": "^2.6.0",
     "ical-generator": "^10.2.0",
