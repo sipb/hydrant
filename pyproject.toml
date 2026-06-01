@@ -10,7 +10,7 @@ dependencies = [
     "beautifulsoup4>=4.14.3",
     "lxml>=6.0.2",
     "tomli>=2.3.0; python_version < '3.11'",
-    "nltk>=3.9.1",
+    "nltk>=3.9.2",
 ]
 authors = [{ name = "SIPB Hydrant Team", email = "sipb-hydrant@mit.edu" }]
 
