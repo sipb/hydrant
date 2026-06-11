@@ -86,7 +86,9 @@ export function PreferencesDialog() {
           if (e.open) {
             onOpen();
           } else {
-            onCancel();
+            // Dismissing the dialog (ESC / click outside) keeps the previewed
+            // preferences; the explicit Cancel button reverts.
+            onConfirm();
           }
         }}
       >
@@ -195,9 +197,7 @@ export function PreferencesDialog() {
                 </Flex>
               </Dialog.Body>
               <Dialog.Footer>
-                <Dialog.ActionTrigger asChild>
-                  <Button>Cancel</Button>
-                </Dialog.ActionTrigger>
+                <Button onClick={onCancel}>Cancel</Button>
                 <Button onClick={onConfirm}>Save</Button>
               </Dialog.Footer>
             </Dialog.Content>
