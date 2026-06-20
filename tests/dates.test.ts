@@ -9,9 +9,7 @@ import {
 } from "../src/lib/dates";
 import { JSDOM } from "jsdom";
 
-if (!("Temporal" in globalThis)) {
-  await import("temporal-polyfill/global");
-}
+import "temporal-polyfill/global";
 
 test("parseUrlName", () => {
   expect(parseUrlName("f22")).toStrictEqual({

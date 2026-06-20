@@ -6,7 +6,14 @@
     ".react-router/types/**/*"
   ],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022",
+      "esnext.temporal",
+      "esnext.intl",
+      "esnext.date"
+    ],
     "types": ["node", "vite/client", "vitest/globals", "vitest/jsdom"],
     "target": "ES2022",
     "module": "ES2022",

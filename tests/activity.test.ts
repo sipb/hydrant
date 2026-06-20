@@ -8,9 +8,7 @@ import {
   COLOR_SCHEME_DARK_CONTRAST,
 } from "../src/lib/colors";
 
-if (!("Temporal" in globalThis)) {
-  await import("temporal-polyfill/global");
-}
+import "temporal-polyfill/global";
 
 describe("Timeslot", () => {
   beforeEach(() => {
