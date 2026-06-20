@@ -24,8 +24,8 @@ import type { Route } from "./+types/_index";
 import { ActivityDescription } from "~/components/ActivityDescription";
 
 // eslint-disable-next-line react-refresh/only-export-components
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-  const searchParams = new URL(request.url).searchParams;
+export async function clientLoader({ url }: Route.ClientLoaderArgs) {
+  const searchParams = url.searchParams;
   const urlNameOrig = searchParams.get("t");
 
   const latestTerm = await fetchNoCache<LatestTermInfo>(
