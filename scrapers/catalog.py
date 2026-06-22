@@ -57,12 +57,12 @@ BASE_URL = "http://student.mit.edu/catalog"
 
 LIMITED_REGEX = re.compile(
     r"""(?ix)
-    enrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ])
+    enrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ]|could[ ]be[ ])
     (limited|restricted|by[ ]application)
     |(limited|restricted)[ ]
-    (enrollment|by[ ]lottery|number|\d+|to[ ]\d+)
+    (enrollment|by[ ]lottery|number|availability|\d+|to[ ]\d+)
     |(limited|restricted|(preference|priority)([ ]given|[ ]is[ ]given)?)
-    [ ]to[ ]([A-Za-z0-9-' ]+)?
+    [ ]to[ ]([A-Za-z0-9-'& ]+)?
     (
         students?|freshmen|sophomores|juniors|seniors|majors|minors
         |concentrators|fellows|MBAs?|undergraduates|candidates
