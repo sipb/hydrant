@@ -228,6 +228,10 @@ export function Calendar() {
             : `${(hour - 12).toString()} PM`;
       }}
       slotHeaderInnerClass={styles["fc-slot-header-inner"]}
+      slotHeaderDividerClass={styles["fc-slot-header-divider"]}
+      dayLaneClass={styles["fc-day-lane"]}
+      slotLaneClass={styles["fc-slot-lane"]}
+      slotHeaderClass={styles["fc-slot-header"]}
       dayHeaderContent={({ text }) => text.toLocaleUpperCase()}
       dayHeaderInnerClass={styles["fc-day-header-inner"]}
       slotMinTime={

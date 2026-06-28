@@ -116,3 +116,19 @@
 .fc-event-inner > * {
   padding-block: 0rem;
 }
+
+.fc-day-lane {
+  border-width: 1.5px;
+}
+
+.fc-slot-lane {
+  border-width: 1.5px;
+}
+
+.fc-slot-header {
+  border-width: 1.5px;
+}
+
+.fc-slot-header-divider {
+  border-inline-end-width: 1.5px;
+}
