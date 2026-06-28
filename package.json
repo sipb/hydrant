@@ -26,8 +26,8 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-icons": "^5.6.0",
-    "rrule-temporal": "^1.5.3",
     "react-router": "^8.0.1",
+    "rrule-temporal": "^1.5.3",
     "smol-toml": "^1.7.0",
     "temporal-polyfill": "^1.0.1",
     "timezones-ical-library": "^2.2.1"
