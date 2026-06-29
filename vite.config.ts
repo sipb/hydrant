@@ -3,9 +3,7 @@ import { defineConfig } from "vite";
 import babel from "vite-plugin-babel";
 import { reactRouter } from "@react-router/dev/vite";
 
-const ReactCompilerConfig = {
-  /* ... */
-};
+const ReactCompilerConfig = {/* ... */};
 
 // https://vitejs.dev/config/
 export default defineConfig({
