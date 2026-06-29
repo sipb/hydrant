@@ -24,7 +24,6 @@ const system = createSystem(defaultConfig, {
           fontWeight: "semibold",
         },
         defaultVariants: {
-          // @ts-expect-error: this works I promise :(
           variant: "subtle",
         },
       },

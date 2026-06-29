@@ -1,0 +1,12 @@
+#:schema ../override-schema.json
+
+["21G.S03"]
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "21G.506 or 21G.S56 or permission of instructor"
+description = "Develops professional Japanese communication skills for effective workplace interactions and relationship-building. Through discussions, role-plays, and presentations, students strengthen their language proficiency while mastering culturally and contextually appropriate communication, including Japanese business culture and workplace etiquette. By engaging with diverse multimedia—including dramas, literature, news, and online materials on various topics—students expand their vocabulary and expressive skills while deepening their understanding of Japanese culture and contemporary society, preparing them to communicate authentically in professional settings. Taught in Japanese. Limited to 16. Students can petition for HASS-H credit."
+name = "Advanced Japanese: Communication for Professionals"
+url = "https://languages.mit.edu/semesters/japanese-studies-fall-2026/"
+new = true

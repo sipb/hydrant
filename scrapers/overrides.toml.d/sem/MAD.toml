@@ -1,0 +1,10 @@
+#:schema ../override-schema.json
+
+["MAD.501"]
+inCharge = "J. Ochsendorf"
+
+["MAD.804"]
+inCharge = "S.Gronfeldt, Y. Jimenez"
+
+["MAD.805"]
+inCharge = "S. Gronfeldt, G. Picchi"
