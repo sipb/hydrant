@@ -268,27 +268,24 @@ export default function App({ loaderData }: Route.ComponentProps) {
     return uiSchema;
   }, [data.length, error]);
 
-  const getDataFromFile = useCallback(
-    async (fileName: string) => {
-      try {
-        const textToml = await overrides[fileName].data();
-        const mod = TOML.parse(textToml);
+  const getDataFromFile = useCallback(async (fileName: string) => {
+    try {
+      const textToml = await overrides[fileName].data();
+      const mod = TOML.parse(textToml);
 
-        const newData = Object.entries(mod).map(([key, value_1]) => {
-          const { number: num, ...rest } = value_1 as Record<string, unknown>;
-          return {
-            number: key,
-            ...rest,
-          };
-        });
-        return newData;
-      } catch (err) {
-        console.error("Error loading TOML file:", err);
-        return [];
-      }
-    },
-    [overrides],
-  );
+      const newData = Object.entries(mod).map(([key, value_1]) => {
+        const { number: num, ...rest } = value_1 as Record<string, unknown>;
+        return {
+          number: key,
+          ...rest,
+        };
+      });
+      return newData;
+    } catch (err) {
+      console.error("Error loading TOML file:", err);
+      return [];
+    }
+  }, []);
 
   const handleChange = (e: Select.ValueChangeDetails) => {
     const fileName = e.value[0];

@@ -50,6 +50,7 @@
     "node": "^22.22.0 || >=24"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.7",
     "@chakra-ui/cli": "^3.36.0",
     "@eslint/js": "^10.0.1",
     "@react-router/dev": "^8.1.0",
@@ -59,8 +60,10 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitest/eslint-plugin": "^1.6.20",
+    "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
     "jsdom": "^29.1.1",
@@ -68,6 +71,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.1",
     "vite": "^8.1.0",
+    "vite-plugin-babel": "^1.7.3",
     "vitest": "^4.1.9"
   }
 }

@@ -28,6 +28,7 @@ import hydraAnt from "../assets/hydraAnt.png";
 import { SIPBLogo } from "./ButtonsLinks";
 
 export function PreferencesDialog() {
+  "use no memo";
   const { state, hydrantState } = useContext(HydrantContext);
   const { preferences: originalPreferences } = hydrantState;
 
