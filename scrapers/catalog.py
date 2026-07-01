@@ -54,19 +54,18 @@ BASE_URL = "http://student.mit.edu/catalog"
 
 # various limited/restricted/etc enrollment phrases in course descriptions
 # PLEASE use regex101.com to test changes before pushing to production!!!
-# text_mining.py also helps by finding test sentences from our entire database
 
 LIMITED_REGEX = re.compile(
-    r"""(?x)
-    [Ee]nrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ])
+    r"""(?ix)
+    enrollment[ ](|is[ ]|may[ ]be[ ]|will[ ]be[ ]|could[ ]be[ ])
     (limited|restricted|by[ ]application)
-    |([Ll]imited|[Rr]estricted)[ ]
-    (enrollment|by[ ]lottery|number|\d+|to[ ]\d+)
-    |([Ll]imited|[Rr]estricted|([Pp]reference|[Pp]riority)( given| is given)?)
-    [ ]to[ ]([A-Za-z0-9-' ]+)?
+    |(limited|restricted)[ ]
+    (enrollment|by[ ]lottery|number|availability|\d+|to[ ]\d+)
+    |(limited|restricted|(preference|priority)([ ]given|[ ]is[ ]given)?)
+    [ ]to[ ]([A-Za-z0-9-'& ]+)?
     (
         students?|freshmen|sophomores|juniors|seniors|majors|minors
-        |concentrators|[Ff]ellows|MBAs?|undergraduates|candidates
+        |concentrators|fellows|MBAs?|undergraduates|candidates
     )
     |required[ ]prior[ ]to[ ]enrollment
     |have[ ]priority
