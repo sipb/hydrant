@@ -27,7 +27,7 @@ jobs:
     name: Black
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version-file: "pyproject.toml"
@@ -40,7 +40,7 @@ jobs:
     name: isort
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version-file: "pyproject.toml"
@@ -53,7 +53,7 @@ jobs:
     name: Pylint
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -68,7 +68,7 @@ jobs:
     name: Pytest
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -82,7 +82,7 @@ jobs:
     name: Test for valid JSON output
     runs-on: ubuntu-24.04 #NOTE: python 3.8 is NOT supported on ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
