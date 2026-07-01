@@ -1,5 +1,6 @@
 import { useState, useRef, useContext } from "react";
 import { useSearchParams } from "react-router";
+import { keyframes } from "@emotion/react";
 
 import {
   Card,
@@ -27,11 +28,20 @@ import logoDark from "../assets/logo-dark.svg";
 import hydraAnt from "../assets/hydraAnt.png";
 import { SIPBLogo } from "./ButtonsLinks";
 
+// Brief nudge when someone clicks outside the dialog, to hint that the click
+// was ignored rather than just doing nothing. Skipped under reduced motion.
+const shake = keyframes`
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+`;
+
 export function PreferencesDialog() {
   const { state, hydrantState } = useContext(HydrantContext);
   const { preferences: originalPreferences } = hydrantState;
 
   const [visible, setVisible] = useState(false);
+  const [shaking, setShaking] = useState(false);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
   const initialPreferencesRef = useRef(DEFAULT_PREFERENCES);
   const initialPreferences = initialPreferencesRef.current;
@@ -82,6 +92,16 @@ export function PreferencesDialog() {
     <>
       <Dialog.Root
         open={visible}
+        closeOnInteractOutside={false}
+        closeOnEscape={false}
+        onInteractOutside={() => {
+          // Clicking outside is easy to do by accident, so don't dismiss.
+          // Give a quick nudge instead so it's clear the click was ignored.
+          setShaking(true);
+          window.setTimeout(() => {
+            setShaking(false);
+          }, 300);
+        }}
         onOpenChange={(e) => {
           if (e.open) {
             onOpen();
@@ -98,7 +118,11 @@ export function PreferencesDialog() {
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner>
-            <Dialog.Content>
+            <Dialog.Content
+              animation={
+                shaking ? { _motionSafe: `${shake} 0.3s ease-in-out` } : "none"
+              }
+            >
               <Dialog.Header>
                 <Dialog.Title>Preferences</Dialog.Title>
               </Dialog.Header>
