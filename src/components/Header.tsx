@@ -93,6 +93,7 @@ export function PreferencesDialog() {
       <Dialog.Root
         open={visible}
         closeOnInteractOutside={false}
+        closeOnEscape={false}
         onInteractOutside={() => {
           // Clicking outside is easy to do by accident, so don't dismiss.
           // Give a quick nudge instead so it's clear the click was ignored.
@@ -119,9 +120,7 @@ export function PreferencesDialog() {
           <Dialog.Positioner>
             <Dialog.Content
               animation={
-                shaking
-                  ? { _motionSafe: `${shake} 0.3s ease-in-out` }
-                  : undefined
+                shaking ? { _motionSafe: `${shake} 0.3s ease-in-out` } : "none"
               }
             >
               <Dialog.Header>
