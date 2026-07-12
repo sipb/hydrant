@@ -118,15 +118,20 @@ export function Calendar() {
     const distanceWarning = getDistanceWarning(event);
 
     return (
-      <>
+      <Box
+        display="inline-block"
+        pos="relative"
+        width="100%"
+        height="100%"
+        cursor="pointer"
+        overflow="hidden"
+      >
         <Box
           color={event.textColor}
-          overflow="hidden"
           p={0.5}
           lineHeight={1.3}
-          cursor="pointer"
+          width="100%"
           height="100%"
-          position="relative"
         >
           {!(activity instanceof CustomActivity) ? (
             <Tooltip
@@ -152,7 +157,7 @@ export function Calendar() {
           )}
         </Box>
         {distanceWarning ? (
-          <Float placement="top-end">
+          <Float placement="top-end" offset={3}>
             <Tooltip
               content={distanceWarning}
               portalled
@@ -162,14 +167,14 @@ export function Calendar() {
                 size="5"
                 bg="orange.solid"
                 color="orange.contrast"
-                boxShadow="lg"
+                boxShadow="sm"
               >
                 !
               </Circle>
             </Tooltip>
           </Float>
         ) : null}
-      </>
+      </Box>
     );
   };
 
