@@ -3,11 +3,17 @@
 ["21L.003"]
 name = "Reading Fiction: Jane Austen"
 
+["21L.016"]
+inCharge = "S. (Frampton) Seed"
+
 ["21L.024"]
 name = "Literature and Existentialism: Life, Death and Freedom"
 
 ["21L.027"]
 name = "Children and Culture: Children Co-Creating Culture"
+
+["21L.315"]
+inCharge = "S. Raman"
 
 ["21L.325"]
 name = "Small Wonders: Small Wonders of the Everyday"
@@ -21,6 +27,12 @@ name = "Literature and Film: Indigenous Film and Literature"
 ["21L.481"]
 name = "HIV/AIDS in American Culture: Black Lives and Queer Bodies"
 
+["21L.613"]
+inCharge = "S. (Frampton) Seed"
+
+["21L.614"]
+inCharge = "S. (Frampton) Seed"
+
 ["21L.703"]
 name = "Studies in Drama: Stoppard, Churchill and Company"
 
@@ -32,3 +44,6 @@ name = "Major Authors: Epics of Human Choice: Spenser's Faerie Queene and Milton
 
 ["21L.706"]
 name = "Studies in Film: Color in Film"
+
+["21L.903"]
+inCharge = "S. (Frampton) Seed"
