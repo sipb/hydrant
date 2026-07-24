@@ -89,7 +89,7 @@ export interface RawClass {
   half: number | false;
   /** True if limited enrollment */
   limited: boolean;
-  /** True if subject is new */
+  /** True if subject is new, e.g., special subject */
   new: boolean;
 
   /** Rating (out of 7.0) from evals */
@@ -242,6 +242,11 @@ export interface RawPEClass {
   description: string;
   /** Quarter of class */
   quarter: number;
+
+  /** Waiver information, no specific format */
+  waiver: string;
+  /** Health form information, no specific format */
+  healthForms: string;
 }
 
 /** The building information format produced by scrapers/location.py */

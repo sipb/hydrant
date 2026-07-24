@@ -38,6 +38,8 @@ export class State {
   conflicts = 0;
   /** Browser-specific saved state. */
   store: Store;
+  /** Stores unknown subjects */
+  unknownSubjects = new Set<string>();
 
   // The following are React state, so should be private. Even if we pass the
   // State object to React components, they shouldn't be looking at these
@@ -94,9 +96,12 @@ export class State {
     rawClasses.forEach((cls, number) => {
       this.classes.set(number, new Class(cls, this.colorScheme));
     });
-    Object.values(rawPEClasses).forEach((map) => {
+    Object.entries(rawPEClasses).forEach(([quarter, map]) => {
       map.forEach((cls, number) => {
-        this.peClasses.set(number, new PEClass(cls, this.colorScheme));
+        this.peClasses.set(
+          `Q${quarter}.${number}`,
+          new PEClass(cls, this.colorScheme),
+        );
       });
     });
     this.initState();
@@ -129,6 +134,11 @@ export class State {
 
     // If no measurement system is set, use the default one
     return getDefaultMeasurementSystem();
+  }
+
+  /** The count of number of finals a student has. */
+  get finalsCount(): number {
+    return this.selectedClasses.filter((cls) => cls.flags.final).length;
   }
 
   //========================================================================
@@ -270,11 +280,16 @@ export class State {
       units: sum(this.selectedClasses.map((cls) => cls.totalUnits)),
       hours: sum(this.selectedActivities.map((activity) => activity.hours)),
       warnings: Array.from(
-        new Set(
-          this.selectedActivities.flatMap((cls) =>
+        new Set([
+          ...this.selectedActivities.flatMap((cls) =>
             "warnings" in cls ? cls.warnings.messages : [],
           ),
-        ),
+          ...(this.unknownSubjects.size > 0
+            ? [
+                `Unknown subjects: ${Array.from(this.unknownSubjects).join(", ")}`,
+              ]
+            : []),
+        ]),
       ),
       saveId: this.saveId,
       saves: this.saves,
@@ -387,9 +402,12 @@ export class State {
 
   /** Get all starred classes */
   getStarredPEClasses(): PEClass[] {
-    return Array.from(this.starredPEClasses)
-      .map((id) => this.peClasses.get(id))
-      .filter((cls): cls is PEClass => cls !== undefined);
+    return (
+      Array.from(this.starredPEClasses)
+        // also look up Q3 for backwards compatibility
+        .map((id) => this.peClasses.get(id) ?? this.peClasses.get(`Q3.${id}`))
+        .filter((cls): cls is PEClass => cls !== undefined)
+    );
   }
 
   get showBanner(): boolean {
@@ -404,6 +422,31 @@ export class State {
     this.preferences.showBanner = show;
     this.preferences.showBannerChanged = new Date().valueOf();
     this.updateState();
+  }
+
+  /** Get latest quarter of PE classes */
+  get latestQuarter(): number {
+    const allQuarters = new Set<number>();
+    this.peClasses.forEach((cls) => {
+      const quarter = cls.rawClass.quarter;
+      allQuarters.add(quarter);
+    });
+
+    // for 1 < 2 < 5 < 3 < 4
+    const quarterOrder: Record<number, number> = {
+      1: 0,
+      2: 1,
+      // 5 is iap for some reason :(
+      5: 2,
+      3: 3,
+      4: 4,
+    };
+
+    const sortedQuarters = Array.from(allQuarters).sort((a, b) => {
+      return quarterOrder[a] - quarterOrder[b];
+    });
+
+    return sortedQuarters[sortedQuarters.length - 1];
   }
 
   //========================================================================
@@ -455,7 +498,15 @@ export class State {
         typeof deflated === "string"
           ? this.classes.get(deflated)
           : this.classes.get((deflated as string[])[0]);
-      if (!cls) continue;
+      // if we can't find the class, add it to unknownSubjects so we can show a warning
+      if (!cls) {
+        const subject =
+          typeof deflated === "string" ? deflated : (deflated as string[])[0];
+
+        this.unknownSubjects.add(subject);
+        continue;
+      }
+
       cls.inflate(deflated);
       this.selectedClasses.push(cls);
     }
@@ -468,11 +519,23 @@ export class State {
     }
     this.selectedOption = selectedOption ?? 0;
     for (const deflated of peClasses ?? []) {
+      // also look up Q3 for backwards compatibility
       const cls =
         typeof deflated === "string"
-          ? this.peClasses.get(deflated)
-          : this.peClasses.get((deflated as string[])[0]);
-      if (!cls) continue;
+          ? (this.peClasses.get(deflated) ??
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            this.peClasses.get(`Q3.${deflated}`))
+          : (this.peClasses.get((deflated as string[])[0]) ??
+            this.peClasses.get(`Q3.${(deflated as string[])[0]}`));
+      // if we can't find the class, add it to unknownSubjects so we can show a warning
+      if (!cls) {
+        const subject =
+          typeof deflated === "string" ? deflated : (deflated as string[])[0];
+
+        this.unknownSubjects.add(subject);
+        continue;
+      }
+
       cls.inflate(deflated);
       this.selectedPEClasses.push(cls);
     }

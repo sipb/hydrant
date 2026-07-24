@@ -27,21 +27,37 @@ jobs:
     name: Black
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
-          python-version: ${{ vars.PYTHON_VERSION }}
+          python-version-file: "pyproject.toml"
           cache: "pip"
-      - uses: psf/black@24.8.0 # pinned due to python 8 support
+      - name: Install dependencies
+        run: pip install .[dev]
+      - name: Format code with black
+        run: black --check .
+  isort:
+    name: isort
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install .[dev]
+      - name: Format code with isort
+        run: isort --check-only .
   pylint:
     name: Pylint
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
         run: pip install .[dev]
@@ -52,11 +68,11 @@ jobs:
     name: Pytest
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
         run: pip install .[dev]
@@ -66,11 +82,11 @@ jobs:
     name: Test for valid JSON output
     runs-on: ubuntu-24.04 #NOTE: python 3.8 is NOT supported on ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.python-version }}
+          python-version-file: "pyproject.toml"
           cache: "pip"
       - name: Install dependencies
         run: pip install .

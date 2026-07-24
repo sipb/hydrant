@@ -55,7 +55,8 @@ export default function handleRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
-          reject(error as Error);
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+          reject(error);
         },
         onError(error: unknown) {
           responseStatusCode = 500;

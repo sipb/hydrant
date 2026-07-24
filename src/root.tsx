@@ -59,6 +59,7 @@ function Analytics() {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const Layout = withEmotionCache((props: LayoutProps, cache) => {
   const { children } = props;
 

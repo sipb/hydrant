@@ -5,7 +5,7 @@ description = "Scrapers for Hydrant, MIT's semester course planning app"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE.txt"]
-requires-python = ">=3.8"
+requires-python = ">=3.8.2"
 dependencies = [
     "beautifulsoup4>=4.14.3",
     "lxml>=6.0.2",
@@ -14,8 +14,9 @@ dependencies = [
 ]
 authors = [{ name = "SIPB Hydrant Team", email = "sipb-hydrant@mit.edu" }]
 
+# pin black to a specific version to not break ci
 [project.optional-dependencies]
-dev = ["pytest>=8.3.5", "pylint>=3.2.7", "black>=24.8.0"]
+dev = ["pytest>=8.3.5", "pylint>=3.2.7", "black==24.8.0", "isort>=5.13.2"]
 
 [project.urls]
 "Homepage" = "https://hydrant.mit.edu/"
@@ -28,6 +29,10 @@ scrapers-run = "scrapers.__main__:run"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.isort]
+py_version = 38
+profile = "black"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"

@@ -217,7 +217,7 @@ def is_new(html: BeautifulSoup) -> bool:
     Returns:
         bool: True if the class is new
     """
-    if html.find(string=re.compile(r"\(New\)")):
+    if html.find(string=re.compile(r"\(New\)|\.S")):
         return True
     return False
 

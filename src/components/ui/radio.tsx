@@ -21,4 +21,5 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
   },
 );
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const RadioGroup = ChakraRadioGroup.Root;

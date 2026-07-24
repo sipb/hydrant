@@ -1,22 +1,16 @@
 /// <reference types="vitest/config" />
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
-import checker from "vite-plugin-checker";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: process.env.SUBDIR ?? undefined,
-  plugins: [
-    reactRouter(),
-    tsconfigPaths(),
-    checker({
-      typescript: true,
-      eslint: { lintCommand: "eslint .", useFlatConfig: true },
-    }),
-  ],
+  plugins: [reactRouter()],
   test: {
     globals: true,
     environment: "jsdom",
+  },
+  resolve: {
+    tsconfigPaths: true,
   },
 });

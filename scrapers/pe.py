@@ -9,7 +9,7 @@ import os
 import time as time_c
 from datetime import date, time
 from functools import lru_cache
-from typing import Literal, TypedDict
+from typing import Literal, Optional, TypedDict
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -58,9 +58,12 @@ PEWFile = TypedDict(
         "End Date": str,
         "Prerequisites": str,
         "Equipment": str,
+        "Waivers": Optional[str],
+        "HealthForms": Optional[str],
         "GIR Points": str,
         "Swim GIR": str,
         "Fee Amount": str,
+        "Tags": Optional[str],
     },
 )
 """
@@ -91,6 +94,8 @@ class PEWSchema(TypedDict):
     fee: str
     description: str
     quarter: int
+    waiver: str
+    healthForms: str
 
 
 def parse_bool(value: str) -> bool:
@@ -134,6 +139,9 @@ def augment_location(location: str) -> str:
 
     >>> augment_location("Du Pont T Club Lounge and 26-100")
     'Du Pont T Club Lounge and 26-100'
+
+    >>> augment_location("Johnson Indoor Track/Steinbrenner Track")
+    'W35+ - Johnson Indoor Track or Steinbrenner Track'
     """
     buildings = {
         "Du Pont": "W35+",
@@ -144,6 +152,9 @@ def augment_location(location: str) -> str:
 
     if " and " in location:
         return location
+
+    if "/" in location:
+        location = location.replace("/", " or ")
 
     for loc, building in buildings.items():
         if location.startswith(loc):
@@ -271,7 +282,7 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
         location (str): Location of the class
 
     Returns:
-        str: Formatted raw section string
+        str: Formatted raw section string or None if start_time is empty
     """
     start_c = time_c.strptime(start_time, "%I:%M %p")
     start = time(start_c.tm_hour, start_c.tm_min)
@@ -306,6 +317,19 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
     )
     section = parse_section(raw_section)
 
+    wellness = (
+        any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES)
+        or (row.get("Tags", "") or "").lower().find("wellness") != -1
+    )
+    pirate = (
+        any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES)
+        or (row.get("Tags", "") or "").lower().find("pirate") != -1
+    )
+    swim = (
+        parse_bool(row["Swim GIR"])
+        or (row.get("Tags", "") or "").lower().find("swim") != -1
+    )
+
     return {
         "number": number,
         "name": row["Title"],
@@ -316,15 +340,17 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "startDate": parse_date(row["Start Date"]).isoformat(),
         "endDate": parse_date(row["End Date"]).isoformat(),
         "points": int(row["GIR Points"]),
-        "wellness": any(number.startswith(prefix) for prefix in WELLNESS_PREFIXES),
-        "pirate": any(row["Title"].startswith(prefix) for prefix in PIRATE_CLASSES),
-        "swimGIR": parse_bool(row["Swim GIR"]),
+        "wellness": wellness,
+        "pirate": pirate,
+        "swimGIR": swim,
         "remote": row["Title"].lower().find("remote") != -1,
         "prereqs": row["Prerequisites"] or "None",
         "equipment": row["Equipment"],
         "fee": row["Fee Amount"],
         "description": get_pe_catalog_descriptions().get(number, ""),
         "quarter": quarter,
+        "waiver": row.get("Waiver", "None"),
+        "healthForms": row.get("HealthForms", "None") or "None",
     }
 
 

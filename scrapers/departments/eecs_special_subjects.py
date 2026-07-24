@@ -292,7 +292,7 @@ def parse_row(row: Tag) -> dict[str, dict[str, Any]]:
     """
     header = row.get_text(" ", strip=True)
     course, title, same_as = parse_header(header)
-    data = {"url": f'{FRONTEND_URL}#{course.replace(".", "_", 1)}'}
+    data = {"url": f'{FRONTEND_URL}#{course.replace(".", "_", 1)}', "new": True}
 
     if title:
         data["name"] = title

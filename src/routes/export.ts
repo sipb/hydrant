@@ -20,8 +20,8 @@ const ALLOWED_INTEGRATION_CALLBACKS = [
   "https://uplink.mit.edu/classes/hydrantCallback",
 ];
 
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-  const searchParams = new URL(request.url).searchParams;
+export async function clientLoader({ url }: Route.ClientLoaderArgs) {
+  const searchParams = url.searchParams;
   const currentTerm = searchParams.get("t");
   const callback = searchParams.get("callback");
 

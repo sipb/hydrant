@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
 
-import { IconButton, Flex, Text, CloseButton } from "@chakra-ui/react";
+import { IconButton, Flex, CloseButton } from "@chakra-ui/react";
 
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { HydrantContext } from "../lib/hydrant";
+import { Alert } from "./ui/alert";
 
 export function ScheduleOption() {
   const [tooManyOptions, setTooManyOptions] = useState(true);
@@ -38,16 +39,20 @@ export function ScheduleOption() {
         </IconButton>
       </Flex>
       {tooManyOptions && totalOptions > 15 && (
-        <Flex align="center" bg="whiteAlpha.50" gap={1} px={2} py={1}>
-          <Text fontSize="sm">
-            Too many options? Use the "Edit sections" button above the class
-            description.
-          </Text>
-          <CloseButton
+        <Flex align="center" gap={1} px={2} py={1}>
+          <Alert
             size="sm"
-            onClick={() => {
-              setTooManyOptions(false);
-            }}
+            title='Too many options? Use the "Edit sections" button above the class description.'
+            colorPalette="gray"
+            endElement={
+              <CloseButton
+                size="sm"
+                height={"1rem"}
+                onClick={() => {
+                  setTooManyOptions(false);
+                }}
+              />
+            }
           />
         </Flex>
       )}

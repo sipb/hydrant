@@ -8,9 +8,9 @@ export enum ClassType {
 }
 
 /** The date the content of the banner was last changed. */
-export const BANNER_LAST_CHANGED = new Date("2026-01-23T12:00:00Z").valueOf();
+export const BANNER_LAST_CHANGED = new Date("2026-05-05T19:00:00Z").valueOf();
 export const BANNER_MESSAGE =
-  "Q3 Physical Education and Wellness classes are now available on Hydrant! Registration opens Jan 30 on the PE&W website.";
+  "Pre-registration for Fall 2026 is now open! PE&W classes will be available before Q1 2026 registration in September.";
 
 /** A save has an ID and a name. */
 export interface Save {
