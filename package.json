@@ -10,10 +10,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
     "@fontsource-variable/inter": "^5.3.0",
-    "@fullcalendar/core": "^6.1.21",
-    "@fullcalendar/interaction": "^6.1.21",
-    "@fullcalendar/react": "^6.1.21",
-    "@fullcalendar/timegrid": "^6.1.21",
+    "@fullcalendar/react": "^7.0.1",
     "@react-router/node": "^8.2.0",
     "@rjsf/chakra-ui": "^6.7.0",
     "@rjsf/core": "^6.7.0",
@@ -30,8 +27,9 @@
     "react-dom": "^19.2.8",
     "react-icons": "^5.7.0",
     "react-router": "^8.2.0",
-    "rrule": "^2.8.1",
+    "rrule-temporal": "^1.5.3",
     "smol-toml": "^1.7.0",
+    "temporal-polyfill": "^1.0.1",
     "timezones-ical-library": "^2.3.0"
   },
   "scripts": {
@@ -69,5 +67,8 @@
     "typescript-eslint": "^8.65.0",
     "vite": "^8.1.5",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "@js-temporal/polyfill": "npm:temporal-polyfill@^1.0.1"
   }
 }

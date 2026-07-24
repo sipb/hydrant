@@ -77,11 +77,11 @@ export class Slot {
   }
 
   /** Converts a date, within 6 AM to 11 PM, to a slot. */
-  static fromStartDate(date: Date): Slot {
+  static fromStartDate(date: Temporal.PlainDateTime): Slot {
     return new Slot(
-      TIMESLOTS * (date.getDay() - 1) +
-        2 * (date.getHours() - 6) +
-        Math.floor(date.getMinutes() / 30),
+      TIMESLOTS * (date.dayOfWeek - 1) +
+        2 * (date.hour - 6) +
+        Math.floor(date.minute / 30),
     );
   }
 
@@ -98,29 +98,25 @@ export class Slot {
   }
 
   /**
-   * The (local timezone) date on the day of date that this starts in. Assumes
+   * The datetime on the day of date that this starts in. Assumes
    * that date is the right day of the week.
    */
-  onDate(date: Date): Date {
+  onDate(date: Temporal.PlainDate): Temporal.PlainDateTime {
     const hour = Math.floor((this.slot % TIMESLOTS) / 2) + 6;
     const minute = (this.slot % 2) * 30;
-    return new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      hour,
-      minute,
-    );
+
+    const time = Temporal.PlainTime.from({ hour, minute });
+    return date.toPlainDateTime(time);
   }
 
-  /** The date in the week of 2001-01-01 that this starts in. */
-  get startDate(): Date {
-    // conveniently enough, 2001-01-01 is a Monday:
-    return this.onDate(new Date(2001, 0, this.weekday));
+  /** The date in the current week that this class starts on. */
+  get startDate(): Temporal.PlainDateTime {
+    const today = Temporal.Now.plainDateISO();
+    return this.onDate(today.add({ days: this.weekday - today.dayOfWeek }));
   }
 
-  /** The date in the week of 2001-01-01 that this ends in. */
-  get endDate(): Date {
+  /** The date in this week that this ends on. */
+  get endDate(): Temporal.PlainDateTime {
     return this.add(1).startDate;
   }
 
@@ -286,17 +282,17 @@ export class Term {
   /** Semester as a character, e.g. "f" */
   public semester: TSemester;
   /** First day of classes, inclusive. */
-  public start: Date;
+  public start: Temporal.PlainDate;
   /** Last day of H1 classes, inclusive. */
-  public h1End?: Date;
+  public h1End?: Temporal.PlainDate;
   /** First day of H2 classes, inclusive. */
-  public h2Start?: Date;
+  public h2Start?: Temporal.PlainDate;
   /** Last day of classes, inclusive. */
-  public end: Date;
+  public end: Temporal.PlainDate;
   /** A Tuesday which runs on Monday schedule, if it exists. */
-  public mondaySchedule?: Date;
+  public mondaySchedule?: Temporal.PlainDate;
   /** A list of dates with no class. */
-  public holidays: Date[];
+  public holidays: Temporal.PlainDate[];
 
   constructor({
     urlName,
@@ -307,22 +303,21 @@ export class Term {
     mondayScheduleDate,
     holidayDates = [],
   }: Partial<TermInfo> & { urlName: string }) {
-    const midnight = (date: string) => new Date(`${date}T00:00:00`);
     const { year, semester } = parseUrlName(urlName);
     this.year = year;
     this.semester = semester;
-    this.start = startDate
-      ? midnight(startDate)
-      : new Date(Number(`20${year}`), 0, 1);
-    this.h1End = h1EndDate ? midnight(h1EndDate) : undefined;
-    this.h2Start = h2StartDate ? midnight(h2StartDate) : undefined;
-    this.end = endDate
-      ? midnight(endDate)
-      : new Date(Number(`20${year}`), 11, 31);
-    this.mondaySchedule = mondayScheduleDate
-      ? midnight(mondayScheduleDate)
+    this.start = Temporal.PlainDate.from(startDate ?? `20${year}-01-01`);
+    this.h1End = h1EndDate ? Temporal.PlainDate.from(h1EndDate) : undefined;
+    this.h2Start = h2StartDate
+      ? Temporal.PlainDate.from(h2StartDate)
       : undefined;
-    this.holidays = holidayDates.map((date) => midnight(date));
+    this.end = endDate
+      ? Temporal.PlainDate.from(endDate)
+      : Temporal.PlainDate.from(`20${year}-12-31`);
+    this.mondaySchedule = mondayScheduleDate
+      ? Temporal.PlainDate.from(mondayScheduleDate)
+      : undefined;
+    this.holidays = holidayDates.map((date) => Temporal.PlainDate.from(date));
   }
 
   /** e.g. "2022" */
@@ -360,10 +355,8 @@ export class Term {
     slot: Slot,
     secondHalf = false,
     startDay?: [number, number],
-  ): Date {
-    const date = new Date(
-      (secondHalf && this.h2Start ? this.h2Start : this.start).getTime(),
-    );
+  ): Temporal.PlainDateTime {
+    let date = secondHalf && this.h2Start ? this.h2Start : this.start;
 
     const startDayValid =
       // is defined
@@ -374,25 +367,35 @@ export class Term {
       startDay[1] >= 1 &&
       startDay[1] <= 31 &&
       // before end date
-      new Date(date.getFullYear(), startDay[0] - 1, startDay[1]).getTime() <
-        this.end.getTime();
+      Temporal.PlainDate.compare(
+        Temporal.PlainDate.from({
+          year: date.year,
+          month: startDay[0],
+          day: startDay[1],
+        }),
+        this.end,
+      ) < 0;
 
     if (startDayValid) {
-      date.setMonth(startDay[0] - 1);
-      date.setDate(startDay[1]);
+      date = date.with({
+        month: startDay[0],
+        day: startDay[1],
+      });
     }
 
-    while (date.getDay() !== slot.weekday) {
-      date.setDate(date.getDate() + 1);
+    while (date.dayOfWeek !== slot.weekday) {
+      date = date.add({ days: 1 });
     }
     return slot.onDate(date);
   }
 
   /** The date a slot ends on, plus an extra day. */
-  endDateFor(slot: Slot, firstHalf = false, endDay?: [number, number]): Date {
-    const date = new Date(
-      (firstHalf && this.h1End ? this.h1End : this.end).getTime(),
-    );
+  endDateFor(
+    slot: Slot,
+    firstHalf = false,
+    endDay?: [number, number],
+  ): Temporal.PlainDateTime {
+    let date = firstHalf && this.h1End ? this.h1End : this.end;
 
     const endDayValid =
       // is defined
@@ -403,25 +406,33 @@ export class Term {
       endDay[1] >= 1 &&
       endDay[1] <= 31 &&
       // after start date
-      new Date(date.getFullYear(), endDay[0] - 1, endDay[1]).getTime() >
-        this.start.getTime();
+      Temporal.PlainDate.compare(
+        Temporal.PlainDate.from({
+          year: date.year,
+          month: endDay[0],
+          day: endDay[1],
+        }),
+        this.start,
+      ) > 0;
 
     if (endDayValid) {
-      date.setMonth(endDay[0] - 1);
-      date.setDate(endDay[1]);
+      date = date.with({
+        month: endDay[0],
+        day: endDay[1],
+      });
     }
 
-    while (date.getDay() !== slot.weekday) {
-      date.setDate(date.getDate() - 1);
+    while (date.dayOfWeek !== slot.weekday) {
+      date = date.subtract({ days: 1 });
     }
     // plus an extra day, for inclusivity issues
-    date.setDate(date.getDate() + 1);
+    date = date.add({ days: 1 });
     return slot.onDate(date);
   }
 
   /** Dates that a given slot *doesn't* run on. */
-  exDatesFor(slot: Slot): Date[] {
-    const res = this.holidays.filter((date) => date.getDay() === slot.weekday);
+  exDatesFor(slot: Slot): Temporal.PlainDateTime[] {
+    const res = this.holidays.filter((date) => date.dayOfWeek === slot.weekday);
     const resDates = res.map((date) => slot.onDate(date));
 
     // remove the tuesday for monday schedule
@@ -433,7 +444,7 @@ export class Term {
   }
 
   /** An extra date a given slot would fall on, if it exists. */
-  rDateFor(slot: Slot): Date | undefined {
+  rDateFor(slot: Slot): Temporal.PlainDateTime | undefined {
     return slot.weekday === 1 && this.mondaySchedule
       ? slot.onDate(this.mondaySchedule)
       : undefined;
