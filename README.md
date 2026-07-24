@@ -10,7 +10,7 @@ Install:
 
 In the root directory, run:
 
-- `pip install -e .[dev]` to install dependencies.
+- `pip install -e ".[dev]"` to install dependencies.
 - `npm install` to install dependencies.
 
 ## Updating
