@@ -9,9 +9,7 @@ import { sum } from "./utils";
 import type { PEClass } from "./pe";
 import type { Class } from "./class";
 
-// TODO: fullcalendar's types aren't updated and require a Date,
-// but it can take a string for now.
-interface AcvitityEventInput extends EventInput {
+interface ActivityEventInput extends EventInput {
   room?: string;
   start: string;
   end: string;
@@ -140,7 +138,7 @@ export class Event {
   }
 
   /** List of events that can be directly given to FullCalendar. */
-  get eventInputs(): AcvitityEventInput[] {
+  get eventInputs(): ActivityEventInput[] {
     const color = this.activity.backgroundColor;
     return this.slots.map((slot) => ({
       contrastColor: textColor(color),
