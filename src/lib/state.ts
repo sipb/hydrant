@@ -659,8 +659,7 @@ export class State {
 
     // backwards compatibility, change from term store to global store
     const storedStarredTerm = this.store.get("starredClasses") as
-      | string[]
-      | null;
+      string[] | null;
     if (storedStarredTerm) {
       const totalStarred = storedStarred.concat(storedStarredTerm);
       this.store.globalSet("starredClasses", totalStarred);
