@@ -18,11 +18,10 @@ import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
+import { PEClass, getPEFlagIcon, type PEFlags } from "../lib/pe";
 
 import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 import { LuExternalLink, LuStar } from "react-icons/lu";
-import { type PEFlags } from "../lib/pe";
-import { PEClass, getPEFlagEmoji } from "../lib/pe";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {
@@ -51,7 +50,7 @@ function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
 
   return (
     <Tooltip content={title}>
-      <Span>{getPEFlagEmoji(flag)}</Span>
+      <Span>{getPEFlagIcon(flag)}</Span>
     </Tooltip>
   );
 }

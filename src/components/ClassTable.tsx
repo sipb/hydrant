@@ -264,7 +264,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["cim", "CI-M"],
   ["fits", "Fits schedule"],
-  ["new", "✨ New!"],
+  ["new", "New"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
@@ -400,16 +400,16 @@ function ClassFlags(props: {
               </LabelledButton>
             ) : (
               // image is a react element, like an icon
-              <Button
+              <LabelledButton
                 key={flag}
                 onClick={() => {
                   onChange(flag, !checked);
                 }}
-                aria-label={label}
+                title={label}
                 variant={checked ? "solid" : "outline"}
               >
                 {image}
-              </Button>
+              </LabelledButton>
             )
           ) : (
             <Button
@@ -559,8 +559,6 @@ export function ClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
-        valueFormatter: (params) =>
-          (params.data?.class.new ? "✨ " : "") + (params.value ?? ""),
       },
     ];
   }, [state]);

@@ -34,9 +34,10 @@ import {
   InputGroup,
   CloseButton,
 } from "@chakra-ui/react";
-import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
+import { LuSearch, LuStar } from "react-icons/lu";
+import { LabelledButton } from "./ui/button";
 
-import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
+import { type PEFlags, type PEClass, getPEFlagIcon } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { HydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
@@ -210,24 +211,20 @@ const filtersNonFlags = {
 type Filter = keyof PEFlags | keyof typeof filtersNonFlags;
 type FilterGroup = [Filter, string, ReactNode?][];
 
-/** List of top filter IDs and their displayed names. */
-const CLASS_FLAGS_1: FilterGroup = [
+/**
+ * List of all class flags.
+ */
+const CLASS_FLAGS: FilterGroup = [
   ["starred", "Starred", <LuStar fill="currentColor" />],
   ["latest", "Latest quarter"],
   ["nofee", "No fee"],
   ["nopreq", "No prereq"],
   ["fits", "Fits schedule"],
+  ["wellness", "Wellness Wizard", getPEFlagIcon("wellness")],
+  ["pirate", "Pirate Certificate", getPEFlagIcon("pirate")],
+  ["swim", "Swim GIR", getPEFlagIcon("swim")],
+  ["remote", "Remote", getPEFlagIcon("remote")],
 ];
-
-/** List of hidden filter IDs, their displayed names, and image path, if any. */
-const CLASS_FLAGS_2: FilterGroup = [
-  ["wellness", "🔮 Wellness Wizard"],
-  ["pirate", "🏴‍☠️ Pirate Certificate"],
-  ["swim", "🌊 Swim GIR"],
-  ["remote", "💻 Remote"],
-];
-
-const CLASS_FLAGS = [...CLASS_FLAGS_1, ...CLASS_FLAGS_2];
 
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
@@ -247,9 +244,6 @@ function ClassFlags(props: {
     }
     return result;
   });
-
-  // Show hidden flags?
-  const [allFlags, setAllFlags] = useState(false);
 
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
@@ -307,16 +301,16 @@ function ClassFlags(props: {
 
           return image ? (
             // image is a react element, like an icon
-            <Button
+            <LabelledButton
               key={flag}
               onClick={() => {
                 onChange(flag, !checked);
               }}
-              aria-label={label}
+              title={label}
               variant={checked ? "solid" : "outline"}
             >
               {image}
-            </Button>
+            </LabelledButton>
           ) : (
             <Button
               key={flag}
@@ -335,20 +329,7 @@ function ClassFlags(props: {
 
   return (
     <Flex direction="column" align="center" gap={2}>
-      <Flex align="center">
-        {renderGroup(CLASS_FLAGS_1)}
-        <Button
-          onClick={() => {
-            setAllFlags(!allFlags);
-          }}
-          size="sm"
-          ml={2}
-        >
-          {allFlags ? <LuMinus /> : <LuPlus />}
-          {allFlags ? "Less filters" : "More filters"}
-        </Button>
-      </Flex>
-      {allFlags && <>{renderGroup(CLASS_FLAGS_2)}</>}
+      <Flex align="center">{renderGroup(CLASS_FLAGS)}</Flex>
     </Flex>
   );
 }
@@ -425,12 +406,14 @@ export function PEClassTable() {
       {
         field: "classSize",
         headerName: "Size",
+        cellDataType: "number",
         maxWidth: 85,
         ...sortProps,
       },
       {
         field: "fee",
         maxWidth: 87,
+        cellDataType: "number",
         cellClass: (params) => getFeeColor(params.value as number),
         valueFormatter: (params) => "$" + (params.value as number).toFixed(2),
         ...sortProps,
@@ -439,17 +422,6 @@ export function PEClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
-        valueFormatter: (params) =>
-          (
-            Object.entries(params.data?.class.flags ?? {}) as [
-              keyof PEFlags,
-              PEFlags[keyof PEFlags],
-            ][]
-          )
-            .filter(([_, val]) => val)
-            .map(([flag]) => getPEFlagEmoji(flag))
-            .concat([params.value?.toString() ?? ""])
-            .join(" "),
       },
     ];
   }, [state]);
