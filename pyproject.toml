@@ -7,8 +7,8 @@ license = "MIT"
 license-files = ["LICENSE.txt"]
 requires-python = ">=3.8.2"
 dependencies = [
-    "beautifulsoup4>=4.14.3",
-    "lxml>=6.0.2",
+    "beautifulsoup4>=4.15.0",
+    "lxml>=6.1.1",
     "tomli>=2.3.0; python_version < '3.11'",
     "nltk>=3.9.1",
 ]
