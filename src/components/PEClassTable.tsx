@@ -46,15 +46,16 @@ import { ColorStyles } from "../lib/colors";
 import styles from "./ClassTable.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
-  accentColor: "var(--chakra-colors-fg)",
-  backgroundColor: "var(--chakra-colors-bg)",
+  accentColor: "var(--chakra-colors-hydrant-solid)",
+  backgroundColor: "var(--chakra-colors-bg-panel)",
   borderColor: "var(--chakra-colors-border)",
   browserColorScheme: "inherit",
   fontFamily: "inherit",
   foregroundColor: "var(--chakra-colors-fg)",
   headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
+  headerTextColor: "var(--chakra-colors-fg-muted)",
   rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-md)",
+  wrapperBorderRadius: "var(--chakra-radii-l2)",
 });
 
 const GRID_MODULES: Module[] = [
@@ -286,7 +287,7 @@ function ClassFlags(props: {
 
   const renderGroup = (group: FilterGroup) => {
     return (
-      <ButtonGroup attached colorPalette="orange" wrap="wrap">
+      <ButtonGroup attached wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
@@ -397,8 +398,8 @@ export function PEClassTable() {
         headerName: "Class",
         comparator: classSort,
         initialSort,
-        maxWidth: 128,
-        cellClass: styles["underline-on-hover"],
+        maxWidth: 131,
+        cellClass: [styles["underline-on-hover"], styles.data],
         valueFormatter: (params) =>
           `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
         ...sortProps,
@@ -408,13 +409,17 @@ export function PEClassTable() {
         headerName: "Size",
         cellDataType: "number",
         maxWidth: 85,
+        cellClass: styles.data,
         ...sortProps,
       },
       {
         field: "fee",
-        maxWidth: 87,
+        maxWidth: 90,
         cellDataType: "number",
-        cellClass: (params) => getFeeColor(params.value as number),
+        cellClass: (params) => [
+          getFeeColor(params.value as number),
+          styles.data,
+        ],
         valueFormatter: (params) => "$" + (params.value as number).toFixed(2),
         ...sortProps,
       },

@@ -34,6 +34,21 @@ export function ColorButton(
   );
 }
 
+/** big value and smaller label. */
+function ScheduleStat(props: { value: string; label: string }) {
+  const { value, label } = props;
+  return (
+    <Flex align="baseline" gap={1.5}>
+      <Text textStyle="data" fontSize="lg" fontWeight="semibold">
+        {value}
+      </Text>
+      <Text fontSize="sm" color="fg.muted">
+        {label}
+      </Text>
+    </Flex>
+  );
+}
+
 /** A button representing a single, selected activity. */
 function ActivityButton(props: { activity: Activity }) {
   const { activity } = props;
@@ -62,11 +77,12 @@ export function SelectedActivities() {
   return (
     <Flex direction="column" gap={2}>
       <Flex gap={8} justify="center">
-        <Text>{units} units</Text>
-        <Text>{hours.toFixed(1)} hours</Text>
-        <Text>
-          {state.finalsCount} final{state.finalsCount == 1 ? "" : "s"}
-        </Text>
+        <ScheduleStat value={units.toString()} label="units" />
+        <ScheduleStat value={hours.toFixed(1)} label="hours" />
+        <ScheduleStat
+          value={state.finalsCount.toString()}
+          label={`final${state.finalsCount == 1 ? "" : "s"}`}
+        />
       </Flex>
       <ButtonGroup gap={0} wrap="wrap">
         {selectedActivities.map((activity) => (
@@ -86,7 +102,9 @@ export function SelectedActivities() {
       </ButtonGroup>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
-          <Text fontSize="sm">{warning}</Text>
+          <Text fontSize="sm" color="fg.warning">
+            {warning}
+          </Text>
         </Flex>
       ))}
     </Flex>

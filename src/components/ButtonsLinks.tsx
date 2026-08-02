@@ -33,7 +33,6 @@ export function ExportCalendar() {
   return (
     <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
       <Button
-        colorPalette="blue"
         variant="solid"
         size="sm"
         loading={isExporting}
@@ -64,13 +63,7 @@ export function MatrixLink() {
 
   return (
     <Tooltip content="You will be able to choose which chats to join, if any.">
-      <Button
-        colorPalette="teal"
-        size="sm"
-        variant="solid"
-        fontWeight={"semibold"}
-        asChild
-      >
+      <Button size="sm" variant="outline" fontWeight={"semibold"} asChild>
         <Link to={matrixLink} target="_blank" rel="noreferrer">
           <LuMessagesSquare />
           Join Matrix group chats
@@ -94,13 +87,7 @@ export function PreregLink() {
 
   return (
     <Tooltip content="This will import your current schedule into WebSIS.">
-      <Button
-        colorPalette="cyan"
-        size="sm"
-        variant="solid"
-        fontWeight={"semibold"}
-        asChild
-      >
+      <Button size="sm" variant="outline" fontWeight={"semibold"} asChild>
         <Link to={preregLink} target="_blank" rel="noreferrer">
           <LuClipboardCopy />
           Pre-register classes

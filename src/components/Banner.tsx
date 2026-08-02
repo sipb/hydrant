@@ -31,9 +31,8 @@ export const AnnouncementsBanner = () => {
           py="2"
           px="3"
           bgGradient="to-r"
-          gradientFrom="cyan.700"
-          gradientVia="purple.600"
-          gradientTo="red.500"
+          gradientFrom="hydrant.900"
+          gradientTo="hydrant.700"
           color="white"
           textAlign="center"
         >
@@ -87,9 +86,8 @@ export const UnknownSubjectsBanner = () => {
           py="2"
           px="3"
           bgGradient="to-r"
-          gradientFrom="red.700"
-          gradientVia="orange.600"
-          gradientTo="yellow.500"
+          gradientFrom="orange.900"
+          gradientTo="orange.700"
           color="white"
           textAlign="center"
         >

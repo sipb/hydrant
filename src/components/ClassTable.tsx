@@ -49,15 +49,16 @@ import { ColorStyles } from "../lib/colors";
 import styles from "./ClassTable.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
-  accentColor: "var(--chakra-colors-fg)",
-  backgroundColor: "var(--chakra-colors-bg)",
+  accentColor: "var(--chakra-colors-hydrant-solid)",
+  backgroundColor: "var(--chakra-colors-bg-panel)",
   borderColor: "var(--chakra-colors-border)",
   browserColorScheme: "inherit",
   fontFamily: "inherit",
   foregroundColor: "var(--chakra-colors-fg)",
   headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
+  headerTextColor: "var(--chakra-colors-fg-muted)",
   rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-md)",
+  wrapperBorderRadius: "var(--chakra-radii-l2)",
 });
 
 const GRID_MODULES: Module[] = [
@@ -368,7 +369,7 @@ function ClassFlags(props: {
 
   const renderGroup = (group: FilterGroup) => {
     return (
-      <ButtonGroup attached colorPalette="orange" wrap="wrap">
+      <ButtonGroup attached wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
@@ -534,25 +535,27 @@ export function ClassTable() {
         comparator: classSort,
         initialSort,
         maxWidth: 93,
-        cellClass: styles["underline-on-hover"],
+        cellClass: [styles["underline-on-hover"], styles.data],
         ...sortProps,
       },
       {
         field: "rating",
         maxWidth: 99,
-        cellClass: (params) => getRatingColor(params.value),
+        cellClass: (params) => [getRatingColor(params.value), styles.data],
         ...numberSortProps,
       },
       {
         field: "hours",
         maxWidth: 97,
-        cellClass: (params) =>
+        cellClass: (params) => [
           getHoursColor(
             params.value,
             params.data?.class.totalUnits,
             state.term.semester,
             params.data?.class.half,
           ),
+          styles.data,
+        ],
         ...numberSortProps,
       },
       {

@@ -337,7 +337,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           catalog. Once you send us your overrides, we'll upload them and
           they'll appear under the dropdown below. Thank you for your time, and
           feel free to reach out to{" "}
-          <Link colorPalette="blue" asChild>
+          <Link asChild>
             <RouterLink to="mailto:sipb-hydrant@mit.edu">
               sipb-hydrant@mit.edu
             </RouterLink>
@@ -419,7 +419,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         <Text textStyle="sm">
           Clicking "Download" will download a file <Code>overrides.toml</Code>{" "}
           to your computer; please attach this file to an email addressed to{" "}
-          <Link colorPalette="blue" asChild>
+          <Link asChild>
             <RouterLink to="mailto:sipb-hydrant@mit.edu">
               sipb-hydrant@mit.edu
             </RouterLink>

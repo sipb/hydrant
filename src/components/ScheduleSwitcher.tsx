@@ -215,7 +215,7 @@ function ExportDialog(props: { children: ReactNode }) {
             <Dialog.Body>
               Share the following link:
               <br />
-              <Link href={link} colorPalette="blue" wordBreak="break-all">
+              <Link href={link} wordBreak="break-all">
                 {link}
               </Link>
             </Dialog.Body>

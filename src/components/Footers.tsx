@@ -27,7 +27,7 @@ function AboutDialog() {
         }}
       >
         <Dialog.Trigger asChild>
-          <ChakraLink colorPalette="blue">About</ChakraLink>
+          <ChakraLink>About</ChakraLink>
         </Dialog.Trigger>
         <Portal>
           <Dialog.Backdrop />
@@ -41,7 +41,7 @@ function AboutDialog() {
                   <Text>
                     Hydrant is a student-run class planner for MIT students,
                     maintained by SIPB, the{" "}
-                    <ChakraLink colorPalette="blue" asChild>
+                    <ChakraLink asChild>
                       <Link
                         to="https://sipb.mit.edu/"
                         target="_blank"
@@ -55,7 +55,7 @@ function AboutDialog() {
                   <Text>
                     We welcome contributions! View the source code or file
                     issues on{" "}
-                    <ChakraLink colorPalette="blue" asChild>
+                    <ChakraLink asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -69,7 +69,7 @@ function AboutDialog() {
                   <Text>
                     We'd like to thank CJ Quines '23 for creating Hydrant and
                     Edward Fan '19 for creating{" "}
-                    <ChakraLink colorPalette="blue" asChild>
+                    <ChakraLink asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -79,7 +79,7 @@ function AboutDialog() {
                       </Link>
                     </ChakraLink>
                     , the basis for Hydrant. We'd also like to thank the{" "}
-                    <ChakraLink colorPalette="blue" asChild>
+                    <ChakraLink asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -89,7 +89,7 @@ function AboutDialog() {
                       </Link>
                     </ChakraLink>{" "}
                     team and{" "}
-                    <ChakraLink colorPalette="blue" asChild>
+                    <ChakraLink asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -127,7 +127,7 @@ function PrivacyPolicyDialog() {
         }}
       >
         <Dialog.Trigger asChild>
-          <ChakraLink colorPalette="blue">Privacy Policy</ChakraLink>
+          <ChakraLink>Privacy Policy</ChakraLink>
         </Dialog.Trigger>
         <Portal>
           <Dialog.Backdrop />
@@ -140,7 +140,7 @@ function PrivacyPolicyDialog() {
                 <Flex direction="column" gap={4}>
                   <Text>
                     SIPB self-hosts an open-source analytics platform called{" "}
-                    <ChakraLink colorPalette="blue" asChild>
+                    <ChakraLink asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -150,7 +150,7 @@ function PrivacyPolicyDialog() {
                       </Link>
                     </ChakraLink>{" "}
                     to track usage of Hydrant. A{" "}
-                    <ChakraLink colorPalette="blue" asChild>
+                    <ChakraLink asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -203,7 +203,7 @@ function LicenseDialog() {
         }}
       >
         <Dialog.Trigger asChild>
-          <ChakraLink colorPalette="blue">Terms of Use</ChakraLink>
+          <ChakraLink>Terms of Use</ChakraLink>
         </Dialog.Trigger>
         <Portal>
           <Dialog.Backdrop />
@@ -228,7 +228,7 @@ function LicenseDialog() {
                   </Text>
                   <Text>
                     See the{" "}
-                    <ChakraLink colorPalette="blue" asChild>
+                    <ChakraLink asChild>
                       <Link
                         target="_blank"
                         rel="noreferrer"
@@ -271,12 +271,12 @@ export function LeftFooter() {
         <Text>Last updated: {state.lastUpdated}.</Text>
         <Flex gap={4} wrap="wrap">
           <AboutDialog />
-          <ChakraLink colorPalette="blue" asChild>
+          <ChakraLink asChild>
             <Link to="mailto:sipb-hydrant@mit.edu">Contact</Link>
           </ChakraLink>
           <PrivacyPolicyDialog />
           <LicenseDialog />
-          <ChakraLink colorPalette="blue" asChild>
+          <ChakraLink asChild>
             <Link to="https://accessibility.mit.edu/">Accessibility</Link>
           </ChakraLink>
         </Flex>

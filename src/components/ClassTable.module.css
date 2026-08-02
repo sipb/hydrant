@@ -2,6 +2,12 @@
   cursor: pointer;
 }
 
+.data {
+  font-family: var(--chakra-fonts-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
 .row:hover .underline-on-hover {
   text-decoration: underline;
 }
