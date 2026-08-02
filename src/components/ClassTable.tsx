@@ -4,6 +4,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useId,
   type Dispatch,
   type ReactNode,
   type SetStateAction,
@@ -48,7 +49,8 @@ import { ColorStyles } from "../lib/colors";
 
 import styles from "./ClassTable.module.css";
 
-const hydrantTheme = themeQuartz.withParams({
+// eslint-disable-next-line react-refresh/only-export-components
+export const HYDRANT_THEME = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-hydrant-solid)",
   backgroundColor: "var(--chakra-colors-bg-panel)",
   borderColor: "var(--chakra-colors-border)",
@@ -71,6 +73,15 @@ const GRID_MODULES: Module[] = [
 ];
 
 ModuleRegistry.registerModules(GRID_MODULES);
+
+export const INITIAL_SORT = "asc" as const;
+const SORTING_ORDER: ("asc" | "desc")[] = ["asc", "desc"];
+// eslint-disable-next-line react-refresh/only-export-components
+export const sortProps = {
+  sortable: true,
+  unSortIcon: true,
+  sortingOrder: SORTING_ORDER,
+};
 
 const getRatingColor = (rating?: string | null) => {
   if (!rating || rating === "N/A") return ColorStyles.Muted;
@@ -131,6 +142,59 @@ type ClassFilter = (cls?: Class) => boolean;
 /** Type of filter on class list; null if no filter. */
 type SetClassFilter = Dispatch<SetStateAction<ClassFilter | null>>;
 
+/** the search box for class table */
+export function ClassSearchInput(props: {
+  value: string;
+  onChange: (value: string) => void;
+  onSubmit: () => void;
+  placeholder: string;
+}) {
+  const { value, onChange, onSubmit, placeholder } = props;
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const id = useId();
+
+  const clearButton = value ? (
+    <CloseButton
+      size="xs"
+      onClick={() => {
+        onChange("");
+        inputRef.current?.focus();
+      }}
+      me="-2"
+    />
+  ) : undefined;
+
+  return (
+    <Flex justify="center">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+        style={{ width: "100%", maxWidth: "30em" }}
+      >
+        <InputGroup
+          startElement={<LuSearch />}
+          endElement={clearButton}
+          width="fill-available"
+        >
+          <Input
+            type="search"
+            aria-label="Search for a class"
+            id={id}
+            placeholder={placeholder}
+            value={value}
+            ref={inputRef}
+            onChange={(e) => {
+              onChange(e.target.value);
+            }}
+          />
+        </InputGroup>
+      </form>
+    </Flex>
+  );
+}
+
 /**
  * Textbox for typing in the name or number of the class to search. Maintains
  * the {@link ClassFilter} that searches for a class name/number.
@@ -146,7 +210,6 @@ function ClassInput(props: {
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
   const searchResults = useRef<
@@ -207,45 +270,13 @@ function ClassInput(props: {
     }
   };
 
-  const clearButton = classInput ? (
-    <CloseButton
-      size="xs"
-      onClick={() => {
-        onClassInputChange("");
-        inputRef.current?.focus();
-      }}
-      me="-2"
-    />
-  ) : undefined;
-
   return (
-    <Flex justify="center">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onEnter();
-        }}
-        style={{ width: "100%", maxWidth: "30em" }}
-      >
-        <InputGroup
-          startElement={<LuSearch />}
-          endElement={clearButton}
-          width="fill-available"
-        >
-          <Input
-            type="search"
-            aria-label="Search for a class"
-            id="class-search"
-            placeholder="Class number, name, or instructor"
-            value={classInput}
-            ref={inputRef}
-            onChange={(e) => {
-              onClassInputChange(e.target.value);
-            }}
-          />
-        </InputGroup>
-      </form>
-    </Flex>
+    <ClassSearchInput
+      value={classInput}
+      onChange={onClassInputChange}
+      onSubmit={onEnter}
+      placeholder="Class number, name, or instructor"
+    />
   );
 }
 
@@ -489,9 +520,6 @@ export function ClassTable() {
 
   // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
-    const initialSort = "asc" as const;
-    const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
-    const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     const numberSortProps = {
       // sort by number, N/A is infinity, tiebreak with class number
       comparator: (
@@ -533,7 +561,7 @@ export function ClassTable() {
         field: "number",
         headerName: "Class",
         comparator: classSort,
-        initialSort,
+        initialSort: INITIAL_SORT,
         maxWidth: 93,
         cellClass: [styles["underline-on-hover"], styles.data],
         ...sortProps,
@@ -613,7 +641,7 @@ export function ClassTable() {
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
         <AgGridReact<ClassTableRow>
-          theme={hydrantTheme}
+          theme={HYDRANT_THEME}
           ref={gridRef}
           rowClass={styles.row}
           defaultColDef={defaultColDef}

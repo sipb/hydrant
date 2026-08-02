@@ -1,4 +1,3 @@
-// TODO factor out common pieces between ClassTable and PEClassTable
 import {
   useContext,
   useEffect,
@@ -11,31 +10,18 @@ import {
 } from "react";
 
 import { AgGridReact } from "ag-grid-react";
-import {
-  ModuleRegistry,
-  ClientSideRowModelModule,
-  ValidationModule,
-  ExternalFilterModule,
-  RenderApiModule,
-  CellStyleModule,
-  RowStyleModule,
-  themeQuartz,
-  type IRowNode,
-  type ColDef,
-  type Module,
-} from "ag-grid-community";
+import type { IRowNode, ColDef } from "ag-grid-community";
+
+import { Box, Flex, Button, ButtonGroup } from "@chakra-ui/react";
+import { LuStar } from "react-icons/lu";
+import { LabelledButton } from "./ui/button";
 
 import {
-  Box,
-  Flex,
-  Input,
-  Button,
-  ButtonGroup,
-  InputGroup,
-  CloseButton,
-} from "@chakra-ui/react";
-import { LuSearch, LuStar } from "react-icons/lu";
-import { LabelledButton } from "./ui/button";
+  HYDRANT_THEME,
+  INITIAL_SORT,
+  sortProps,
+  ClassSearchInput,
+} from "./ClassTable";
 
 import { type PEFlags, type PEClass, getPEFlagIcon } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
@@ -44,30 +30,6 @@ import type { State } from "../lib/state";
 import { ColorStyles } from "../lib/colors";
 
 import styles from "./ClassTable.module.css";
-
-const hydrantTheme = themeQuartz.withParams({
-  accentColor: "var(--chakra-colors-hydrant-solid)",
-  backgroundColor: "var(--chakra-colors-bg-panel)",
-  borderColor: "var(--chakra-colors-border)",
-  browserColorScheme: "inherit",
-  fontFamily: "inherit",
-  foregroundColor: "var(--chakra-colors-fg)",
-  headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
-  headerTextColor: "var(--chakra-colors-fg-muted)",
-  rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-l2)",
-});
-
-const GRID_MODULES: Module[] = [
-  ClientSideRowModelModule,
-  ExternalFilterModule,
-  CellStyleModule,
-  RowStyleModule,
-  RenderApiModule,
-  ...(import.meta.env.DEV ? [ValidationModule] : []),
-];
-
-ModuleRegistry.registerModules(GRID_MODULES);
 
 const getFeeColor = (fee: number) => {
   if (isNaN(fee)) return ColorStyles.Muted;
@@ -104,7 +66,6 @@ function ClassInput(props: {
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
   const searchResults = useRef<
@@ -161,45 +122,13 @@ function ClassInput(props: {
     }
   };
 
-  const clearButton = classInput ? (
-    <CloseButton
-      size="xs"
-      onClick={() => {
-        onClassInputChange("");
-        inputRef.current?.focus();
-      }}
-      me="-2"
-    />
-  ) : undefined;
-
   return (
-    <Flex justify="center">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onEnter();
-        }}
-        style={{ width: "100%", maxWidth: "30em" }}
-      >
-        <InputGroup
-          startElement={<LuSearch />}
-          endElement={clearButton}
-          width="fill-available"
-        >
-          <Input
-            type="search"
-            aria-label="Search for a class"
-            id="class-search"
-            placeholder="Class number or name"
-            value={classInput}
-            ref={inputRef}
-            onChange={(e) => {
-              onClassInputChange(e.target.value);
-            }}
-          />
-        </InputGroup>
-      </form>
-    </Flex>
+    <ClassSearchInput
+      value={classInput}
+      onChange={onClassInputChange}
+      onSubmit={onEnter}
+      placeholder="Class number or name"
+    />
   );
 }
 
@@ -370,9 +299,6 @@ export function PEClassTable() {
 
   // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string | number>[] = useMemo(() => {
-    const initialSort = "asc" as const;
-    const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
-    const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     return [
       {
         headerName: "",
@@ -397,7 +323,7 @@ export function PEClassTable() {
         field: "number",
         headerName: "Class",
         comparator: classSort,
-        initialSort,
+        initialSort: INITIAL_SORT,
         maxWidth: 131,
         cellClass: [styles["underline-on-hover"], styles.data],
         valueFormatter: (params) =>
@@ -477,7 +403,7 @@ export function PEClassTable() {
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
         <AgGridReact<ClassTableRow>
-          theme={hydrantTheme}
+          theme={HYDRANT_THEME}
           ref={gridRef}
           rowClass={styles.row}
           defaultColDef={defaultColDef}
