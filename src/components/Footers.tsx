@@ -268,8 +268,19 @@ export function LeftFooter() {
         top={-1.5}
       />
       <Flex direction="column" align="center" gap={2}>
-        <Text>Last updated: {state.lastUpdated}.</Text>
-        <Flex gap={4} wrap="wrap">
+        <Text textAlign="center" fontSize="sm" color="fg.muted">
+          Last updated:{" "}
+          <time dateTime={state.lastUpdated}>
+            {Temporal.PlainDateTime.from(state.lastUpdated).toLocaleString(
+              "en-US",
+              {
+                dateStyle: "medium",
+                timeStyle: "short",
+              },
+            )}
+          </time>
+        </Text>
+        <Flex gap={4} wrap="wrap" align="center" justify="center">
           <AboutDialog />
           <ChakraLink asChild>
             <Link to="mailto:sipb-hydrant@mit.edu">Contact</Link>
