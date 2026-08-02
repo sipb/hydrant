@@ -46,7 +46,7 @@
     "ci-all": "npm run typecheck && npm test && npm run ci-eslint && npm run ci-prettier"
   },
   "engines": {
-    "node": "^22.22.0 || >=24"
+    "node": "^22.22.2 || >=24.15.0 || >=26.0.0"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^3.36.1",
@@ -68,5 +68,9 @@
     "typescript-eslint": "^8.65.0",
     "vite": "^8.1.5",
     "vitest": "^4.1.10"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "msgpackr-extract@3.0.4": true
   }
 }
