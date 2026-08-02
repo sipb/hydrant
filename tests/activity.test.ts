@@ -242,7 +242,7 @@ describe("CustomActivity", () => {
         COLOR_SCHEME_LIGHT,
       );
       expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
-      expect(myCustomActivity.backgroundColor).toBe("#4A5568");
+      expect(myCustomActivity.backgroundColor).toBe("#475569");
     });
 
     test("COLOR_SCHEME_DARK", () => {
@@ -250,7 +250,7 @@ describe("CustomActivity", () => {
         COLOR_SCHEME_DARK,
       );
       expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
-      expect(myCustomActivity.backgroundColor).toBe("#CBD5E0");
+      expect(myCustomActivity.backgroundColor).toBe("#CBD5E1");
     });
 
     test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
@@ -258,7 +258,7 @@ describe("CustomActivity", () => {
         COLOR_SCHEME_LIGHT_CONTRAST,
       );
       expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
-      expect(myCustomActivity.backgroundColor).toBe("#4A5568");
+      expect(myCustomActivity.backgroundColor).toBe("#475569");
     });
 
     test("COLOR_SCHEME_DARK_CONTRAST", () => {
@@ -266,7 +266,7 @@ describe("CustomActivity", () => {
         COLOR_SCHEME_DARK_CONTRAST,
       );
       expect(nanoidRegex.test(myCustomActivity.id)).toBeTruthy();
-      expect(myCustomActivity.backgroundColor).toBe("#CBD5E0");
+      expect(myCustomActivity.backgroundColor).toBe("#CBD5E1");
     });
   });
 
@@ -420,7 +420,7 @@ describe("CustomActivity", () => {
       expect(new CustomActivity(COLOR_SCHEME_LIGHT).deflate()).toStrictEqual([
         [],
         "New Activity",
-        "#4A5568",
+        "#475569",
         "",
       ]);
     });
@@ -433,7 +433,7 @@ describe("CustomActivity", () => {
       expect(myCustomActivity.deflate()).toStrictEqual([
         [],
         "New Activity",
-        "#4A5568",
+        "#475569",
         "lorem ipsum",
       ]);
     });
@@ -446,7 +446,7 @@ describe("CustomActivity", () => {
       expect(myCustomActivity.deflate()).toStrictEqual([
         [[10, 2]],
         "New Activity",
-        "#4A5568",
+        "#475569",
         "",
       ]);
     });
