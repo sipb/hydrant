@@ -1,5 +1,11 @@
-import { Flex, Text, Button, ButtonGroup } from "@chakra-ui/react";
-import { useContext, type ComponentPropsWithoutRef } from "react";
+import { useContext } from "react";
+import {
+  Flex,
+  Text,
+  Button,
+  ButtonGroup,
+  type ButtonProps,
+} from "@chakra-ui/react";
 
 import type { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
@@ -8,14 +14,12 @@ import { HydrantContext } from "../lib/hydrant";
 
 import { LuPlus } from "react-icons/lu";
 
-export function ColorButton(
-  props: ComponentPropsWithoutRef<"button"> & { color: string },
-) {
-  const { children, color, style, ...otherProps } = props;
+export function ColorButton(props: ButtonProps & { color: string }) {
+  const { children, color, ...otherProps } = props;
   const contractColor = textColor(color);
+
   return (
     <Button
-      {...otherProps}
       backgroundColor={color}
       _hover={{
         backgroundColor: `color-mix(in oklab, ${color} 92%, ${contractColor})`,
@@ -25,9 +29,7 @@ export function ColorButton(
       }}
       borderColor={color}
       color={contractColor}
-      style={{
-        ...style,
-      }}
+      {...otherProps}
     >
       {children}
     </Button>
