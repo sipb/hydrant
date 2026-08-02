@@ -102,7 +102,7 @@ export function SelectedActivities() {
       </ButtonGroup>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
-          <Text fontSize="sm" color="fg.warning">
+          <Text fontSize="sm" color="fg.warning" textAlign="center">
             {warning}
           </Text>
         </Flex>
