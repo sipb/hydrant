@@ -41,6 +41,7 @@ function ActivityButton(props: { activity: Activity }) {
   const { activity } = props;
   const { state } = useHydrantContext();
   const color = activity.backgroundColor;
+
   return (
     <ColorButton
       color={color}

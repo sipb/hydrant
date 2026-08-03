@@ -5,6 +5,7 @@ import { useHydrantContext } from "../lib/hydrant";
 
 export function TermSwitcher() {
   const { state } = useHydrantContext();
+
   const toUrl = (urlName: string) => toFullUrl(urlName, state.latestUrlName);
   const defaultValue = toUrl(state.term.urlName);
 

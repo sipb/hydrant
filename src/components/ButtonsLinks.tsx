@@ -17,7 +17,6 @@ import sipbLogo from "../assets/simple-fuzzball.png";
 
 export function ExportCalendar() {
   const { state } = useHydrantContext();
-
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
@@ -56,7 +55,7 @@ export function MatrixLink() {
     state: { selectedActivities },
   } = useHydrantContext();
 
-  // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
+  /** reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import */
   const matrixLink = `https://matrix.mit.edu/classes/import?via=Hydrant${selectedActivities
     .filter((activity) => activity instanceof Class)
     .map((cls) => `&class=${cls.number}`)

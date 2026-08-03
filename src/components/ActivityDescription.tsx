@@ -197,19 +197,19 @@ function ClassRelated(props: { cls: Class }) {
   );
 }
 
+const CIM_URL =
+  "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject";
+
 /** List of programs for which this class is a CI-M. */
 function ClassCIM(props: { cls: Class }) {
   const { cls } = props;
   const { cim } = cls;
 
-  const url =
-    "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject";
-
   if (cim.length > 0) {
     return (
       <Text>
         CI-M for: {cim.join("; ")} (
-        <Link href={url} target="_blank" colorPalette="blue">
+        <Link href={CIM_URL} target="_blank" colorPalette="blue">
           more info
         </Link>
         )
@@ -328,6 +328,11 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
   );
 }
 
+const fmt = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+});
+
 /** Full PE&W class description, from title to URLs at the end. */
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
@@ -336,12 +341,6 @@ function PEClassDescription(props: { cls: PEClass }) {
   const { fee, startDate, endDate } = cls;
   const { number, name, prereqs, equipment, quarter } = cls.rawClass;
   const { description } = cls.description;
-
-  const fmt = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: "UTC",
-  });
 
   const start = fmt.format(startDate);
   const end = fmt.format(endDate);
@@ -434,6 +433,7 @@ function PEClassDescription(props: { cls: PEClass }) {
 export function ActivityDescription() {
   const { hydrantState } = useHydrantContext();
   const { viewedActivity: activity } = hydrantState;
+
   if (!activity) {
     return null;
   }

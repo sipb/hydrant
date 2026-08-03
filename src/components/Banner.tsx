@@ -70,8 +70,9 @@ export const AnnouncementsBanner = () => {
 /** Unknown subjects warning, same style as banner */
 export const UnknownSubjectsBanner = () => {
   const { state } = useHydrantContext();
-  const unknownSubjects = Array.from(state.unknownSubjects);
   const [unknownVisible, setUnknownVisible] = useState(true);
+
+  const unknownSubjects = Array.from(state.unknownSubjects);
 
   return (
     <Presence

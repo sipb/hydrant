@@ -69,6 +69,7 @@ function OverrideLocations(props: { secs: Sections }) {
   const { state } = useHydrantContext();
   const [isOverriding, setIsOverriding] = useState(false);
   const [room, setRoom] = useState(secs.roomOverride);
+
   const onRelocate = () => {
     setIsOverriding(true);
     setRoom(secs.roomOverride);
@@ -81,6 +82,7 @@ function OverrideLocations(props: { secs: Sections }) {
   const onCancel = () => {
     setIsOverriding(false);
   };
+
   return isOverriding ? (
     <Flex gap={1} mr={1} mt={2}>
       <Input
@@ -113,38 +115,40 @@ function OverrideLocations(props: { secs: Sections }) {
   );
 }
 
+const genSelected = (cls: Class | PEClass) =>
+  cls.sections.map((sections) =>
+    sections.locked
+      ? sections.selected
+        ? sections.selected.rawTime
+        : LockOption.None
+      : LockOption.Auto,
+  );
+
+const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
+  if (sec === LockOption.Auto) {
+    return humanReadable ? "Auto (default)" : LockOption.Auto;
+  } else if (sec === LockOption.None) {
+    return LockOption.None;
+  } else if (!humanReadable) {
+    return sec.rawTime;
+  } else if (sec instanceof PESection) {
+    return `${sec.sectionNumber}: ${sec.parsedTime}`;
+  } else {
+    return sec.parsedTime;
+  }
+};
+
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class | PEClass }) {
   const { cls } = props;
   const { state } = useHydrantContext();
-  const genSelected = (cls: Class | PEClass) =>
-    cls.sections.map((sections) =>
-      sections.locked
-        ? sections.selected
-          ? sections.selected.rawTime
-          : LockOption.None
-        : LockOption.Auto,
-    );
   const [selected, setSelected] = useState(genSelected(cls));
+
   useLayoutEffect(() => {
     setSelected(genSelected(cls));
   }, [cls]);
 
   const RenderOptions = () => {
-    const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
-      if (sec === LockOption.Auto) {
-        return humanReadable ? "Auto (default)" : LockOption.Auto;
-      } else if (sec === LockOption.None) {
-        return LockOption.None;
-      } else if (!humanReadable) {
-        return sec.rawTime;
-      } else if (sec instanceof PESection) {
-        return `${sec.sectionNumber}: ${sec.parsedTime}`;
-      } else {
-        return sec.parsedTime;
-      }
-    };
-
     return (
       <>
         {cls.sections.map((secs, sectionIndex) => {
@@ -309,6 +313,10 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
   );
 }
 
+const timesCollection = createListCollection({
+  items: TIMESLOT_STRINGS,
+});
+
 /** Form to add a timeslot to a custom activity. */
 function CustomActivityAddTime(props: { activity: CustomActivity }) {
   const { activity } = props;
@@ -349,10 +357,6 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
       </>
     );
   };
-
-  const timesCollection = createListCollection({
-    items: TIMESLOT_STRINGS,
-  });
 
   const renderTimeDropdown = (key: "start" | "end") => (
     <Select.Root

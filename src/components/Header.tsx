@@ -36,6 +36,26 @@ const shake = keyframes`
   40%, 80% { transform: translateX(4px); }
 `;
 
+const colorSchemeCollection = createListCollection({
+  items: [
+    { label: "System Default", value: "" },
+    ...COLOR_SCHEME_PRESETS.map(({ name }) => ({
+      label: name,
+      value: name,
+    })),
+  ],
+});
+
+const measurementSystemCollection = createListCollection({
+  items: [
+    { label: "System Default", value: "" },
+    ...MEASUREMENT_SYSTEM_PRESETS.map(({ name }) => ({
+      label: name,
+      value: name,
+    })),
+  ],
+});
+
 export function PreferencesDialog() {
   const { state, hydrantState } = useHydrantContext();
   const { preferences: originalPreferences } = hydrantState;
@@ -67,26 +87,6 @@ export function PreferencesDialog() {
     state.setPreferences(preferences);
     setVisible(false);
   };
-
-  const colorSchemeCollection = createListCollection({
-    items: [
-      { label: "System Default", value: "" },
-      ...COLOR_SCHEME_PRESETS.map(({ name }) => ({
-        label: name,
-        value: name,
-      })),
-    ],
-  });
-
-  const measurementSystemCollection = createListCollection({
-    items: [
-      { label: "System Default", value: "" },
-      ...MEASUREMENT_SYSTEM_PRESETS.map(({ name }) => ({
-        label: name,
-        value: name,
-      })),
-    ],
-  });
 
   return (
     <>

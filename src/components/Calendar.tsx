@@ -30,6 +30,24 @@ const WALKING_SPEED = 4.4;
 const USER_TZ = Temporal.Now.timeZoneId();
 
 /**
+ * get building number from a room string
+ */
+const getBuildingNumber = (room: string) =>
+  room.split("-")[0].trim().replace(/\+$/, "");
+
+/**
+ * Get the approximate distance of two coordinates
+ */
+const getDistance = (
+  location1: { x: number; y: number },
+  location2: { x: number; y: number },
+) => {
+  const dx = location1.x - location2.x;
+  const dy = location1.y - location2.y;
+  return Math.sqrt(dx * dx + dy * dy);
+};
+
+/**
  * Calendar showing all the activities, including the buttons on top that
  * change the schedule option selected.
  */
@@ -43,13 +61,10 @@ export function Calendar() {
       .flatMap((event) => event.eventInputs);
   }, [selectedActivities]);
 
-  const getBuildingNumber = (room: string) =>
-    room.split("-")[0].trim().replace(/\+$/, "");
-
   /**
    * Get the approximate distance (in feet) between two buildings on campus
    */
-  const getDistance = (building1: string, building2: string) => {
+  const getBuildingDistance = (building1: string, building2: string) => {
     // Get coordinates of each building
     const location1 = state.locations.get(building1);
     const location2 = state.locations.get(building2);
@@ -58,9 +73,7 @@ export function Calendar() {
       return undefined;
     }
 
-    const dx = location1.x - location2.x;
-    const dy = location1.y - location2.y;
-    return Math.sqrt(dx * dx + dy * dy);
+    return getDistance(location1, location2);
   };
 
   /**
@@ -94,7 +107,7 @@ export function Calendar() {
       const beforeBuilding = getBuildingNumber(beforeEvent.room);
 
       // Approximate distance (in feet) between the two buildings
-      const distance = getDistance(thisBuilding, beforeBuilding);
+      const distance = getBuildingDistance(thisBuilding, beforeBuilding);
 
       if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
