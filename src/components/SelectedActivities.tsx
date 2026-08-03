@@ -13,11 +13,10 @@ import { Class } from "../lib/class";
 import { useHydrantContext } from "../lib/hydrant";
 
 export function ColorButton(props: ButtonProps & { color: string }) {
-  const { children, color, style, ...otherProps } = props;
+  const { children, color, ...otherProps } = props;
   const contractColor = textColor(color);
   return (
     <Button
-      {...otherProps}
       backgroundColor={color}
       _hover={{
         backgroundColor: `color-mix(in oklab, ${color} 92%, ${contractColor})`,
@@ -27,9 +26,7 @@ export function ColorButton(props: ButtonProps & { color: string }) {
       }}
       borderColor={color}
       color={contractColor}
-      style={{
-        ...style,
-      }}
+      {...otherProps}
     >
       {children}
     </Button>
