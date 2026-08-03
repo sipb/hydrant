@@ -22,6 +22,7 @@ import {
   Code,
   Select,
   Portal,
+  Heading,
 } from "@chakra-ui/react";
 
 const schema: RJSFSchema = {
@@ -326,7 +327,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         >
           <Image src={logo} alt="Hydrant logo" height="40px" />
         </RouterLink>
-        <Text textStyle="3xl">Submit Overrides</Text>
+        <Heading textStyle="3xl">Submit Overrides</Heading>
         <Text>
           This page is for department academic administrators to submit requests
           for Hydrant to override the details of a class from the official
