@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useHydrantContext } from "../lib/hydrant";
-import { BANNER_MESSAGE } from "~/lib/schema";
+import { BANNER_MESSAGE } from "../lib/schema";
 
 /** Main banner */
 export const AnnouncementsBanner = () => {

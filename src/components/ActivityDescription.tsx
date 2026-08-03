@@ -11,17 +11,15 @@ import {
 } from "@chakra-ui/react";
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
+import { LuExternalLink, LuStar } from "react-icons/lu";
+import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 
 import { CustomActivity } from "../lib/activity";
 import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
 import { useHydrantContext } from "../lib/hydrant";
-
-import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
-import { LuExternalLink, LuStar } from "react-icons/lu";
-import { type PEFlags } from "../lib/pe";
-import { PEClass, getPEFlagEmoji } from "../lib/pe";
+import { PEClass, getPEFlagEmoji, type PEFlags } from "../lib/pe";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {

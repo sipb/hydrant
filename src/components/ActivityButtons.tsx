@@ -1,3 +1,5 @@
+import { useLayoutEffect, useState, type SubmitEventHandler } from "react";
+
 import {
   Button,
   ButtonGroup,
@@ -13,12 +15,9 @@ import {
   Text,
   createListCollection,
   parseColor,
+  type ButtonProps,
 } from "@chakra-ui/react";
-import type { ComponentPropsWithRef, SubmitEventHandler } from "react";
-import { useLayoutEffect, useState } from "react";
-
 import { ColorPickerInput } from "./ui/colorpicker-input";
-
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 import { Checkbox } from "./ui/checkbox";
 import { Field } from "./ui/field";
@@ -38,7 +37,7 @@ import { PESection } from "../lib/pe";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
 
-interface ToggleButtonProps extends ComponentPropsWithRef<typeof Button> {
+interface ToggleButtonProps extends ButtonProps {
   active: boolean;
   handleClick: () => void;
 }

@@ -11,8 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router";
 
-import fuzzAndAnt from "../assets/fuzzAndAnt.png";
 import { useHydrantContext } from "../lib/hydrant";
+
+import fuzzAndAnt from "../assets/fuzzAndAnt.png";
 
 function AboutDialog() {
   const [visible, setVisible] = useState(false);
