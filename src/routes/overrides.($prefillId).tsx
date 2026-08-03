@@ -251,6 +251,9 @@ export default function App({ loaderData }: Route.ComponentProps) {
                     ...value,
                     "ui:title": value.title,
                     "ui:description": value.description,
+                    ...("type" in value && value.type === "boolean"
+                      ? { "ui:widget": "checkbox" }
+                      : {}),
                   },
                 ];
               } else {
