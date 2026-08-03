@@ -15,7 +15,7 @@ import {
   parseColor,
 } from "@chakra-ui/react";
 import type { ComponentPropsWithRef, SubmitEventHandler } from "react";
-import { useContext, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { ColorPickerInput } from "./ui/colorpicker-input";
 
@@ -36,7 +36,7 @@ import type { Class } from "../lib/class";
 import type { PEClass } from "../lib/pe";
 import { PESection } from "../lib/pe";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 
 interface ToggleButtonProps extends ComponentPropsWithRef<typeof Button> {
   active: boolean;
@@ -66,7 +66,7 @@ function ToggleButton({
 
 function OverrideLocations(props: { secs: Sections }) {
   const { secs } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [isOverriding, setIsOverriding] = useState(false);
   const [room, setRoom] = useState(secs.roomOverride);
   const onRelocate = () => {
@@ -116,7 +116,7 @@ function OverrideLocations(props: { secs: Sections }) {
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class | PEClass }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const genSelected = (cls: Class | PEClass) =>
     cls.sections.map((sections) =>
       sections.locked
@@ -205,7 +205,7 @@ function ClassManualSections(props: { cls: Class | PEClass }) {
 /** Div containing color selection interface. */
 function ActivityColor(props: { activity: Activity; onHide: () => void }) {
   const { activity, onHide } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const initColor = parseColor(activity.backgroundColor);
   const [color, setColor] = useState(initColor);
 
@@ -258,7 +258,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class | PEClass }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -312,7 +312,7 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
 /** Form to add a timeslot to a custom activity. */
 function CustomActivityAddTime(props: { activity: CustomActivity }) {
   const { activity } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [days, setDays] = useState(
     Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false])),
   );
@@ -410,7 +410,7 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
  */
 export function CustomActivityButtons(props: { activity: CustomActivity }) {
   const { activity } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   const isSelected = state.isSelectedActivity(activity);
   const [isRenaming, setIsRenaming] = useState(false);

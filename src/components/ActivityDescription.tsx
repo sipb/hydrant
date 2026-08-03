@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { decode } from "html-entities";
 
 import {
@@ -17,7 +16,7 @@ import { CustomActivity } from "../lib/activity";
 import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 
 import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 import { LuExternalLink, LuStar } from "react-icons/lu";
@@ -59,7 +58,7 @@ function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
 /** Header for class description; contains flags and units. */
 function ClassTypes(props: { cls: Class }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { flags, totalUnits, units } = cls;
 
   /**
@@ -181,7 +180,7 @@ function PEClassTypes(props: { cls: PEClass }) {
 /** List of related classes, appears after flags and before description. */
 function ClassRelated(props: { cls: Class }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { prereq, same, meets } = cls.related;
 
   return (
@@ -238,7 +237,7 @@ function ClassEval(props: { cls: Class }) {
 /** Class description, person in-charge, and any URLs afterward. */
 function ClassBody(props: { cls: Class }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { description, inCharge, extraUrls } = cls.description;
 
   return (
@@ -270,7 +269,7 @@ function ClassBody(props: { cls: Class }) {
 /** Full class description, from title to URLs at the end. */
 function ClassDescription(props: { cls: Class }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const isStarred = state.isClassStarred(cls);
 
   return (
@@ -305,7 +304,7 @@ function ClassDescription(props: { cls: Class }) {
 /** Full custom activity description, from title to timeslots. */
 function CustomActivityDescription(props: { activity: CustomActivity }) {
   const { activity } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   return (
     <Flex direction="column" gap={4}>
@@ -332,7 +331,7 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
 /** Full PE&W class description, from title to URLs at the end. */
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const isStarred = state.isPEClassStarred(cls);
   const { fee, startDate, endDate } = cls;
   const { number, name, prereqs, equipment, quarter } = cls.rawClass;
@@ -433,7 +432,7 @@ function PEClassDescription(props: { cls: PEClass }) {
 
 /** Activity description, whether class, PE class, or custom activity. */
 export function ActivityDescription() {
-  const { hydrantState } = useContext(HydrantContext);
+  const { hydrantState } = useHydrantContext();
   const { viewedActivity: activity } = hydrantState;
   if (!activity) {
     return null;

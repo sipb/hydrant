@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 
 import { Circle, Float, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
@@ -14,7 +14,7 @@ import interactionPlugin from "@fullcalendar/react/interaction";
 import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 
 import "@fullcalendar/react/skeleton.css";
 import "@fullcalendar/react/themes/monarch/theme.css";
@@ -34,7 +34,7 @@ const USER_TZ = Temporal.Now.timeZoneId();
  * change the schedule option selected.
  */
 export function Calendar() {
-  const { state, hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useHydrantContext();
   const { selectedActivities, viewedActivity } = hydrantState;
 
   const events = useMemo(() => {

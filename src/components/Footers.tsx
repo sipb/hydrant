@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import {
   Flex,
@@ -12,7 +12,7 @@ import {
 import { Link } from "react-router";
 
 import fuzzAndAnt from "../assets/fuzzAndAnt.png";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 
 function AboutDialog() {
   const [visible, setVisible] = useState(false);
@@ -256,7 +256,7 @@ function LicenseDialog() {
 
 /** The footer on the bottom of the calendar. */
 export function LeftFooter() {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   return (
     <Flex direction="row" align="center" justify="center" gap={5}>

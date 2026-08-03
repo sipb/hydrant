@@ -1,12 +1,10 @@
-import { useContext } from "react";
-
 import { createListCollection, Portal, Select } from "@chakra-ui/react";
 
 import { Term, toFullUrl, getUrlNames } from "../lib/dates";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 
 export function TermSwitcher() {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const toUrl = (urlName: string) => toFullUrl(urlName, state.latestUrlName);
   const defaultValue = toUrl(state.term.urlName);
 
