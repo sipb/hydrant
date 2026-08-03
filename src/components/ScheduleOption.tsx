@@ -1,14 +1,14 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import { IconButton, Flex, CloseButton } from "@chakra-ui/react";
-
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
-import { HydrantContext } from "../lib/hydrant";
+
+import { useHydrantContext } from "../lib/hydrant";
 import { Alert } from "./ui/alert";
 
 export function ScheduleOption() {
   const [tooManyOptions, setTooManyOptions] = useState(true);
-  const { state, hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useHydrantContext();
   const { selectedOption, totalOptions } = hydrantState;
 
   return (

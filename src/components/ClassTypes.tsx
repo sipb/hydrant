@@ -1,12 +1,14 @@
+import { useState } from "react";
+
 import { Tabs } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
+import type { IconType } from "react-icons/lib";
 
 import { ClassTable } from "./ClassTable";
 import { PEClassTable } from "./PEClassTable";
-import { ClassType } from "~/lib/schema";
-import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
-import type { IconType } from "react-icons/lib";
-import { HydrantContext } from "~/lib/hydrant";
+
+import { ClassType } from "../lib/schema";
+import { useHydrantContext } from "../lib/hydrant";
 
 function classTypeComponents(termKeys: ClassType[]) {
   const obj = {} as Record<ClassType, [IconType, React.ComponentType]>;
@@ -23,7 +25,7 @@ function classTypeComponents(termKeys: ClassType[]) {
 }
 
 export const ClassTypesSwitcher = () => {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [currentTab, setCurrentTab] = useState(ClassType.ACADEMIC);
 
   const tabs = classTypeComponents([

@@ -1,5 +1,4 @@
 import {
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -43,7 +42,7 @@ import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { TSemester } from "../lib/dates";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
 import { ColorStyles } from "../lib/colors";
 
@@ -206,7 +205,7 @@ function ClassInput(props: {
   setInputFilter: SetClassFilter;
 }) {
   const { rowData, setInputFilter } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
@@ -340,7 +339,7 @@ function ClassFlags(props: {
   updateFilter: () => void;
 }) {
   const { setFlagsFilter, updateFilter } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   // Map from flag to whether it's on.
   const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
@@ -492,7 +491,7 @@ const StarButton = ({
   cls: Class;
   onStarToggle?: () => void;
 }) => {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const isStarred = state.isClassStarred(cls);
 
   return (
@@ -513,7 +512,7 @@ const StarButton = ({
 
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable() {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { classes } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);

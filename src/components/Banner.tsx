@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Center,
   Flex,
@@ -10,12 +10,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 
-import { HydrantContext } from "../lib/hydrant";
-import { BANNER_MESSAGE } from "~/lib/schema";
+import { useHydrantContext } from "../lib/hydrant";
+import { BANNER_MESSAGE } from "../lib/schema";
 
 /** Main banner */
 export const AnnouncementsBanner = () => {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   return (
     <Presence
       present={state.showBanner}
@@ -68,9 +68,10 @@ export const AnnouncementsBanner = () => {
 
 /** Unknown subjects warning, same style as banner */
 export const UnknownSubjectsBanner = () => {
-  const { state } = useContext(HydrantContext);
-  const unknownSubjects = Array.from(state.unknownSubjects);
+  const { state } = useHydrantContext();
   const [unknownVisible, setUnknownVisible] = useState(true);
+
+  const unknownSubjects = Array.from(state.unknownSubjects);
 
   return (
     <Presence

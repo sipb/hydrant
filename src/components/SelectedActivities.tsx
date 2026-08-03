@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import {
   Flex,
   Text,
@@ -6,13 +5,12 @@ import {
   ButtonGroup,
   type ButtonProps,
 } from "@chakra-ui/react";
+import { LuPlus } from "react-icons/lu";
 
 import type { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
-import { HydrantContext } from "../lib/hydrant";
-
-import { LuPlus } from "react-icons/lu";
+import { useHydrantContext } from "../lib/hydrant";
 
 export function ColorButton(props: ButtonProps & { color: string }) {
   const { children, color, ...otherProps } = props;
@@ -54,8 +52,9 @@ function ScheduleStat(props: { value: string; label: string }) {
 /** A button representing a single, selected activity. */
 function ActivityButton(props: { activity: Activity }) {
   const { activity } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const color = activity.backgroundColor;
+
   return (
     <ColorButton
       color={color}
@@ -73,7 +72,7 @@ function ActivityButton(props: { activity: Activity }) {
 
 /** List of selected activities; one button for each activity. */
 export function SelectedActivities() {
-  const { state, hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useHydrantContext();
   const { selectedActivities, units, hours, warnings } = hydrantState;
 
   return (

@@ -1,3 +1,5 @@
+import { useEffect, useState, type ReactNode } from "react";
+
 import {
   Box,
   Flex,
@@ -11,13 +13,8 @@ import {
   Menu,
   Portal,
   Clipboard,
+  type ButtonProps,
 } from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { useContext, useEffect, useState } from "react";
-
-import type { Save } from "../lib/schema";
-import { HydrantContext } from "../lib/hydrant";
-
 import {
   LuCopy,
   LuEllipsis,
@@ -30,7 +27,10 @@ import {
   LuTrash2,
 } from "react-icons/lu";
 
-function SmallButton(props: ComponentPropsWithoutRef<"button">) {
+import type { Save } from "../lib/schema";
+import { useHydrantContext } from "../lib/hydrant";
+
+function SmallButton(props: ButtonProps) {
   const { children, ...otherProps } = props;
   return (
     <Button {...otherProps} variant="outline" size="sm">
@@ -41,7 +41,7 @@ function SmallButton(props: ComponentPropsWithoutRef<"button">) {
 
 function SelectWithWarn(props: { saveId: string; saves: Save[] }) {
   const { saveId, saves } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [confirmSave, setConfirmSave] = useState("");
   const confirmName = saves.find((save) => save.id === confirmSave)?.name;
   const defaultScheduleId = state.defaultSchedule;
@@ -149,7 +149,7 @@ function DeleteDialog(props: {
   children: ReactNode;
 }) {
   const { saveId, name, children } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [show, setShow] = useState(false);
 
   return (
@@ -193,7 +193,7 @@ function DeleteDialog(props: {
 
 function ExportDialog(props: { children: ReactNode }) {
   const { children } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [show, setShow] = useState(false);
   const link = state.urlify();
 
@@ -240,7 +240,7 @@ function ExportDialog(props: { children: ReactNode }) {
 }
 
 export function ScheduleSwitcher() {
-  const { state, hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useHydrantContext();
   const { saves, saveId } = hydrantState;
 
   const currentName = saves.find((save) => save.id === saveId)?.name ?? "";

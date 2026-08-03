@@ -1,5 +1,3 @@
-import { useContext } from "react";
-
 import type { ICalEventData } from "ical-generator";
 import { ICalCalendar } from "ical-generator";
 import { RRuleTemporal } from "rrule-temporal";
@@ -8,7 +6,7 @@ import { tzlib_get_ical_block } from "timezones-ical-library";
 import type { Activity } from "./activity";
 import type { Term } from "./dates";
 import { Class } from "./class";
-import { HydrantContext } from "./hydrant";
+import { useHydrantContext } from "./hydrant";
 
 /** MIT's Timezone string. */
 const TIMEZONE = "America/New_York";
@@ -81,7 +79,7 @@ export function useICSExport(
   onSuccess?: () => void,
   onError?: () => void,
 ): () => void {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   return () => {
     const cal = new ICalCalendar({
