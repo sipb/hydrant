@@ -1,0 +1,10 @@
+#:schema ../override-schema.json
+
+["21H.S04"]
+name = "Understanding 1948: History, Memory, and Competing Narratives in Israel/Palestine"
+prereqs = "None"
+isVariableUnits = false
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 10
+inCharge = "O. Marck"
