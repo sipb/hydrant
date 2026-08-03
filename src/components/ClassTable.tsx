@@ -295,7 +295,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["cim", "CI-M"],
   ["fits", "Fits schedule"],
-  ["new", "New"],
+  ["new", "New!"],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
