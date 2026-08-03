@@ -10,8 +10,8 @@ import {
   LuCalendarArrowDown,
 } from "react-icons/lu";
 import { Tooltip } from "./ui/tooltip";
-import { Link } from "react-router";
-import { Button, Image, Link as ChakraLink } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router";
+import { Button, Image, Link as Link } from "@chakra-ui/react";
 
 import sipbLogo from "../assets/simple-fuzzball.png";
 
@@ -63,11 +63,11 @@ export function MatrixLink() {
 
   return (
     <Tooltip content="You will be able to choose which chats to join, if any.">
-      <Button size="sm" variant="outline" fontWeight={"semibold"} asChild>
-        <Link to={matrixLink} target="_blank" rel="noreferrer">
+      <Button size="sm" variant="outline" fontWeight="semibold" asChild>
+        <RouterLink to={matrixLink} target="_blank" rel="noreferrer">
           <LuMessagesSquare />
           Join Matrix group chats
-        </Link>
+        </RouterLink>
       </Button>
     </Tooltip>
   );
@@ -87,11 +87,11 @@ export function PreregLink() {
 
   return (
     <Tooltip content="This will import your current schedule into WebSIS.">
-      <Button size="sm" variant="outline" fontWeight={"semibold"} asChild>
-        <Link to={preregLink} target="_blank" rel="noreferrer">
+      <Button size="sm" variant="outline" fontWeight="semibold" asChild>
+        <RouterLink to={preregLink} target="_blank" rel="noreferrer">
           <LuClipboardCopy />
           Pre-register classes
-        </Link>
+        </RouterLink>
       </Button>
     </Tooltip>
   );
@@ -99,11 +99,11 @@ export function PreregLink() {
 
 export function SIPBLogo() {
   return (
-    <ChakraLink variant="plain" fontSize="sm" fontWeight="500" asChild>
-      <Link to="https://sipb.mit.edu/" target="_blank" rel="noreferrer">
+    <Link variant="plain" fontSize="sm" fontWeight="500" asChild>
+      <RouterLink to="https://sipb.mit.edu/" target="_blank" rel="noreferrer">
         by SIPB
         <Image src={sipbLogo} alt="SIPB Logo" height="1lh" />
-      </Link>
-    </ChakraLink>
+      </RouterLink>
+    </Link>
   );
 }
