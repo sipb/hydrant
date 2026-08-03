@@ -5,8 +5,8 @@ import { tzlib_get_ical_block } from "timezones-ical-library";
 
 import type { Activity } from "./activity";
 import type { Term } from "./dates";
-import type { State } from "./state";
 import { Class } from "./class";
+import { useHydrantContext } from "./hydrant";
 
 /** MIT's Timezone string. */
 const TIMEZONE = "America/New_York";
@@ -76,25 +76,26 @@ function toICalEvents(activity: Activity, term: Term): ICalEventData[] {
 
 /** Hook that returns an export calendar function. */
 export function useICSExport(
-  state: State | undefined,
   onSuccess?: () => void,
   onError?: () => void,
 ): () => void {
+  const { state } = useHydrantContext();
+
   return () => {
     const cal = new ICalCalendar({
-      name: `Hydrant: ${state?.term.niceName ?? ""}`,
+      name: `Hydrant: ${state.term.niceName}`,
       timezone: {
         name: TIMEZONE,
         generator: (zone) => tzlib_get_ical_block(zone)[0],
       },
-      events: state?.selectedActivities.flatMap((activity) =>
+      events: state.selectedActivities.flatMap((activity) =>
         toICalEvents(activity, state.term),
       ),
     });
     console.log(cal);
 
     try {
-      download(`${state?.term.urlName ?? ""}.ics`, cal.toString());
+      download(`${state.term.urlName}.ics`, cal.toString());
     } catch (_err) {
       onError?.();
     }

@@ -16,11 +16,9 @@ import { Button, Image, Link as ChakraLink } from "@chakra-ui/react";
 import sipbLogo from "../assets/simple-fuzzball.png";
 
 export function ExportCalendar() {
-  const { state } = useHydrantContext();
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
-    state,
     () => {
       setIsExporting(false);
     },
