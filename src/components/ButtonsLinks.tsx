@@ -11,17 +11,14 @@ import {
 } from "react-icons/lu";
 import { Tooltip } from "./ui/tooltip";
 import { Link as RouterLink } from "react-router";
-import { Button, Image, Link as Link } from "@chakra-ui/react";
+import { Button, Image, Link } from "@chakra-ui/react";
 
 import sipbLogo from "../assets/simple-fuzzball.png";
 
 export function ExportCalendar() {
-  const { state } = useContext(HydrantContext);
-
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
-    state,
     () => {
       setIsExporting(false);
     },
