@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import { Class } from "../lib/class";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 import { useICSExport } from "../lib/gapi";
 
 import {
@@ -16,12 +16,9 @@ import { Button, Image, Link as ChakraLink } from "@chakra-ui/react";
 import sipbLogo from "../assets/simple-fuzzball.png";
 
 export function ExportCalendar() {
-  const { state } = useContext(HydrantContext);
-
   const [isExporting, setIsExporting] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
-    state,
     () => {
       setIsExporting(false);
     },
@@ -54,9 +51,9 @@ export function ExportCalendar() {
 export function MatrixLink() {
   const {
     state: { selectedActivities },
-  } = useContext(HydrantContext);
+  } = useHydrantContext();
 
-  // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
+  /** reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import */
   const matrixLink = `https://matrix.mit.edu/classes/import?via=Hydrant${selectedActivities
     .filter((activity) => activity instanceof Class)
     .map((cls) => `&class=${cls.number}`)
@@ -84,7 +81,7 @@ export function MatrixLink() {
 export function PreregLink() {
   const {
     state: { selectedActivities },
-  } = useContext(HydrantContext);
+  } = useHydrantContext();
 
   // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
   const preregLink = `https://student.mit.edu/cgi-bin/sfprwtrm.sh?${selectedActivities

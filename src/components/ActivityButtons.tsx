@@ -1,3 +1,5 @@
+import { useLayoutEffect, useState, type SubmitEventHandler } from "react";
+
 import {
   Button,
   ButtonGroup,
@@ -13,12 +15,9 @@ import {
   Text,
   createListCollection,
   parseColor,
+  type ButtonProps,
 } from "@chakra-ui/react";
-import type { ComponentPropsWithRef, SubmitEventHandler } from "react";
-import { useContext, useLayoutEffect, useState } from "react";
-
 import { ColorPickerInput } from "./ui/colorpicker-input";
-
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 import { Checkbox } from "./ui/checkbox";
 import { Field } from "./ui/field";
@@ -36,9 +35,9 @@ import type { Class } from "../lib/class";
 import type { PEClass } from "../lib/pe";
 import { PESection } from "../lib/pe";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 
-interface ToggleButtonProps extends ComponentPropsWithRef<typeof Button> {
+interface ToggleButtonProps extends ButtonProps {
   active: boolean;
   handleClick: () => void;
 }
@@ -66,9 +65,10 @@ function ToggleButton({
 
 function OverrideLocations(props: { secs: Sections }) {
   const { secs } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [isOverriding, setIsOverriding] = useState(false);
   const [room, setRoom] = useState(secs.roomOverride);
+
   const onRelocate = () => {
     setIsOverriding(true);
     setRoom(secs.roomOverride);
@@ -81,6 +81,7 @@ function OverrideLocations(props: { secs: Sections }) {
   const onCancel = () => {
     setIsOverriding(false);
   };
+
   return isOverriding ? (
     <Flex gap={1} mr={1} mt={2}>
       <Input
@@ -113,38 +114,40 @@ function OverrideLocations(props: { secs: Sections }) {
   );
 }
 
+const genSelected = (cls: Class | PEClass) =>
+  cls.sections.map((sections) =>
+    sections.locked
+      ? sections.selected
+        ? sections.selected.rawTime
+        : LockOption.None
+      : LockOption.Auto,
+  );
+
+const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
+  if (sec === LockOption.Auto) {
+    return humanReadable ? "Auto (default)" : LockOption.Auto;
+  } else if (sec === LockOption.None) {
+    return LockOption.None;
+  } else if (!humanReadable) {
+    return sec.rawTime;
+  } else if (sec instanceof PESection) {
+    return `${sec.sectionNumber}: ${sec.parsedTime}`;
+  } else {
+    return sec.parsedTime;
+  }
+};
+
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class | PEClass }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
-  const genSelected = (cls: Class | PEClass) =>
-    cls.sections.map((sections) =>
-      sections.locked
-        ? sections.selected
-          ? sections.selected.rawTime
-          : LockOption.None
-        : LockOption.Auto,
-    );
+  const { state } = useHydrantContext();
   const [selected, setSelected] = useState(genSelected(cls));
+
   useLayoutEffect(() => {
     setSelected(genSelected(cls));
   }, [cls]);
 
   const RenderOptions = () => {
-    const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
-      if (sec === LockOption.Auto) {
-        return humanReadable ? "Auto (default)" : LockOption.Auto;
-      } else if (sec === LockOption.None) {
-        return LockOption.None;
-      } else if (!humanReadable) {
-        return sec.rawTime;
-      } else if (sec instanceof PESection) {
-        return `${sec.sectionNumber}: ${sec.parsedTime}`;
-      } else {
-        return sec.parsedTime;
-      }
-    };
-
     return (
       <>
         {cls.sections.map((secs, sectionIndex) => {
@@ -205,7 +208,7 @@ function ClassManualSections(props: { cls: Class | PEClass }) {
 /** Div containing color selection interface. */
 function ActivityColor(props: { activity: Activity; onHide: () => void }) {
   const { activity, onHide } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const initColor = parseColor(activity.backgroundColor);
   const [color, setColor] = useState(initColor);
 
@@ -258,7 +261,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class | PEClass }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -309,10 +312,14 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
   );
 }
 
+const timesCollection = createListCollection({
+  items: TIMESLOT_STRINGS,
+});
+
 /** Form to add a timeslot to a custom activity. */
 function CustomActivityAddTime(props: { activity: CustomActivity }) {
   const { activity } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const [days, setDays] = useState(
     Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false])),
   );
@@ -349,10 +356,6 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
       </>
     );
   };
-
-  const timesCollection = createListCollection({
-    items: TIMESLOT_STRINGS,
-  });
 
   const renderTimeDropdown = (key: "start" | "end") => (
     <Select.Root
@@ -410,7 +413,7 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
  */
 export function CustomActivityButtons(props: { activity: CustomActivity }) {
   const { activity } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   const isSelected = state.isSelectedActivity(activity);
   const [isRenaming, setIsRenaming] = useState(false);

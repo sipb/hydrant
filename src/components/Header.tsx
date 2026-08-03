@@ -1,6 +1,5 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef } from "react";
 import { useSearchParams } from "react-router";
-import { keyframes } from "@emotion/react";
 
 import {
   Card,
@@ -16,12 +15,13 @@ import {
 } from "@chakra-ui/react";
 import { useColorModeValue } from "./ui/color-mode";
 import { LuSettings, LuX } from "react-icons/lu";
+import { keyframes } from "@emotion/react";
 
 import { COLOR_SCHEME_PRESETS } from "../lib/colors";
 import { MEASUREMENT_SYSTEM_PRESETS } from "../lib/measurement";
 import type { Preferences } from "../lib/schema";
 import { DEFAULT_PREFERENCES } from "../lib/schema";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 
 import logo from "../assets/logo.svg";
 import logoDark from "../assets/logo-dark.svg";
@@ -36,8 +36,28 @@ const shake = keyframes`
   40%, 80% { transform: translateX(4px); }
 `;
 
+const colorSchemeCollection = createListCollection({
+  items: [
+    { label: "System Default", value: "" },
+    ...COLOR_SCHEME_PRESETS.map(({ name }) => ({
+      label: name,
+      value: name,
+    })),
+  ],
+});
+
+const measurementSystemCollection = createListCollection({
+  items: [
+    { label: "System Default", value: "" },
+    ...MEASUREMENT_SYSTEM_PRESETS.map(({ name }) => ({
+      label: name,
+      value: name,
+    })),
+  ],
+});
+
 export function PreferencesDialog() {
-  const { state, hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useHydrantContext();
   const { preferences: originalPreferences } = hydrantState;
 
   const [visible, setVisible] = useState(false);
@@ -67,26 +87,6 @@ export function PreferencesDialog() {
     state.setPreferences(preferences);
     setVisible(false);
   };
-
-  const colorSchemeCollection = createListCollection({
-    items: [
-      { label: "System Default", value: "" },
-      ...COLOR_SCHEME_PRESETS.map(({ name }) => ({
-        label: name,
-        value: name,
-      })),
-    ],
-  });
-
-  const measurementSystemCollection = createListCollection({
-    items: [
-      { label: "System Default", value: "" },
-      ...MEASUREMENT_SYSTEM_PRESETS.map(({ name }) => ({
-        label: name,
-        value: name,
-      })),
-    ],
-  });
 
   return (
     <>
@@ -234,7 +234,7 @@ export function PreferencesDialog() {
 
 /** Header above the left column, with logo and semester selection. */
 export function Header() {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const logoSrc = useColorModeValue(logo, logoDark);
   const [searchParams, setSearchParams] = useSearchParams();
 
