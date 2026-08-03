@@ -51,7 +51,7 @@ def get_sections() -> Iterable[Tag]:
             soup = BeautifulSoup(cim_req.read().decode("utf-8"), "html.parser")
     except (URLError, socket.timeout) as error:
         print(f"error in get_sections: {error}")
-        raise error
+        raise
 
     return (
         item

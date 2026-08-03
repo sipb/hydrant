@@ -136,7 +136,7 @@ def run() -> None:
     locations = load_json_data("locations.json")
     overrides_all = load_toml_data("overrides.toml.d")
 
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%d %H:%M")
 
     for sem in sem_types:
         fireroad_sem = load_json_data(f"fireroad-{sem}.json")

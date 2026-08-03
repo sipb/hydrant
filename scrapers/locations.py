@@ -99,7 +99,7 @@ def convert_data(rows: list[AccessPoint]) -> dict[str, BuildingInfo]:
         dict[str, BuildingInfo]: A dictionary mapping building numbers to BuildingInfo objects.
     """
     out: dict[str, BuildingInfo] = {}
-    buildings = set(row["FACILITY"] for row in rows)
+    buildings = {row["FACILITY"] for row in rows}
 
     for building in buildings:
         xs, ys = zip(
