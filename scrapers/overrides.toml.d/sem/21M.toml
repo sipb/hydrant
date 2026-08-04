@@ -9,3 +9,25 @@ inCharge = "M. Rau, P. Smaragdis"
 description = "In this seminar we will be taking a global-historical approach to the “baroque,” decentering our understanding of its associated music-makings in the 16th to 18th centuries as well as its postcolonial continuities in our present time. By adopting a polycentric perspective, we will study the history of what is often referred to as “Western music” and its relationship to European colonialism, trade, and missionizing in this period. These global networks of power will be explored through a series of connected vignettes ranging from the early modern imperial courts and trading ports of South, Southeast, and East Asia, to the reducciones of South America and beyond. A focus on surviving repertoire from these regions will encourage you to think not only about a more diverse range of music-makers in history, but to also question the “Europeanness” of these musical traditions both past and present, taking seriously Indigenous contributions to and ownership of these musics. "
 name = "Advanced Seminar in Music: Global Baroque"
 inCharge = "M. Takao"
+
+["21M.569"]
+name = "Tuning Attention: Creative Practices in Movement, Sound, and AI"
+level = "G"
+lectureUnits = 3
+labUnits = 1.5
+preparationUnits = 7.5
+isVariableUnits = false
+prereqs = "by permission of instructor"
+inCharge = "A. Huant, G. Coleman"
+description = "This class proposes that the study of sound and movement practices can inform how we build and envision computational systems, focusing particularly on our relationships to AIs. This course explores computational and humanistic approaches to attention through alignment; tuning AI systems while exploring our capacities for expression. We introduce students to a range of movement and music practices in improvisation and somatics, and include motion capture technologies, critical interaction design, generative modeling, and algorithms for interpretability and learning through human feedback."
+
+["21M.589"]
+name = "Audio Computing: Processing Sound in Engineering, Science, and the Arts"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "Familiarity with programming, and basic calculus (basic derivatives and integrals)."
+inCharge = "P. Smaragdis, M. Rau"
+description = "This class will cover an extensive range of topics that relate to sound and vibration analysis, focusing on computational tools needed to process such data, and exploring applications in various disciplines. Material covered will include basic signal processing, vibration and acoustical simulations and measurements, machine learning audio, microphone and speaker arrays, signal enhancement and restoration, and psychoacoustics. Applications will be drawn from fields including music, phonetics, mechanical and electrical engineering, architecture, medicine, and more. This class will cover applications such as 3D audio, classifiers for sound events, basic speech recognition, auto-tuners and other music production tools, audio compression, modeling of voice, instruments and rooms, real-time audio applications, denoising and source separation, and how to localize and isolate sounds. Students taking the graduate version will complete additional assignments."

@@ -1,0 +1,70 @@
+#:schema ../override-schema.json
+
+["6.S057"]
+name = "Verified Software Engineering"
+level = "U"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "6.101 and 6.120"
+inCharge = "A. Chlipala, M. Goldman"
+description = "Practical application of formal verification tools to specify and verify the correctness of software. Foundational concepts include pre- and postconditions, loop invariants, ghost state, data abstraction, and specification techniques. Lab assignments give hands-on experience in specifying and verifying a variety of software components."
+
+["6.S951"]
+name = "AI for Science: Generative AI for Scientific Discovery"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "machine learning such as 6.3900 or 6.7900 or 6.C51+6.C511 or related; probability such as 6.3700 or 6.3800 or related; linear algebra such as 18.06 or 6.C06 or related"
+inCharge = "T. S. Jaakkola"
+description = "This project based course focuses on emerging opportunities of generative AI in scientific research. The course draws on recent literature pertaining to representation and grounding of scientific knowledge, generative approaches, inverse design, closed-loop discovery, and agentic approaches to scientific discovery. Students will critically review papers, participate in structured discussion, and complete a substantial class project involving generative AI. The course emphasizes technical understanding, rigorous evaluation, and potential for scientific advances. Enrollment may be limited."
+
+["6.S953"]
+name = "Topics in Error-Correcting Codes for Computer Science"
+level = "G"
+prereqs = "6.1200, 6.1210, 18.06"
+inCharge = "Y. T. Kalai"
+description = "This course introduces the theory of error-correcting codes to computer scientists. The course will focus on results of asymptotic or algorithmic significance. Principal topics include: Existence results for error-correcting codes and limitations, Constructions and algorithms, interactive coding, and applications in computer science."
+
+["6.S964"]
+name = "Electric Energy Markets: Innovation at Value"
+level = "G"
+prereqs = "6.7121; or 6.2200; and Ability to perform college-level mathematical operations; Study of physics, engineering, economics, finance and/or environment science helpful"
+inCharge = "M. Ilic"
+description = "Systems approach to designing, modeling, simulating and decision making for electricity markets is introduced. Emphasis on physically implementable markets, with the review of today's electric power systems operations and planning. A home-grown digital platform used to emulate interactions between market, regulatory and engineering signals. Assessment of the evolution of electric energy markets, with a critical overview of methods for managing uncertainties at value. Links with model predictive decision making, arbitrage management and the role of digitization (automation, ML/AI) in enabling future performance of electricity markets. Role of flexibility and its value in managing uncertainties, with use cases (hyperscale data centers, renewable intermittent resources, reliability, resilience). Introduction of unified technology-agnostic modeling in terms of energy, power and rate of change of reactive power in support of protocols for efficient physically implementable market concepts.\n\nIf you want to learn how to become hardware/software innovative expert in cyber-physical systems for supporting the ongoing revolution in electric power industry! The course bridges EE, economics/finance and CS tools in major ways. We learn what information needs to be sensed, communicated and processed by different embedded cyber systems into physical electric systems and for what purpose. Become a leader in using cyber for sustainable energy systems at value! Exciting term projects (including integration of hyperscale data centers in electricity grids; valuing power electronics for supporting flexibility; integration of storage at value; hybrid use of ML/AI tools for electricity markets."
+
+["6.S978"]
+name = "Engineering AI Systems and Agents"
+level = "G"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 10
+isVariableUnits = false
+prereqs = "6.3900 AND (6.1020 OR 6.1800 OR 6.1810); or permission of instructor. Recommended: 6.1210 or equivalent algorithmic maturity."
+inCharge = "O. Khattab"
+description = "Introduces principles, abstractions, algorithms, and processes for building, evaluating, and optimizing stochastic AI software systems that invoke pre-trained foundation models inside computer programs. Topics include programming models for language model systems; structured generation and constrained decoding; evaluation, robustness, and security of agentic AI applications; neural information retrieval and retrieval-augmented generation; tool use and agent harnesses; adaptation of model behavior through prompt optimization, supervised fine-tuning, synthetic data, reinforcement learning, and distillation; and serving and runtime systems for language model applications. Includes a substantial project."
+
+["6.S979"]
+name = "Introduction to LLM Inference Systems"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "6.1800 (Computer Systems Engineering) or equivalent systems background. Familiarity with parallel or performance-oriented programming (e.g., 6.1060 or equivalent) recommended. Prior exposure to machine learning models (e.g., transformers) helpful but not required. Permission of instructor for graduate students without the listed prerequisites."
+inCharge = "N. N. Shavit, A. Matveev"
+description = "This subject examines large language model (LLM) inference as a systems problem, with emphasis on low-latency execution, memory-intensive workloads, and deployment across heterogeneous hardware. Topics include batching and scheduling, KV-cache management, kernel and compiler co-design, distributed and multi-GPU inference, and hardware tradeoffs across GPUs, CPUs, TPUs, and inference accelerators. The course also covers inference-time optimization techniques such as quantization, sparsity, speculative decoding, and multi-model routing. The subject emphasizes analytical understanding and synthesis of recent research and production systems rather than large programming projects, and is intended for graduate students and advanced undergraduates interested in ML systems and infrastructure."
+
+["6.S980"]
+name = "Quantum Error Correction"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "6.6410 (or 18.435 / equivalent quantum computation background)"
+inCharge = "H. Zhou"
+description = "Develops the theory and practice of quantum error correction (QEC) and fault-tolerant quantum computation, with emphasis on recent developments. Begins with stabilizer codes and the Knill-Laflamme error-correction conditions, then outlines the full fault tolerance stack with surface codes, including lattice surgery, transversal gates, non-Clifford gates, and decoding. The second half of the course introduces high-rate quantum low-density parity-check codes and recent progress in logical gate design, concluding with examples of end-to-end fault-tolerant architecture design with resource estimation. Students simulate and benchmark QEC circuits, critique recent literature, and complete a research-style final project. Designed to introduce students to frontiers of QEC developments."

@@ -1,0 +1,12 @@
+#:schema ../override-schema.json
+
+['18.S995']
+name = "Topics in Deep Learning Theory"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+prereqs = "by permission of instructor"
+inCharge = "A. Damian"
+description = "Covers selected topics in the mathematical foundations of deep learning. Topics may include scaling limits of wide and deep networks, such as the neural tangent kernel, mean-field dynamics, and the maximal update parameterization (μP); mechanisms of feature learning and separations from kernel methods; and optimization dynamics, including the implicit regularization of stochastic gradient descent, the inductive biases of different optimizers, and the edge-of-stability phenomenon. Mathematical maturity is recommended."
