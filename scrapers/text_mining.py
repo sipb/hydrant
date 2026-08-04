@@ -106,7 +106,7 @@ def find_matching_records(descriptions: Iterable[str]) -> list[str]:
     result: list[str] = []
     for description in descriptions:
         result.extend(find_key_sentences(description))
-    return list(sorted(set(result)))
+    return sorted(set(result))
 
 
 def run() -> None:

@@ -6,10 +6,12 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 import time as time_c
 from datetime import date, time
 from functools import lru_cache
 from typing import Literal, Optional, TypedDict
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -466,7 +468,7 @@ def get_pe_quarters(url_name: str) -> list[str]:
     }[url_name[0]]
 
 
-def run():
+def run() -> dict[int, dict[str, PEWSchema]]:
     """
     Main entry point for PE data
     """
@@ -481,7 +483,12 @@ def run():
             # process the data as needed
             pe_files_data.extend(read_csv(os.path.join(pe_folder, pe_file), PEWFile))
 
-    pe_data = pe_rows_to_schema(pe_files_data)
+    try:
+        pe_data = pe_rows_to_schema(pe_files_data)
+    except (URLError, socket.timeout, UnicodeDecodeError) as e:
+        print(f"Unable to scrape PE data: {e}")
+        # couldn't scrape pe data, don't overwrite existing data if it exists
+        return {}
 
     for quarter, quarter_data in pe_data.items():
         print(f"Processed PE data for quarter {quarter}: {len(quarter_data)} subjects")

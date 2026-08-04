@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import Form from "@rjsf/chakra-ui";
-import type { RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import type { JSONSchema7Definition } from "json-schema";
 import TOML from "smol-toml";
@@ -22,6 +22,7 @@ import {
   Code,
   Select,
   Portal,
+  Heading,
 } from "@chakra-ui/react";
 
 const schema: RJSFSchema = {
@@ -82,6 +83,33 @@ const getDataFromFile = async (fileName: string) => {
     console.error("Error loading TOML file:", err);
     return [];
   }
+};
+
+/** ensures class numbers are unique, since we change override from object to array */
+const validateUniqueNumbers: CustomValidator<Record<string, unknown>[]> = (
+  formData,
+  errors,
+) => {
+  const indicesByNumber = new Map<string, number[]>();
+  (formData ?? []).forEach((override, index) => {
+    const number = override.number;
+    if (typeof number !== "string" || number === "") return;
+    const indices = indicesByNumber.get(number) ?? [];
+    indices.push(index);
+    indicesByNumber.set(number, indices);
+  });
+
+  for (const [number, indices] of indicesByNumber) {
+    if (indices.length > 1) {
+      for (const index of indices) {
+        errors[index]?.number?.addError(
+          `Class number "${number}" is used more than once; class numbers must be unique.`,
+        );
+      }
+    }
+  }
+
+  return errors;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -326,7 +354,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         >
           <Image src={logo} alt="Hydrant logo" height="40px" />
         </RouterLink>
-        <Text textStyle="3xl">Submit Overrides</Text>
+        <Heading textStyle="3xl">Submit Overrides</Heading>
         <Text>
           This page is for department academic administrators to submit requests
           for Hydrant to override the details of a class from the official
@@ -380,6 +408,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           schema={schema}
           uiSchema={uischema}
           validator={validator}
+          customValidate={validateUniqueNumbers}
           formData={data}
           showErrorList={"top"}
           liveValidate={"onChange"}

@@ -267,7 +267,7 @@ def parse_attributes(
     hass_code: list[str] = list(
         filter(
             lambda x: x != "X",
-            map(lambda x: x[-1], str(course.get("hass_attribute", "X")).split(",")),
+            (x[-1] for x in str(course.get("hass_attribute", "X")).split(",")),
         )
     )
     comms_code: str = str(course.get("communication_requirement", ""))
@@ -351,8 +351,7 @@ def get_course_data(
         | int
         | dict[str, tuple[int, int]]
         | list[str]
-        | dict[str, list[str] | bool]
-        | bool,
+        | dict[str, list[str] | bool],
     ] = {
         "number": course_code,
         "course": course_num,
