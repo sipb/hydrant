@@ -1,18 +1,19 @@
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "react", "unicorn"],
-  "categories": {
-    "correctness": "off"
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  plugins: ["typescript", "react", "unicorn"],
+  categories: {
+    correctness: "off",
   },
-  "options": {
-    "typeAware": true
+  options: {
+    typeAware: true,
   },
-  "env": {
-    "builtin": true,
-    "es2022": true,
-    "browser": true
+  env: {
+    builtin: true,
+    es2022: true,
+    browser: true,
   },
-  "ignorePatterns": [
+  ignorePatterns: [
     "**/logs",
     "**/*.log",
     "**/npm-debug.log*",
@@ -42,9 +43,9 @@
     "**/deploy.sh",
     "**/.venv",
     "**/.react-router",
-    "**/build"
+    "**/build",
   ],
-  "rules": {
+  rules: {
     "constructor-super": "error",
     "for-direction": "error",
     "getter-return": "error",
@@ -98,14 +99,14 @@
     "no-unused-vars": [
       "error",
       {
-        "args": "all",
-        "argsIgnorePattern": "^_",
-        "caughtErrors": "all",
-        "caughtErrorsIgnorePattern": "^_",
-        "destructuredArrayIgnorePattern": "^_",
-        "varsIgnorePattern": "^_",
-        "ignoreRestSiblings": true
-      }
+        args: "all",
+        argsIgnorePattern: "^_",
+        caughtErrors: "all",
+        caughtErrorsIgnorePattern: "^_",
+        destructuredArrayIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        ignoreRestSiblings: true,
+      },
     ],
     "no-useless-backreference": "error",
     "no-useless-catch": "error",
@@ -122,15 +123,15 @@
     "react/only-export-components": [
       "error",
       {
-        "allowConstantExport": true
-      }
+        allowConstantExport: true,
+      },
     ],
     "typescript/await-thenable": "error",
     "typescript/ban-ts-comment": [
       "error",
       {
-        "minimumDescriptionLength": 10
-      }
+        minimumDescriptionLength: 10,
+      },
     ],
     "typescript/no-array-delete": "error",
     "typescript/no-base-to-string": "error",
@@ -189,23 +190,23 @@
     "typescript/restrict-plus-operands": [
       "error",
       {
-        "allowAny": false,
-        "allowBoolean": false,
-        "allowNullish": false,
-        "allowNumberAndString": false,
-        "allowRegExp": false
-      }
+        allowAny: false,
+        allowBoolean: false,
+        allowNullish: false,
+        allowNumberAndString: false,
+        allowRegExp: false,
+      },
     ],
     "typescript/restrict-template-expressions": [
       "error",
       {
-        "allowAny": false,
-        "allowBoolean": false,
-        "allowNever": false,
-        "allowNullish": false,
-        "allowNumber": false,
-        "allowRegExp": false
-      }
+        allowAny: false,
+        allowBoolean: false,
+        allowNever: false,
+        allowNullish: false,
+        allowNumber: false,
+        allowRegExp: false,
+      },
     ],
     "typescript/return-await": ["error", "error-handling-correctness-only"],
     "typescript/triple-slash-reference": "error",
@@ -233,12 +234,12 @@
     "typescript/prefer-string-starts-ends-with": "error",
     "typescript/consistent-type-exports": "warn",
     "typescript/consistent-type-imports": "warn",
-    "typescript/switch-exhaustiveness-check": "error"
+    "typescript/switch-exhaustiveness-check": "error",
   },
-  "overrides": [
+  overrides: [
     {
-      "files": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
-      "rules": {
+      files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+      rules: {
         "constructor-super": "off",
         "getter-return": "off",
         "no-class-assign": "off",
@@ -258,12 +259,12 @@
         "no-with": "off",
         "prefer-const": "error",
         "prefer-rest-params": "error",
-        "prefer-spread": "error"
-      }
+        "prefer-spread": "error",
+      },
     },
     {
-      "files": ["tests/**"],
-      "rules": {
+      files: ["tests/**"],
+      rules: {
         "vitest/expect-expect": "error",
         "vitest/no-commented-out-tests": "error",
         "vitest/no-conditional-expect": "error",
@@ -280,28 +281,28 @@
         "vitest/valid-describe-callback": "error",
         "vitest/valid-expect": "error",
         "vitest/valid-expect-in-promise": "error",
-        "vitest/valid-title": "error"
+        "vitest/valid-title": "error",
       },
-      "globals": {
-        "suite": "writable",
-        "test": "writable",
-        "describe": "writable",
-        "it": "writable",
-        "expectTypeOf": "writable",
-        "assertType": "writable",
-        "expect": "writable",
-        "assert": "writable",
-        "chai": "writable",
-        "vitest": "writable",
-        "vi": "writable",
-        "beforeAll": "writable",
-        "afterAll": "writable",
-        "beforeEach": "writable",
-        "afterEach": "writable",
-        "onTestFailed": "writable",
-        "onTestFinished": "writable"
+      globals: {
+        suite: "writable",
+        test: "writable",
+        describe: "writable",
+        it: "writable",
+        expectTypeOf: "writable",
+        assertType: "writable",
+        expect: "writable",
+        assert: "writable",
+        chai: "writable",
+        vitest: "writable",
+        vi: "writable",
+        beforeAll: "writable",
+        afterAll: "writable",
+        beforeEach: "writable",
+        afterEach: "writable",
+        onTestFailed: "writable",
+        onTestFinished: "writable",
       },
-      "plugins": ["vitest"]
-    }
-  ]
-}
+      plugins: ["vitest"],
+    },
+  ],
+});
