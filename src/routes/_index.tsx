@@ -23,7 +23,7 @@ import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 import type { Route } from "./+types/_index";
 import { ActivityDescription } from "~/components/ActivityDescription";
 
-// eslint-disable-next-line react-refresh/only-export-components
+// oxlint-disable-next-line react/only-export-components
 export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const searchParams = url.searchParams;
   const urlNameOrig = searchParams.get("t");
@@ -113,7 +113,7 @@ function HydrantApp() {
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
+// oxlint-disable-next-line react/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant" },
   {

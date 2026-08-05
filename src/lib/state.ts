@@ -517,7 +517,7 @@ export class State {
       const cls =
         typeof deflated === "string"
           ? (this.peClasses.get(deflated) ??
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            // oxlint-disable-next-line typescript/restrict-template-expressions
             this.peClasses.get(`Q3.${deflated}`))
           : (this.peClasses.get((deflated as string[])[0]) ??
             this.peClasses.get(`Q3.${(deflated as string[])[0]}`));

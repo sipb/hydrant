@@ -46,7 +46,9 @@ describe("getDefaultColorScheme", () => {
         matches: matchMediaMap.get(query) ?? false,
         media: query,
         onchange: null,
+        // oxlint-disable-next-line typescript/no-deprecated
         addListener: vi.fn(),
+        // oxlint-disable-next-line typescript/no-deprecated
         removeListener: vi.fn(),
         addEventListener: vi.fn(),
         removeEventListener: vi.fn(),

@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+// oxlint-disable react/only-export-components
 import { CacheProvider } from "@emotion/react";
 import type { EmotionCache } from "@emotion/react";
 import {

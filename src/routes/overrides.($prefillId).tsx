@@ -112,7 +112,7 @@ const validateUniqueNumbers: CustomValidator<Record<string, unknown>[]> = (
   return errors;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
+// oxlint-disable-next-line react/only-export-components
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   let prefillData: Record<string, unknown>[] = [];
   const prefillIdPrelim = params.prefillId?.toUpperCase();
@@ -153,7 +153,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         },
         submitText: "Download",
       },
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      // oxlint-disable-next-line typescript/no-unsafe-assignment
       items: {
         "ui:title": "Class Override",
         "ui:field": "LayoutGridField",
@@ -293,7 +293,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
       },
     } satisfies UiSchema;
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // oxlint-disable-next-line typescript/no-unsafe-member-access
     uiSchema.items.description["ui:widget"] = "textarea";
 
     return uiSchema;
@@ -463,7 +463,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
+// oxlint-disable-next-line react/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant - Overrides Form" },
   {

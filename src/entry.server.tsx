@@ -55,7 +55,7 @@ export default function handleRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
-          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+          // oxlint-disable-next-line typescript/prefer-promise-reject-errors
           reject(error);
         },
         onError(error: unknown) {

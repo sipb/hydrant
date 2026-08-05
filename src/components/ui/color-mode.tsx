@@ -23,10 +23,10 @@ export interface UseColorModeReturn {
   toggleColorMode: () => void;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
+// oxlint-disable-next-line react/only-export-components
 export function useColorMode(): UseColorModeReturn {
   const { resolvedTheme, setTheme, forcedTheme } = useTheme();
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  // oxlint-disable-next-line typescript/prefer-nullish-coalescing
   const colorMode = forcedTheme || resolvedTheme;
   const toggleColorMode = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -38,7 +38,7 @@ export function useColorMode(): UseColorModeReturn {
   };
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
+// oxlint-disable-next-line react/only-export-components
 export function useColorModeValue<T>(light: T, dark: T) {
   const { colorMode } = useColorMode();
   return colorMode === "dark" ? dark : light;

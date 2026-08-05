@@ -18,7 +18,7 @@ import "@fontsource-variable/inter/index.css";
 
 import "temporal-polyfill/global";
 
-// eslint-disable-next-line react-refresh/only-export-components
+// oxlint-disable-next-line react/only-export-components
 export const links: Route.LinksFunction = () => [
   {
     rel: "icon",
@@ -55,7 +55,7 @@ function Analytics() {
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
+// oxlint-disable-next-line react/only-export-components
 export const Layout = withEmotionCache((props: LayoutProps, cache) => {
   const { children } = props;
 

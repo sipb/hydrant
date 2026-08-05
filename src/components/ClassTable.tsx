@@ -311,9 +311,9 @@ function ClassFlags(props: {
 
   // Map from flag to whether it's on.
   const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
-    const result = new Map();
+    const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
-      result.set(flag, false);
+      result.set(flag[0], false);
     }
     return result;
   });
@@ -516,7 +516,6 @@ export function ClassTable() {
           <StarButton
             cls={params.data.class}
             onStarToggle={() => {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               gridRef.current?.api?.refreshCells({
                 force: true,
                 columns: ["number"],
@@ -597,7 +596,6 @@ export function ClassTable() {
 
   // Need to notify grid every time we update the filter
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     gridRef.current?.api?.onFilterChanged();
   }, [doesExternalFilterPass]);
 
@@ -606,7 +604,6 @@ export function ClassTable() {
       <ClassInput rowData={rowData} setInputFilter={setInputFilter} />
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
