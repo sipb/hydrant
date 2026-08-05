@@ -1,9 +1,9 @@
 import { redirect } from "react-router";
 
-import { fetchNoCache, type SemesterData, getStateMaps } from "../lib/hydrant";
-import { getClosestUrlName, Term, type LatestTermInfo } from "../lib/dates";
-import { State } from "../lib/state";
 import { Class } from "../lib/class";
+import { getClosestUrlName, Term, type LatestTermInfo } from "../lib/dates";
+import { fetchNoCache, type SemesterData, getStateMaps } from "../lib/hydrant";
+import { State } from "../lib/state";
 
 import type { Route } from "./+types/export";
 

@@ -8,7 +8,16 @@ import {
   type SetStateAction,
 } from "react";
 
-import { AgGridReact } from "ag-grid-react";
+import {
+  Box,
+  Flex,
+  Image,
+  Input,
+  Button,
+  ButtonGroup,
+  InputGroup,
+  CloseButton,
+} from "@chakra-ui/react";
 import {
   ModuleRegistry,
   ClientSideRowModelModule,
@@ -22,30 +31,20 @@ import {
   type ColDef,
   type Module,
 } from "ag-grid-community";
-
-import {
-  Box,
-  Flex,
-  Image,
-  Input,
-  Button,
-  ButtonGroup,
-  InputGroup,
-  CloseButton,
-} from "@chakra-ui/react";
+import { AgGridReact } from "ag-grid-react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
+
+import { DARK_IMAGES, getFlagImg } from "../lib/class";
+import { ColorStyles } from "../lib/colors";
+import { useHydrantContext } from "../lib/hydrant";
+import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
+import styles from "./ClassTable.module.css";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
 
 import type { Class, Flags } from "../lib/class";
-import { DARK_IMAGES, getFlagImg } from "../lib/class";
-import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { TSemester } from "../lib/dates";
-import { useHydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
-import { ColorStyles } from "../lib/colors";
-
-import styles from "./ClassTable.module.css";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",

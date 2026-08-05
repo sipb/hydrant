@@ -1,5 +1,5 @@
 import { expect, test, describe } from "vitest";
-import { State } from "../src/lib/state";
+
 import { Class } from "../src/lib/class";
 import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 import {
@@ -11,6 +11,7 @@ import {
   TermCode,
   type RawClass,
 } from "../src/lib/raw";
+import { State } from "../src/lib/state";
 
 const baseRawClass: RawClass = {
   number: "21H.143",

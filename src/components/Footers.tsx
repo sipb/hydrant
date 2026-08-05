@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 
 import {
   Flex,
@@ -9,11 +10,9 @@ import {
   Dialog,
   Portal,
 } from "@chakra-ui/react";
-import { Link } from "react-router";
-
-import { useHydrantContext } from "../lib/hydrant";
 
 import fuzzAndAnt from "../assets/fuzzAndAnt.png";
+import { useHydrantContext } from "../lib/hydrant";
 
 function AboutDialog() {
   const [visible, setVisible] = useState(false);

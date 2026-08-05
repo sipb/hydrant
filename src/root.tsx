@@ -6,16 +6,16 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import type { Route } from "./+types/root";
 
+import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 import { withEmotionCache } from "@emotion/react";
-import { useInjectStyles } from "./emotion/emotion-client";
 
 import { Provider } from "./components/ui/provider";
-import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
+import { useInjectStyles } from "./emotion/emotion-client";
+
+import type { Route } from "./+types/root";
 
 import "@fontsource-variable/inter/index.css";
-
 import "temporal-polyfill/global";
 
 // oxlint-disable-next-line react/only-export-components

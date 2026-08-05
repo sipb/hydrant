@@ -5,17 +5,17 @@
   "homepage": ".",
   "type": "module",
   "scripts": {
-    "dev": "react-router dev",
-    "typegen": "react-router typegen",
     "build": "react-router build",
-    "preview": "vite preview",
+    "ci-all": "npm run typegen && npm test && npm run lint && npm run format:check",
+    "dev": "react-router dev",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "preview": "vite preview",
     "test": "vitest --run --reporter=verbose",
     "test-watch": "vitest --reporter=verbose",
-    "ci-all": "npm run typegen && npm test && npm run lint && npm run format:check"
+    "typegen": "react-router typegen"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.36.1",

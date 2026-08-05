@@ -1,16 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-
-import Form from "@rjsf/chakra-ui";
-import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv8";
-import type { JSONSchema7Definition } from "json-schema";
-import TOML from "smol-toml";
-
 import { Link as RouterLink } from "react-router";
-import type { Route } from "./+types/overrides.($prefillId)";
-
-import logo from "../assets/logo.svg";
-import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
 
 import {
   Container,
@@ -24,6 +13,16 @@ import {
   Portal,
   Heading,
 } from "@chakra-ui/react";
+import Form from "@rjsf/chakra-ui";
+import validator from "@rjsf/validator-ajv8";
+import TOML from "smol-toml";
+
+import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
+import logo from "../assets/logo.svg";
+
+import type { Route } from "./+types/overrides.($prefillId)";
+import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { JSONSchema7Definition } from "json-schema";
 
 const schema: RJSFSchema = {
   title: "Overrides",

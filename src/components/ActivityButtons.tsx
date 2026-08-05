@@ -17,11 +17,7 @@ import {
   parseColor,
   type ButtonProps,
 } from "@chakra-ui/react";
-import { ColorPickerInput } from "./ui/colorpicker-input";
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
-import { Checkbox } from "./ui/checkbox";
-import { Field } from "./ui/field";
-import { Radio, RadioGroup } from "./ui/radio";
 
 import {
   Timeslot,
@@ -31,11 +27,16 @@ import {
   type Sections,
   type SectionLockOption,
 } from "../lib/activity";
-import type { Class } from "../lib/class";
-import type { PEClass } from "../lib/pe";
-import { PESection } from "../lib/pe";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
+import { PESection } from "../lib/pe";
+import { Checkbox } from "./ui/checkbox";
+import { ColorPickerInput } from "./ui/colorpicker-input";
+import { Field } from "./ui/field";
+import { Radio, RadioGroup } from "./ui/radio";
+
+import type { Class } from "../lib/class";
+import type { PEClass } from "../lib/pe";
 
 interface ToggleButtonProps extends ButtonProps {
   active: boolean;

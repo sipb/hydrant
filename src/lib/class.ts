@@ -1,5 +1,27 @@
+import bioImg from "../assets/bio.gif";
+import calc1Img from "../assets/calc1.gif";
+import calc2Img from "../assets/calc2.gif";
+import chemImg from "../assets/chem.gif";
+import cihImg from "../assets/cih.gif";
+import cihwImg from "../assets/cihw.gif";
+import fallImg from "../assets/fall.gif";
+import gradImg from "../assets/grad.gif";
+import hassAImg from "../assets/hassA.gif";
+import hassEImg from "../assets/hassE.gif";
+import hassHImg from "../assets/hassH.gif";
+import hassSImg from "../assets/hassS.gif";
+import iapImg from "../assets/iap.gif";
+import labImg from "../assets/lab.gif";
+import nonextImg from "../assets/nonext.gif";
+import partlabImg from "../assets/partLab.gif";
+import phys1Img from "../assets/phys1.gif";
+import phys2Img from "../assets/phys2.gif";
+import repeatImg from "../assets/repeat.gif";
+import restImg from "../assets/rest.gif";
+import springImg from "../assets/spring.gif";
+import summerImg from "../assets/summer.gif";
+import underImg from "../assets/under.gif";
 import { Event, Sections, type BaseActivity, type Section } from "./activity";
-import type { ColorScheme } from "./colors";
 import { fallbackColor } from "./colors";
 import {
   CI,
@@ -12,29 +34,7 @@ import {
   type RawSection,
 } from "./raw";
 
-import nonextImg from "../assets/nonext.gif";
-import underImg from "../assets/under.gif";
-import gradImg from "../assets/grad.gif";
-import fallImg from "../assets/fall.gif";
-import iapImg from "../assets/iap.gif";
-import springImg from "../assets/spring.gif";
-import summerImg from "../assets/summer.gif";
-import repeatImg from "../assets/repeat.gif";
-import bioImg from "../assets/bio.gif";
-import calc1Img from "../assets/calc1.gif";
-import calc2Img from "../assets/calc2.gif";
-import chemImg from "../assets/chem.gif";
-import labImg from "../assets/lab.gif";
-import partlabImg from "../assets/partLab.gif";
-import phys1Img from "../assets/phys1.gif";
-import phys2Img from "../assets/phys2.gif";
-import restImg from "../assets/rest.gif";
-import hassHImg from "../assets/hassH.gif";
-import hassAImg from "../assets/hassA.gif";
-import hassSImg from "../assets/hassS.gif";
-import hassEImg from "../assets/hassE.gif";
-import cihImg from "../assets/cih.gif";
-import cihwImg from "../assets/cihw.gif";
+import type { ColorScheme } from "./colors";
 
 /** Flags. */
 export interface Flags {

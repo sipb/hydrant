@@ -1,5 +1,15 @@
 import { nanoid } from "nanoid";
 
+import { CustomActivity } from "./activity";
+import { scheduleSlots } from "./calendarSlots";
+import { Class } from "./class";
+import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
+import { getDefaultMeasurementSystem } from "./measurement";
+import { PEClass } from "./pe";
+import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
+import { Store } from "./store";
+import { sum, urldecode, urlencode } from "./utils";
+
 import type {
   Timeslot,
   Activity,
@@ -7,20 +17,11 @@ import type {
   SectionLockOption,
   Sections,
 } from "./activity";
-import { CustomActivity } from "./activity";
-import { scheduleSlots } from "./calendarSlots";
-import { Class } from "./class";
-import type { Term } from "./dates";
 import type { ColorScheme } from "./colors";
-import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
+import type { Term } from "./dates";
 import type { MeasurementSystem } from "./measurement";
-import { getDefaultMeasurementSystem } from "./measurement";
 import type { RawClass, RawTimeslot, RawPEClass, BuildingInfo } from "./raw";
-import { Store } from "./store";
-import { sum, urldecode, urlencode } from "./utils";
 import type { HydrantState, Preferences, Save } from "./schema";
-import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
-import { PEClass } from "./pe";
 
 /**
  * Global State object. Maintains global program state (selected classes,

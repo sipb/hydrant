@@ -1,5 +1,3 @@
-import { decode } from "html-entities";
-
 import {
   Flex,
   Heading,
@@ -9,17 +7,19 @@ import {
   Button,
   Span,
 } from "@chakra-ui/react";
-import { useColorModeValue } from "./ui/color-mode";
-import { Tooltip } from "./ui/tooltip";
+import { decode } from "html-entities";
 import { LuExternalLink, LuStar } from "react-icons/lu";
-import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 
 import { CustomActivity } from "../lib/activity";
-import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
-import { linkClasses } from "../lib/utils";
 import { useHydrantContext } from "../lib/hydrant";
 import { PEClass, getPEFlagEmoji, type PEFlags } from "../lib/pe";
+import { linkClasses } from "../lib/utils";
+import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
+import { useColorModeValue } from "./ui/color-mode";
+import { Tooltip } from "./ui/tooltip";
+
+import type { Flags } from "../lib/class";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {

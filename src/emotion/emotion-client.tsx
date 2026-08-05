@@ -1,6 +1,3 @@
-// oxlint-disable react/only-export-components
-import { CacheProvider } from "@emotion/react";
-import type { EmotionCache } from "@emotion/react";
 import {
   createContext,
   useContext,
@@ -9,7 +6,13 @@ import {
   useRef,
   useState,
 } from "react";
+
+// oxlint-disable react/only-export-components
+import { CacheProvider } from "@emotion/react";
+
 import { createEmotionCache } from "./emotion-cache";
+
+import type { EmotionCache } from "@emotion/react";
 
 export const ClientStyleContext = createContext({
   reset: () => {

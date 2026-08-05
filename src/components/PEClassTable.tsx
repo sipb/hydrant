@@ -9,7 +9,15 @@ import {
   type SetStateAction,
 } from "react";
 
-import { AgGridReact } from "ag-grid-react";
+import {
+  Box,
+  Flex,
+  Input,
+  Button,
+  ButtonGroup,
+  InputGroup,
+  CloseButton,
+} from "@chakra-ui/react";
 import {
   ModuleRegistry,
   ClientSideRowModelModule,
@@ -23,25 +31,16 @@ import {
   type ColDef,
   type Module,
 } from "ag-grid-community";
-
-import {
-  Box,
-  Flex,
-  Input,
-  Button,
-  ButtonGroup,
-  InputGroup,
-  CloseButton,
-} from "@chakra-ui/react";
+import { AgGridReact } from "ag-grid-react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
+import { ColorStyles } from "../lib/colors";
+import { useHydrantContext } from "../lib/hydrant";
 import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import { useHydrantContext } from "../lib/hydrant";
-import type { State } from "../lib/state";
-import { ColorStyles } from "../lib/colors";
-
 import styles from "./ClassTable.module.css";
+
+import type { State } from "../lib/state";
 
 const hydrantTheme = themeQuartz.withParams({
   accentColor: "var(--chakra-colors-fg)",

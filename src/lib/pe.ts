@@ -1,7 +1,7 @@
 import { Section, Sections, type BaseActivity } from "./activity";
-import { type RawPEClass, type RawSection } from "./raw";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
+import { type RawPEClass, type RawSection } from "./raw";
 
 export const W35_PLUS_TEXT =
   "W31, W32, W33, W34 and W35 are all connected. Enter through W35.";

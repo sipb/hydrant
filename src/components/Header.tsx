@@ -13,20 +13,20 @@ import {
   Select,
   Portal,
 } from "@chakra-ui/react";
-import { useColorModeValue } from "./ui/color-mode";
-import { LuSettings, LuX } from "react-icons/lu";
 import { keyframes } from "@emotion/react";
+import { LuSettings, LuX } from "react-icons/lu";
 
-import { COLOR_SCHEME_PRESETS } from "../lib/colors";
-import { MEASUREMENT_SYSTEM_PRESETS } from "../lib/measurement";
-import type { Preferences } from "../lib/schema";
-import { DEFAULT_PREFERENCES } from "../lib/schema";
-import { useHydrantContext } from "../lib/hydrant";
-
-import logo from "../assets/logo.svg";
-import logoDark from "../assets/logo-dark.svg";
 import hydraAnt from "../assets/hydraAnt.png";
+import logoDark from "../assets/logo-dark.svg";
+import logo from "../assets/logo.svg";
+import { COLOR_SCHEME_PRESETS } from "../lib/colors";
+import { useHydrantContext } from "../lib/hydrant";
+import { MEASUREMENT_SYSTEM_PRESETS } from "../lib/measurement";
+import { DEFAULT_PREFERENCES } from "../lib/schema";
 import { SIPBLogo } from "./ButtonsLinks";
+import { useColorModeValue } from "./ui/color-mode";
+
+import type { Preferences } from "../lib/schema";
 
 // Brief nudge when someone clicks outside the dialog, to hint that the click
 // was ignored rather than just doing nothing. Skipped under reduced motion.

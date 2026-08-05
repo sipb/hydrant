@@ -1,13 +1,14 @@
-import type { EventInput } from "@fullcalendar/react";
 import { nanoid } from "nanoid";
 
-import type { ColorScheme } from "./colors";
 import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
-import type { RawSection, RawTimeslot } from "./raw";
 import { sum } from "./utils";
-import type { PEClass } from "./pe";
+
 import type { Class } from "./class";
+import type { ColorScheme } from "./colors";
+import type { PEClass } from "./pe";
+import type { RawSection, RawTimeslot } from "./raw";
+import type { EventInput } from "@fullcalendar/react";
 
 interface ActivityEventInput extends EventInput {
   room?: string;

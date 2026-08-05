@@ -1,5 +1,7 @@
 import { expect, test } from "vitest";
+
 import { type Flags, getFlagImg, Class, ClassSections } from "../src/lib/class";
+import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 import {
   CI,
   GIR,
@@ -9,7 +11,6 @@ import {
   TermCode,
   type RawClass,
 } from "../src/lib/raw";
-import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 
 // auxiliary object for testing getFlagImg; change as needed
 const flagNameValidity: [keyof Flags, boolean][] = [

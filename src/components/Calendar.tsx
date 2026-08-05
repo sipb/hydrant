@@ -1,24 +1,24 @@
 import { useMemo } from "react";
 
 import { Circle, Float, Text } from "@chakra-ui/react";
-import { Tooltip } from "./ui/tooltip";
-
 import FullCalendar, {
   type EventDisplayInfo,
   type EventApi,
 } from "@fullcalendar/react";
+import interactionPlugin from "@fullcalendar/react/interaction";
 import themePlugin from "@fullcalendar/react/themes/monarch";
 import timeGridPlugin from "@fullcalendar/react/timegrid";
-import interactionPlugin from "@fullcalendar/react/interaction";
 
-import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
+import styles from "./Calendar.module.css";
+import { Tooltip } from "./ui/tooltip";
 
 import "@fullcalendar/react/skeleton.css";
 import "@fullcalendar/react/themes/monarch/theme.css";
-import styles from "./Calendar.module.css";
+
+import type { Activity } from "../lib/activity";
 
 // Threshold at which to display a distance warning, in feet (650 meters)
 const DISTANCE_WARNING_THRESHOLD = 2112;

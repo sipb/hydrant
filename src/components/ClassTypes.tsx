@@ -2,13 +2,13 @@ import { useState } from "react";
 
 import { Tabs } from "@chakra-ui/react";
 import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
-import type { IconType } from "react-icons/lib";
 
+import { useHydrantContext } from "../lib/hydrant";
+import { ClassType } from "../lib/schema";
 import { ClassTable } from "./ClassTable";
 import { PEClassTable } from "./PEClassTable";
 
-import { ClassType } from "../lib/schema";
-import { useHydrantContext } from "../lib/hydrant";
+import type { IconType } from "react-icons/lib";
 
 function classTypeComponents(termKeys: ClassType[]) {
   const obj = {} as Record<ClassType, [IconType, React.ComponentType]>;

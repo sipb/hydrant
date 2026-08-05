@@ -1,5 +1,6 @@
-import { Alert as ChakraAlert } from "@chakra-ui/react";
 import { forwardRef, type ReactNode, type ReactElement } from "react";
+
+import { Alert as ChakraAlert } from "@chakra-ui/react";
 
 export interface AlertProps extends Omit<ChakraAlert.RootProps, "title"> {
   startElement?: ReactNode;

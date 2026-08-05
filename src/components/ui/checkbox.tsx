@@ -1,10 +1,11 @@
-import { Checkbox as ChakraCheckbox } from "@chakra-ui/react";
 import {
   type ReactNode,
   type InputHTMLAttributes,
   type RefObject,
   forwardRef,
 } from "react";
+
+import { Checkbox as ChakraCheckbox } from "@chakra-ui/react";
 
 export interface CheckboxProps extends ChakraCheckbox.RootProps {
   icon?: ReactNode;
