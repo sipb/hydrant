@@ -42,8 +42,8 @@ jobs:
           pip install .
       - name: Run scrapers
         run: python3 -m scrapers
-      - name: Check/generate types
-        run: npm run typecheck
+      - name: Generate types
+        run: npm run typegen
       - name: Build
         run: npm run build
         env:

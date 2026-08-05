@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "react-router dev",
-    "typecheck": "react-router typegen && tsc",
+    "typegen": "react-router typegen",
     "build": "react-router build",
     "preview": "vite preview",
     "format": "oxfmt",
@@ -15,7 +15,7 @@
     "lint:fix": "oxlint --fix",
     "test": "vitest --run --reporter=verbose",
     "test-watch": "vitest --reporter=verbose",
-    "ci-all": "npm run typecheck && npm test && npm run lint && npm run format:check"
+    "ci-all": "npm run typegen && npm test && npm run lint && npm run format:check"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.36.1",
@@ -58,7 +58,7 @@
     "oxfmt": "^0.62.0",
     "oxlint": "^1.77.0",
     "oxlint-tsgolint": "^7.0.2001",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vite": "^8.1.5",
     "vitest": "^4.1.10"
   },
