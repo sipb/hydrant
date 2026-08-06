@@ -195,11 +195,11 @@ export function Calendar() {
             portalled
             positioning={{ placement: "top" }}
           >
-            <TitleText
-              smallText={smallText}
-              titleClass={titleClass}
-              title={event.title}
-            />
+            {TitleText({
+              smallText,
+              titleClass,
+              title: event.title,
+            })}
           </Tooltip>
         ) : (
           <TitleText
@@ -214,7 +214,7 @@ export function Calendar() {
             portalled
             positioning={{ placement: "top" }}
           >
-            <RoomText smallText={smallText} timeClass={timeClass} room={room} />
+            {RoomText({ smallText, timeClass, room })}
           </Tooltip>
         ) : (
           <RoomText smallText={smallText} timeClass={timeClass} room={room} />
