@@ -199,8 +199,8 @@ function ClassInput(props: {
       onClassInputChange("");
     } else if (state.classes.has(classInput)) {
       // else check if this number exists exactly
-      const cls = state.classes.get(classInput);
-      state.toggleActivity(cls);
+      const clsCheck = state.classes.get(classInput);
+      state.toggleActivity(clsCheck);
     }
   };
 
@@ -246,6 +246,24 @@ function ClassInput(props: {
   );
 }
 
+const StarCellRenderer = (props: {
+  gridRef: React.RefObject<AgGridReact>;
+  params: { data: ClassTableRow };
+}) => {
+  const { gridRef, params } = props;
+  return (
+    <StarButton
+      cls={params.data.class}
+      onStarToggle={() => {
+        gridRef.current?.api?.refreshCells({
+          force: true,
+          columns: ["number"],
+        });
+      }}
+    />
+  );
+};
+
 const filtersNonFlags = {
   fits: (state, cls) => state.fitsSchedule(cls),
   starred: (state, cls) => state.isClassStarred(cls),
@@ -257,7 +275,7 @@ type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
-  ["starred", "Starred", <LuStar fill="currentColor" />],
+  ["starred", "Starred", <LuStar fill="currentColor" key="starred" />],
   ["hass", "HASS"],
   ["cih", "CI-H"],
   ["cim", "CI-M"],
@@ -340,17 +358,19 @@ function ClassFlags(props: {
     setFlagsFilter(() => (cls?: Class) => {
       if (!cls) return false;
       let result = true;
-      newFlags.forEach((value, flag) => {
+      newFlags.forEach((flagVal, flagKey) => {
         if (
-          value &&
-          flag in filtersNonFlags &&
-          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+          flagVal &&
+          flagKey in filtersNonFlags &&
+          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+          !filtersNonFlags[flagKey as keyof typeof filtersNonFlags](state, cls)
         ) {
           result = false;
         } else if (
-          value &&
-          !(flag in filtersNonFlags) &&
-          !cls.flags[flag as keyof typeof cls.flags]
+          flagVal &&
+          !(flagKey in filtersNonFlags) &&
+          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+          !cls.flags[flagKey as keyof typeof cls.flags]
         ) {
           result = false;
         }
@@ -393,6 +413,7 @@ function ClassFlags(props: {
                 <Image
                   src={image}
                   alt={label}
+                  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
                   filter={filter(flag as keyof Flags)}
                 />
               </LabelledButton>
@@ -511,17 +532,7 @@ export function ClassTable() {
         headerName: "",
         field: "number",
         maxWidth: 49,
-        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
-          <StarButton
-            cls={params.data.class}
-            onStarToggle={() => {
-              gridRef.current?.api?.refreshCells({
-                force: true,
-                columns: ["number"],
-              });
-            }}
-          />
-        ),
+        cellRenderer: StarCellRenderer,
         sortable: false,
         cellStyle: { padding: 0 },
       },

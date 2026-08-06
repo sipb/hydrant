@@ -34,6 +34,7 @@ export function useColorMode(): UseColorModeReturn {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
   return {
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     colorMode: colorMode as ColorMode,
     setColorMode: setTheme,
     toggleColorMode,

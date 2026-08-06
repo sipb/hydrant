@@ -9,6 +9,7 @@ import {
   Term,
 } from "../src/lib/dates";
 
+// oxlint-disable-next-line import/no-unassigned-import
 import "temporal-polyfill/global";
 
 test("parseUrlName", () => {

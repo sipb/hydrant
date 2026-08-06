@@ -244,9 +244,9 @@ export function Header() {
   const [show, setShow] = useState(urlNameOrig !== null);
 
   const onClose = () => {
-    setSearchParams((searchParams) => {
-      searchParams.delete("ti");
-      return searchParams;
+    setSearchParams((searchParamsNew) => {
+      searchParamsNew.delete("ti");
+      return searchParamsNew;
     });
     setShow(false);
   };

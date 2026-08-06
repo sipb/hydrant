@@ -249,6 +249,7 @@ describe("Class", () => {
     expect(myClass.new).toEqual(false);
   });
 
+  // oxlint-disable-next-line vitest/warn-todo
   test.todo("Class.events");
 
   test("Class.flags", () => {

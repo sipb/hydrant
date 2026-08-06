@@ -9,6 +9,7 @@ import {
 } from "../src/lib/colors";
 import { Slot } from "../src/lib/dates";
 
+// oxlint-disable-next-line import/no-unassigned-import
 import "temporal-polyfill/global";
 
 describe("Timeslot", () => {

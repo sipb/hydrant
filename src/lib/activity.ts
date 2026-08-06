@@ -104,6 +104,21 @@ export interface BaseActivity {
 
 export type Activity = Class | PEClass | CustomActivity;
 
+export function isActivity(obj: unknown): obj is Activity {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "id" in obj &&
+    "name" in obj &&
+    "shortName" in obj &&
+    "backgroundColor" in obj &&
+    "manualColor" in obj &&
+    "hours" in obj &&
+    "buttonName" in obj &&
+    "events" in obj
+  );
+}
+
 /**
  * A group of events to be rendered in a calendar, all of the same name, room,
  * and color.
@@ -227,13 +242,17 @@ export class CustomActivity implements BaseActivity {
   /** Inflate a custom activity with info from the output of deflate. */
   inflate(parsed: (RawTimeslot[] | string)[]): void {
     const [timeslots, name, backgroundColor, room] = parsed;
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     this.timeslots = (timeslots as RawTimeslot[]).map(
       (slot) => new Timeslot(...slot),
     );
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     this.name = name as string;
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     this.room = (room as string) || undefined;
     if (backgroundColor) {
       this.manualColor = true;
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       this.backgroundColor = backgroundColor as string;
     }
   }
@@ -339,9 +358,9 @@ export class Sections {
     return this.kind ? this.kind.toLowerCase() : "sec";
   }
 
-  private readonly _priority = 0;
+  private readonly priotityDefault = 0;
   get priority(): number {
-    return this._priority;
+    return this.priotityDefault;
   }
 
   /** Name for the kind of sections these are. */

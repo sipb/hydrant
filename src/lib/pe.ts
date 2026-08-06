@@ -211,6 +211,7 @@ export class PEClass implements BaseActivity {
       this.id,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
       ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       ...(sections.length > 0 ? (sections as number[]) : []), // number
     ];
   }
@@ -229,6 +230,7 @@ export class PEClass implements BaseActivity {
     }
     let sectionLocs: (string | number | string[])[] | null = null;
     if (Array.isArray(parsed[offset])) {
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       sectionLocs = parsed[offset] as string[];
       offset += 1;
     }
@@ -241,6 +243,7 @@ export class PEClass implements BaseActivity {
         secs.locked = false;
       } else {
         secs.locked = true;
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
         secs.selected = secs.sections[parse as number];
       }
     });

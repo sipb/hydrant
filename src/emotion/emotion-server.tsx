@@ -29,6 +29,7 @@ export function createEmotion() {
     return markup;
   }
 
+  // oxlint-disable-next-line no-underscore-dangle
   function _renderToString(element: React.ReactNode) {
     return renderToString(
       <CacheProvider value={cache}>

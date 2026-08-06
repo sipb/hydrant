@@ -97,7 +97,7 @@ export function useICSExport(
 
     try {
       download(`${state.term.urlName}.ics`, cal.toString());
-    } catch (_err) {
+    } catch {
       onError?.();
     }
     onSuccess?.();

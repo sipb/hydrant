@@ -36,6 +36,7 @@ export const getStateMaps = (
 /** Fetch from the url, which is JSON of type T. */
 export const fetchNoCache = async <T>(url: string): Promise<T> => {
   const res = await fetch(url, { cache: "no-cache" });
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   return (await res.json()) as T;
 };
 
@@ -71,6 +72,7 @@ export function useHydrant({ globalState }: { globalState: State }): {
       }
     };
     state.updateState();
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [colorMode, state]);
 
   return { state, hydrantState };
@@ -78,6 +80,7 @@ export function useHydrant({ globalState }: { globalState: State }): {
 
 export const HydrantContext = createContext({
   hydrantState: DEFAULT_STATE,
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   state: {} as State,
 });
 

@@ -32,37 +32,37 @@ describe("fallbackColor", () => {
   });
 });
 
+// a function to create window.matchMedia mocks on the fly
+function makeMatchMediaMock(matchMediaMap: Map<string, boolean>): void {
+  // the mock function to assign to window.matchMedia
+  function matchMediaMock(query: string): MediaQueryList {
+    return {
+      matches: matchMediaMap.get(query) ?? false,
+      media: query,
+      onchange: null,
+      // oxlint-disable-next-line typescript/no-deprecated
+      addListener: vi.fn<MediaQueryList["addListener"]>(),
+      // oxlint-disable-next-line typescript/no-deprecated
+      removeListener: vi.fn<MediaQueryList["removeListener"]>(),
+      addEventListener: vi.fn<MediaQueryList["addEventListener"]>(),
+      removeEventListener: vi.fn<MediaQueryList["removeEventListener"]>(),
+      dispatchEvent: vi.fn<MediaQueryList["dispatchEvent"]>(),
+    };
+  }
+  // actually assign this mock function!
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    configurable: true,
+    value: matchMediaMock,
+  });
+}
+
 describe("getDefaultColorScheme", () => {
   /**
    * Partition:
    * - prefers-color-scheme: light, dark
    * - prefers-contrast: no-preference, more
    */
-
-  // a function to create window.matchMedia mocks on the fly
-  function makeMatchMediaMock(matchMediaMap: Map<string, boolean>): void {
-    // the mock function to assign to window.matchMedia
-    function matchMediaMock(query: string): MediaQueryList {
-      return {
-        matches: matchMediaMap.get(query) ?? false,
-        media: query,
-        onchange: null,
-        // oxlint-disable-next-line typescript/no-deprecated
-        addListener: vi.fn(),
-        // oxlint-disable-next-line typescript/no-deprecated
-        removeListener: vi.fn(),
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      };
-    }
-    // actually assign this mock function!
-    Object.defineProperty(window, "matchMedia", {
-      writable: true,
-      configurable: true,
-      value: matchMediaMock,
-    });
-  }
 
   test("prefers-color-scheme = light, prefers-constrast = no-preference", () => {
     makeMatchMediaMock(

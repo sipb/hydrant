@@ -13,9 +13,9 @@ import {
   Portal,
   Heading,
 } from "@chakra-ui/react";
-import Form from "@rjsf/chakra-ui";
+import { Form } from "@rjsf/chakra-ui";
 import validator from "@rjsf/validator-ajv8";
-import TOML from "smol-toml";
+import { stringify as tomlStringify, parse as tomlParse } from "smol-toml";
 
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
 import logo from "../assets/logo.svg";
@@ -27,13 +27,16 @@ import type { JSONSchema7Definition } from "json-schema";
 const schema: RJSFSchema = {
   title: "Overrides",
   type: "array",
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   items: {
     ...itemSchema.additionalProperties,
     required: ["number"],
   } as unknown as JSONSchema7Definition,
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
 };
 
+// oxlint-disable-next-line typescript/no-unsafe-type-assertion
 const overrides = Object.assign(
   {},
   ...Object.entries(
@@ -55,6 +58,7 @@ const overridesCollection = createListCollection({
       label: name,
       value: key,
     }))
+    // oxlint-disable-next-line unicorn/no-array-sort
     .sort((a, b) => a.label.localeCompare(b.label)),
 });
 
@@ -65,13 +69,14 @@ const overrideNames = Object.entries(overrides)
     return accum;
   }, {});
 
-const getDataFromFile = async (fileName: string) => {
+const getDataFromFileAsync = async (fileName: string) => {
   try {
     const textToml = await overrides[fileName].data();
-    const mod = TOML.parse(textToml);
+    const mod = tomlParse(textToml);
 
-    const newData = Object.entries(mod).map(([key, value_1]) => {
-      const { number: num, ...rest } = value_1 as Record<string, unknown>;
+    const newData = Object.entries(mod).map(([key, value]) => {
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+      const { number: _num, ...rest } = value as Record<string, unknown>;
       return {
         number: key,
         ...rest,
@@ -119,7 +124,9 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
   if (prefillIdPrelim) {
     if (Object.keys(overrideNames).includes(prefillIdPrelim)) {
-      const newData = await getDataFromFile(overrideNames[prefillIdPrelim]);
+      const newData = await getDataFromFileAsync(
+        overrideNames[prefillIdPrelim],
+      );
       if (newData.length > 0) {
         prefillData = newData;
         prefillId = overrideNames[prefillIdPrelim];
@@ -298,28 +305,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
     return uiSchema;
   }, [data.length, error]);
 
-  const getDataFromFile = useCallback(
-    async (fileName: string) => {
-      try {
-        const textToml = await overrides[fileName].data();
-        const mod = TOML.parse(textToml);
-
-        const newData = Object.entries(mod).map(([key, value_1]) => {
-          const { number: num, ...rest } = value_1 as Record<string, unknown>;
-          return {
-            number: key,
-            ...rest,
-          };
-        });
-        return newData;
-      } catch (err) {
-        console.error("Error loading TOML file:", err);
-        return [];
-      }
-    },
-    [overrides],
-  );
-
+  const getDataFromFile = useCallback(getDataFromFileAsync, []);
   const handleChange = (e: Select.ValueChangeDetails) => {
     const fileName = e.value[0];
 
@@ -421,13 +407,14 @@ export default function App({ loaderData }: Route.ComponentProps) {
           liveOmit={"onChange"}
           omitExtraData={true}
           onChange={({ formData, errors }) => {
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             setData(formData as Record<string, unknown>[]);
-            setError(errors.length > 0 ? true : false);
+            setError(errors.length > 0);
           }}
           onSubmit={() => {
             const contents =
               "#:schema ../override-schema.json\n\n" +
-              TOML.stringify(
+              tomlStringify(
                 Object.fromEntries(
                   data.map((override) => {
                     const { number: num, ...rest } = override;

@@ -118,3 +118,12 @@ export function urldecode(obj: string): unknown {
     ),
   );
 }
+
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]];
+}[keyof T][];
+
+export function typedEntries<T extends object>(obj: T): Entries<T> {
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  return Object.entries(obj) as Entries<T>;
+}

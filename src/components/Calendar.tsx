@@ -9,16 +9,15 @@ import interactionPlugin from "@fullcalendar/react/interaction";
 import themePlugin from "@fullcalendar/react/themes/monarch";
 import timeGridPlugin from "@fullcalendar/react/timegrid";
 
-import { CustomActivity, Timeslot } from "../lib/activity";
+import { CustomActivity, isActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
-import styles from "./Calendar.module.css";
-import { Tooltip } from "./ui/tooltip";
 
 import "@fullcalendar/react/skeleton.css";
 import "@fullcalendar/react/themes/monarch/theme.css";
 
-import type { Activity } from "../lib/activity";
+import styles from "./Calendar.module.css";
+import { Tooltip } from "./ui/tooltip";
 
 // Threshold at which to display a distance warning, in feet (650 meters)
 const DISTANCE_WARNING_THRESHOLD = 2112;
@@ -45,6 +44,36 @@ const getDistance = (
   const dx = location1.x - location2.x;
   const dy = location1.y - location2.y;
   return Math.sqrt(dx * dx + dy * dy);
+};
+
+const TitleText = (props: {
+  smallText: boolean;
+  titleClass: string;
+  title: string;
+}) => {
+  const { smallText, titleClass, title } = props;
+  return (
+    <Text
+      fontSize={smallText ? "xs" : "sm"}
+      fontWeight="medium"
+      className={titleClass}
+    >
+      {title}
+    </Text>
+  );
+};
+
+const RoomText = (props: {
+  smallText: boolean;
+  timeClass: string;
+  room?: string;
+}) => {
+  const { smallText, timeClass, room } = props;
+  return (
+    <Text fontSize={smallText ? "2xs" : "xs"} className={timeClass}>
+      {room}
+    </Text>
+  );
 };
 
 /**
@@ -83,10 +112,16 @@ export function Calendar() {
    * return undefined.
    */
   const getDistanceWarning = (thisEvent: EventApi) => {
-    const thisRoom = thisEvent.extendedProps.room as string | undefined;
+    const thisRoom = thisEvent.extendedProps.room;
     if (!thisEvent.start || !thisRoom) {
       return undefined;
     }
+
+    if (thisRoom !== "string" && thisRoom !== undefined) {
+      return undefined;
+    }
+
+    thisRoom satisfies string | undefined;
 
     for (const beforeEvent of events) {
       if (!beforeEvent.start || !beforeEvent.room) {
@@ -135,26 +170,22 @@ export function Calendar() {
     isNarrow,
     isShort,
   }: EventDisplayInfo) => {
-    const room = event.extendedProps.room as string | undefined;
-    const activity = event.extendedProps.activity as Activity;
+    // ensure event is activity
+    if (!isActivity(event.extendedProps.activity)) {
+      return null;
+    }
+
+    const room = event.extendedProps.room;
+    const activity = event.extendedProps.activity;
     const distanceWarning = getDistanceWarning(event);
     const smallText = isNarrow || isShort;
 
-    const TitleText = () => (
-      <Text
-        fontSize={smallText ? "xs" : "sm"}
-        fontWeight="medium"
-        className={titleClass}
-      >
-        {event.title}
-      </Text>
-    );
+    // ensure room is either string or undefined
+    if (room !== "string" && room !== undefined) {
+      return null;
+    }
 
-    const RoomText = () => (
-      <Text fontSize={smallText ? "2xs" : "xs"} className={timeClass}>
-        {room}
-      </Text>
-    );
+    room satisfies string | undefined;
 
     return (
       <>
@@ -164,21 +195,29 @@ export function Calendar() {
             portalled
             positioning={{ placement: "top" }}
           >
-            {TitleText()}
+            <TitleText
+              smallText={smallText}
+              titleClass={titleClass}
+              title={event.title}
+            />
           </Tooltip>
         ) : (
-          <TitleText />
+          <TitleText
+            smallText={smallText}
+            titleClass={titleClass}
+            title={event.title}
+          />
         )}
         {event.extendedProps.roomClarification ? (
           <Tooltip
-            content={event.extendedProps.roomClarification as string}
+            content={event.extendedProps.roomClarification}
             portalled
             positioning={{ placement: "top" }}
           >
-            {RoomText()}
+            <RoomText smallText={smallText} timeClass={timeClass} room={room} />
           </Tooltip>
         ) : (
-          <RoomText />
+          <RoomText smallText={smallText} timeClass={timeClass} room={room} />
         )}
         {distanceWarning ? (
           <Float placement="top-end" offsetX={1.5} offsetY={-0.5}>
@@ -219,7 +258,9 @@ export function Calendar() {
       eventContent={renderEvent}
       eventClick={(e) => {
         // extendedProps: non-standard props of {@link Event.eventInputs}
-        state.setViewedActivity(e.event.extendedProps.activity as Activity);
+        if (isActivity(e.event.extendedProps.activity)) {
+          state.setViewedActivity(e.event.extendedProps.activity);
+        }
       }}
       headerToolbar={false}
       height="auto"

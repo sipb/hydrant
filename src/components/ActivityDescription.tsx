@@ -446,4 +446,5 @@ export function ActivityDescription() {
   }
 
   activity satisfies never;
+  return null;
 }

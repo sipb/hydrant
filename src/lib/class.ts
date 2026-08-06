@@ -139,6 +139,10 @@ export class ClassSections extends Sections {
         return "lab";
       case SectionKind.DESIGN:
         return "des";
+      default: {
+        this.kind satisfies never;
+        throw new Error(`Invalid SectionKind`);
+      }
     }
   }
 
@@ -152,6 +156,10 @@ export class ClassSections extends Sections {
         return 2;
       case SectionKind.DESIGN:
         return 3;
+      default: {
+        this.kind satisfies never;
+        throw new Error(`Invalid SectionKind`);
+      }
     }
   }
 
@@ -165,6 +173,10 @@ export class ClassSections extends Sections {
         return "Lab";
       case SectionKind.DESIGN:
         return "Design";
+      default: {
+        this.kind satisfies never;
+        throw new Error(`Invalid SectionKind`);
+      }
     }
   }
 }
@@ -218,8 +230,13 @@ export class Class implements BaseActivity {
               rawClass.designRawSections,
               rawClass.designSections,
             );
+          default: {
+            kind satisfies never;
+            throw new Error(`Invalid SectionKind`);
+          }
         }
       })
+      // oxlint-disable-next-line unicorn/no-array-sort
       .sort((a, b) => a.priority - b.priority);
     this.backgroundColor = fallbackColor(colorScheme);
   }
@@ -503,6 +520,7 @@ export class Class implements BaseActivity {
       this.number,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
       ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       ...(sections.length > 0 ? (sections as number[]) : []), // number
     ];
   }
@@ -522,6 +540,7 @@ export class Class implements BaseActivity {
     }
     let sectionLocs: (string | number | string[])[] | null = null;
     if (Array.isArray(parsed[offset])) {
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       sectionLocs = parsed[offset] as string[];
       offset += 1;
     }
@@ -534,6 +553,7 @@ export class Class implements BaseActivity {
         secs.locked = false;
       } else {
         secs.locked = true;
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
         secs.selected = secs.sections[parse as number];
       }
     });

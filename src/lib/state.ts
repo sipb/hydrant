@@ -225,13 +225,13 @@ export class State {
 
   /** Rename a given non-activity. */
   renameCustomActivity(customActivity: CustomActivity, name: string): void {
-    const customActivity_ = this.selectedCustomActivities.find(
+    const customActivityFound = this.selectedCustomActivities.find(
       (customActivity_) => customActivity_.id === customActivity.id,
     );
 
-    if (!customActivity_) return;
+    if (!customActivityFound) return;
 
-    customActivity_.name = name;
+    customActivityFound.name = name;
     this.updateState();
   }
 
@@ -240,13 +240,13 @@ export class State {
     customActivity: CustomActivity,
     room: string | undefined,
   ): void {
-    const customActivity_ = this.selectedCustomActivities.find(
+    const customActivityFound = this.selectedCustomActivities.find(
       (customActivity_) => customActivity_.id === customActivity.id,
     );
 
-    if (!customActivity_) return;
+    if (!customActivityFound) return;
 
-    customActivity_.room = room;
+    customActivityFound.room = room;
     this.updateState();
   }
 
@@ -437,6 +437,7 @@ export class State {
       4: 4,
     };
 
+    // oxlint-disable-next-line unicorn/no-array-sort
     const sortedQuarters = Array.from(allQuarters).sort((a, b) => {
       return quarterOrder[a] - quarterOrder[b];
     });
@@ -482,6 +483,7 @@ export class State {
   ): void {
     if (!obj) return;
     this.reset();
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     const [classes, customActivities, selectedOption, peClasses] = obj as [
       (string | number | string[])[][],
       (string | RawTimeslot[])[][] | null,
@@ -492,10 +494,12 @@ export class State {
       const cls =
         typeof deflated === "string"
           ? this.classes.get(deflated)
-          : this.classes.get((deflated as string[])[0]);
+          : // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+            this.classes.get((deflated as string[])[0]);
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
         const subject =
+          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
           typeof deflated === "string" ? deflated : (deflated as string[])[0];
 
         this.unknownSubjects.add(subject);
@@ -520,11 +524,14 @@ export class State {
           ? (this.peClasses.get(deflated) ??
             // oxlint-disable-next-line typescript/restrict-template-expressions
             this.peClasses.get(`Q3.${deflated}`))
-          : (this.peClasses.get((deflated as string[])[0]) ??
+          : // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+            (this.peClasses.get((deflated as string[])[0]) ??
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             this.peClasses.get(`Q3.${(deflated as string[])[0]}`));
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
         const subject =
+          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
           typeof deflated === "string" ? deflated : (deflated as string[])[0];
 
         this.unknownSubjects.add(subject);
@@ -548,6 +555,7 @@ export class State {
     }
     const storage = this.store.get(id);
     if (!storage) return;
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     this.inflate(storage as Parameters<State["inflate"]>[0]);
     this.saveId = id;
     this.updateState(false);
@@ -579,7 +587,7 @@ export class State {
 
   /** Rename a given save. */
   renameSave(id: string, name: string): void {
-    const save = this.saves.find((save) => save.id === id);
+    const save = this.saves.find((s) => s.id === id);
     if (!save || !name) return;
     save.name = name;
     this.storeSave();
@@ -636,13 +644,14 @@ export class State {
       this.addSave(true);
     }
     if (save) {
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       this.inflate(urldecode(save) as Parameters<State["inflate"]>[0]);
     } else {
       // Try to load default schedule if set, otherwise load first save
       const defaultScheduleId = this.preferences.defaultScheduleId;
       if (
         defaultScheduleId &&
-        this.saves.some((save) => save.id === defaultScheduleId)
+        this.saves.some((s) => s.id === defaultScheduleId)
       ) {
         this.loadSave(defaultScheduleId);
       } else {
