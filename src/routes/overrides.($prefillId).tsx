@@ -58,8 +58,7 @@ const overridesCollection = createListCollection({
       label: name,
       value: key,
     }))
-    // oxlint-disable-next-line unicorn/no-array-sort
-    .sort((a, b) => a.label.localeCompare(b.label)),
+    .toSorted((a, b) => a.label.localeCompare(b.label)),
 });
 
 const overrideNames = Object.entries(overrides)

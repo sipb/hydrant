@@ -236,8 +236,7 @@ export class Class implements BaseActivity {
           }
         }
       })
-      // oxlint-disable-next-line unicorn/no-array-sort
-      .sort((a, b) => a.priority - b.priority);
+      .toSorted((a, b) => a.priority - b.priority);
     this.backgroundColor = fallbackColor(colorScheme);
   }
 

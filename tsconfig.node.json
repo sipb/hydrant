@@ -5,9 +5,9 @@
     "composite": true,
     "strict": true,
     "types": ["node"],
-    "lib": ["ES2022"],
-    "target": "ES2022",
-    "module": "ES2022",
+    "lib": ["ES2023"],
+    "target": "ES2023",
+    "module": "esnext",
     "moduleResolution": "bundler"
   }
 }

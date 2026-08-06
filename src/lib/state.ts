@@ -437,8 +437,7 @@ export class State {
       4: 4,
     };
 
-    // oxlint-disable-next-line unicorn/no-array-sort
-    const sortedQuarters = Array.from(allQuarters).sort((a, b) => {
+    const sortedQuarters = Array.from(allQuarters).toSorted((a, b) => {
       return quarterOrder[a] - quarterOrder[b];
     });
 
