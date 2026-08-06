@@ -33,9 +33,15 @@ export function useColorMode(): UseColorModeReturn {
   const toggleColorMode = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
+
+  if (colorMode !== "light" && colorMode !== "dark") {
+    throw new Error(
+      `Invalid color mode: ${colorMode}. Expected "light" or "dark".`,
+    );
+  }
+
   return {
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    colorMode: colorMode as ColorMode,
+    colorMode: colorMode,
     setColorMode: setTheme,
     toggleColorMode,
   };

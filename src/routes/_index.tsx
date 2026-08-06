@@ -23,7 +23,6 @@ import { State } from "../lib/state";
 
 import type { Route } from "./+types/_index";
 
-// oxlint-disable-next-line react/only-export-components
 export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const searchParams = url.searchParams;
   const urlNameOrig = searchParams.get("t");
@@ -113,7 +112,6 @@ function HydrantApp() {
   );
 }
 
-// oxlint-disable-next-line react/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant" },
   {

@@ -20,7 +20,7 @@ const CLASS_TYPE_COMPONENTS: Record<
 
 export const ClassTypesSwitcher = () => {
   const { state } = useHydrantContext();
-  const [currentTab, setCurrentTab] = useState(ClassType.ACADEMIC);
+  const [currentTab, setCurrentTab] = useState<string>(ClassType.ACADEMIC);
 
   const tabs: Partial<Record<ClassType, [IconType, React.ComponentType]>> = {
     ...(state.classes.size > 0
@@ -39,8 +39,7 @@ export const ClassTypesSwitcher = () => {
         variant="line"
         value={currentTab}
         onValueChange={(e) => {
-          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-          setCurrentTab(e.value as ClassType);
+          setCurrentTab(e.value);
         }}
       >
         <Tabs.List>

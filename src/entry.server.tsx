@@ -24,11 +24,11 @@ export default function handleRequest(
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
-    const userAgent = request.headers.get("user-agent");
+    let userAgent = request.headers.get("user-agent");
 
     // Ensure requests from bots and SPA Mode renders wait for all content to load before responding
     // https://react.dev/reference/react-dom/server/renderToPipeableStream#waiting-for-all-content-to-load-for-crawlers-and-static-generation
-    const readyOption: keyof RenderToPipeableStreamOptions =
+    let readyOption: keyof RenderToPipeableStreamOptions =
       (userAgent && isbot(userAgent)) || routerContext.isSpaMode
         ? "onAllReady"
         : "onShellReady";
@@ -58,7 +58,6 @@ export default function handleRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
-          // oxlint-disable-next-line typescript/prefer-promise-reject-errors
           reject(error);
         },
         onError(error: unknown) {

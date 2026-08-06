@@ -19,7 +19,6 @@ import "@fontsource-variable/inter/index.css";
 // oxlint-disable-next-line import/no-unassigned-import
 import "temporal-polyfill/global";
 
-// oxlint-disable-next-line react/only-export-components
 export const links: Route.LinksFunction = () => [
   {
     rel: "icon",
@@ -63,13 +62,17 @@ export const Layout = withEmotionCache((props: LayoutProps, cache) => {
   useInjectStyles(cache);
 
   return (
-    <html lang="en">
-      <head>
+    <html lang="en" suppressHydrationWarning>
+      <head suppressHydrationWarning>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hydrant</title>
         <Meta />
         <Links />
+        <meta
+          name="emotion-insertion-point"
+          content="emotion-insertion-point"
+        />
         <Analytics />
       </head>
       <body>

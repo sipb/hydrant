@@ -1,3 +1,5 @@
+// oxlint-disable react/only-export-components
+
 import {
   createContext,
   useContext,
@@ -7,7 +9,6 @@ import {
   useState,
 } from "react";
 
-// oxlint-disable react/only-export-components
 import { CacheProvider } from "@emotion/react";
 
 import { createEmotionCache } from "./emotion-cache";

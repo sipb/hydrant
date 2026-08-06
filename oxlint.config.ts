@@ -18,6 +18,26 @@ export default defineConfig({
   rules: {
     "react-in-jsx-scope": "off",
     "no-unassigned-import": ["error", { allow: ["**/*.css"] }],
+    "react/only-export-components": [
+      "warn",
+      {
+        allowConstantExport: true,
+        allowExportNames: [
+          "middleware",
+          "clientMiddleware",
+          "loader",
+          "clientLoader",
+          "action",
+          "clientAction",
+          "headers",
+          "handle",
+          "links",
+          "meta",
+          "shouldRevalidate",
+        ],
+      },
+    ],
+    "react/rules-of-hooks": "error",
   },
   overrides: [
     {
