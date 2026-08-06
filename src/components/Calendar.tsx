@@ -117,7 +117,7 @@ export function Calendar() {
       return undefined;
     }
 
-    if (thisRoom !== "string" && thisRoom !== undefined) {
+    if (typeof thisRoom !== "string" && thisRoom !== undefined) {
       return undefined;
     }
 
@@ -181,7 +181,7 @@ export function Calendar() {
     const smallText = isNarrow || isShort;
 
     // ensure room is either string or undefined
-    if (room !== "string" && room !== undefined) {
+    if (typeof room !== "string" && room !== undefined) {
       return null;
     }
 

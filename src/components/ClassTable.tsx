@@ -31,7 +31,7 @@ import {
   type ColDef,
   type Module,
 } from "ag-grid-community";
-import { AgGridReact } from "ag-grid-react";
+import { AgGridReact, type CustomCellRendererProps } from "ag-grid-react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
@@ -246,16 +246,15 @@ function ClassInput(props: {
   );
 }
 
-const StarCellRenderer = (props: {
-  gridRef: React.RefObject<AgGridReact>;
-  params: { data: ClassTableRow };
-}) => {
-  const { gridRef, params } = props;
+const StarCellRenderer = (props: CustomCellRendererProps<ClassTableRow>) => {
+  const { data, api } = props;
+  if (!data) return null;
+
   return (
     <StarButton
-      cls={params.data.class}
+      cls={data.class}
       onStarToggle={() => {
-        gridRef.current?.api?.refreshCells({
+        api.refreshCells({
           force: true,
           columns: ["number"],
         });
