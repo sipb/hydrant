@@ -166,7 +166,7 @@ describe("Class", () => {
   test("Class.constructor", () => {
     const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
     expect(myClass.rawClass).toBe(myRawClass); // NOTE: they should be reference-equal
-    expect(myClass.backgroundColor).toEqual("#4A5568");
+    expect(myClass.backgroundColor).toEqual("#475569");
     // TODO: test myClass.sections
   });
 
@@ -612,7 +612,7 @@ describe("Class", () => {
     test("has manual color", () => {
       const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
       myClass.manualColor = true;
-      const expectedDeflated: DeflatedClass = ["21H.143", "#4A5568", [""]];
+      const expectedDeflated: DeflatedClass = ["21H.143", "#475569", [""]];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
 
       const myOtherClass: Class = new Class(

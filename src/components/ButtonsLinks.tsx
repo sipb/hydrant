@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link as RouterLink } from "react-router";
 
-import { Button, Image, Link as ChakraLink } from "@chakra-ui/react";
+import { Button, Image, Link } from "@chakra-ui/react";
 import {
   LuMessagesSquare,
   LuClipboardCopy,
@@ -29,7 +29,6 @@ export function ExportCalendar() {
   return (
     <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
       <Button
-        colorPalette="blue"
         variant="solid"
         size="sm"
         loading={isExporting}
@@ -60,17 +59,11 @@ export function MatrixLink() {
 
   return (
     <Tooltip content="You will be able to choose which chats to join, if any.">
-      <Button
-        colorPalette="teal"
-        size="sm"
-        variant="solid"
-        fontWeight={"semibold"}
-        asChild
-      >
-        <Link to={matrixLink} target="_blank" rel="noreferrer">
+      <Button size="sm" variant="outline" fontWeight="semibold" asChild>
+        <RouterLink to={matrixLink} target="_blank" rel="noreferrer">
           <LuMessagesSquare />
           Join Matrix group chats
-        </Link>
+        </RouterLink>
       </Button>
     </Tooltip>
   );
@@ -90,17 +83,11 @@ export function PreregLink() {
 
   return (
     <Tooltip content="This will import your current schedule into WebSIS.">
-      <Button
-        colorPalette="cyan"
-        size="sm"
-        variant="solid"
-        fontWeight={"semibold"}
-        asChild
-      >
-        <Link to={preregLink} target="_blank" rel="noreferrer">
+      <Button size="sm" variant="outline" fontWeight="semibold" asChild>
+        <RouterLink to={preregLink} target="_blank" rel="noreferrer">
           <LuClipboardCopy />
           Pre-register classes
-        </Link>
+        </RouterLink>
       </Button>
     </Tooltip>
   );
@@ -108,11 +95,11 @@ export function PreregLink() {
 
 export function SIPBLogo() {
   return (
-    <ChakraLink variant="plain" fontSize="sm" fontWeight="500" asChild>
-      <Link to="https://sipb.mit.edu/" target="_blank" rel="noreferrer">
+    <Link variant="plain" fontSize="sm" fontWeight="500" asChild>
+      <RouterLink to="https://sipb.mit.edu/" target="_blank" rel="noreferrer">
         by SIPB
         <Image src={sipbLogo} alt="SIPB Logo" height="1lh" />
-      </Link>
-    </ChakraLink>
+      </RouterLink>
+    </Link>
   );
 }

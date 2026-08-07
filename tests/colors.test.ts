@@ -16,19 +16,19 @@ describe("fallbackColor", () => {
    * Test all 4 color modes
    */
   test("COLOR_SCHEME_LIGHT", () => {
-    expect(fallbackColor(COLOR_SCHEME_LIGHT)).toBe("#4A5568");
+    expect(fallbackColor(COLOR_SCHEME_LIGHT)).toBe("#475569");
   });
 
   test("COLOR_SCHEME_DARK", () => {
-    expect(fallbackColor(COLOR_SCHEME_DARK)).toBe("#CBD5E0");
+    expect(fallbackColor(COLOR_SCHEME_DARK)).toBe("#CBD5E1");
   });
 
   test("COLOR_SCHEME_LIGHT_CONTRAST", () => {
-    expect(fallbackColor(COLOR_SCHEME_LIGHT_CONTRAST)).toBe("#4A5568");
+    expect(fallbackColor(COLOR_SCHEME_LIGHT_CONTRAST)).toBe("#475569");
   });
 
   test("COLOR_SCHEME_DARK_CONTRAST", () => {
-    expect(fallbackColor(COLOR_SCHEME_DARK_CONTRAST)).toBe("#CBD5E0");
+    expect(fallbackColor(COLOR_SCHEME_DARK_CONTRAST)).toBe("#CBD5E1");
   });
 });
 

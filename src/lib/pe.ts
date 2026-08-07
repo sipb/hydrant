@@ -1,8 +1,13 @@
+import type { ReactNode } from "react";
+
 import { Section, Sections, type BaseActivity } from "./activity";
 import { Event } from "./activity";
 import { type DeflatedClassEntry } from "./class";
 import { fallbackColor, type ColorScheme } from "./colors";
 import { type RawPEClass, type RawSection } from "./raw";
+
+import type { IconType } from "react-icons";
+import { LuShipWheel, LuWand, LuWaves, LuLaptop } from "react-icons/lu";
 
 export const W35_PLUS_TEXT =
   "W31, W32, W33, W34 and W35 are all connected. Enter through W35.";
@@ -16,15 +21,15 @@ export interface PEFlags {
   nopreq: boolean;
 }
 
-const peFlagEmojis: { [k in keyof PEFlags]?: string } = {
-  wellness: "🔮",
-  pirate: "🏴‍☠️",
-  swim: "🌊",
-  remote: "💻",
-};
+const peFlagIcons: { [k in keyof PEFlags]?: IconType } = {
+  wellness: LuWand,
+  pirate: LuShipWheel,
+  swim: LuWaves,
+  remote: LuLaptop,
+} as const;
 
-export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
-  return peFlagEmojis[flag] ?? "";
+export const getPEFlagIcon = (flag: keyof PEFlags): ReactNode => {
+  return (peFlagIcons[flag] ?? (() => null))({});
 };
 
 export type DeflatedPEClass = [string, ...DeflatedClassEntry[]];

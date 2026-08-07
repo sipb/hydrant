@@ -15,7 +15,8 @@ import { useInjectStyles } from "./emotion/emotion-client";
 
 import type { Route } from "./+types/root";
 
-import "@fontsource-variable/inter/index.css";
+import "@fontsource-variable/ibm-plex-sans/index.css";
+import "@fontsource/ibm-plex-mono/index.css";
 import "temporal-polyfill/global";
 
 export const links: Route.LinksFunction = () => [

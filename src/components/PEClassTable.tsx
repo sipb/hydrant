@@ -1,4 +1,3 @@
-// TODO factor out common pieces between ClassTable and PEClassTable
 import {
   useEffect,
   useMemo,
@@ -9,66 +8,26 @@ import {
   type SetStateAction,
 } from "react";
 
-import {
-  Box,
-  Flex,
-  Input,
-  Button,
-  ButtonGroup,
-  InputGroup,
-  CloseButton,
-} from "@chakra-ui/react";
-import {
-  ModuleRegistry,
-  ClientSideRowModelModule,
-  ValidationModule,
-  ExternalFilterModule,
-  RenderApiModule,
-  CellStyleModule,
-  RowStyleModule,
-  themeQuartz,
-  type IRowNode,
-  type ColDef,
-  type Module,
-} from "ag-grid-community";
-import { AgGridReact, type CustomCellRendererProps } from "ag-grid-react";
-import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
+import { Box, Flex, Button, ButtonGroup } from "@chakra-ui/react";
+import { type CustomCellRendererProps } from "ag-grid-react";
+import { AgGridReact } from "ag-grid-react";
+import { LuStar } from "react-icons/lu";
 
 import { ColorStyles } from "../lib/colors";
 import { useHydrantContext } from "../lib/hydrant";
-import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
+import { type PEFlags, type PEClass, getPEFlagIcon } from "../lib/pe";
+import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import {
-  classNumberMatch,
-  classSort,
-  simplifyString,
-  typedEntries,
-} from "../lib/utils";
+  HYDRANT_THEME,
+  INITIAL_SORT,
+  sortProps,
+  ClassSearchInput,
+} from "./ClassTable";
 import styles from "./ClassTable.module.css";
+import { LabelledButton } from "./ui/button";
 
 import type { State } from "../lib/state";
-
-const hydrantTheme = themeQuartz.withParams({
-  accentColor: "var(--chakra-colors-fg)",
-  backgroundColor: "var(--chakra-colors-bg)",
-  borderColor: "var(--chakra-colors-border)",
-  browserColorScheme: "inherit",
-  fontFamily: "inherit",
-  foregroundColor: "var(--chakra-colors-fg)",
-  headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
-  rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-md)",
-});
-
-const GRID_MODULES: Module[] = [
-  ClientSideRowModelModule,
-  ExternalFilterModule,
-  CellStyleModule,
-  RowStyleModule,
-  RenderApiModule,
-  ...(import.meta.env.DEV ? [ValidationModule] : []),
-];
-
-ModuleRegistry.registerModules(GRID_MODULES);
+import type { IRowNode, ColDef } from "ag-grid-community";
 
 const getFeeColor = (fee?: string | number | null) => {
   if (fee === null || fee === undefined) return ColorStyles.Muted;
@@ -113,7 +72,6 @@ function ClassInput(props: {
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
   const searchResults = useRef<
@@ -170,45 +128,13 @@ function ClassInput(props: {
     }
   };
 
-  const clearButton = classInput ? (
-    <CloseButton
-      size="xs"
-      onClick={() => {
-        onClassInputChange("");
-        inputRef.current?.focus();
-      }}
-      me="-2"
-    />
-  ) : undefined;
-
   return (
-    <Flex justify="center">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onEnter();
-        }}
-        style={{ width: "100%", maxWidth: "30em" }}
-      >
-        <InputGroup
-          startElement={<LuSearch />}
-          endElement={clearButton}
-          width="fill-available"
-        >
-          <Input
-            type="search"
-            aria-label="Search for a class"
-            id="class-search"
-            placeholder="Class number or name"
-            value={classInput}
-            ref={inputRef}
-            onChange={(e) => {
-              onClassInputChange(e.target.value);
-            }}
-          />
-        </InputGroup>
-      </form>
-    </Flex>
+    <ClassSearchInput
+      value={classInput}
+      onChange={onClassInputChange}
+      onSubmit={onEnter}
+      placeholder="Class number or name"
+    />
   );
 }
 
@@ -238,24 +164,20 @@ const filtersNonFlags = {
 type Filter = keyof PEFlags | keyof typeof filtersNonFlags;
 type FilterGroup = [Filter, string, ReactNode?][];
 
-/** List of top filter IDs and their displayed names. */
-const CLASS_FLAGS_1: FilterGroup = [
+/**
+ * List of all class flags.
+ */
+const CLASS_FLAGS: FilterGroup = [
   ["starred", "Starred", <LuStar fill="currentColor" key="starred" />],
   ["latest", "Latest quarter"],
   ["nofee", "No fee"],
   ["nopreq", "No prereq"],
   ["fits", "Fits schedule"],
+  ["wellness", "Wellness Wizard", getPEFlagIcon("wellness")],
+  ["pirate", "Pirate Certificate", getPEFlagIcon("pirate")],
+  ["swim", "Swim GIR", getPEFlagIcon("swim")],
+  ["remote", "Remote", getPEFlagIcon("remote")],
 ];
-
-/** List of hidden filter IDs, their displayed names, and image path, if any. */
-const CLASS_FLAGS_2: FilterGroup = [
-  ["wellness", "🔮 Wellness Wizard"],
-  ["pirate", "🏴‍☠️ Pirate Certificate"],
-  ["swim", "🌊 Swim GIR"],
-  ["remote", "💻 Remote"],
-];
-
-const CLASS_FLAGS = [...CLASS_FLAGS_1, ...CLASS_FLAGS_2];
 
 function isFilterNonFlagKey(key: string): key is keyof typeof filtersNonFlags {
   return key in filtersNonFlags;
@@ -279,9 +201,6 @@ function ClassFlags(props: {
     }
     return result;
   });
-
-  // Show hidden flags?
-  const [allFlags, setAllFlags] = useState(false);
 
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
@@ -324,7 +243,7 @@ function ClassFlags(props: {
 
   const renderGroup = (group: FilterGroup) => {
     return (
-      <ButtonGroup attached colorPalette="orange" wrap="wrap">
+      <ButtonGroup attached wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
@@ -339,16 +258,16 @@ function ClassFlags(props: {
 
           return image ? (
             // image is a react element, like an icon
-            <Button
+            <LabelledButton
               key={flag}
               onClick={() => {
                 onChange(flag, !checked);
               }}
-              aria-label={label}
+              title={label}
               variant={checked ? "solid" : "outline"}
             >
               {image}
-            </Button>
+            </LabelledButton>
           ) : (
             <Button
               key={flag}
@@ -367,20 +286,7 @@ function ClassFlags(props: {
 
   return (
     <Flex direction="column" align="center" gap={2}>
-      <Flex align="center">
-        {renderGroup(CLASS_FLAGS_1)}
-        <Button
-          onClick={() => {
-            setAllFlags(!allFlags);
-          }}
-          size="sm"
-          ml={2}
-        >
-          {allFlags ? <LuMinus /> : <LuPlus />}
-          {allFlags ? "Less filters" : "More filters"}
-        </Button>
-      </Flex>
-      {allFlags && <>{renderGroup(CLASS_FLAGS_2)}</>}
+      <Flex align="center">{renderGroup(CLASS_FLAGS)}</Flex>
     </Flex>
   );
 }
@@ -420,9 +326,6 @@ export function PEClassTable() {
 
   // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string | number>[] = useMemo(() => {
-    const initialSort = "asc" as const;
-    const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
-    const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     return [
       {
         headerName: "",
@@ -436,9 +339,9 @@ export function PEClassTable() {
         field: "number",
         headerName: "Class",
         comparator: classSort,
-        initialSort,
-        maxWidth: 128,
-        cellClass: styles["underline-on-hover"],
+        initialSort: INITIAL_SORT,
+        maxWidth: 131,
+        cellClass: [styles["underline-on-hover"], styles.data],
         valueFormatter: (params) =>
           `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
         ...sortProps,
@@ -446,12 +349,15 @@ export function PEClassTable() {
       {
         field: "classSize",
         headerName: "Size",
+        cellDataType: "number",
         maxWidth: 85,
+        cellClass: styles.data,
         ...sortProps,
       },
       {
         field: "fee",
-        maxWidth: 87,
+        maxWidth: 90,
+        cellDataType: "number",
         cellClass: (params) => getFeeColor(params.value),
         valueFormatter: (params) => "$" + Number(params.value).toFixed(2),
         ...sortProps,
@@ -460,17 +366,6 @@ export function PEClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
-        valueFormatter: (params) => {
-          if (!params.data?.class.flags) {
-            return "";
-          }
-
-          return typedEntries(params.data.class.flags)
-            .filter(([_, val]) => val)
-            .map(([flag]) => getPEFlagEmoji(flag))
-            .concat([params.value?.toString() ?? ""])
-            .join(" ");
-        },
       },
     ];
   }, []);
@@ -519,7 +414,7 @@ export function PEClassTable() {
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
         <AgGridReact<ClassTableRow>
-          theme={hydrantTheme}
+          theme={HYDRANT_THEME}
           ref={gridRef}
           rowClass={styles.row}
           defaultColDef={defaultColDef}

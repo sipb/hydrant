@@ -322,7 +322,8 @@ export class State {
 
   /**
    * Update selected activities: reschedule them and assign colors. Call after
-   * every update of this.selectedClasses or this.selectedActivities.
+   * every update of this.selectedClasses, this.selectedPEClasses,
+   * or this.selectedCustomActivities.
    */
   updateActivities(save = true): void {
     chooseColors(this.selectedActivities, this.colorScheme);
