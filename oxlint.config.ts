@@ -13,10 +13,10 @@ export default defineConfig({
   },
   env: {
     builtin: true,
-    es2022: true,
+    es2023: true,
     browser: true,
   },
-  ignorePatterns: ["./src/components/ui/**"],
+  ignorePatterns: ["src/components/ui/**", "src/emotion/**"],
   rules: {
     "react-in-jsx-scope": "off",
     "no-unassigned-import": ["error", { allow: ["**/*.css"] }],
@@ -44,25 +44,8 @@ export default defineConfig({
   overrides: [
     {
       files: ["tests/**"],
-      globals: {
-        suite: "writable",
-        test: "writable",
-        describe: "writable",
-        it: "writable",
-        expectTypeOf: "writable",
-        assertType: "writable",
-        expect: "writable",
-        assert: "writable",
-        chai: "writable",
-        vitest: "writable",
-        vi: "writable",
-        beforeAll: "writable",
-        afterAll: "writable",
-        beforeEach: "writable",
-        afterEach: "writable",
-        onTestFailed: "writable",
-        onTestFinished: "writable",
-      },
+      env: { vitest: true },
+
       plugins: ["vitest"],
     },
   ],

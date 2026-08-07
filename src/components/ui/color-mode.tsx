@@ -25,7 +25,6 @@ export interface UseColorModeReturn {
   toggleColorMode: () => void;
 }
 
-// oxlint-disable-next-line react/only-export-components
 export function useColorMode(): UseColorModeReturn {
   const { resolvedTheme, setTheme, forcedTheme } = useTheme();
   const colorMode = forcedTheme || resolvedTheme;
@@ -33,20 +32,13 @@ export function useColorMode(): UseColorModeReturn {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
-  if (colorMode !== "light" && colorMode !== "dark") {
-    throw new Error(
-      `Invalid color mode: ${colorMode}. Expected "light" or "dark".`,
-    );
-  }
-
   return {
-    colorMode: colorMode,
+    colorMode: colorMode as ColorMode,
     setColorMode: setTheme,
     toggleColorMode,
   };
 }
 
-// oxlint-disable-next-line react/only-export-components
 export function useColorModeValue<T>(light: T, dark: T) {
   const { colorMode } = useColorMode();
   return colorMode === "dark" ? dark : light;

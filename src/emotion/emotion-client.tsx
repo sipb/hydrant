@@ -1,5 +1,3 @@
-// oxlint-disable react/only-export-components
-
 import {
   createContext,
   useContext,
@@ -67,11 +65,9 @@ export function useInjectStyles(cache: EmotionCache) {
     const tags = cache.sheet.tags;
     cache.sheet.flush();
     tags.forEach((tag) => {
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       const sheet = cache.sheet as unknown as {
         _insertTag: (tag: HTMLStyleElement) => void;
       };
-      // oxlint-disable-next-line no-underscore-dangle
       sheet._insertTag(tag);
     });
 
