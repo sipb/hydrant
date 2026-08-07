@@ -19,7 +19,7 @@ import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
 import { useHydrantContext } from "../lib/hydrant";
-import { PEClass, getPEFlagEmoji, type PEFlags } from "../lib/pe";
+import { PEClass, getPEFlagIcon, type PEFlags } from "../lib/pe";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {
@@ -48,7 +48,7 @@ function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
 
   return (
     <Tooltip content={title}>
-      <Span>{getPEFlagEmoji(flag)}</Span>
+      <Span>{getPEFlagIcon(flag)}</Span>
     </Tooltip>
   );
 }
@@ -207,7 +207,7 @@ function ClassCIM(props: { cls: Class }) {
     return (
       <Text>
         CI-M for: {cim.join("; ")} (
-        <Link href={CIM_URL} target="_blank" colorPalette="blue">
+        <Link href={CIM_URL} target="_blank">
           more info
         </Link>
         )
@@ -225,9 +225,15 @@ function ClassEval(props: { cls: Class }) {
 
   return (
     <Flex gap={4}>
-      <Text>Rating: {rating}</Text>
-      <Text>Hours: {hours}</Text>
-      <Text>Avg # of students: {people}</Text>
+      <Text>
+        Rating: <Span textStyle="data">{rating}</Span>
+      </Text>
+      <Text>
+        Hours: <Span textStyle="data">{hours}</Span>
+      </Text>
+      <Text>
+        Avg # of students: <Span textStyle="data">{people}</Span>
+      </Text>
     </Flex>
   );
 }
@@ -251,7 +257,6 @@ function ClassBody(props: { cls: Class }) {
               key={label}
               href={url}
               target="_blank"
-              colorPalette="blue"
               display="inline-block"
               flexGrow={1}
             >
@@ -274,7 +279,7 @@ function ClassDescription(props: { cls: Class }) {
     <Flex direction="column" gap={4}>
       <Flex align="center" gap={2}>
         <Heading size="md" flex="1">
-          {cls.number}: {cls.name}
+          <Span textStyle="data">{cls.number}</Span>: {cls.name}
         </Heading>
         <Button
           variant="ghost"
@@ -366,7 +371,7 @@ function PEClassDescription(props: { cls: PEClass }) {
     <Flex direction="column" gap={4}>
       <Flex align="center" gap={2}>
         <Heading size="md" flex="1">
-          {number}: {name} (Quarter {quarter})
+          <Span textStyle="data">{number}</Span>: {name} (Quarter {quarter})
         </Heading>
         <Button
           variant="ghost"
@@ -415,7 +420,6 @@ function PEClassDescription(props: { cls: PEClass }) {
             key={label}
             href={url}
             target="_blank"
-            colorPalette="blue"
             display="inline-block"
             flexGrow={1}
           >

@@ -23,15 +23,15 @@ const classic: ColorScheme = {
   colorMode: "light",
   backgroundColors: [
     "#23AF83",
-    "#3E9ED1",
+    "#45AEE9",
     "#AE7CB4",
     "#DE676F",
     "#E4793C",
     "#D7AD00",
-    "#33AE60",
-    "#F08E94",
-    "#8FBDD9",
-    "#A2ACB0",
+    "#44AE33",
+    "#F0A08E",
+    "#ADDCF9",
+    "#94A3B8",
   ],
 };
 
@@ -40,15 +40,15 @@ const classicDark: ColorScheme = {
   colorMode: "dark",
   backgroundColors: [
     "#36C0A5",
-    "#5EBEF1",
+    "#7BC6F3",
     "#CE9CD4",
     "#EA636B",
     "#FF995C",
     "#F7CD20",
-    "#47CE80",
+    "#47CE69",
     "#FFAEB4",
-    "#AFDDF9",
-    "#C2CCD0",
+    "#EDF8FE",
+    "#8A97A8",
   ],
 };
 
@@ -56,14 +56,14 @@ const highContrast: ColorScheme = {
   name: "High Contrast",
   colorMode: "light",
   backgroundColors: [
-    "#FF6B6B",
-    "#FFD93D",
-    "#4FC3F7",
-    "#81C784",
-    "#C580D1",
-    "#FFADC5",
-    "#309BF3",
-    "#FF8A65",
+    "#FF5252",
+    "#AD8B00",
+    "#087BAF",
+    "#3B843E",
+    "#C075CD",
+    "#FF4C8F",
+    "#3030F3",
+    "#F56200",
   ],
 };
 
@@ -97,7 +97,7 @@ export const COLOR_SCHEME_LIGHT_CONTRAST = highContrast;
 
 /** The default background color for a color scheme. */
 export function fallbackColor(colorScheme: ColorScheme): string {
-  return colorScheme.colorMode === "light" ? "#4A5568" : "#CBD5E0";
+  return colorScheme.colorMode === "light" ? "#475569" : "#CBD5E1";
 }
 
 /** MurmurHash3, seeded with a string. */

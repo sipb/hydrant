@@ -1,4 +1,11 @@
-import { Center, Flex, Group, ButtonGroup } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Group,
+  ButtonGroup,
+  SkipNavContent,
+  SkipNavLink,
+} from "@chakra-ui/react";
 import { Calendar } from "../components/Calendar";
 import { LeftFooter } from "../components/Footers";
 import { Header, PreferencesDialog } from "../components/Header";
@@ -79,35 +86,48 @@ export async function clientLoader({ url }: Route.ClientLoaderArgs) {
 function HydrantApp() {
   return (
     <>
+      <SkipNavLink>Skip to content</SkipNavLink>
       <Banner />
       <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
-        <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
+        <Flex
+          direction="column"
+          w={{ base: "100%", lg: "50%" }}
+          gap={6}
+          as="aside"
+        >
           <Header />
           <ScheduleOption />
           <Calendar />
           <LeftFooter />
         </Flex>
-        <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-          <Center>
-            <Group wrap="wrap" justifyContent="center" gap={4}>
-              <TermSwitcher />
-              <Group gap={4}>
-                <ScheduleSwitcher />
+        <SkipNavContent asChild>
+          <Flex
+            direction="column"
+            w={{ base: "100%", lg: "50%" }}
+            gap={6}
+            as="main"
+          >
+            <Center>
+              <Group wrap="wrap" justifyContent="center" gap={4}>
+                <TermSwitcher />
+                <Group gap={4}>
+                  <ScheduleSwitcher />
+                </Group>
+                <PreferencesDialog />
               </Group>
-              <PreferencesDialog />
-            </Group>
-          </Center>
-          <Center>
-            <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
-              <ExportCalendar />
-              <PreregLink />
-              <MatrixLink />
-            </ButtonGroup>
-          </Center>
-          <SelectedActivities />
-          <ClassTypesSwitcher />
-          <ActivityDescription />
-        </Flex>
+            </Center>
+            <Center>
+              <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
+                <ExportCalendar />
+                <PreregLink />
+                <MatrixLink />
+              </ButtonGroup>
+            </Center>
+            <SelectedActivities />
+            <ClassTypesSwitcher />
+            <ActivityDescription />
+          </Flex>
+        </SkipNavContent>
       </Flex>
     </>
   );

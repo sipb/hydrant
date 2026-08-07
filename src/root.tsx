@@ -14,7 +14,8 @@ import { useInjectStyles } from "./emotion/emotion-client";
 import { Provider } from "./components/ui/provider";
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
-import "@fontsource-variable/inter/index.css";
+import "@fontsource-variable/ibm-plex-sans/index.css";
+import "@fontsource/ibm-plex-mono/index.css";
 
 import "temporal-polyfill/global";
 

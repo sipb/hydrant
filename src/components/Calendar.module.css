@@ -1,34 +1,61 @@
+/*
+ * fullcalendar monarch colors
+ */
 :global(:root) {
   /* primary */
-  --fc-monarch-primary: rgb(65 95 145);
-  --fc-monarch-primary-foreground: rgb(255 255 255);
-  --fc-monarch-primary-over: #526e9c;
-  --fc-monarch-primary-down: #647ea7;
+  --fc-monarch-primary: var(--chakra-colors-hydrant-700);
+  --fc-monarch-primary-foreground: #ffffff;
+  --fc-monarch-primary-over: color-mix(
+    in oklab,
+    var(--chakra-colors-hydrant-700) 88%,
+    #ffffff
+  );
+  --fc-monarch-primary-down: color-mix(
+    in oklab,
+    var(--chakra-colors-hydrant-700) 82%,
+    #000000
+  );
 
   /* secondary */
-  --fc-monarch-secondary: rgb(214 227 255);
-  --fc-monarch-secondary-foreground: rgb(40 71 119);
-  --fc-monarch-secondary-over: #c9d6f2;
-  --fc-monarch-secondary-down: #bdc9e5;
+  --fc-monarch-secondary: var(--chakra-colors-hydrant-100);
+  --fc-monarch-secondary-foreground: var(--chakra-colors-hydrant-900);
+  --fc-monarch-secondary-over: color-mix(
+    in oklab,
+    var(--chakra-colors-hydrant-100) 88%,
+    var(--chakra-colors-hydrant-300)
+  );
+  --fc-monarch-secondary-down: var(--chakra-colors-hydrant-200);
 
   /* tertiary */
-  --fc-monarch-tertiary: rgb(133 93 140);
-  --fc-monarch-tertiary-foreground: rgb(255 255 255);
-  --fc-monarch-tertiary-over: #916c97;
-  --fc-monarch-tertiary-down: #9d7ca2;
+  --fc-monarch-tertiary: var(--chakra-colors-hydrant-500);
+  --fc-monarch-tertiary-foreground: #ffffff;
+  --fc-monarch-tertiary-over: color-mix(
+    in oklab,
+    var(--chakra-colors-hydrant-500) 88%,
+    #ffffff
+  );
+  --fc-monarch-tertiary-down: color-mix(
+    in oklab,
+    var(--chakra-colors-hydrant-500) 82%,
+    #000000
+  );
 
   /* calendar content */
   --fc-monarch-event: var(--fc-monarch-primary);
   --fc-monarch-event-contrast: var(--fc-monarch-primary-foreground);
-  --fc-monarch-highlight: #d6e3ff4d;
-  --fc-monarch-now: rgb(186 26 26);
+  --fc-monarch-highlight: color-mix(
+    in oklab,
+    var(--chakra-colors-hydrant-500) 14%,
+    transparent
+  );
+  --fc-monarch-now: var(--chakra-colors-red-600);
 
   /* controls */
-  --fc-monarch-selected: rgb(86 95 113);
-  --fc-monarch-selected-foreground: rgb(255 255 255);
-  --fc-monarch-selected-over: #656e7e;
-  --fc-monarch-selected-down: #757d8c;
-  --fc-monarch-outline: #6687ff;
+  --fc-monarch-selected: var(--chakra-colors-gray-600);
+  --fc-monarch-selected-foreground: #ffffff;
+  --fc-monarch-selected-over: var(--chakra-colors-gray-500);
+  --fc-monarch-selected-down: var(--chakra-colors-gray-700);
+  --fc-monarch-outline: var(--chakra-colors-hydrant-500);
 
   /* popover */
   --fc-monarch-popover: var(--fc-monarch-background);
@@ -54,42 +81,45 @@
 @media not print {
   :global(.dark) {
     /* primary */
-    --fc-monarch-primary: rgb(170 199 255);
-    --fc-monarch-primary-foreground: rgb(10 48 95);
-    --fc-monarch-primary-over: #b2cdff;
-    --fc-monarch-primary-down: #bbd2ff;
+    --fc-monarch-primary: var(--chakra-colors-hydrant-400);
+    --fc-monarch-primary-foreground: var(--chakra-colors-hydrant-950);
+    --fc-monarch-primary-over: var(--chakra-colors-hydrant-300);
+    --fc-monarch-primary-down: var(--chakra-colors-hydrant-500);
 
     /* secondary */
-    --fc-monarch-secondary: rgb(40 71 119);
-    --fc-monarch-secondary-foreground: rgb(214 227 255);
-    --fc-monarch-secondary-over: #32507e;
-    --fc-monarch-secondary-down: #3c5885;
+    --fc-monarch-secondary: var(--chakra-colors-hydrant-900);
+    --fc-monarch-secondary-foreground: var(--chakra-colors-hydrant-100);
+    --fc-monarch-secondary-over: var(--chakra-colors-hydrant-800);
+    --fc-monarch-secondary-down: var(--chakra-colors-hydrant-950);
 
     /* tertiary */
-    --fc-monarch-tertiary: rgb(221 188 224);
-    --fc-monarch-tertiary-foreground: rgb(63 40 68);
-    --fc-monarch-tertiary-over: #e0c3e3;
-    --fc-monarch-tertiary-down: #e4c9e6;
+    --fc-monarch-tertiary: var(--chakra-colors-hydrant-300);
+    --fc-monarch-tertiary-foreground: var(--chakra-colors-hydrant-950);
+    --fc-monarch-tertiary-over: var(--chakra-colors-hydrant-200);
+    --fc-monarch-tertiary-down: var(--chakra-colors-hydrant-400);
 
     /* calendar content */
     --fc-monarch-event: var(--fc-monarch-primary);
     --fc-monarch-event-contrast: var(--fc-monarch-primary-foreground);
-    --fc-monarch-highlight: #2847774d;
-    --fc-monarch-now: rgb(255 180 171);
+    --fc-monarch-highlight: color-mix(
+      in oklab,
+      var(--chakra-colors-hydrant-400) 18%,
+      transparent
+    );
+    --fc-monarch-now: var(--chakra-colors-red-400);
 
     /* controls */
-    --fc-monarch-selected: rgb(190 198 220);
-    --fc-monarch-selected-foreground: rgb(40 49 65);
-    --fc-monarch-selected-over: #c4cce0;
-    --fc-monarch-selected-down: #cbd1e3;
+    --fc-monarch-selected: var(--chakra-colors-gray-300);
+    --fc-monarch-selected-foreground: var(--chakra-colors-gray-900);
+    --fc-monarch-selected-over: var(--chakra-colors-gray-200);
+    --fc-monarch-selected-down: var(--chakra-colors-gray-400);
 
     /* popover */
-    --fc-monarch-popover: rgb(17 19 24);
-    --fc-monarch-popover-foreground: rgb(226 226 233);
+    --fc-monarch-popover: var(--chakra-colors-gray-900);
+    --fc-monarch-popover-foreground: var(--chakra-colors-gray-100);
   }
 }
 
-/* THIS ONE */
 .fc-slot-header-inner {
   line-height: 0.1rem;
   padding-block: 0.2rem;

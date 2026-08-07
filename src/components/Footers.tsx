@@ -2,14 +2,14 @@ import { useState } from "react";
 
 import {
   Flex,
-  Link as ChakraLink,
+  Link,
   Text,
   Button,
   Image,
   Dialog,
   Portal,
 } from "@chakra-ui/react";
-import { Link } from "react-router";
+import { Link as RouterLink } from "react-router";
 
 import { useHydrantContext } from "../lib/hydrant";
 
@@ -27,7 +27,7 @@ function AboutDialog() {
       }}
     >
       <Dialog.Trigger asChild>
-        <ChakraLink colorPalette="blue">About</ChakraLink>
+        <Link as="button">About</Link>
       </Dialog.Trigger>
       <Portal>
         <Dialog.Backdrop />
@@ -41,63 +41,63 @@ function AboutDialog() {
                 <Text>
                   Hydrant is a student-run class planner for MIT students,
                   maintained by SIPB, the{" "}
-                  <ChakraLink colorPalette="blue" asChild>
-                    <Link
+                  <Link asChild>
+                    <RouterLink
                       to="https://sipb.mit.edu/"
                       target="_blank"
                       rel="noreferrer"
                     >
                       Student Information Processing Board
-                    </Link>
-                  </ChakraLink>
+                    </RouterLink>
+                  </Link>
                   .
                 </Text>
                 <Text>
                   We welcome contributions! View the source code or file issues
                   on{" "}
-                  <ChakraLink colorPalette="blue" asChild>
-                    <Link
+                  <Link asChild>
+                    <RouterLink
                       target="_blank"
                       rel="noreferrer"
                       to="https://github.com/sipb/hydrant"
                     >
                       GitHub
-                    </Link>
-                  </ChakraLink>
+                    </RouterLink>
+                  </Link>
                   , or come to a SIPB meeting and ask how to help.
                 </Text>
                 <Text>
                   We'd like to thank CJ Quines '23 for creating Hydrant and
                   Edward Fan '19 for creating{" "}
-                  <ChakraLink colorPalette="blue" asChild>
-                    <Link
+                  <Link asChild>
+                    <RouterLink
                       target="_blank"
                       rel="noreferrer"
                       to="https://firehose.guide/"
                     >
                       Firehose
-                    </Link>
-                  </ChakraLink>
+                    </RouterLink>
+                  </Link>
                   , the basis for Hydrant. We'd also like to thank the{" "}
-                  <ChakraLink colorPalette="blue" asChild>
-                    <Link
+                  <Link asChild>
+                    <RouterLink
                       target="_blank"
                       rel="noreferrer"
                       to="https://fireroad.mit.edu/"
                     >
                       FireRoad
-                    </Link>
-                  </ChakraLink>{" "}
+                    </RouterLink>
+                  </Link>{" "}
                   team and{" "}
-                  <ChakraLink colorPalette="blue" asChild>
-                    <Link
+                  <Link asChild>
+                    <RouterLink
                       target="_blank"
                       rel="noreferrer"
                       to="https://physicaleducationandwellness.mit.edu/"
                     >
                       DAPER
-                    </Link>
-                  </ChakraLink>{" "}
+                    </RouterLink>
+                  </Link>{" "}
                   for collaborating with us.
                 </Text>
               </Flex>
@@ -125,7 +125,7 @@ function PrivacyPolicyDialog() {
       }}
     >
       <Dialog.Trigger asChild>
-        <ChakraLink colorPalette="blue">Privacy Policy</ChakraLink>
+        <Link as="button">Privacy Policy</Link>
       </Dialog.Trigger>
       <Portal>
         <Dialog.Backdrop />
@@ -138,25 +138,25 @@ function PrivacyPolicyDialog() {
               <Flex direction="column" gap={4}>
                 <Text>
                   SIPB self-hosts an open-source analytics platform called{" "}
-                  <ChakraLink colorPalette="blue" asChild>
-                    <Link
+                  <Link asChild>
+                    <RouterLink
                       target="_blank"
                       rel="noreferrer"
                       to="https://plausible.io/"
                     >
                       Plausible Analytics
-                    </Link>
-                  </ChakraLink>{" "}
+                    </RouterLink>
+                  </Link>{" "}
                   to track usage of Hydrant. A{" "}
-                  <ChakraLink colorPalette="blue" asChild>
-                    <Link
+                  <Link asChild>
+                    <RouterLink
                       target="_blank"
                       rel="noreferrer"
                       to="https://plausible.io/data-policy"
                     >
                       limited amount of information
-                    </Link>
-                  </ChakraLink>
+                    </RouterLink>
+                  </Link>
                   , including page URLs, HTTP Referer strings, browser and
                   operating system information, device type, and what city you
                   are in, is sent anonymously for analytics purposes. No
@@ -198,7 +198,7 @@ function LicenseDialog() {
       }}
     >
       <Dialog.Trigger asChild>
-        <ChakraLink colorPalette="blue">Terms of Use</ChakraLink>
+        <Link as="button">Terms of Use</Link>
       </Dialog.Trigger>
       <Portal>
         <Dialog.Backdrop />
@@ -222,15 +222,15 @@ function LicenseDialog() {
                 </Text>
                 <Text>
                   See the{" "}
-                  <ChakraLink colorPalette="blue" asChild>
-                    <Link
+                  <Link asChild>
+                    <RouterLink
                       target="_blank"
                       rel="noreferrer"
                       to="https://github.com/sipb/hydrant#license"
                     >
                       official license
-                    </Link>
-                  </ChakraLink>{" "}
+                    </RouterLink>
+                  </Link>{" "}
                   on GitHub, and reach out to us if you have any questions!
                 </Text>
               </Flex>
@@ -252,7 +252,7 @@ export function LeftFooter() {
   const { state } = useHydrantContext();
 
   return (
-    <Flex direction="row" align="center" justify="center" gap={5}>
+    <Flex as="footer" direction="row" align="center" justify="center" gap={5}>
       <Image
         src={fuzzAndAnt}
         alt="Hydra ant and fuzzball stare at a calendar"
@@ -261,17 +261,30 @@ export function LeftFooter() {
         top={-1.5}
       />
       <Flex direction="column" align="center" gap={2}>
-        <Text>Last updated: {state.lastUpdated}.</Text>
-        <Flex gap={4} wrap="wrap">
+        <Text textAlign="center" fontSize="sm" color="fg.muted">
+          Last updated:{" "}
+          <time dateTime={state.lastUpdated}>
+            {Temporal.PlainDateTime.from(state.lastUpdated).toLocaleString(
+              "en-US",
+              {
+                dateStyle: "medium",
+                timeStyle: "short",
+              },
+            )}
+          </time>
+        </Text>
+        <Flex gap={4} wrap="wrap" align="center" justify="center">
           <AboutDialog />
-          <ChakraLink colorPalette="blue" asChild>
-            <Link to="mailto:sipb-hydrant@mit.edu">Contact</Link>
-          </ChakraLink>
+          <Link asChild>
+            <RouterLink to="mailto:sipb-hydrant@mit.edu">Contact</RouterLink>
+          </Link>
           <PrivacyPolicyDialog />
           <LicenseDialog />
-          <ChakraLink colorPalette="blue" asChild>
-            <Link to="https://accessibility.mit.edu/">Accessibility</Link>
-          </ChakraLink>
+          <Link asChild>
+            <RouterLink to="https://accessibility.mit.edu/">
+              Accessibility
+            </RouterLink>
+          </Link>
         </Flex>
       </Flex>
     </Flex>
