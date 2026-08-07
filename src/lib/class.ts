@@ -540,9 +540,9 @@ export class Class implements BaseActivity {
       this.manualColor = true;
     }
     let sectionLocs: string[] | null = null;
-    if (Array.isArray(parsed[offset])) {
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      sectionLocs = parsed[offset] as string[];
+    const parsedEntry = parsed[offset];
+    if (Array.isArray(parsedEntry)) {
+      sectionLocs = parsedEntry;
       offset += 1;
     }
     this.sections.forEach((secs, i) => {
@@ -554,8 +554,7 @@ export class Class implements BaseActivity {
         secs.locked = false;
       } else {
         secs.locked = true;
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-        secs.selected = secs.sections[parse as number];
+        secs.selected = secs.sections[Number(parse)];
       }
     });
   }
