@@ -13,6 +13,7 @@ import { sum, urldecode, urlencode } from "./utils";
 import type {
   Timeslot,
   Activity,
+  DeflatedCustomActivity,
   Section,
   SectionLockOption,
   Sections,
@@ -22,14 +23,14 @@ import type { ColorScheme } from "./colors";
 import type { Term } from "./dates";
 import type { MeasurementSystem } from "./measurement";
 import type { DeflatedPEClass } from "./pe";
-import type { RawClass, RawTimeslot, RawPEClass, BuildingInfo } from "./raw";
+import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
 import type { HydrantState, Preferences, Save } from "./schema";
 
 export type DeflatedProgramState = [
   (string | DeflatedClass)[],
-  (string | RawTimeslot[])[][] | null,
+  DeflatedCustomActivity[] | null,
   number | undefined,
-  (string | DeflatedPEClass)[],
+  (string | DeflatedPEClass)[] | undefined, // undefined for backwards compatability
 ];
 
 /**
@@ -482,12 +483,7 @@ export class State {
   inflate(obj: DeflatedProgramState | null): void {
     if (!obj) return;
     this.reset();
-    const [classes, customActivities, selectedOption, peClasses] = obj as [
-      (string | DeflatedClass)[],
-      (string | RawTimeslot[])[][] | null,
-      number | undefined,
-      (string | DeflatedPEClass)[] | undefined, // undefined for backwards compatability
-    ];
+    const [classes, customActivities, selectedOption, peClasses] = obj;
     for (const deflated of classes) {
       const cls =
         typeof deflated === "string"

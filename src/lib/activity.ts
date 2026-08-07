@@ -169,6 +169,13 @@ export class Event {
   }
 }
 
+export type DeflatedCustomActivity = [
+  timeslots: RawTimeslot[],
+  name: string,
+  backgroundColor: string,
+  room: string,
+];
+
 /** A custom activity, created by the user. */
 export class CustomActivity implements BaseActivity {
   /** ID unique over all Activities. */
@@ -226,8 +233,8 @@ export class CustomActivity implements BaseActivity {
   }
 
   /** Deflate an activity to something JSONable. */
-  deflate(): (RawTimeslot[] | string)[] {
-    const res = [
+  deflate(): DeflatedCustomActivity {
+    return [
       this.timeslots.map<RawTimeslot>((slot) => [
         slot.startSlot.slot,
         slot.numSlots,
@@ -236,24 +243,17 @@ export class CustomActivity implements BaseActivity {
       this.backgroundColor,
       this.room ?? "",
     ];
-    return res;
   }
 
   /** Inflate a custom activity with info from the output of deflate. */
-  inflate(parsed: (RawTimeslot[] | string)[]): void {
+  inflate(parsed: DeflatedCustomActivity): void {
     const [timeslots, name, backgroundColor, room] = parsed;
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    this.timeslots = (timeslots as RawTimeslot[]).map(
-      (slot) => new Timeslot(...slot),
-    );
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    this.name = name as string;
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    this.room = (room as string) || undefined;
+    this.timeslots = timeslots.map((slot) => new Timeslot(...slot));
+    this.name = name;
+    this.room = room || undefined;
     if (backgroundColor) {
       this.manualColor = true;
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      this.backgroundColor = backgroundColor as string;
+      this.backgroundColor = backgroundColor;
     }
   }
 }
