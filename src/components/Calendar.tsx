@@ -12,12 +12,11 @@ import timeGridPlugin from "@fullcalendar/react/timegrid";
 import { CustomActivity, isActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
+import styles from "./Calendar.module.css";
+import { Tooltip } from "./ui/tooltip";
 
 import "@fullcalendar/react/skeleton.css";
 import "@fullcalendar/react/themes/monarch/theme.css";
-
-import styles from "./Calendar.module.css";
-import { Tooltip } from "./ui/tooltip";
 
 // Threshold at which to display a distance warning, in feet (650 meters)
 const DISTANCE_WARNING_THRESHOLD = 2112;

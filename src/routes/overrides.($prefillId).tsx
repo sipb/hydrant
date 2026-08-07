@@ -39,7 +39,7 @@ const schema: RJSFSchema = {
     required: ["number"],
   } as unknown as JSONSchema7Definition,
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
+  definitions: itemSchema.definitions as Record<string, JSONSchema7Definition>,
 };
 
 // oxlint-disable-next-line typescript/no-unsafe-type-assertion
