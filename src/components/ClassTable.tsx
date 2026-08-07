@@ -315,6 +315,10 @@ const CLASS_FLAGS = [
   ...CLASS_FLAGS_4,
 ];
 
+function isFilterNonFlagKey(key: string): key is keyof typeof filtersNonFlags {
+  return key in filtersNonFlags;
+}
+
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
   /** Callback for updating the class filter. */
@@ -360,16 +364,14 @@ function ClassFlags(props: {
       newFlags.forEach((flagVal, flagKey) => {
         if (
           flagVal &&
-          flagKey in filtersNonFlags &&
-          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-          !filtersNonFlags[flagKey as keyof typeof filtersNonFlags](state, cls)
+          isFilterNonFlagKey(flagKey) &&
+          !filtersNonFlags[flagKey](state, cls)
         ) {
           result = false;
         } else if (
           flagVal &&
-          !(flagKey in filtersNonFlags) &&
-          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-          !cls.flags[flagKey as keyof typeof cls.flags]
+          !isFilterNonFlagKey(flagKey) &&
+          !cls.flags[flagKey]
         ) {
           result = false;
         }
@@ -379,8 +381,9 @@ function ClassFlags(props: {
   };
 
   const filter = useColorModeValue(
-    (_flags: keyof Flags) => "",
-    (flag: keyof Flags) => (DARK_IMAGES.includes(flag) ? "invert()" : ""),
+    (_flags: Filter) => "",
+    (flag: Filter) =>
+      !isFilterNonFlagKey(flag) && DARK_IMAGES.includes(flag) ? "invert()" : "",
   );
 
   const renderGroup = (group: FilterGroup) => {
@@ -409,12 +412,7 @@ function ClassFlags(props: {
                 title={label}
                 variant={checked ? "solid" : "outline"}
               >
-                <Image
-                  src={image}
-                  alt={label}
-                  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-                  filter={filter(flag as keyof Flags)}
-                />
+                <Image src={image} alt={label} filter={filter(flag)} />
               </LabelledButton>
             ) : (
               // image is a react element, like an icon

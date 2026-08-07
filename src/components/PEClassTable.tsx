@@ -70,7 +70,15 @@ const GRID_MODULES: Module[] = [
 
 ModuleRegistry.registerModules(GRID_MODULES);
 
-const getFeeColor = (fee: number) => {
+const getFeeColor = (fee?: string | number | null) => {
+  if (fee === null || fee === undefined) return ColorStyles.Muted;
+
+  if (typeof fee === "string") {
+    const num = Number(fee);
+    if (isNaN(num)) return ColorStyles.Muted;
+    fee = num;
+  }
+
   if (isNaN(fee)) return ColorStyles.Muted;
   if (fee == 0) return ColorStyles.Success;
   if (fee <= 20) return ColorStyles.Warning;
@@ -249,6 +257,10 @@ const CLASS_FLAGS_2: FilterGroup = [
 
 const CLASS_FLAGS = [...CLASS_FLAGS_1, ...CLASS_FLAGS_2];
 
+function isFilterNonFlagKey(key: string): key is keyof typeof filtersNonFlags {
+  return key in filtersNonFlags;
+}
+
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
   /** Callback for updating the class filter. */
@@ -294,16 +306,14 @@ function ClassFlags(props: {
       newFlags.forEach((flagVal, flagKey) => {
         if (
           flagVal &&
-          flagKey in filtersNonFlags &&
-          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-          !filtersNonFlags[flagKey as keyof typeof filtersNonFlags](state, cls)
+          isFilterNonFlagKey(flagKey) &&
+          !filtersNonFlags[flagKey](state, cls)
         ) {
           result = false;
         } else if (
           flagVal &&
-          !(flagKey in filtersNonFlags) &&
-          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-          !cls.flags[flagKey as keyof typeof cls.flags]
+          !isFilterNonFlagKey(flagKey) &&
+          !cls.flags[flagKey]
         ) {
           result = false;
         }
@@ -442,23 +452,25 @@ export function PEClassTable() {
       {
         field: "fee",
         maxWidth: 87,
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-        cellClass: (params) => getFeeColor(params.value as number),
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-        valueFormatter: (params) => "$" + (params.value as number).toFixed(2),
+        cellClass: (params) => getFeeColor(params.value),
+        valueFormatter: (params) => "$" + Number(params.value).toFixed(2),
         ...sortProps,
       },
       {
         field: "name",
         sortable: false,
         flex: 1,
-        valueFormatter: (params) =>
-          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-          typedEntries(params.data?.class.flags ?? ({} as PEFlags))
+        valueFormatter: (params) => {
+          if (!params.data?.class.flags) {
+            return "";
+          }
+
+          return typedEntries(params.data.class.flags)
             .filter(([_, val]) => val)
             .map(([flag]) => getPEFlagEmoji(flag))
             .concat([params.value?.toString() ?? ""])
-            .join(" "),
+            .join(" ");
+        },
       },
     ];
   }, []);
