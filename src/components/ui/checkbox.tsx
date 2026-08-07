@@ -20,7 +20,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       <ChakraCheckbox.Root ref={rootRef} {...rest}>
         <ChakraCheckbox.HiddenInput ref={ref} {...inputProps} />
         <ChakraCheckbox.Control>
-          {/* oxlint-disable-next-line typescript/prefer-nullish-coalescing */}
           {icon || <ChakraCheckbox.Indicator />}
         </ChakraCheckbox.Control>
         {children != null && (

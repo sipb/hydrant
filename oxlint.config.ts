@@ -9,12 +9,14 @@ export default defineConfig({
   options: {
     typeAware: true,
     typeCheck: true,
+    reportUnusedDisableDirectives: "error",
   },
   env: {
     builtin: true,
     es2022: true,
     browser: true,
   },
+  ignorePatterns: ["./src/components/ui/**"],
   rules: {
     "react-in-jsx-scope": "off",
     "no-unassigned-import": ["error", { allow: ["**/*.css"] }],

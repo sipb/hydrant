@@ -40,9 +40,7 @@ function makeMatchMediaMock(matchMediaMap: Map<string, boolean>): void {
       matches: matchMediaMap.get(query) ?? false,
       media: query,
       onchange: null,
-      // oxlint-disable-next-line typescript/no-deprecated
       addListener: vi.fn<MediaQueryList["addListener"]>(),
-      // oxlint-disable-next-line typescript/no-deprecated
       removeListener: vi.fn<MediaQueryList["removeListener"]>(),
       addEventListener: vi.fn<MediaQueryList["addEventListener"]>(),
       removeEventListener: vi.fn<MediaQueryList["removeEventListener"]>(),

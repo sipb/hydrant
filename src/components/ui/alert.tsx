@@ -14,7 +14,6 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
     const { title, children, icon, startElement, endElement, ...rest } = props;
     return (
       <ChakraAlert.Root ref={ref} {...rest}>
-        {/* oxlint-disable-next-line typescript/prefer-nullish-coalescing */}
         {startElement || <ChakraAlert.Indicator>{icon}</ChakraAlert.Indicator>}
         {children ? (
           <ChakraAlert.Content>

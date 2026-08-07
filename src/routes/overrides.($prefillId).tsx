@@ -157,7 +157,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
         },
         submitText: "Download",
       },
-      // oxlint-disable-next-line typescript/no-unsafe-assignment
       items: {
         "ui:title": "Class Override",
         "ui:field": "LayoutGridField",
@@ -297,7 +296,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
       },
     } satisfies UiSchema;
 
-    // oxlint-disable-next-line typescript/no-unsafe-member-access
     uiSchema.items.description["ui:widget"] = "textarea";
 
     return uiSchema;
