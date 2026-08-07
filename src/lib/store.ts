@@ -1,10 +1,13 @@
 import type { Preferences, Save } from "./schema";
+import type { DeflatedProgramState } from "./state";
 
 export interface TermStore {
   saves: Save[];
   /** Array of class numbers that are starred */
   starredClasses: string[];
-  [saveId: string]: unknown[];
+  /** Array of PE class numbers that are starred */
+  starredPEClasses: string[];
+  [saveId: string]: Save[] | string[] | DeflatedProgramState;
 }
 
 export interface GlobalStore {

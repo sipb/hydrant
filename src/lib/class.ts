@@ -113,6 +113,9 @@ export const getFlagImg = (flag: keyof Flags): string => {
   return flagImages[flag] ?? "";
 };
 
+export type DeflatedClassEntry = string | string[] | number | null;
+export type DeflatedClass = [string, ...DeflatedClassEntry[]];
+
 export class ClassSections extends Sections {
   declare cls: Class;
   declare kind: SectionKind;
@@ -507,7 +510,7 @@ export class Class implements BaseActivity {
   }
 
   /** Deflate a class to something JSONable. */
-  deflate() {
+  deflate(): DeflatedClass {
     const sections = this.sections.map((secs) =>
       !secs.locked
         ? null
@@ -519,13 +522,12 @@ export class Class implements BaseActivity {
       this.number,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
       ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      ...(sections.length > 0 ? (sections as number[]) : []), // number
+      ...(sections.length > 0 ? sections : []), // number | null
     ];
   }
 
   /** Inflate a class with info from the output of deflate. */
-  inflate(parsed: string | (string | number | string[])[]): void {
+  inflate(parsed: string | DeflatedClass): void {
     if (typeof parsed === "string") {
       // just the class number, ignore
       return;
@@ -537,7 +539,7 @@ export class Class implements BaseActivity {
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
-    let sectionLocs: (string | number | string[])[] | null = null;
+    let sectionLocs: string[] | null = null;
     if (Array.isArray(parsed[offset])) {
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       sectionLocs = parsed[offset] as string[];

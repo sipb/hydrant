@@ -17,11 +17,20 @@ import type {
   SectionLockOption,
   Sections,
 } from "./activity";
+import type { DeflatedClass } from "./class";
 import type { ColorScheme } from "./colors";
 import type { Term } from "./dates";
 import type { MeasurementSystem } from "./measurement";
+import type { DeflatedPEClass } from "./pe";
 import type { RawClass, RawTimeslot, RawPEClass, BuildingInfo } from "./raw";
 import type { HydrantState, Preferences, Save } from "./schema";
+
+export type DeflatedProgramState = [
+  (string | DeflatedClass)[],
+  (string | RawTimeslot[])[][] | null,
+  number | undefined,
+  (string | DeflatedPEClass)[],
+];
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -456,7 +465,7 @@ export class State {
   }
 
   /** Deflate program state to something JSONable. */
-  deflate() {
+  deflate(): DeflatedProgramState {
     return [
       this.selectedClasses.map((cls) => cls.deflate()),
       this.selectedCustomActivities.length > 0
@@ -470,36 +479,23 @@ export class State {
   }
 
   /** Parse all program state. */
-  inflate(
-    obj:
-      | (
-          | number
-          | (string | number | string[])[][]
-          | (string | RawTimeslot[])[][]
-          | null
-        )[]
-      | null,
-  ): void {
+  inflate(obj: DeflatedProgramState | null): void {
     if (!obj) return;
     this.reset();
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     const [classes, customActivities, selectedOption, peClasses] = obj as [
-      (string | number | string[])[][],
+      (string | DeflatedClass)[],
       (string | RawTimeslot[])[][] | null,
       number | undefined,
-      (string | number | string[])[][] | undefined, // undefined for backwards compatability
+      (string | DeflatedPEClass)[] | undefined, // undefined for backwards compatability
     ];
     for (const deflated of classes) {
       const cls =
         typeof deflated === "string"
           ? this.classes.get(deflated)
-          : // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-            this.classes.get((deflated as string[])[0]);
+          : this.classes.get(deflated[0]);
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
-        const subject =
-          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-          typeof deflated === "string" ? deflated : (deflated as string[])[0];
+        const subject = typeof deflated === "string" ? deflated : deflated[0];
 
         this.unknownSubjects.add(subject);
         continue;
@@ -521,17 +517,12 @@ export class State {
       const cls =
         typeof deflated === "string"
           ? (this.peClasses.get(deflated) ??
-            // oxlint-disable-next-line typescript/restrict-template-expressions
             this.peClasses.get(`Q3.${deflated}`))
-          : // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-            (this.peClasses.get((deflated as string[])[0]) ??
-            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-            this.peClasses.get(`Q3.${(deflated as string[])[0]}`));
+          : (this.peClasses.get(deflated[0]) ??
+            this.peClasses.get(`Q3.${deflated[0]}`));
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
-        const subject =
-          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-          typeof deflated === "string" ? deflated : (deflated as string[])[0];
+        const subject = typeof deflated === "string" ? deflated : deflated[0];
 
         this.unknownSubjects.add(subject);
         continue;
@@ -661,6 +652,11 @@ export class State {
     const storedStarred = this.store.get("starredClasses");
     if (storedStarred) {
       this.starredClasses = new Set(storedStarred);
+    }
+    // Load starred PE classes from storage
+    const storedStarredPE = this.store.get("starredPEClasses");
+    if (storedStarredPE) {
+      this.starredPEClasses = new Set(storedStarredPE);
     }
   }
 }

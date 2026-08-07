@@ -1,5 +1,6 @@
 import { Section, Sections, type BaseActivity } from "./activity";
 import { Event } from "./activity";
+import { type DeflatedClassEntry } from "./class";
 import { fallbackColor, type ColorScheme } from "./colors";
 import { type RawPEClass, type RawSection } from "./raw";
 
@@ -25,6 +26,8 @@ const peFlagEmojis: { [k in keyof PEFlags]?: string } = {
 export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
   return peFlagEmojis[flag] ?? "";
 };
+
+export type DeflatedPEClass = [string, ...DeflatedClassEntry[]];
 
 export class PESection extends Section {
   sectionNumber: string;
@@ -199,7 +202,7 @@ export class PEClass implements BaseActivity {
   }
 
   /** Deflate a class to something JSONable. */
-  deflate() {
+  deflate(): DeflatedPEClass {
     const sections = this.sections.map((secs) =>
       !secs.locked
         ? null
@@ -211,12 +214,12 @@ export class PEClass implements BaseActivity {
       this.id,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
       ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      ...(sections.length > 0 ? (sections as number[]) : []), // number
+      ...(sections.length > 0 ? sections : []), // number | null
     ];
   }
 
-  inflate(parsed: string | (string | number | string[])[]): void {
+  /** Inflate a class with info from the output of deflate. */
+  inflate(parsed: string | DeflatedPEClass): void {
     if (typeof parsed === "string") {
       // just the class id, ignore
       return;
@@ -228,7 +231,7 @@ export class PEClass implements BaseActivity {
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
-    let sectionLocs: (string | number | string[])[] | null = null;
+    let sectionLocs: string[] | null = null;
     if (Array.isArray(parsed[offset])) {
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       sectionLocs = parsed[offset] as string[];
