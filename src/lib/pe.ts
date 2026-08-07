@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
+import type { IconType } from "react-icons";
+
+import { LuShipWheel, LuWand, LuWaves, LuLaptop } from "react-icons/lu";
 
 import { Section, Sections, type BaseActivity } from "./activity";
 import { Event } from "./activity";
 import { type DeflatedClassEntry } from "./class";
 import { fallbackColor, type ColorScheme } from "./colors";
 import { type RawPEClass, type RawSection } from "./raw";
-
-import type { IconType } from "react-icons";
-import { LuShipWheel, LuWand, LuWaves, LuLaptop } from "react-icons/lu";
 
 export const W35_PLUS_TEXT =
   "W31, W32, W33, W34 and W35 are all connected. Enter through W35.";
