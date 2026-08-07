@@ -13,8 +13,9 @@ import {
   Portal,
   Heading,
 } from "@chakra-ui/react";
-import { Form } from "@rjsf/chakra-ui";
-import validator from "@rjsf/validator-ajv8";
+import { Theme as ChakraUITheme } from "@rjsf/chakra-ui";
+import { withTheme } from "@rjsf/core";
+import { customizeValidator } from "@rjsf/validator-ajv8";
 import { stringify as tomlStringify, parse as tomlParse } from "smol-toml";
 
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
@@ -23,6 +24,11 @@ import logo from "../assets/logo.svg";
 import type { Route } from "./+types/overrides.($prefillId)";
 import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
 import type { JSONSchema7Definition } from "json-schema";
+
+type FormData = Record<string, unknown>[];
+
+const Form = withTheme<FormData>(ChakraUITheme);
+const validator = customizeValidator<FormData>();
 
 const schema: RJSFSchema = {
   title: "Overrides",
@@ -89,10 +95,7 @@ const getDataFromFileAsync = async (fileName: string) => {
 };
 
 /** ensures class numbers are unique, since we change override from object to array */
-const validateUniqueNumbers: CustomValidator<Record<string, unknown>[]> = (
-  formData,
-  errors,
-) => {
+const validateUniqueNumbers: CustomValidator<FormData> = (formData, errors) => {
   const indicesByNumber = new Map<string, number[]>();
   (formData ?? []).forEach((override, index) => {
     const number = override.number;
@@ -116,7 +119,7 @@ const validateUniqueNumbers: CustomValidator<Record<string, unknown>[]> = (
 };
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  let prefillData: Record<string, unknown>[] = [];
+  let prefillData: FormData = [];
   const prefillIdPrelim = params.prefillId?.toUpperCase();
   let prefillId = "";
 
@@ -148,7 +151,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const [selected, setSelected] = useState([prefillId]);
 
   // TODO IN NEXT COMMIT: Make ui schema match what it did before :(
-  const uischema = useMemo<UiSchema>(() => {
+  const uischema = useMemo<UiSchema<FormData>>(() => {
     const uiSchema = {
       "ui:title": "Overrides",
       "ui:submitButtonOptions": {
@@ -403,8 +406,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           liveOmit={"onChange"}
           omitExtraData={true}
           onChange={({ formData, errors }) => {
-            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-            setData(formData as Record<string, unknown>[]);
+            setData(formData ?? []);
             setError(errors.length > 0);
           }}
           onSubmit={() => {
