@@ -2,7 +2,6 @@ import type { Activity } from "./activity";
 import type { ColorScheme } from "./colors";
 import type { MeasurementSystem } from "./measurement";
 
-// oxlint-disable-next-line import/no-unassigned-import
 import "temporal-polyfill/global";
 
 export enum ClassType {

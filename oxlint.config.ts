@@ -19,7 +19,10 @@ export default defineConfig({
   ignorePatterns: ["src/components/ui/**", "src/emotion/**"],
   rules: {
     "react-in-jsx-scope": "off",
-    "no-unassigned-import": ["error", { allow: ["**/*.css"] }],
+    "no-unassigned-import": [
+      "error",
+      { allow: ["**/*.css", "temporal-polyfill/global"] },
+    ],
     "react/only-export-components": [
       "warn",
       {

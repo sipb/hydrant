@@ -16,7 +16,6 @@ import { useInjectStyles } from "./emotion/emotion-client";
 import type { Route } from "./+types/root";
 
 import "@fontsource-variable/inter/index.css";
-// oxlint-disable-next-line import/no-unassigned-import
 import "temporal-polyfill/global";
 
 export const links: Route.LinksFunction = () => [
