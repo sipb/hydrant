@@ -73,7 +73,7 @@
         "title": "Lecture sections",
         "description": "Lecture timeslots and rooms",
         "items": {
-          "$ref": "#/$defs/rawSection"
+          "$ref": "#/definitions/rawSection"
         }
       },
       "recitationSections": {
@@ -81,7 +81,7 @@
         "title": "Recitation sections",
         "description": "Recitation timeslots and rooms",
         "items": {
-          "$ref": "#/$defs/rawSection"
+          "$ref": "#/definitions/rawSection"
         }
       },
       "labSections": {
@@ -89,7 +89,7 @@
         "title": "Lab sections",
         "description": "Lab timeslots and rooms",
         "items": {
-          "$ref": "#/$defs/rawSection"
+          "$ref": "#/definitions/rawSection"
         }
       },
       "designSections": {
@@ -97,7 +97,7 @@
         "title": "Design sections",
         "description": "Design timeslots and rooms",
         "items": {
-          "$ref": "#/$defs/rawSection"
+          "$ref": "#/definitions/rawSection"
         }
       },
       "lectureRawSections": {
@@ -430,11 +430,11 @@
         "properties": {
           "start": {
             "title": "Start Date",
-            "$ref": "#/$defs/quarterDate"
+            "$ref": "#/definitions/quarterDate"
           },
           "end": {
             "title": "End Date",
-            "$ref": "#/$defs/quarterDate"
+            "$ref": "#/definitions/quarterDate"
           }
         }
       },
@@ -625,7 +625,7 @@
       }
     ]
   },
-  "$defs": {
+  "definitions": {
     "rawTimeSlot": {
       "type": "array",
       "title": "Raw timeslot",
@@ -652,7 +652,7 @@
         {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/rawTimeSlot"
+            "$ref": "#/definitions/rawTimeSlot"
           }
         },
         {

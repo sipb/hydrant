@@ -1,5 +1,5 @@
 import { expect, test, describe } from "vitest";
-import { State } from "../src/lib/state";
+
 import { Class } from "../src/lib/class";
 import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 import {
@@ -11,6 +11,7 @@ import {
   TermCode,
   type RawClass,
 } from "../src/lib/raw";
+import { State } from "../src/lib/state";
 
 const baseRawClass: RawClass = {
   number: "21H.143",
@@ -76,7 +77,9 @@ function makeClass(number: string, hasFinal: boolean): Class {
 }
 
 function makeStateWithClasses(classes: Class[]): State {
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const state = Object.create(State.prototype) as State;
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   (state as unknown as { selectedClasses: Class[] }).selectedClasses = classes;
   return state;
 }
@@ -123,14 +126,19 @@ function makeStateWithStarredClasses(
   starredClasses: Set<string>,
   classes: Class[],
 ): State {
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const state = Object.create(State.prototype) as State;
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   (state as unknown as { starredClasses: Set<string> }).starredClasses =
     starredClasses;
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   (state as unknown as { store: { set: () => void } }).store = {
     set: () => undefined,
   };
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   (state as unknown as { updateState: () => void }).updateState = () =>
     undefined;
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   (state as unknown as { classes: Map<string, Class> }).classes = new Map(
     classes.map((cls) => [cls.number, cls]),
   );

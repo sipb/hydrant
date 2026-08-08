@@ -1,13 +1,15 @@
 import type { EventInput } from "@fullcalendar/react";
+
 import { nanoid } from "nanoid";
 
+import type { Class } from "./class";
 import type { ColorScheme } from "./colors";
+import type { PEClass } from "./pe";
+import type { RawSection, RawTimeslot } from "./raw";
+
 import { fallbackColor, textColor } from "./colors";
 import { Slot } from "./dates";
-import type { RawSection, RawTimeslot } from "./raw";
 import { sum } from "./utils";
-import type { PEClass } from "./pe";
-import type { Class } from "./class";
 
 interface ActivityEventInput extends EventInput {
   room?: string;
@@ -103,6 +105,21 @@ export interface BaseActivity {
 
 export type Activity = Class | PEClass | CustomActivity;
 
+export function isActivity(obj: unknown): obj is Activity {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "id" in obj &&
+    "name" in obj &&
+    "shortName" in obj &&
+    "backgroundColor" in obj &&
+    "manualColor" in obj &&
+    "hours" in obj &&
+    "buttonName" in obj &&
+    "events" in obj
+  );
+}
+
 /**
  * A group of events to be rendered in a calendar, all of the same name, room,
  * and color.
@@ -152,6 +169,13 @@ export class Event {
     }));
   }
 }
+
+export type DeflatedCustomActivity = [
+  timeslots: RawTimeslot[],
+  name: string,
+  backgroundColor: string,
+  room: string,
+];
 
 /** A custom activity, created by the user. */
 export class CustomActivity implements BaseActivity {
@@ -210,8 +234,8 @@ export class CustomActivity implements BaseActivity {
   }
 
   /** Deflate an activity to something JSONable. */
-  deflate(): (RawTimeslot[] | string)[] {
-    const res = [
+  deflate(): DeflatedCustomActivity {
+    return [
       this.timeslots.map<RawTimeslot>((slot) => [
         slot.startSlot.slot,
         slot.numSlots,
@@ -220,20 +244,17 @@ export class CustomActivity implements BaseActivity {
       this.backgroundColor,
       this.room ?? "",
     ];
-    return res;
   }
 
   /** Inflate a custom activity with info from the output of deflate. */
-  inflate(parsed: (RawTimeslot[] | string)[]): void {
+  inflate(parsed: DeflatedCustomActivity): void {
     const [timeslots, name, backgroundColor, room] = parsed;
-    this.timeslots = (timeslots as RawTimeslot[]).map(
-      (slot) => new Timeslot(...slot),
-    );
-    this.name = name as string;
-    this.room = (room as string) || undefined;
+    this.timeslots = timeslots.map((slot) => new Timeslot(...slot));
+    this.name = name;
+    this.room = room || undefined;
     if (backgroundColor) {
       this.manualColor = true;
-      this.backgroundColor = backgroundColor as string;
+      this.backgroundColor = backgroundColor;
     }
   }
 }
@@ -338,9 +359,9 @@ export class Sections {
     return this.kind ? this.kind.toLowerCase() : "sec";
   }
 
-  private readonly _priority = 0;
+  private readonly priotityDefault = 0;
   get priority(): number {
-    return this._priority;
+    return this.priotityDefault;
   }
 
   /** Name for the kind of sections these are. */

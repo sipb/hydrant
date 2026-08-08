@@ -1,37 +1,34 @@
 import { useState } from "react";
 
-import { Tabs } from "@chakra-ui/react";
-import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
 
+import { Tabs } from "@chakra-ui/react";
+import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
+
+import { useHydrantContext } from "../lib/hydrant";
+import { ClassType } from "../lib/schema";
 import { ClassTable } from "./ClassTable";
 import { PEClassTable } from "./PEClassTable";
 
-import { ClassType } from "../lib/schema";
-import { useHydrantContext } from "../lib/hydrant";
+type ClassTypeComponent = Record<ClassType, [IconType, React.ComponentType]>;
 
-function classTypeComponents(termKeys: ClassType[]) {
-  const obj = {} as Record<ClassType, [IconType, React.ComponentType]>;
-
-  if (termKeys.includes(ClassType.ACADEMIC)) {
-    obj[ClassType.ACADEMIC] = [LuGraduationCap, ClassTable];
-  }
-
-  if (termKeys.includes(ClassType.PEW)) {
-    obj[ClassType.PEW] = [LuDumbbell, PEClassTable];
-  }
-
-  return obj;
-}
+const CLASS_TYPE_COMPONENTS: ClassTypeComponent = {
+  [ClassType.ACADEMIC]: [LuGraduationCap, ClassTable],
+  [ClassType.PEW]: [LuDumbbell, PEClassTable],
+};
 
 export const ClassTypesSwitcher = () => {
   const { state } = useHydrantContext();
-  const [currentTab, setCurrentTab] = useState(ClassType.ACADEMIC);
+  const [currentTab, setCurrentTab] = useState<string>(ClassType.ACADEMIC);
 
-  const tabs = classTypeComponents([
-    ...(state.classes.size > 0 ? [ClassType.ACADEMIC] : []),
-    ...(state.peClasses.size > 0 ? [ClassType.PEW] : []),
-  ]);
+  const tabs: Partial<ClassTypeComponent> = {
+    ...(state.classes.size > 0
+      ? { [ClassType.ACADEMIC]: CLASS_TYPE_COMPONENTS[ClassType.ACADEMIC] }
+      : {}),
+    ...(state.peClasses.size > 0
+      ? { [ClassType.PEW]: CLASS_TYPE_COMPONENTS[ClassType.PEW] }
+      : {}),
+  };
 
   if (Object.keys(tabs).length > 1)
     return (
@@ -41,12 +38,12 @@ export const ClassTypesSwitcher = () => {
         variant="line"
         value={currentTab}
         onValueChange={(e) => {
-          setCurrentTab(e.value as ClassType);
+          setCurrentTab(e.value);
         }}
       >
         <Tabs.List>
           {Object.entries(tabs).map(([key, [Icon, _]]) => (
-            <Tabs.Trigger value={key as ClassType} key={key}>
+            <Tabs.Trigger value={key} key={key}>
               <Icon />
               {key}
             </Tabs.Trigger>
@@ -54,7 +51,7 @@ export const ClassTypesSwitcher = () => {
           <Tabs.Indicator />
         </Tabs.List>
         {Object.entries(tabs).map(([key, [_, Component]]) => (
-          <Tabs.Content value={key as ClassType} key={key}>
+          <Tabs.Content value={key} key={key}>
             <Component />
           </Tabs.Content>
         ))}

@@ -3,34 +3,33 @@ import {
   Flex,
   Group,
   ButtonGroup,
-  SkipNavContent,
   SkipNavLink,
+  SkipNavContent,
 } from "@chakra-ui/react";
-import { Calendar } from "../components/Calendar";
-import { LeftFooter } from "../components/Footers";
-import { Header, PreferencesDialog } from "../components/Header";
-import { SelectedActivities } from "../components/SelectedActivities";
-import { ScheduleOption } from "../components/ScheduleOption";
-import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
-import { TermSwitcher } from "../components/TermSwitcher";
+
+import type { Route } from "./+types/_index";
+
+import { ActivityDescription } from "../components/ActivityDescription";
 import { Banner } from "../components/Banner";
 import {
   MatrixLink,
   PreregLink,
   ExportCalendar,
 } from "../components/ButtonsLinks";
+import { Calendar } from "../components/Calendar";
 import { ClassTypesSwitcher } from "../components/ClassTypes";
-
-import { State } from "../lib/state";
+import { LeftFooter } from "../components/Footers";
+import { Header, PreferencesDialog } from "../components/Header";
+import { ScheduleOption } from "../components/ScheduleOption";
+import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
+import { SelectedActivities } from "../components/SelectedActivities";
+import { TermSwitcher } from "../components/TermSwitcher";
 import { Term } from "../lib/dates";
+import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 import { type SemesterData, getStateMaps } from "../lib/hydrant";
 import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
-import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
+import { State } from "../lib/state";
 
-import type { Route } from "./+types/_index";
-import { ActivityDescription } from "~/components/ActivityDescription";
-
-// eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const searchParams = url.searchParams;
   const urlNameOrig = searchParams.get("t");
@@ -133,7 +132,6 @@ function HydrantApp() {
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant" },
   {

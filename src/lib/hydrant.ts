@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useColorMode } from "../components/ui/color-mode";
 
 import type { TermInfo } from "../lib/dates";
-import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
 import type { HydrantState } from "../lib/schema";
-import { DEFAULT_STATE } from "../lib/schema";
 import type { State } from "../lib/state";
+import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
+
+import { useColorMode } from "../components/ui/color-mode";
+import { DEFAULT_STATE } from "../lib/schema";
 
 export interface SemesterData {
   classes: Record<string, RawClass>;
@@ -35,6 +36,7 @@ export const getStateMaps = (
 /** Fetch from the url, which is JSON of type T. */
 export const fetchNoCache = async <T>(url: string): Promise<T> => {
   const res = await fetch(url, { cache: "no-cache" });
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   return (await res.json()) as T;
 };
 
@@ -70,6 +72,7 @@ export function useHydrant({ globalState }: { globalState: State }): {
       }
     };
     state.updateState();
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [colorMode, state]);
 
   return { state, hydrantState };
@@ -77,6 +80,7 @@ export function useHydrant({ globalState }: { globalState: State }): {
 
 export const HydrantContext = createContext({
   hydrantState: DEFAULT_STATE,
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   state: {} as State,
 });
 

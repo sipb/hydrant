@@ -1,10 +1,12 @@
 import type { ICalEventData } from "ical-generator";
+
 import { ICalCalendar } from "ical-generator";
 import { RRuleTemporal } from "rrule-temporal";
 import { tzlib_get_ical_block } from "timezones-ical-library";
 
 import type { Activity } from "./activity";
 import type { Term } from "./dates";
+
 import { Class } from "./class";
 import { useHydrantContext } from "./hydrant";
 
@@ -96,7 +98,7 @@ export function useICSExport(
 
     try {
       download(`${state.term.urlName}.ics`, cal.toString());
-    } catch (_err) {
+    } catch {
       onError?.();
     }
     onSuccess?.();

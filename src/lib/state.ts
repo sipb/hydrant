@@ -3,24 +3,35 @@ import { nanoid } from "nanoid";
 import type {
   Timeslot,
   Activity,
+  DeflatedCustomActivity,
   Section,
   SectionLockOption,
   Sections,
 } from "./activity";
+import type { DeflatedClass } from "./class";
+import type { ColorScheme } from "./colors";
+import type { Term } from "./dates";
+import type { MeasurementSystem } from "./measurement";
+import type { DeflatedPEClass } from "./pe";
+import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
+import type { HydrantState, Preferences, Save } from "./schema";
+
 import { CustomActivity } from "./activity";
 import { scheduleSlots } from "./calendarSlots";
 import { Class } from "./class";
-import type { Term } from "./dates";
-import type { ColorScheme } from "./colors";
 import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
-import type { MeasurementSystem } from "./measurement";
 import { getDefaultMeasurementSystem } from "./measurement";
-import type { RawClass, RawTimeslot, RawPEClass, BuildingInfo } from "./raw";
+import { PEClass } from "./pe";
+import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
-import type { HydrantState, Preferences, Save } from "./schema";
-import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
-import { PEClass } from "./pe";
+
+export type DeflatedProgramState = [
+  (string | DeflatedClass)[],
+  DeflatedCustomActivity[] | null,
+  number | undefined,
+  (string | DeflatedPEClass)[] | undefined, // undefined for backwards compatability
+];
 
 /**
  * Global State object. Maintains global program state (selected classes,
@@ -224,13 +235,13 @@ export class State {
 
   /** Rename a given non-activity. */
   renameCustomActivity(customActivity: CustomActivity, name: string): void {
-    const customActivity_ = this.selectedCustomActivities.find(
+    const customActivityFound = this.selectedCustomActivities.find(
       (customActivity_) => customActivity_.id === customActivity.id,
     );
 
-    if (!customActivity_) return;
+    if (!customActivityFound) return;
 
-    customActivity_.name = name;
+    customActivityFound.name = name;
     this.updateState();
   }
 
@@ -239,13 +250,13 @@ export class State {
     customActivity: CustomActivity,
     room: string | undefined,
   ): void {
-    const customActivity_ = this.selectedCustomActivities.find(
+    const customActivityFound = this.selectedCustomActivities.find(
       (customActivity_) => customActivity_.id === customActivity.id,
     );
 
-    if (!customActivity_) return;
+    if (!customActivityFound) return;
 
-    customActivity_.room = room;
+    customActivityFound.room = room;
     this.updateState();
   }
 
@@ -437,7 +448,7 @@ export class State {
       4: 4,
     };
 
-    const sortedQuarters = Array.from(allQuarters).sort((a, b) => {
+    const sortedQuarters = Array.from(allQuarters).toSorted((a, b) => {
       return quarterOrder[a] - quarterOrder[b];
     });
 
@@ -456,7 +467,7 @@ export class State {
   }
 
   /** Deflate program state to something JSONable. */
-  deflate() {
+  deflate(): DeflatedProgramState {
     return [
       this.selectedClasses.map((cls) => cls.deflate()),
       this.selectedCustomActivities.length > 0
@@ -470,33 +481,18 @@ export class State {
   }
 
   /** Parse all program state. */
-  inflate(
-    obj:
-      | (
-          | number
-          | (string | number | string[])[][]
-          | (string | RawTimeslot[])[][]
-          | null
-        )[]
-      | null,
-  ): void {
+  inflate(obj: DeflatedProgramState | null): void {
     if (!obj) return;
     this.reset();
-    const [classes, customActivities, selectedOption, peClasses] = obj as [
-      (string | number | string[])[][],
-      (string | RawTimeslot[])[][] | null,
-      number | undefined,
-      (string | number | string[])[][] | undefined, // undefined for backwards compatability
-    ];
+    const [classes, customActivities, selectedOption, peClasses] = obj;
     for (const deflated of classes) {
       const cls =
         typeof deflated === "string"
           ? this.classes.get(deflated)
-          : this.classes.get((deflated as string[])[0]);
+          : this.classes.get(deflated[0]);
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
-        const subject =
-          typeof deflated === "string" ? deflated : (deflated as string[])[0];
+        const subject = typeof deflated === "string" ? deflated : deflated[0];
 
         this.unknownSubjects.add(subject);
         continue;
@@ -518,14 +514,12 @@ export class State {
       const cls =
         typeof deflated === "string"
           ? (this.peClasses.get(deflated) ??
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             this.peClasses.get(`Q3.${deflated}`))
-          : (this.peClasses.get((deflated as string[])[0]) ??
-            this.peClasses.get(`Q3.${(deflated as string[])[0]}`));
+          : (this.peClasses.get(deflated[0]) ??
+            this.peClasses.get(`Q3.${deflated[0]}`));
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
-        const subject =
-          typeof deflated === "string" ? deflated : (deflated as string[])[0];
+        const subject = typeof deflated === "string" ? deflated : deflated[0];
 
         this.unknownSubjects.add(subject);
         continue;
@@ -548,6 +542,7 @@ export class State {
     }
     const storage = this.store.get(id);
     if (!storage) return;
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     this.inflate(storage as Parameters<State["inflate"]>[0]);
     this.saveId = id;
     this.updateState(false);
@@ -579,7 +574,7 @@ export class State {
 
   /** Rename a given save. */
   renameSave(id: string, name: string): void {
-    const save = this.saves.find((save) => save.id === id);
+    const save = this.saves.find((s) => s.id === id);
     if (!save || !name) return;
     save.name = name;
     this.storeSave();
@@ -636,13 +631,14 @@ export class State {
       this.addSave(true);
     }
     if (save) {
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       this.inflate(urldecode(save) as Parameters<State["inflate"]>[0]);
     } else {
       // Try to load default schedule if set, otherwise load first save
       const defaultScheduleId = this.preferences.defaultScheduleId;
       if (
         defaultScheduleId &&
-        this.saves.some((save) => save.id === defaultScheduleId)
+        this.saves.some((s) => s.id === defaultScheduleId)
       ) {
         this.loadSave(defaultScheduleId);
       } else {
@@ -653,6 +649,11 @@ export class State {
     const storedStarred = this.store.get("starredClasses");
     if (storedStarred) {
       this.starredClasses = new Set(storedStarred);
+    }
+    // Load starred PE classes from storage
+    const storedStarredPE = this.store.get("starredPEClasses");
+    if (storedStarredPE) {
+      this.starredPEClasses = new Set(storedStarredPE);
     }
   }
 }
