@@ -10,10 +10,9 @@ import { ClassType } from "../lib/schema";
 import { ClassTable } from "./ClassTable";
 import { PEClassTable } from "./PEClassTable";
 
-const CLASS_TYPE_COMPONENTS: Record<
-  ClassType,
-  [IconType, React.ComponentType]
-> = {
+type ClassTypeComponent = Record<ClassType, [IconType, React.ComponentType]>;
+
+const CLASS_TYPE_COMPONENTS: ClassTypeComponent = {
   [ClassType.ACADEMIC]: [LuGraduationCap, ClassTable],
   [ClassType.PEW]: [LuDumbbell, PEClassTable],
 };
@@ -22,7 +21,7 @@ export const ClassTypesSwitcher = () => {
   const { state } = useHydrantContext();
   const [currentTab, setCurrentTab] = useState<string>(ClassType.ACADEMIC);
 
-  const tabs: Partial<Record<ClassType, [IconType, React.ComponentType]>> = {
+  const tabs: Partial<ClassTypeComponent> = {
     ...(state.classes.size > 0
       ? { [ClassType.ACADEMIC]: CLASS_TYPE_COMPONENTS[ClassType.ACADEMIC] }
       : {}),
