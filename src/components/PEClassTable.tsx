@@ -8,10 +8,14 @@ import {
   type SetStateAction,
 } from "react";
 
+import type { IRowNode, ColDef } from "ag-grid-community";
+
 import { Box, Flex, Button, ButtonGroup } from "@chakra-ui/react";
 import { type CustomCellRendererProps } from "ag-grid-react";
 import { AgGridReact } from "ag-grid-react";
 import { LuStar } from "react-icons/lu";
+
+import type { State } from "../lib/state";
 
 import { ColorStyles } from "../lib/colors";
 import { useHydrantContext } from "../lib/hydrant";
@@ -23,11 +27,9 @@ import {
   sortProps,
   ClassSearchInput,
 } from "./ClassTable";
-import styles from "./ClassTable.module.css";
 import { LabelledButton } from "./ui/button";
 
-import type { State } from "../lib/state";
-import type { IRowNode, ColDef } from "ag-grid-community";
+import styles from "./ClassTable.module.css";
 
 const getFeeColor = (fee?: string | number | null) => {
   if (fee === null || fee === undefined) return ColorStyles.Muted;

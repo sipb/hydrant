@@ -27,9 +27,9 @@ import {
   LuTrash2,
 } from "react-icons/lu";
 
-import { useHydrantContext } from "../lib/hydrant";
-
 import type { Save } from "../lib/schema";
+
+import { useHydrantContext } from "../lib/hydrant";
 
 function SmallButton(props: ButtonProps) {
   const { children, ...otherProps } = props;

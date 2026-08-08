@@ -35,17 +35,18 @@ import {
 import { AgGridReact, type CustomCellRendererProps } from "ag-grid-react";
 import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
 
+import type { Class, Flags } from "../lib/class";
+import type { TSemester } from "../lib/dates";
+import type { State } from "../lib/state";
+
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { ColorStyles } from "../lib/colors";
 import { useHydrantContext } from "../lib/hydrant";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import styles from "./ClassTable.module.css";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
 
-import type { Class, Flags } from "../lib/class";
-import type { TSemester } from "../lib/dates";
-import type { State } from "../lib/state";
+import styles from "./ClassTable.module.css";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const HYDRANT_THEME = themeQuartz.withParams({

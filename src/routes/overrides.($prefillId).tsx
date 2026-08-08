@@ -1,6 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router";
 
+import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { JSONSchema7Definition } from "json-schema";
+
 import {
   Container,
   Link,
@@ -21,12 +24,10 @@ import { withTheme } from "@rjsf/core";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 import { stringify as tomlStringify, parse as tomlParse } from "smol-toml";
 
+import type { Route } from "./+types/overrides.($prefillId)";
+
 import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
 import logo from "../assets/logo.svg";
-
-import type { Route } from "./+types/overrides.($prefillId)";
-import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
-import type { JSONSchema7Definition } from "json-schema";
 
 type FormData = Record<string, unknown>[];
 

@@ -16,6 +16,8 @@ import {
 import { keyframes } from "@emotion/react";
 import { LuSettings, LuX } from "react-icons/lu";
 
+import type { Preferences } from "../lib/schema";
+
 import hydraAnt from "../assets/hydraAnt.png";
 import logoDark from "../assets/logo-dark.svg";
 import logo from "../assets/logo.svg";
@@ -25,8 +27,6 @@ import { MEASUREMENT_SYSTEM_PRESETS } from "../lib/measurement";
 import { DEFAULT_PREFERENCES } from "../lib/schema";
 import { SIPBLogo } from "./ButtonsLinks";
 import { useColorModeValue } from "./ui/color-mode";
-
-import type { Preferences } from "../lib/schema";
 
 // Brief nudge when someone clicks outside the dialog, to hint that the click
 // was ignored rather than just doing nothing. Skipped under reduced motion.

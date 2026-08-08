@@ -7,11 +7,11 @@ import {
 } from "@chakra-ui/react";
 import { LuPlus } from "react-icons/lu";
 
+import type { Activity } from "../lib/activity";
+
 import { Class } from "../lib/class";
 import { textColor } from "../lib/colors";
 import { useHydrantContext } from "../lib/hydrant";
-
-import type { Activity } from "../lib/activity";
 
 export function ColorButton(props: ButtonProps & { color: string }) {
   const { children, color, ...otherProps } = props;

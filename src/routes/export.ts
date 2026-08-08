@@ -1,11 +1,11 @@
 import { redirect } from "react-router";
 
+import type { Route } from "./+types/export";
+
 import { Class } from "../lib/class";
 import { getClosestUrlName, Term, type LatestTermInfo } from "../lib/dates";
 import { fetchNoCache, type SemesterData, getStateMaps } from "../lib/hydrant";
 import { State } from "../lib/state";
-
-import type { Route } from "./+types/export";
 
 /**
  * "Integration callbacks" allow other SIPB projects to integrate with Hydrant by redirecting to

@@ -1,15 +1,5 @@
 import { nanoid } from "nanoid";
 
-import { CustomActivity } from "./activity";
-import { scheduleSlots } from "./calendarSlots";
-import { Class } from "./class";
-import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
-import { getDefaultMeasurementSystem } from "./measurement";
-import { PEClass } from "./pe";
-import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
-import { Store } from "./store";
-import { sum, urldecode, urlencode } from "./utils";
-
 import type {
   Timeslot,
   Activity,
@@ -25,6 +15,16 @@ import type { MeasurementSystem } from "./measurement";
 import type { DeflatedPEClass } from "./pe";
 import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
 import type { HydrantState, Preferences, Save } from "./schema";
+
+import { CustomActivity } from "./activity";
+import { scheduleSlots } from "./calendarSlots";
+import { Class } from "./class";
+import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
+import { getDefaultMeasurementSystem } from "./measurement";
+import { PEClass } from "./pe";
+import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
+import { Store } from "./store";
+import { sum, urldecode, urlencode } from "./utils";
 
 export type DeflatedProgramState = [
   (string | DeflatedClass)[],

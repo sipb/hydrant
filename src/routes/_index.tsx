@@ -7,6 +7,8 @@ import {
   SkipNavContent,
 } from "@chakra-ui/react";
 
+import type { Route } from "./+types/_index";
+
 import { ActivityDescription } from "../components/ActivityDescription";
 import { Banner } from "../components/Banner";
 import {
@@ -27,8 +29,6 @@ import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
 import { type SemesterData, getStateMaps } from "../lib/hydrant";
 import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { State } from "../lib/state";
-
-import type { Route } from "./+types/_index";
 
 export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const searchParams = url.searchParams;

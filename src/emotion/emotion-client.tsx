@@ -7,11 +7,11 @@ import {
   useState,
 } from "react";
 
+import type { EmotionCache } from "@emotion/react";
+
 import { CacheProvider } from "@emotion/react";
 
 import { createEmotionCache } from "./emotion-cache";
-
-import type { EmotionCache } from "@emotion/react";
 
 export const ClientStyleContext = createContext({
   reset: () => {

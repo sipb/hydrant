@@ -10,14 +10,14 @@ import {
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 import { withEmotionCache } from "@emotion/react";
 
+import type { Route } from "./+types/root";
+
 import { Provider } from "./components/ui/provider";
 import { useInjectStyles } from "./emotion/emotion-client";
-
-import type { Route } from "./+types/root";
+import "temporal-polyfill/global";
 
 import "@fontsource-variable/ibm-plex-sans/index.css";
 import "@fontsource/ibm-plex-mono/index.css";
-import "temporal-polyfill/global";
 
 export const links: Route.LinksFunction = () => [
   {
@@ -33,10 +33,6 @@ export function HydrateFallback() {
       <Spinner />
     </Flex>
   );
-}
-
-interface LayoutProps {
-  children: React.ReactNode;
 }
 
 function Analytics() {
@@ -55,8 +51,15 @@ function Analytics() {
   );
 }
 
-// oxlint-disable-next-line react/only-export-components
-export const Layout = withEmotionCache((props: LayoutProps, cache) => {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export const Layout = (props: LayoutProps) => {
+  return <LayoutWithCache {...props} />;
+};
+
+const LayoutWithCache = withEmotionCache((props: LayoutProps, cache) => {
   const { children } = props;
 
   useInjectStyles(cache);

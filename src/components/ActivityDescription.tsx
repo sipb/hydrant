@@ -10,6 +10,8 @@ import {
 import { decode } from "html-entities";
 import { LuExternalLink, LuStar } from "react-icons/lu";
 
+import type { Flags } from "../lib/class";
+
 import { CustomActivity } from "../lib/activity";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { useHydrantContext } from "../lib/hydrant";
@@ -18,8 +20,6 @@ import { linkClasses } from "../lib/utils";
 import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
-
-import type { Flags } from "../lib/class";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {

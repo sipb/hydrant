@@ -25,6 +25,9 @@ import {
 } from "@chakra-ui/react";
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
 
+import type { Class } from "../lib/class";
+import type { PEClass } from "../lib/pe";
+
 import {
   Timeslot,
   LockOption,
@@ -40,9 +43,6 @@ import { Checkbox } from "./ui/checkbox";
 import { ColorPickerInput } from "./ui/colorpicker-input";
 import { Field } from "./ui/field";
 import { Radio, RadioGroup } from "./ui/radio";
-
-import type { Class } from "../lib/class";
-import type { PEClass } from "../lib/pe";
 
 interface ToggleButtonProps extends ButtonProps {
   active: boolean;

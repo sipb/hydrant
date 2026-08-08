@@ -1,6 +1,8 @@
 import type { EntryContext } from "react-router";
 import { ServerRouter } from "react-router";
 
+import type { RenderToPipeableStreamOptions } from "react-dom/server";
+
 import { CacheProvider } from "@emotion/react";
 import { createReadableStreamFromReadable } from "@react-router/node";
 import { isbot } from "isbot";
@@ -8,8 +10,6 @@ import { PassThrough } from "node:stream";
 import { renderToPipeableStream } from "react-dom/server";
 
 import { createEmotionCache } from "./emotion/emotion-cache";
-
-import type { RenderToPipeableStreamOptions } from "react-dom/server";
 
 export const streamTimeout = 5_000;
 

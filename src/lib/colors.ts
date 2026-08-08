@@ -1,7 +1,7 @@
-import styles from "./colors.module.css";
-
 import type { ColorMode } from "../components/ui/color-mode";
 import type { Activity } from "./activity";
+
+import styles from "./colors.module.css";
 
 export const ColorStyles = {
   Muted: styles.muted,

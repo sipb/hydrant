@@ -1,13 +1,14 @@
+import type { ICalEventData } from "ical-generator";
+
 import { ICalCalendar } from "ical-generator";
 import { RRuleTemporal } from "rrule-temporal";
 import { tzlib_get_ical_block } from "timezones-ical-library";
 
-import { Class } from "./class";
-import { useHydrantContext } from "./hydrant";
-
 import type { Activity } from "./activity";
 import type { Term } from "./dates";
-import type { ICalEventData } from "ical-generator";
+
+import { Class } from "./class";
+import { useHydrantContext } from "./hydrant";
 
 /** MIT's Timezone string. */
 const TIMEZONE = "America/New_York";

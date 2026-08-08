@@ -1,3 +1,5 @@
+import type { ColorScheme } from "./colors";
+
 import bioImg from "../assets/bio.gif";
 import calc1Img from "../assets/calc1.gif";
 import calc2Img from "../assets/calc2.gif";
@@ -33,8 +35,6 @@ import {
   type RawClass,
   type RawSection,
 } from "./raw";
-
-import type { ColorScheme } from "./colors";
 
 /** Flags. */
 export interface Flags {
