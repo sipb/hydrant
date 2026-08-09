@@ -32,15 +32,13 @@ export class Store {
   /** Return the corresponding, term-specific saved value. */
   get<T extends keyof TermStore>(key: T): TermStore[T] | null {
     const result = localStorage.getItem(this.toKey(key.toString(), false));
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    return result !== null ? (JSON.parse(result) as TermStore[T]) : null;
+    return result !== null ? JSON.parse(result) : null;
   }
 
   /** Return the corresponding global saved value. */
   globalGet<T extends keyof GlobalStore>(key: T): GlobalStore[T] | null {
     const result = localStorage.getItem(this.toKey(key, true));
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    return result !== null ? (JSON.parse(result) as GlobalStore[T]) : null;
+    return result !== null ? JSON.parse(result) : null;
   }
 
   /** Set the corresponding term-specific value. */

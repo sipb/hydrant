@@ -2,11 +2,11 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import type { TermInfo } from "../lib/dates";
 import type { HydrantState } from "../lib/schema";
-import type { State } from "../lib/state";
 import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
 
 import { useColorMode } from "../components/ui/color-mode";
 import { DEFAULT_STATE } from "../lib/schema";
+import { State } from "../lib/state";
 
 export interface SemesterData {
   classes: Record<string, RawClass>;
@@ -36,8 +36,7 @@ export const getStateMaps = (
 /** Fetch from the url, which is JSON of type T. */
 export const fetchNoCache = async <T>(url: string): Promise<T> => {
   const res = await fetch(url, { cache: "no-cache" });
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  return (await res.json()) as T;
+  return await res.json();
 };
 
 /** Hook to fetch data and initialize State object. */
@@ -78,10 +77,12 @@ export function useHydrant({ globalState }: { globalState: State }): {
   return { state, hydrantState };
 }
 
-export const HydrantContext = createContext({
+export const HydrantContext = createContext<{
+  hydrantState: HydrantState;
+  state: State;
+}>({
   hydrantState: DEFAULT_STATE,
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  state: {} as State,
+  state: Object.create(State.prototype),
 });
 
 export const useHydrantContext = () => useContext(HydrantContext);

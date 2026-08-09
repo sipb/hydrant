@@ -46,9 +46,13 @@ const schema: RJSFSchema = {
   definitions: itemSchema.definitions as Record<string, JSONSchema7Definition>,
 };
 
-// oxlint-disable-next-line typescript/no-unsafe-type-assertion
-const overrides = Object.assign(
-  {},
+type OverridesRecord = Record<
+  string,
+  { name: string; data: () => Promise<string> }
+>;
+
+const overrides: OverridesRecord = Object.assign(
+  {} as OverridesRecord,
   ...Object.entries(
     import.meta.glob("../../scrapers/overrides.toml.d/**/*.toml", {
       query: "raw",
@@ -60,7 +64,7 @@ const overrides = Object.assign(
 
     return { [key]: { name, data } };
   }),
-) as Record<string, { name: string; data: () => Promise<string> }>;
+);
 
 const overridesCollection = createListCollection({
   items: Object.entries(overrides)
