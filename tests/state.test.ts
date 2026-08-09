@@ -77,10 +77,8 @@ function makeClass(number: string, hasFinal: boolean): Class {
 }
 
 function makeStateWithClasses(classes: Class[]): State {
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const state = Object.create(State.prototype) as State;
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  (state as unknown as { selectedClasses: Class[] }).selectedClasses = classes;
+  const state = Object.create(State.prototype);
+  state.selectedClasses = classes;
   return state;
 }
 
@@ -126,22 +124,11 @@ function makeStateWithStarredClasses(
   starredClasses: Set<string>,
   classes: Class[],
 ): State {
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const state = Object.create(State.prototype) as State;
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  (state as unknown as { starredClasses: Set<string> }).starredClasses =
-    starredClasses;
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  (state as unknown as { store: { set: () => void } }).store = {
-    set: () => undefined,
-  };
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  (state as unknown as { updateState: () => void }).updateState = () =>
-    undefined;
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  (state as unknown as { classes: Map<string, Class> }).classes = new Map(
-    classes.map((cls) => [cls.number, cls]),
-  );
+  const state = Object.create(State.prototype);
+  state.starredClasses = starredClasses;
+  state.store = { set: () => undefined };
+  state.updateState = () => undefined;
+  state.classes = new Map(classes.map((cls) => [cls.number, cls]));
   return state;
 }
 
