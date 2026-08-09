@@ -7,6 +7,7 @@ export interface TermStore {
   starredClasses: string[];
   /** Array of PE class numbers that are starred */
   starredPEClasses: string[];
+  /** Array of program states that are saved */
   [saveId: string]: Save[] | string[] | DeflatedProgramState;
 }
 

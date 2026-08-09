@@ -33,6 +33,18 @@ export type DeflatedProgramState = [
   (string | DeflatedPEClass)[] | undefined, // undefined for backwards compatability
 ];
 
+function isDeflatedProgramState(obj: unknown): obj is DeflatedProgramState {
+  if (!Array.isArray(obj) || !(obj.length === 4 || obj.length === 3))
+    return false;
+  const [classes, customActivities, option, peClasses] = obj;
+  if (!Array.isArray(classes)) return false;
+  if (customActivities !== null && !Array.isArray(customActivities))
+    return false;
+  if (option !== undefined && typeof option !== "number") return false;
+  if (peClasses !== undefined && !Array.isArray(peClasses)) return false;
+  return true;
+}
+
 /**
  * Global State object. Maintains global program state (selected classes,
  * schedule options selected, activities, etc.).
@@ -542,8 +554,8 @@ export class State {
     }
     const storage = this.store.get(id);
     if (!storage) return;
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    this.inflate(storage as Parameters<State["inflate"]>[0]);
+    if (!isDeflatedProgramState(storage)) return;
+    this.inflate(storage);
     this.saveId = id;
     this.updateState(false);
   }
@@ -630,9 +642,13 @@ export class State {
       this.saves = [];
       this.addSave(true);
     }
-    if (save) {
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      this.inflate(urldecode(save) as Parameters<State["inflate"]>[0]);
+    let decoded: unknown;
+    if (
+      save &&
+      (decoded = urldecode(save)) &&
+      isDeflatedProgramState(decoded)
+    ) {
+      this.inflate(decoded);
     } else {
       // Try to load default schedule if set, otherwise load first save
       const defaultScheduleId = this.preferences.defaultScheduleId;
