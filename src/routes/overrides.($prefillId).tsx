@@ -26,7 +26,10 @@ import { stringify as tomlStringify, parse as tomlParse } from "smol-toml";
 
 import type { Route } from "./+types/overrides.($prefillId)";
 
-import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
+import {
+  additionalProperties,
+  definitions,
+} from "../../scrapers/overrides.toml.d/override-schema.json";
 import logo from "../assets/logo.svg";
 
 type FormData = Record<string, unknown>[];
@@ -39,11 +42,11 @@ const schema: RJSFSchema = {
   type: "array",
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   items: {
-    ...itemSchema.additionalProperties,
+    ...additionalProperties,
     required: ["number"],
   } as unknown as JSONSchema7Definition,
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  definitions: itemSchema.definitions as Record<string, JSONSchema7Definition>,
+  definitions: definitions as Record<string, JSONSchema7Definition>,
 };
 
 type OverridesRecord = Record<
@@ -284,7 +287,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           "ui:field": "LayoutHeaderField",
         },
         ...Object.fromEntries(
-          Object.entries(itemSchema.additionalProperties.properties).map(
+          Object.entries(additionalProperties.properties).map(
             ([key, value]) => {
               if ("description" in value) {
                 return [
