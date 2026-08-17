@@ -264,13 +264,13 @@ export function LeftFooter() {
         <Text textAlign="center" fontSize="sm" color="fg.muted">
           Last updated:{" "}
           <time dateTime={state.lastUpdated}>
-            {Temporal.PlainDateTime.from(state.lastUpdated).toLocaleString(
-              "en-US",
-              {
+            {Temporal.PlainDateTime.from(state.lastUpdated)
+              .toZonedDateTime("UTC")
+              .toInstant()
+              .toLocaleString("en-US", {
                 dateStyle: "medium",
                 timeStyle: "short",
-              },
-            )}
+              })}
           </time>
         </Text>
         <Flex gap={4} wrap="wrap" align="center" justify="center">
