@@ -250,6 +250,9 @@ function LicenseDialog() {
 /** The footer on the bottom of the calendar. */
 export function LeftFooter() {
   const { state } = useHydrantContext();
+  const updateTime = Temporal.PlainDateTime.from(state.lastUpdated)
+    .toZonedDateTime("UTC")
+    .toInstant();
 
   return (
     <Flex as="footer" direction="row" align="center" justify="center" gap={5}>
@@ -263,14 +266,11 @@ export function LeftFooter() {
       <Flex direction="column" align="center" gap={2}>
         <Text textAlign="center" fontSize="sm" color="fg.muted">
           Last updated:{" "}
-          <time dateTime={state.lastUpdated}>
-            {Temporal.PlainDateTime.from(state.lastUpdated)
-              .toZonedDateTime("UTC")
-              .toInstant()
-              .toLocaleString("en-US", {
-                dateStyle: "medium",
-                timeStyle: "short",
-              })}
+          <time dateTime={updateTime.toString()}>
+            {updateTime.toLocaleString("en-US", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })}
           </time>
         </Text>
         <Flex gap={4} wrap="wrap" align="center" justify="center">

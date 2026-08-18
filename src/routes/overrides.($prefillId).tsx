@@ -115,7 +115,6 @@ const validateUniqueNumbers: CustomValidator<Record<string, unknown>[]> = (
   return errors;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   let prefillData: Record<string, unknown>[] = [];
   const prefillIdPrelim = params.prefillId?.toUpperCase();
@@ -472,7 +471,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant - Overrides Form" },
   {

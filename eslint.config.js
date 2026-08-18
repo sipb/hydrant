@@ -18,7 +18,22 @@ export default defineConfig(
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
   // reactHooks.configs.flat.recommended,
-  reactRefresh.configs.vite(),
+  reactRefresh.configs.vite({
+    // allow react router exports
+    allowExportNames: [
+      "middleware",
+      "clientMiddleware",
+      "loader",
+      "clientLoader",
+      "action",
+      "clientAction",
+      "headers",
+      "handle",
+      "links",
+      "meta",
+      "shouldRevalidate",
+    ],
+  }),
   eslintConfigPrettier,
   {
     languageOptions: {
