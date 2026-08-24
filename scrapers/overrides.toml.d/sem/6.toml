@@ -36,6 +36,18 @@ prereqs = "6.7121; or 6.2200; and Ability to perform college-level mathematical 
 inCharge = "M. Ilic"
 description = "Systems approach to designing, modeling, simulating and decision making for electricity markets is introduced. Emphasis on physically implementable markets, with the review of today's electric power systems operations and planning. A home-grown digital platform used to emulate interactions between market, regulatory and engineering signals. Assessment of the evolution of electric energy markets, with a critical overview of methods for managing uncertainties at value. Links with model predictive decision making, arbitrage management and the role of digitization (automation, ML/AI) in enabling future performance of electricity markets. Role of flexibility and its value in managing uncertainties, with use cases (hyperscale data centers, renewable intermittent resources, reliability, resilience). Introduction of unified technology-agnostic modeling in terms of energy, power and rate of change of reactive power in support of protocols for efficient physically implementable market concepts.\n\nIf you want to learn how to become hardware/software innovative expert in cyber-physical systems for supporting the ongoing revolution in electric power industry! The course bridges EE, economics/finance and CS tools in major ways. We learn what information needs to be sensed, communicated and processed by different embedded cyber systems into physical electric systems and for what purpose. Become a leader in using cyber for sustainable energy systems at value! Exciting term projects (including integration of hyperscale data centers in electricity grids; valuing power electronics for supporting flexibility; integration of storage at value; hybrid use of ML/AI tools for electricity markets."
 
+["6.S974"]
+name = "Games, Learning, and Security"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+same = "1.S980"
+prereqs = "	Linear algebra and optimization at the level of 18.C06; probability at the level of 6.3700; programming experience in Python. No prior background in game theory or reinforcement learning is needed; we build those up in the course. Graduate students from other departments may enroll with permission of the instructor."
+inCharge = "S. Amin, M. Dahan, A. Ozdaglar, T. Sapsis"
+description = "Studies decision-making in systems whose outcomes depend on the actions of other agents, human and artificial. Covers game-theoretic models of strategic interaction and equilibrium; reinforcement learning and multi-agent learning, including when learning agents converge to an equilibrium, cycle, or collude; design of incentives and mechanisms for steering dynamic trajectories towards outcomes with good welfare properties; attacks on learning systems and game-theoretic approaches to defense; and design for resilience against disruption, rare events, and strategic surprise. Introduces the relevant background in game theory, learning theory, and network science. Student teams build a semester-long computational wargame: they implement a simulation of a multi-agent system such as critical infrastructure, an autonomous system, or an algorithmic market, add strategic and learning agents, test attacks and defenses, and design for resilience."
+
 ["6.S978"]
 name = "Engineering AI Systems and Agents"
 level = "G"
