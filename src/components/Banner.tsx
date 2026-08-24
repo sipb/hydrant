@@ -42,9 +42,10 @@ export const AnnouncementsBanner = () => {
             </Text>
             <CloseButton
               hideFrom="sm"
-              variant="ghost"
+              variant="plain"
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
+              _active={{ bg: "blackAlpha.400!" }}
               onClick={() => {
                 state.showBanner = false;
               }}
@@ -53,9 +54,10 @@ export const AnnouncementsBanner = () => {
         </Center>
         <Float placement="middle-end" offset="8" hideBelow="sm">
           <CloseButton
-            variant="ghost"
+            variant="plain"
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
+            _active={{ bg: "blackAlpha.400!" }}
             onClick={() => {
               state.showBanner = false;
             }}
@@ -99,9 +101,10 @@ export const UnknownSubjectsBanner = () => {
             </Text>
             <CloseButton
               hideFrom="sm"
-              variant="ghost"
+              variant="plain"
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
+              _active={{ bg: "blackAlpha.400!" }}
               onClick={() => {
                 setUnknownVisible(false);
               }}
@@ -110,9 +113,10 @@ export const UnknownSubjectsBanner = () => {
         </Center>
         <Float placement="middle-end" offset="8" hideBelow="sm">
           <CloseButton
-            variant="ghost"
+            variant="plain"
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
+            _active={{ bg: "blackAlpha.400!" }}
             onClick={() => {
               setUnknownVisible(false);
             }}

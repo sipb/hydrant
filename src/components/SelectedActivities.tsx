@@ -18,6 +18,7 @@ export function ColorButton(props: ButtonProps & { color: string }) {
 
   return (
     <Button
+      variant="plain"
       backgroundColor={color}
       _hover={{
         backgroundColor: `color-mix(in oklab, ${color} 92%, ${contractColor})`,

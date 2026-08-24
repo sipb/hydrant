@@ -270,6 +270,7 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
     <Flex direction="column" gap={2}>
       <ButtonGroup wrap="wrap">
         <Button
+          colorPalette={isSelected ? "red" : undefined}
           onClick={() => {
             state.toggleActivity(cls);
           }}
@@ -509,6 +510,7 @@ export function CustomActivityButtons(props: { activity: CustomActivity }) {
       return (
         <>
           <Button
+            colorPalette={isSelected ? "red" : undefined}
             onClick={() => {
               state.toggleActivity(activity);
             }}
