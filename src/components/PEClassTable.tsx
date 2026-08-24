@@ -310,7 +310,7 @@ const StarButton = ({
         state.toggleStarPEClass(cls);
         onStarToggle?.();
       }}
-      variant="plain"
+      variant="ghost"
       size="sm"
       aria-label={isStarred ? "Unstar class" : "Star class"}
     >

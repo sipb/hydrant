@@ -111,7 +111,7 @@ export function PreferencesDialog() {
         }}
       >
         <Dialog.Trigger asChild>
-          <IconButton size="sm" aria-label="Change theme" variant="outline">
+          <IconButton size="sm" aria-label="Preferences" variant="outline">
             <LuSettings />
           </IconButton>
         </Dialog.Trigger>

@@ -1,0 +1,14 @@
+#:schema ../override-schema.json
+
+["ES.S70"]
+name = "Exploring Physics with Python"
+include = false
+same = "8.006"
+level = "U"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 0
+new = true
+isVariableUnits = false
+description = "Reviews and reinforces 6.100A topics, making connections and studying interesting physical systems (from abstract knowledge of concepts to modeling, coding, and evaluating results) that are relevant to physicists. Classes are active and interactive. Students apply programming skills to introductory physics problems and explore the role of simulations on physics. Limited to 12."
+inCharge = "Matt Heine"

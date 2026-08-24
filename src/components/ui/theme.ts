@@ -208,6 +208,47 @@ export const system = createSystem(defaultConfig, {
           fontWeight: "semibold",
           letterSpacing: "-0.005em",
         },
+        variants: {
+          variant: {
+            solid: {
+              _active: { bg: "colorPalette.solid!" },
+            },
+            subtle: {
+              _active: { bg: "colorPalette.emphasized!" },
+            },
+            surface: {
+              _active: { bg: "colorPalette.emphasized!" },
+            },
+            outline: {
+              _hover: {
+                bg: {
+                  _light: "colorPalette.subtle",
+                  _dark: "colorPalette.muted",
+                },
+              },
+              _active: {
+                bg: {
+                  _light: "colorPalette.muted!",
+                  _dark: "colorPalette.emphasized!",
+                },
+              },
+            },
+            ghost: {
+              _hover: {
+                bg: {
+                  _light: "colorPalette.subtle",
+                  _dark: "colorPalette.muted",
+                },
+              },
+              _active: {
+                bg: {
+                  _light: "colorPalette.muted!",
+                  _dark: "colorPalette.emphasized!",
+                },
+              },
+            },
+          },
+        },
         defaultVariants: {
           variant: "subtle",
         },
