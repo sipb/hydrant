@@ -1,10 +1,14 @@
 import type { Preferences, Save } from "./schema";
+import type { DeflatedProgramState } from "./state";
 
 export interface TermStore {
   saves: Save[];
   /** Array of class numbers that are starred */
   starredClasses: string[];
-  [saveId: string]: unknown[];
+  /** Array of PE class numbers that are starred */
+  starredPEClasses: string[];
+  /** Array of program states that are saved */
+  [saveId: string]: Save[] | string[] | DeflatedProgramState;
 }
 
 export interface GlobalStore {
@@ -28,13 +32,13 @@ export class Store {
   /** Return the corresponding, term-specific saved value. */
   get<T extends keyof TermStore>(key: T): TermStore[T] | null {
     const result = localStorage.getItem(this.toKey(key.toString(), false));
-    return result !== null ? (JSON.parse(result) as TermStore[T]) : null;
+    return result !== null ? JSON.parse(result) : null;
   }
 
   /** Return the corresponding global saved value. */
   globalGet<T extends keyof GlobalStore>(key: T): GlobalStore[T] | null {
     const result = localStorage.getItem(this.toKey(key, true));
-    return result !== null ? (JSON.parse(result) as GlobalStore[T]) : null;
+    return result !== null ? JSON.parse(result) : null;
   }
 
   /** Set the corresponding term-specific value. */

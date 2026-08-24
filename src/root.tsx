@@ -6,18 +6,18 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+
+import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
+import { withEmotionCache } from "@emotion/react";
+
 import type { Route } from "./+types/root";
 
-import { withEmotionCache } from "@emotion/react";
-import { useInjectStyles } from "./emotion/emotion-client";
-
 import { Provider } from "./components/ui/provider";
-import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
+import { useInjectStyles } from "./emotion/emotion-client";
+import "temporal-polyfill/global";
 
 import "@fontsource-variable/ibm-plex-sans/index.css";
 import "@fontsource/ibm-plex-mono/index.css";
-
-import "temporal-polyfill/global";
 
 export const links: Route.LinksFunction = () => [
   {
@@ -33,10 +33,6 @@ export function HydrateFallback() {
       <Spinner />
     </Flex>
   );
-}
-
-interface LayoutProps {
-  children: React.ReactNode;
 }
 
 function Analytics() {
@@ -55,20 +51,31 @@ function Analytics() {
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const Layout = withEmotionCache((props: LayoutProps, cache) => {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export const Layout = (props: LayoutProps) => {
+  return <LayoutWithCache {...props} />;
+};
+
+const LayoutWithCache = withEmotionCache((props: LayoutProps, cache) => {
   const { children } = props;
 
   useInjectStyles(cache);
 
   return (
-    <html lang="en">
-      <head>
+    <html lang="en" suppressHydrationWarning>
+      <head suppressHydrationWarning>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hydrant</title>
         <Meta />
         <Links />
+        <meta
+          name="emotion-insertion-point"
+          content="emotion-insertion-point"
+        />
         <Analytics />
       </head>
       <body>

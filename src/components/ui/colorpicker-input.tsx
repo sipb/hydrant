@@ -1,9 +1,10 @@
+import { forwardRef } from "react";
+
 import {
   ColorPicker,
   parseColor,
   useColorPickerContext,
 } from "@chakra-ui/react";
-import { forwardRef } from "react";
 
 export const ColorPickerInput = forwardRef<
   HTMLInputElement,

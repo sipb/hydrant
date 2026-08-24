@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useColorMode } from "../components/ui/color-mode";
 
 import type { TermInfo } from "../lib/dates";
-import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
 import type { HydrantState } from "../lib/schema";
+import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
+
+import { useColorMode } from "../components/ui/color-mode";
 import { DEFAULT_STATE } from "../lib/schema";
-import type { State } from "../lib/state";
+import { State } from "../lib/state";
 
 export interface SemesterData {
   classes: Record<string, RawClass>;
@@ -35,7 +36,7 @@ export const getStateMaps = (
 /** Fetch from the url, which is JSON of type T. */
 export const fetchNoCache = async <T>(url: string): Promise<T> => {
   const res = await fetch(url, { cache: "no-cache" });
-  return (await res.json()) as T;
+  return await res.json();
 };
 
 /** Hook to fetch data and initialize State object. */
@@ -70,14 +71,18 @@ export function useHydrant({ globalState }: { globalState: State }): {
       }
     };
     state.updateState();
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [colorMode, state]);
 
   return { state, hydrantState };
 }
 
-export const HydrantContext = createContext({
+export const HydrantContext = createContext<{
+  hydrantState: HydrantState;
+  state: State;
+}>({
   hydrantState: DEFAULT_STATE,
-  state: {} as State,
+  state: Object.create(State.prototype),
 });
 
 export const useHydrantContext = () => useContext(HydrantContext);

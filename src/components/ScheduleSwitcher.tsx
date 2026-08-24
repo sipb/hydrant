@@ -28,6 +28,7 @@ import {
 } from "react-icons/lu";
 
 import type { Save } from "../lib/schema";
+
 import { useHydrantContext } from "../lib/hydrant";
 
 function SmallButton(props: ButtonProps) {
@@ -254,7 +255,7 @@ export function ScheduleSwitcher() {
 
   const [renderHeading, renderButtons] = (() => {
     if (isRenaming) {
-      const renderHeading = () => (
+      const renderHeadingRenaming = () => (
         <Input
           value={name}
           onChange={(e) => {
@@ -281,16 +282,16 @@ export function ScheduleSwitcher() {
         setName(currentName);
         setIsRenaming(false);
       };
-      const renderButtons = () => (
+      const renderButtonsRenaming = () => (
         <>
           <SmallButton onClick={onConfirm}>Confirm</SmallButton>
           <SmallButton onClick={onCancel}>Cancel</SmallButton>
         </>
       );
-      return [renderHeading, renderButtons];
+      return [renderHeadingRenaming, renderButtonsRenaming];
     }
 
-    const renderHeading = () => (
+    const renderHeadingDefault = () => (
       <SelectWithWarn saveId={saveId} saves={saves} />
     );
     const onRename = () => {
@@ -302,7 +303,7 @@ export function ScheduleSwitcher() {
     const onCopy = () => {
       state.addSave(false, `${currentName} copy`);
     };
-    const renderButtons = () => (
+    const renderButtonsDefault = () => (
       <Menu.Root unmountOnExit={false}>
         <Menu.Trigger asChild>
           <IconButton variant="outline" size="sm" aria-label="Schedule options">
@@ -382,7 +383,7 @@ export function ScheduleSwitcher() {
         </Portal>
       </Menu.Root>
     );
-    return [renderHeading, renderButtons];
+    return [renderHeadingDefault, renderButtonsDefault];
   })();
 
   return (

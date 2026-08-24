@@ -1,19 +1,18 @@
 import { useState } from "react";
+import { Link as RouterLink } from "react-router";
 
-import { Class } from "../lib/class";
-import { useHydrantContext } from "../lib/hydrant";
-import { useICSExport } from "../lib/gapi";
-
+import { Button, Image, Link } from "@chakra-ui/react";
 import {
   LuMessagesSquare,
   LuClipboardCopy,
   LuCalendarArrowDown,
 } from "react-icons/lu";
-import { Tooltip } from "./ui/tooltip";
-import { Link as RouterLink } from "react-router";
-import { Button, Image, Link } from "@chakra-ui/react";
 
 import sipbLogo from "../assets/simple-fuzzball.png";
+import { Class } from "../lib/class";
+import { useICSExport } from "../lib/gapi";
+import { useHydrantContext } from "../lib/hydrant";
+import { Tooltip } from "./ui/tooltip";
 
 export function ExportCalendar() {
   const [isExporting, setIsExporting] = useState(false);
