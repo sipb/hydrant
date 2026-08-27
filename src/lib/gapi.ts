@@ -51,14 +51,16 @@ function toICalEvents(activity: Activity, term: Term): ICalEventData[] {
       const startDate = term.startDateFor(slot.startSlot, h2, start);
       const startDateEnd = term.startDateFor(slot.endSlot, h2, start);
       const endDate = term.endDateFor(slot.startSlot, h1, end);
-      const exDates = term.exDatesFor(slot.startSlot);
+      const exDates = term
+        .exDatesFor(slot.startSlot)
+        .map((date) => date.toZonedDateTime(TIMEZONE));
       const rDate = term.rDateFor(slot.startSlot);
 
       const rrule = new RRuleTemporal({
         freq: "WEEKLY",
         dtstart: startDate.toZonedDateTime(TIMEZONE),
         until: endDate.toZonedDateTime(TIMEZONE),
-        exDate: exDates.map((date) => date.toZonedDateTime(TIMEZONE)),
+        exDate: exDates.length > 0 ? exDates : undefined,
         rDate: rDate ? [rDate.toZonedDateTime(TIMEZONE)] : undefined,
       });
 
