@@ -51,7 +51,7 @@
   "devDependencies": {
     "@chakra-ui/cli": "^3.36.1",
     "@eslint/js": "^10.0.1",
-    "@react-router/dev": "^8.3.0",
+    "@react-router/dev": "^8.3.1",
     "@react-router/fs-routes": "^8.3.0",
     "@types/jsdom": "^30.0.0",
     "@types/node": "^22.20.1",
