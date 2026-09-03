@@ -26,6 +26,7 @@ import {
 
 import {
   Box,
+  Span,
   Flex,
   Image,
   Input,
@@ -34,9 +35,10 @@ import {
   InputGroup,
   CloseButton,
 } from "@chakra-ui/react";
-import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
+import { LuPlus, LuMinus, LuSearch, LuBadgePlus, LuStar } from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
+import { Tooltip } from "./ui/tooltip";
 
 import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
@@ -295,7 +297,16 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["cim", "CI-M"],
   ["fits", "Fits schedule"],
-  ["new", "New!"],
+  [
+    "new",
+    "",
+    <Flex align="center" gap={1} h="100%">
+      <Span display="inline-flex">
+        <LuBadgePlus />
+      </Span>
+      <Span as="span">New!</Span>
+    </Flex>,
+  ],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
@@ -589,6 +600,18 @@ export function ClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
+        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
+          <Flex align="center" gap={1} h="100%">
+            {params.data.class.new && (
+              <Tooltip content="New class!">
+                <Span display="inline-flex" color="hydrant.solid">
+                  <LuBadgePlus />
+                </Span>
+              </Tooltip>
+            )}
+            <Span>{params.value}</Span>
+          </Flex>
+        ),
       },
     ];
   }, [state]);

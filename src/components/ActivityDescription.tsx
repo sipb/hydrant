@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
-import { LuExternalLink, LuStar } from "react-icons/lu";
+import { LuExternalLink, LuBadgePlus, LuStar } from "react-icons/lu";
 import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 
 import { CustomActivity } from "../lib/activity";
@@ -279,7 +279,18 @@ function ClassDescription(props: { cls: Class }) {
     <Flex direction="column" gap={4}>
       <Flex align="center" gap={2}>
         <Heading size="md" flex="1">
-          <Span textStyle="data">{cls.number}</Span>: {cls.name}
+          <Flex align="center" gap={1} h="100%">
+            <Span>
+              <Span textStyle="data">{cls.number}</Span>: {cls.name}
+            </Span>
+            {cls.new && (
+              <Tooltip content="New class!">
+                <Span display="inline-flex" color="hydrant.solid">
+                  <LuBadgePlus />
+                </Span>
+              </Tooltip>
+            )}
+          </Flex>
         </Heading>
         <Button
           variant="ghost"
