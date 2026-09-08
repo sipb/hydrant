@@ -1,7 +1,7 @@
 #:schema ../override-schema.json
 
 ["16.S896"]
-lectureRawSections = ["35-225/F/0/3-5"]
-lectureSections = [[[[154, 4]], "35-225"]]
+lectureRawSections = ["9-354/F/0/3-5"]
+lectureSections = [[[[154, 4]], "9-354"]]
 sectionKinds = ["lecture"]
 tba = false
