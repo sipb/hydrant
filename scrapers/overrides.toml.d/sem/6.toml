@@ -11,6 +11,17 @@ prereqs = "6.101 and 6.120"
 inCharge = "A. Chlipala, M. Goldman"
 description = "Practical application of formal verification tools to specify and verify the correctness of software. Foundational concepts include pre- and postconditions, loop invariants, ghost state, data abstraction, and specification techniques. Lab assignments give hands-on experience in specifying and verifying a variety of software components."
 
+["6.S950"]
+name = "Agency with AI: Effective AI Use in Applied Machine-Learning Projects"
+level = "U"
+lectureUnits = 2
+labUnits = 2
+preparationUnits = 8
+isVariableUnits = false
+prereqs = "6.3900 AND 6.1010 AND 6.1210"
+inCharge = "S. Shen"
+description = "Examines the effective use of agentic AI tools in applied machine-learning work, such as a UROP or MEng project. Develops both fluency with the tools and agency: the judgment about what to delegate, what to verify, and what to do oneself. Introduces good agentic-AI practices such as spec-driven development, context management, and harness engineering; where and why LLMs fail by construction, through the machinery beyond vanilla transformers; and how to design evaluations to measure those failures. Each idea introduced connects to a long-standing EECS principle, with attention to what is genuinely new. Includes a semester-long project in which AI-assisted reading is checked against sources and compiled into a map of the field, a small ML component is built from scratch with an agent, outsourced datasets are vetted, and artifacts and their judges are audited. A personal portfolio of reusable AI workflows accumulates alongside the project. For more information: https://agencyai.mit.edu/.\n\nEnrollment limited to 20."
+
 ["6.S951"]
 name = "AI for Science: Generative AI for Scientific Discovery"
 level = "G"
