@@ -54,11 +54,12 @@ PEWFile = TypedDict(
         "Title": str,
         "Capacity": str,
         "Day": str,
-        "Time": str,
+        "Start Time": str,
         "Location": str,
         "Start Date": str,
         "End Date": str,
         "Prerequisites": str,
+        "End Time": str,
         "Equipment": str,
         "Waivers": Optional[str],
         "HealthForms": Optional[str],
@@ -274,7 +275,9 @@ def parse_date(date_str: str) -> date:
     return date(year, month, day)
 
 
-def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str:
+def parse_times_to_raw_section(
+    start_time: str, days: str, location: str, end_time: str | None = None
+) -> str:
     """
     Parses times from CSV to Fireroad format, for compatibility.
 
@@ -282,22 +285,35 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
         start_time (str): Start time of the class
         days (str): Days the class meets
         location (str): Location of the class
+        end_time (str | None): Optional end time of the class
 
     Returns:
         str: Formatted raw section string or None if start_time is empty
     """
     start_c = time_c.strptime(start_time, "%I:%M %p")
     start = time(start_c.tm_hour, start_c.tm_min)
-    # default to 1 hour, can be changed in overrides
+
+    evening = "1" if start.hour >= 17 else "0"
+
+    if end_time:
+        end_c = time_c.strptime(end_time, "%I:%M %p")
+        end = time(end_c.tm_hour, end_c.tm_min)
+
+        end_raw_time = "-" + (
+            f"{12 - ((- end.hour) % 12)}"
+            f"{'.30' if end.minute > 29 else ''}"
+            f"{' PM' if end.hour >= 17 else ''}"
+        )
+    else:
+        end_raw_time = ""
 
     start_raw_time = (
         f"{12 - ((- start.hour) % 12)}"
         f"{'.30' if start.minute > 29 else ''}"
-        f"{' PM' if start.hour >= 17 else ''}"
+        f"{' PM' if start.hour >= 17 and 'PM' not in end_raw_time else ''}"
     )
-    evening = "1" if start.hour >= 17 else "0"
 
-    return f"{location}/{days}/{evening}/{start_raw_time}"
+    return f"{location}/{days}/{evening}/{start_raw_time}{end_raw_time}"
 
 
 def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
@@ -313,9 +329,10 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
     """
     number, section_num = split_section_code(row["Section"])
     raw_section = parse_times_to_raw_section(
-        row["Time"],
+        row["Start Time"],
         row["Day"],
         augment_location(row["Location"]),
+        row["End Time"],
     )
     section = parse_section(raw_section)
 
