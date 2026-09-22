@@ -9,7 +9,17 @@ import {
   type SetStateAction,
 } from "react";
 
-import { AgGridReact } from "ag-grid-react";
+import {
+  Box,
+  Flex,
+  Image,
+  Input,
+  Button,
+  ButtonGroup,
+  InputGroup,
+  CloseButton,
+  Span,
+} from "@chakra-ui/react";
 import {
   ModuleRegistry,
   ClientSideRowModelModule,
@@ -23,30 +33,20 @@ import {
   type ColDef,
   type Module,
 } from "ag-grid-community";
+import { AgGridReact, type CustomCellRendererProps } from "ag-grid-react";
+import { LuPlus, LuMinus, LuSearch, LuStar, LuBadgePlus } from "react-icons/lu";
 
-import {
-  Box,
-  Span,
-  Flex,
-  Image,
-  Input,
-  Button,
-  ButtonGroup,
-  InputGroup,
-  CloseButton,
-} from "@chakra-ui/react";
-import { LuPlus, LuMinus, LuSearch, LuBadgePlus, LuStar } from "react-icons/lu";
+import type { Class, Flags } from "../lib/class";
+import type { TSemester } from "../lib/dates";
+import type { State } from "../lib/state";
+
+import { DARK_IMAGES, getFlagImg } from "../lib/class";
+import { ColorStyles } from "../lib/colors";
+import { useHydrantContext } from "../lib/hydrant";
+import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
-
-import type { Class, Flags } from "../lib/class";
-import { DARK_IMAGES, getFlagImg } from "../lib/class";
-import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import type { TSemester } from "../lib/dates";
-import { useHydrantContext } from "../lib/hydrant";
-import type { State } from "../lib/state";
-import { ColorStyles } from "../lib/colors";
 
 import styles from "./ClassTable.module.css";
 
@@ -266,8 +266,8 @@ function ClassInput(props: {
       onClassInputChange("");
     } else if (state.classes.has(classInput)) {
       // else check if this number exists exactly
-      const cls = state.classes.get(classInput);
-      state.toggleActivity(cls);
+      const clsCheck = state.classes.get(classInput);
+      state.toggleActivity(clsCheck);
     }
   };
 
@@ -281,6 +281,23 @@ function ClassInput(props: {
   );
 }
 
+const StarCellRenderer = (props: CustomCellRendererProps<ClassTableRow>) => {
+  const { data, api } = props;
+  if (!data) return null;
+
+  return (
+    <StarButton
+      cls={data.class}
+      onStarToggle={() => {
+        api.refreshCells({
+          force: true,
+          columns: ["number"],
+        });
+      }}
+    />
+  );
+};
+
 const filtersNonFlags = {
   fits: (state, cls) => state.fitsSchedule(cls),
   starred: (state, cls) => state.isClassStarred(cls),
@@ -292,7 +309,7 @@ type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
-  ["starred", "Starred", <LuStar fill="currentColor" />],
+  ["starred", "Starred", <LuStar fill="currentColor" key="starred" />],
   ["hass", "HASS"],
   ["cih", "CI-H"],
   ["cim", "CI-M"],
@@ -342,6 +359,10 @@ const CLASS_FLAGS = [
   ...CLASS_FLAGS_4,
 ];
 
+function isFilterNonFlagKey(key: string): key is keyof typeof filtersNonFlags {
+  return key in filtersNonFlags;
+}
+
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
   /** Callback for updating the class filter. */
@@ -354,9 +375,9 @@ function ClassFlags(props: {
 
   // Map from flag to whether it's on.
   const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
-    const result = new Map();
+    const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
-      result.set(flag, false);
+      result.set(flag[0], false);
     }
     return result;
   });
@@ -384,17 +405,17 @@ function ClassFlags(props: {
     setFlagsFilter(() => (cls?: Class) => {
       if (!cls) return false;
       let result = true;
-      newFlags.forEach((value, flag) => {
+      newFlags.forEach((flagVal, flagKey) => {
         if (
-          value &&
-          flag in filtersNonFlags &&
-          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+          flagVal &&
+          isFilterNonFlagKey(flagKey) &&
+          !filtersNonFlags[flagKey](state, cls)
         ) {
           result = false;
         } else if (
-          value &&
-          !(flag in filtersNonFlags) &&
-          !cls.flags[flag as keyof typeof cls.flags]
+          flagVal &&
+          !isFilterNonFlagKey(flagKey) &&
+          !cls.flags[flagKey]
         ) {
           result = false;
         }
@@ -404,8 +425,9 @@ function ClassFlags(props: {
   };
 
   const filter = useColorModeValue(
-    (_flags: keyof Flags) => "",
-    (flag: keyof Flags) => (DARK_IMAGES.includes(flag) ? "invert()" : ""),
+    (_flags: Filter) => "",
+    (flag: Filter) =>
+      !isFilterNonFlagKey(flag) && DARK_IMAGES.includes(flag) ? "invert()" : "",
   );
 
   const renderGroup = (group: FilterGroup) => {
@@ -434,11 +456,7 @@ function ClassFlags(props: {
                 title={label}
                 variant={checked ? "solid" : "outline"}
               >
-                <Image
-                  src={image}
-                  alt={label}
-                  filter={filter(flag as keyof Flags)}
-                />
+                <Image src={image} alt={label} filter={filter(flag)} />
               </LabelledButton>
             ) : (
               // image is a react element, like an icon
@@ -552,18 +570,7 @@ export function ClassTable() {
         headerName: "",
         field: "number",
         maxWidth: 49,
-        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
-          <StarButton
-            cls={params.data.class}
-            onStarToggle={() => {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              gridRef.current?.api?.refreshCells({
-                force: true,
-                columns: ["number"],
-              });
-            }}
-          />
-        ),
+        cellRenderer: StarCellRenderer,
         sortable: false,
         cellStyle: { padding: 0 },
       },
@@ -649,7 +656,6 @@ export function ClassTable() {
 
   // Need to notify grid every time we update the filter
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     gridRef.current?.api?.onFilterChanged();
   }, [doesExternalFilterPass]);
 
@@ -658,7 +664,6 @@ export function ClassTable() {
       <ClassInput rowData={rowData} setInputFilter={setInputFilter} />
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>

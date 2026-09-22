@@ -8,29 +8,38 @@ import {
   type SetStateAction,
 } from "react";
 
-import { AgGridReact } from "ag-grid-react";
 import type { IRowNode, ColDef } from "ag-grid-community";
 
 import { Box, Flex, Button, ButtonGroup } from "@chakra-ui/react";
+import { type CustomCellRendererProps } from "ag-grid-react";
+import { AgGridReact } from "ag-grid-react";
 import { LuStar } from "react-icons/lu";
-import { LabelledButton } from "./ui/button";
 
+import type { State } from "../lib/state";
+
+import { ColorStyles } from "../lib/colors";
+import { useHydrantContext } from "../lib/hydrant";
+import { type PEFlags, type PEClass, getPEFlagIcon } from "../lib/pe";
+import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import {
   HYDRANT_THEME,
   INITIAL_SORT,
   sortProps,
   ClassSearchInput,
 } from "./ClassTable";
-
-import { type PEFlags, type PEClass, getPEFlagIcon } from "../lib/pe";
-import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import { useHydrantContext } from "../lib/hydrant";
-import type { State } from "../lib/state";
-import { ColorStyles } from "../lib/colors";
+import { LabelledButton } from "./ui/button";
 
 import styles from "./ClassTable.module.css";
 
-const getFeeColor = (fee: number) => {
+const getFeeColor = (fee?: string | number | null) => {
+  if (fee === null || fee === undefined) return ColorStyles.Muted;
+
+  if (typeof fee === "string") {
+    const num = Number(fee);
+    if (isNaN(num)) return ColorStyles.Muted;
+    fee = num;
+  }
+
   if (isNaN(fee)) return ColorStyles.Muted;
   if (fee == 0) return ColorStyles.Success;
   if (fee <= 20) return ColorStyles.Warning;
@@ -116,8 +125,8 @@ function ClassInput(props: {
       onClassInputChange("");
     } else if (state.peClasses.has(classInput)) {
       // else check if this number exists exactly
-      const cls = state.peClasses.get(classInput);
-      state.toggleActivity(cls);
+      const clsCheck = state.peClasses.get(classInput);
+      state.toggleActivity(clsCheck);
     }
   };
 
@@ -130,6 +139,23 @@ function ClassInput(props: {
     />
   );
 }
+
+const StarCellRenderer = (props: CustomCellRendererProps<ClassTableRow>) => {
+  const { data, api } = props;
+  if (!data) return null;
+
+  return (
+    <StarButton
+      cls={data.class}
+      onStarToggle={() => {
+        api.refreshCells({
+          force: true,
+          columns: ["number"],
+        });
+      }}
+    />
+  );
+};
 
 const filtersNonFlags = {
   fits: (state, cls) => state.fitsSchedule(cls),
@@ -144,7 +170,7 @@ type FilterGroup = [Filter, string, ReactNode?][];
  * List of all class flags.
  */
 const CLASS_FLAGS: FilterGroup = [
-  ["starred", "Starred", <LuStar fill="currentColor" />],
+  ["starred", "Starred", <LuStar fill="currentColor" key="starred" />],
   ["latest", "Latest quarter"],
   ["nofee", "No fee"],
   ["nopreq", "No prereq"],
@@ -154,6 +180,10 @@ const CLASS_FLAGS: FilterGroup = [
   ["swim", "Swim GIR", getPEFlagIcon("swim")],
   ["remote", "Remote", getPEFlagIcon("remote")],
 ];
+
+function isFilterNonFlagKey(key: string): key is keyof typeof filtersNonFlags {
+  return key in filtersNonFlags;
+}
 
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
@@ -167,9 +197,9 @@ function ClassFlags(props: {
 
   // Map from flag to whether it's on.
   const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
-    const result = new Map();
+    const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
-      result.set(flag, false);
+      result.set(flag[0], false);
     }
     return result;
   });
@@ -194,17 +224,17 @@ function ClassFlags(props: {
     setFlagsFilter(() => (cls?: PEClass) => {
       if (!cls) return false;
       let result = true;
-      newFlags.forEach((value, flag) => {
+      newFlags.forEach((flagVal, flagKey) => {
         if (
-          value &&
-          flag in filtersNonFlags &&
-          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+          flagVal &&
+          isFilterNonFlagKey(flagKey) &&
+          !filtersNonFlags[flagKey](state, cls)
         ) {
           result = false;
         } else if (
-          value &&
-          !(flag in filtersNonFlags) &&
-          !cls.flags[flag as keyof typeof cls.flags]
+          flagVal &&
+          !isFilterNonFlagKey(flagKey) &&
+          !cls.flags[flagKey]
         ) {
           result = false;
         }
@@ -303,18 +333,7 @@ export function PEClassTable() {
         headerName: "",
         field: "number",
         maxWidth: 49,
-        cellRenderer: (params: { data: ClassTableRow }) => (
-          <StarButton
-            cls={params.data.class}
-            onStarToggle={() => {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              gridRef.current?.api?.refreshCells({
-                force: true,
-                columns: ["number"],
-              });
-            }}
-          />
-        ),
+        cellRenderer: StarCellRenderer,
         sortable: false,
         cellStyle: { padding: 0 },
       },
@@ -341,11 +360,8 @@ export function PEClassTable() {
         field: "fee",
         maxWidth: 90,
         cellDataType: "number",
-        cellClass: (params) => [
-          getFeeColor(params.value as number),
-          styles.data,
-        ],
-        valueFormatter: (params) => "$" + (params.value as number).toFixed(2),
+        cellClass: (params) => getFeeColor(params.value),
+        valueFormatter: (params) => "$" + Number(params.value).toFixed(2),
         ...sortProps,
       },
       {
@@ -354,7 +370,7 @@ export function PEClassTable() {
         flex: 1,
       },
     ];
-  }, [state]);
+  }, []);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
     return {
@@ -388,7 +404,6 @@ export function PEClassTable() {
 
   // Need to notify grid every time we update the filter
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     gridRef.current?.api?.onFilterChanged();
   }, [doesExternalFilterPass]);
 
@@ -397,7 +412,6 @@ export function PEClassTable() {
       <ClassInput rowData={rowData} setInputFilter={setInputFilter} />
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>

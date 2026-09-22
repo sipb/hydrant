@@ -1,10 +1,12 @@
 "use client";
 
+import { forwardRef } from "react";
+
 import type { IconButtonProps, SpanProps } from "@chakra-ui/react";
+import type { ThemeProviderProps } from "next-themes";
+
 import { ClientOnly, IconButton, Skeleton, Span } from "@chakra-ui/react";
 import { ThemeProvider, useTheme } from "next-themes";
-import type { ThemeProviderProps } from "next-themes";
-import { forwardRef } from "react";
 import { LuMoon, LuSun } from "react-icons/lu";
 
 export type ColorModeProviderProps = ThemeProviderProps;
@@ -23,10 +25,8 @@ export interface UseColorModeReturn {
   toggleColorMode: () => void;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useColorMode(): UseColorModeReturn {
   const { resolvedTheme, setTheme, forcedTheme } = useTheme();
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const colorMode = forcedTheme || resolvedTheme;
   const toggleColorMode = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -38,7 +38,6 @@ export function useColorMode(): UseColorModeReturn {
   };
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useColorModeValue<T>(light: T, dark: T) {
   const { colorMode } = useColorMode();
   return colorMode === "dark" ? dark : light;

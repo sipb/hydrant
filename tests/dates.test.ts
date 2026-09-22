@@ -1,4 +1,5 @@
 import { test, describe, beforeEach, expect } from "vitest";
+
 import {
   parseUrlName,
   getClosestUrlName,
@@ -7,7 +8,6 @@ import {
   Slot,
   Term,
 } from "../src/lib/dates";
-import { JSDOM } from "jsdom";
 
 import "temporal-polyfill/global";
 
@@ -773,7 +773,7 @@ describe("toFullUrl", () => {
    * - urlName, latestUrlName: same, different
    */
 
-  assert(jsdom instanceof JSDOM); // otherwise eslint doesn't know what kind of thing `jsdom` is
+  assert(jsdom);
   beforeEach(() => {
     // Reset URL before each test
     jsdom.reconfigure({ url: "http://localhost/" });

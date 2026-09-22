@@ -1,5 +1,29 @@
-import { Event, Sections, type BaseActivity, type Section } from "./activity";
 import type { ColorScheme } from "./colors";
+
+import bioImg from "../assets/bio.gif";
+import calc1Img from "../assets/calc1.gif";
+import calc2Img from "../assets/calc2.gif";
+import chemImg from "../assets/chem.gif";
+import cihImg from "../assets/cih.gif";
+import cihwImg from "../assets/cihw.gif";
+import fallImg from "../assets/fall.gif";
+import gradImg from "../assets/grad.gif";
+import hassAImg from "../assets/hassA.gif";
+import hassEImg from "../assets/hassE.gif";
+import hassHImg from "../assets/hassH.gif";
+import hassSImg from "../assets/hassS.gif";
+import iapImg from "../assets/iap.gif";
+import labImg from "../assets/lab.gif";
+import nonextImg from "../assets/nonext.gif";
+import partlabImg from "../assets/partLab.gif";
+import phys1Img from "../assets/phys1.gif";
+import phys2Img from "../assets/phys2.gif";
+import repeatImg from "../assets/repeat.gif";
+import restImg from "../assets/rest.gif";
+import springImg from "../assets/spring.gif";
+import summerImg from "../assets/summer.gif";
+import underImg from "../assets/under.gif";
+import { Event, Sections, type BaseActivity, type Section } from "./activity";
 import { fallbackColor } from "./colors";
 import {
   CI,
@@ -11,30 +35,6 @@ import {
   type RawClass,
   type RawSection,
 } from "./raw";
-
-import nonextImg from "../assets/nonext.gif";
-import underImg from "../assets/under.gif";
-import gradImg from "../assets/grad.gif";
-import fallImg from "../assets/fall.gif";
-import iapImg from "../assets/iap.gif";
-import springImg from "../assets/spring.gif";
-import summerImg from "../assets/summer.gif";
-import repeatImg from "../assets/repeat.gif";
-import bioImg from "../assets/bio.gif";
-import calc1Img from "../assets/calc1.gif";
-import calc2Img from "../assets/calc2.gif";
-import chemImg from "../assets/chem.gif";
-import labImg from "../assets/lab.gif";
-import partlabImg from "../assets/partLab.gif";
-import phys1Img from "../assets/phys1.gif";
-import phys2Img from "../assets/phys2.gif";
-import restImg from "../assets/rest.gif";
-import hassHImg from "../assets/hassH.gif";
-import hassAImg from "../assets/hassA.gif";
-import hassSImg from "../assets/hassS.gif";
-import hassEImg from "../assets/hassE.gif";
-import cihImg from "../assets/cih.gif";
-import cihwImg from "../assets/cihw.gif";
 
 /** Flags. */
 export interface Flags {
@@ -113,6 +113,9 @@ export const getFlagImg = (flag: keyof Flags): string => {
   return flagImages[flag] ?? "";
 };
 
+export type DeflatedClassEntry = string | string[] | number | null;
+export type DeflatedClass = [string, ...DeflatedClassEntry[]];
+
 export class ClassSections extends Sections {
   declare cls: Class;
   declare kind: SectionKind;
@@ -139,6 +142,10 @@ export class ClassSections extends Sections {
         return "lab";
       case SectionKind.DESIGN:
         return "des";
+      default: {
+        this.kind satisfies never;
+        throw new Error(`Invalid SectionKind`);
+      }
     }
   }
 
@@ -152,6 +159,10 @@ export class ClassSections extends Sections {
         return 2;
       case SectionKind.DESIGN:
         return 3;
+      default: {
+        this.kind satisfies never;
+        throw new Error(`Invalid SectionKind`);
+      }
     }
   }
 
@@ -165,6 +176,10 @@ export class ClassSections extends Sections {
         return "Lab";
       case SectionKind.DESIGN:
         return "Design";
+      default: {
+        this.kind satisfies never;
+        throw new Error(`Invalid SectionKind`);
+      }
     }
   }
 }
@@ -218,9 +233,13 @@ export class Class implements BaseActivity {
               rawClass.designRawSections,
               rawClass.designSections,
             );
+          default: {
+            kind satisfies never;
+            throw new Error(`Invalid SectionKind`);
+          }
         }
       })
-      .sort((a, b) => a.priority - b.priority);
+      .toSorted((a, b) => a.priority - b.priority);
     this.backgroundColor = fallbackColor(colorScheme);
   }
 
@@ -491,7 +510,7 @@ export class Class implements BaseActivity {
   }
 
   /** Deflate a class to something JSONable. */
-  deflate() {
+  deflate(): DeflatedClass {
     const sections = this.sections.map((secs) =>
       !secs.locked
         ? null
@@ -503,12 +522,12 @@ export class Class implements BaseActivity {
       this.number,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
       ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
-      ...(sections.length > 0 ? (sections as number[]) : []), // number
+      ...(sections.length > 0 ? sections : []), // number | null
     ];
   }
 
   /** Inflate a class with info from the output of deflate. */
-  inflate(parsed: string | (string | number | string[])[]): void {
+  inflate(parsed: string | DeflatedClass): void {
     if (typeof parsed === "string") {
       // just the class number, ignore
       return;
@@ -520,9 +539,10 @@ export class Class implements BaseActivity {
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
-    let sectionLocs: (string | number | string[])[] | null = null;
-    if (Array.isArray(parsed[offset])) {
-      sectionLocs = parsed[offset] as string[];
+    let sectionLocs: string[] | null = null;
+    const parsedEntry = parsed[offset];
+    if (Array.isArray(parsedEntry)) {
+      sectionLocs = parsedEntry;
       offset += 1;
     }
     this.sections.forEach((secs, i) => {
@@ -534,7 +554,7 @@ export class Class implements BaseActivity {
         secs.locked = false;
       } else {
         secs.locked = true;
-        secs.selected = secs.sections[parse as number];
+        secs.selected = secs.sections[Number(parse)];
       }
     });
   }

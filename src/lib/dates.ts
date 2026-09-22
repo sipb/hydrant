@@ -29,6 +29,10 @@ const TIMESLOTS = 34;
 /** Type of semester abbreviations. */
 export type TSemester = keyof typeof SEMESTER_NAMES;
 
+function isTSemester(value: unknown): value is TSemester {
+  return typeof value === "string" && value in SEMESTER_NAMES;
+}
+
 /** Strings for each weekday. */
 export const WEEKDAY_STRINGS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
@@ -141,9 +145,15 @@ export function parseUrlName(urlName: string): {
   year: string;
   semester: TSemester;
 } {
+  const semester = urlName[0];
+
+  if (!isTSemester(semester)) {
+    throw new Error(`Invalid semester: ${semester}`);
+  }
+
   return {
     year: urlName.substring(1),
-    semester: urlName[0] as TSemester,
+    semester: semester,
   };
 }
 
@@ -171,6 +181,10 @@ function getLastUrlName(urlName: string): string {
       return `i${year}`;
     case "i":
       return `f${(parseInt(year, 10) - 1).toString()}`;
+    default: {
+      semester satisfies never;
+      throw new Error(`Invalid urlName: ${urlName}`);
+    }
   }
 }
 
@@ -186,6 +200,10 @@ function getNextUrlName(urlName: string): string {
       return `f${year}`;
     case "f":
       return `i${(parseInt(year, 10) + 1).toString()}`;
+    default: {
+      semester satisfies never;
+      throw new Error(`Invalid urlName: ${urlName}`);
+    }
   }
 }
 

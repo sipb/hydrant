@@ -1,6 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-import { CacheProvider } from "@emotion/react";
-import type { EmotionCache } from "@emotion/react";
 import {
   createContext,
   useContext,
@@ -9,6 +6,11 @@ import {
   useRef,
   useState,
 } from "react";
+
+import type { EmotionCache } from "@emotion/react";
+
+import { CacheProvider } from "@emotion/react";
+
 import { createEmotionCache } from "./emotion-cache";
 
 export const ClientStyleContext = createContext({

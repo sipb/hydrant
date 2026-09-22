@@ -1,5 +1,5 @@
 import { expect, test, describe } from "vitest";
-import { State } from "../src/lib/state";
+
 import { Class } from "../src/lib/class";
 import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 import {
@@ -11,6 +11,7 @@ import {
   TermCode,
   type RawClass,
 } from "../src/lib/raw";
+import { State } from "../src/lib/state";
 
 const baseRawClass: RawClass = {
   number: "21H.143",
@@ -76,8 +77,8 @@ function makeClass(number: string, hasFinal: boolean): Class {
 }
 
 function makeStateWithClasses(classes: Class[]): State {
-  const state = Object.create(State.prototype) as State;
-  (state as unknown as { selectedClasses: Class[] }).selectedClasses = classes;
+  const state = Object.create(State.prototype);
+  state.selectedClasses = classes;
   return state;
 }
 
@@ -123,17 +124,11 @@ function makeStateWithStarredClasses(
   starredClasses: Set<string>,
   classes: Class[],
 ): State {
-  const state = Object.create(State.prototype) as State;
-  (state as unknown as { starredClasses: Set<string> }).starredClasses =
-    starredClasses;
-  (state as unknown as { store: { set: () => void } }).store = {
-    set: () => undefined,
-  };
-  (state as unknown as { updateState: () => void }).updateState = () =>
-    undefined;
-  (state as unknown as { classes: Map<string, Class> }).classes = new Map(
-    classes.map((cls) => [cls.number, cls]),
-  );
+  const state = Object.create(State.prototype);
+  state.starredClasses = starredClasses;
+  state.store = { set: () => undefined };
+  state.updateState = () => undefined;
+  state.classes = new Map(classes.map((cls) => [cls.number, cls]));
   return state;
 }
 
