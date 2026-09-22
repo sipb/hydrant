@@ -11,10 +11,10 @@ export enum ClassType {
 
 /** The date the content of the banner was last changed. */
 export const BANNER_LAST_CHANGED = Temporal.Instant.from(
-  "2026-08-24T13:00:00Z",
+  "2026-08-28T15:00:00Z",
 ).epochMilliseconds;
 export const BANNER_MESSAGE =
-  "Registration for Fall 2026 is now open! PE&W classes will be available before Q1 2026 registration in September.";
+  "Registration for Fall 2026 is now open! PE&W subjects for Q1 registration are now available.";
 
 /** A save has an ID and a name. */
 export interface Save {

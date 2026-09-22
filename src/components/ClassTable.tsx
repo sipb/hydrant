@@ -18,6 +18,7 @@ import {
   ButtonGroup,
   InputGroup,
   CloseButton,
+  Span,
 } from "@chakra-ui/react";
 import {
   ModuleRegistry,
@@ -33,7 +34,7 @@ import {
   type Module,
 } from "ag-grid-community";
 import { AgGridReact, type CustomCellRendererProps } from "ag-grid-react";
-import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
+import { LuPlus, LuMinus, LuSearch, LuStar, LuBadgePlus } from "react-icons/lu";
 
 import type { Class, Flags } from "../lib/class";
 import type { TSemester } from "../lib/dates";
@@ -45,6 +46,7 @@ import { useHydrantContext } from "../lib/hydrant";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
+import { Tooltip } from "./ui/tooltip";
 
 import styles from "./ClassTable.module.css";
 
@@ -312,7 +314,16 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["cim", "CI-M"],
   ["fits", "Fits schedule"],
-  ["new", "New!"],
+  [
+    "new",
+    "",
+    <Flex align="center" gap={1} h="100%">
+      <Span display="inline-flex">
+        <LuBadgePlus />
+      </Span>
+      <Span as="span">New!</Span>
+    </Flex>,
+  ],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
@@ -596,6 +607,18 @@ export function ClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
+        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
+          <Flex align="center" gap={1} h="100%">
+            {params.data.class.new && (
+              <Tooltip content="New class!">
+                <Span display="inline-flex" color="hydrant.solid">
+                  <LuBadgePlus />
+                </Span>
+              </Tooltip>
+            )}
+            <Span>{params.value}</Span>
+          </Flex>
+        ),
       },
     ];
   }, [state]);

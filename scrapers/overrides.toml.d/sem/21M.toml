@@ -5,6 +5,11 @@ description = "This class will cover an extensive range of topics that relate to
 name = "Studies in Advanced Music Technology: Audio Computing: Processing Sound in Engineering, Science, and the Arts"
 inCharge = "M. Rau, P. Smaragdis"
 
+["21M.460"]
+sectionKinds = ["lecture"]
+lectureRawSections = ["W18-1202/M/1/8.30-10 PM/T/1/7-8.30 PM", "W18-1202/MR/1/7-8.30 PM"]
+lectureSections = [[[[29, 3], [60, 3]], "W18-1202"], [[[26, 3], [128, 3]], "W18-1202"]]
+
 ["21M.500"]
 description = "In this seminar we will be taking a global-historical approach to the “baroque,” decentering our understanding of its associated music-makings in the 16th to 18th centuries as well as its postcolonial continuities in our present time. By adopting a polycentric perspective, we will study the history of what is often referred to as “Western music” and its relationship to European colonialism, trade, and missionizing in this period. These global networks of power will be explored through a series of connected vignettes ranging from the early modern imperial courts and trading ports of South, Southeast, and East Asia, to the reducciones of South America and beyond. A focus on surviving repertoire from these regions will encourage you to think not only about a more diverse range of music-makers in history, but to also question the “Europeanness” of these musical traditions both past and present, taking seriously Indigenous contributions to and ownership of these musics. "
 name = "Advanced Seminar in Music: Global Baroque"
