@@ -48,7 +48,7 @@ export const AnnouncementsBanner = () => {
               _hover={{ bg: "blackAlpha.300" }}
               _active={{ bg: "blackAlpha.400!" }}
               onClick={() => {
-                state.showBanner = false;
+                state.setShowBanner(false);
               }}
             />
           </Flex>
@@ -60,7 +60,7 @@ export const AnnouncementsBanner = () => {
             _hover={{ bg: "blackAlpha.300" }}
             _active={{ bg: "blackAlpha.400!" }}
             onClick={() => {
-              state.showBanner = false;
+              state.setShowBanner(false);
             }}
           />
         </Float>

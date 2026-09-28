@@ -57,6 +57,7 @@ const measurementSystemCollection = createListCollection({
 });
 
 export function PreferencesDialog() {
+  "use no memo";
   const { state, hydrantState } = useHydrantContext();
   const { preferences: originalPreferences } = hydrantState;
 

@@ -317,7 +317,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   [
     "new",
     "",
-    <Flex align="center" gap={1} h="100%">
+    <Flex align="center" gap={1} h="100%" key="new">
       <Span display="inline-flex">
         <LuBadgePlus />
       </Span>
@@ -388,11 +388,11 @@ function ClassFlags(props: {
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
   useEffect(() => {
-    state.fitsScheduleCallback = () => {
+    state.setFitsScheduleCallback(() => {
       if (flags.get("fits")) {
         updateFilter();
       }
-    };
+    });
   }, [state, flags, updateFilter]);
 
   const onChange = (flag: Filter, value: boolean) => {
@@ -539,6 +539,19 @@ const StarButton = ({
   );
 };
 
+const NameCellRenderer = (params: { value: string; data: ClassTableRow }) => (
+  <Flex align="center" gap={1} h="100%">
+    {params.data.class.new && (
+      <Tooltip content="New class!">
+        <Span display="inline-flex" color="hydrant.solid">
+          <LuBadgePlus />
+        </Span>
+      </Tooltip>
+    )}
+    <Span>{params.value}</Span>
+  </Flex>
+);
+
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable() {
   const { state } = useHydrantContext();
@@ -607,18 +620,7 @@ export function ClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
-        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
-          <Flex align="center" gap={1} h="100%">
-            {params.data.class.new && (
-              <Tooltip content="New class!">
-                <Span display="inline-flex" color="hydrant.solid">
-                  <LuBadgePlus />
-                </Span>
-              </Tooltip>
-            )}
-            <Span>{params.value}</Span>
-          </Flex>
-        ),
+        cellRenderer: NameCellRenderer,
       },
     ];
   }, [state]);
@@ -657,6 +659,7 @@ export function ClassTable() {
   // Need to notify grid every time we update the filter
   useEffect(() => {
     gridRef.current?.api?.onFilterChanged();
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [doesExternalFilterPass]);
 
   return (

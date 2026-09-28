@@ -42,7 +42,7 @@ export const ClassTypesSwitcher = () => {
         }}
       >
         <Tabs.List>
-          {Object.entries(tabs).map(([key, [Icon, _]]) => (
+          {Object.entries(tabs).map(([key, [Icon]]) => (
             <Tabs.Trigger value={key} key={key}>
               <Icon />
               {key}
@@ -50,7 +50,7 @@ export const ClassTypesSwitcher = () => {
           ))}
           <Tabs.Indicator />
         </Tabs.List>
-        {Object.entries(tabs).map(([key, [_, Component]]) => (
+        {Object.entries(tabs).map(([key, [_i, Component]]) => (
           <Tabs.Content value={key} key={key}>
             <Component />
           </Tabs.Content>

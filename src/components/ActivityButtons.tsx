@@ -1,5 +1,4 @@
 import {
-  useLayoutEffect,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -81,7 +80,7 @@ function OverrideLocations(props: { secs: Sections }) {
     setRoom(secs.roomOverride);
   };
   const onConfirm = () => {
-    secs.roomOverride = room.trim();
+    secs.setRoomOverride(room.trim());
     setIsOverriding(false);
     state.updateActivities();
   };
@@ -204,12 +203,9 @@ const RenderOptions = (props: {
 
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class | PEClass }) {
+  "use no memo";
   const { cls } = props;
   const [selected, setSelected] = useState(genSelected(cls));
-
-  useLayoutEffect(() => {
-    setSelected(genSelected(cls));
-  }, [cls]);
 
   return (
     <Flex>
@@ -295,8 +291,9 @@ const RenderCheckboxes = (props: {
 
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class | PEClass }) {
+  "use no memo";
   const { cls } = props;
-  const { state } = useHydrantContext();
+  const { state, hydrantState } = useHydrantContext();
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -335,7 +332,9 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
           </ToggleButton>
         )}
       </ButtonGroup>
-      {isSelected && showManual && <ClassManualSections cls={cls} />}
+      {isSelected && showManual && (
+        <ClassManualSections cls={cls} key={cls.id + hydrantState.saveId} />
+      )}
       {isSelected && showColors && (
         <ActivityColor
           activity={cls}

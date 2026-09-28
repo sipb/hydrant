@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router";
 
 import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
@@ -40,10 +40,10 @@ const validator = customizeValidator<FormData>();
 const schema: RJSFSchema = {
   title: "Overrides",
   type: "array",
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   items: {
     ...additionalProperties,
     required: ["number"],
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   } as unknown as JSONSchema7Definition,
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   definitions: definitions as Record<string, JSONSchema7Definition>,
@@ -85,7 +85,7 @@ const overrideNames = Object.entries(overrides)
     return accum;
   }, {});
 
-const getDataFromFileAsync = async (fileName: string) => {
+const getDataFromFile = async (fileName: string) => {
   try {
     const textToml = await overrides[fileName].data();
     const mod = tomlParse(textToml);
@@ -136,9 +136,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
   if (prefillIdPrelim) {
     if (Object.keys(overrideNames).includes(prefillIdPrelim)) {
-      const newData = await getDataFromFileAsync(
-        overrideNames[prefillIdPrelim],
-      );
+      const newData = await getDataFromFile(overrideNames[prefillIdPrelim]);
       if (newData.length > 0) {
         prefillData = newData;
         prefillId = overrideNames[prefillIdPrelim];
@@ -315,7 +313,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
     return uiSchema;
   }, [data.length, error]);
 
-  const getDataFromFile = useCallback(getDataFromFileAsync, []);
   const handleChange = (e: Select.ValueChangeDetails) => {
     const fileName = e.value[0];
 

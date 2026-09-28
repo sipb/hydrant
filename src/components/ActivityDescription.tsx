@@ -66,7 +66,7 @@ function ClassTypes(props: { cls: Class }) {
    */
   const makeFlags = (arr: [keyof Flags, string][]) =>
     arr
-      .filter(([flag, _]) => flags[flag])
+      .filter(([flag]) => flags[flag])
       .map(([flag, title]) => (
         <ClassTypeSpan key={flag} flag={flag} title={title} />
       ));
@@ -154,7 +154,7 @@ function PEClassTypes(props: { cls: PEClass }) {
    */
   const makeFlags = (arr: [keyof PEFlags, string][]) =>
     arr
-      .filter(([flag, _]) => flags[flag])
+      .filter(([flag]) => flags[flag])
       .map(([flag, title]) => (
         <PEClassTypeSpan key={flag} flag={flag} title={title} />
       ));
@@ -317,6 +317,7 @@ function ClassDescription(props: { cls: Class }) {
 
 /** Full custom activity description, from title to timeslots. */
 function CustomActivityDescription(props: { activity: CustomActivity }) {
+  "use no memo";
   const { activity } = props;
   const { state } = useHydrantContext();
 

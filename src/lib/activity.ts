@@ -354,6 +354,10 @@ export class Sections {
     this.selected = selected ?? null;
   }
 
+  setRoomOverride(room: string): void {
+    this.roomOverride = room;
+  }
+
   /** Short name for the kind of sections these are. */
   get shortName(): string {
     return this.kind ? this.kind.toLowerCase() : "sec";
