@@ -4,7 +4,7 @@ import Form from "@rjsf/chakra-ui";
 import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import type { JSONSchema7Definition } from "json-schema";
-import TOML from "smol-toml";
+import { parse, stringify } from "smol-toml";
 
 import { Link as RouterLink } from "react-router";
 import type { Route } from "./+types/overrides.($prefillId)";
@@ -72,7 +72,7 @@ const overrideNames = Object.entries(overrides)
 const getDataFromFile = async (fileName: string) => {
   try {
     const textToml = await overrides[fileName].data();
-    const mod = TOML.parse(textToml);
+    const mod = parse(textToml);
 
     const newData = Object.entries(mod).map(([key, value_1]) => {
       const { number: num, ...rest } = value_1 as Record<string, unknown>;
@@ -305,7 +305,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
     async (fileName: string) => {
       try {
         const textToml = await overrides[fileName].data();
-        const mod = TOML.parse(textToml);
+        const mod = parse(textToml);
 
         const newData = Object.entries(mod).map(([key, value_1]) => {
           const { number: num, ...rest } = value_1 as Record<string, unknown>;
@@ -434,7 +434,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
             onSubmit={() => {
               const contents =
                 "#:schema ../override-schema.json\n\n" +
-                TOML.stringify(
+                stringify(
                   Object.fromEntries(
                     data.map((override) => {
                       const { number: num, ...rest } = override;
