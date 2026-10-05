@@ -84,7 +84,7 @@ class PEWSchema(TypedDict):
     sectionNumbers: list[str]
     sections: list[tuple[list[tuple[int, int]], str]]
     rawSections: list[str]
-    classSize: int
+    classSize: str
     startDate: str
     endDate: str
     points: int
@@ -355,7 +355,7 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "sectionNumbers": [section_num],
         "rawSections": [raw_section],
         "sections": [section],
-        "classSize": int(row["Capacity"]),
+        "classSize": row["Capacity"],
         "startDate": parse_date(row["Start Date"]).isoformat(),
         "endDate": parse_date(row["End Date"]).isoformat(),
         "points": int(row["GIR Points"]),
@@ -400,15 +400,15 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
 
         if current_results:
             # ensure all data in current_results (except for section info) are the same
-            assert current_results["name"] == data["name"]
-            assert current_results["classSize"] == data["classSize"]
-            assert current_results["points"] == data["points"]
-            assert current_results["swimGIR"] == data["swimGIR"]
+            assert current_results["name"] == data["name"], f"Name mismatch for subject {data['number']}"
+            assert current_results["classSize"] == data["classSize"], f"Class size mismatch for subject {data['number']}"
+            assert current_results["points"] == data["points"], f"Points mismatch for subject {data['number']}"
+            assert current_results["swimGIR"] == data["swimGIR"], f"Swim GIR mismatch for subject {data['number']}"
             assert current_results["prereqs"] == data["prereqs"] or (
                 current_results["prereqs"] == "None" and not data["prereqs"]
-            )
-            assert current_results["equipment"] == data["equipment"]
-            assert current_results["fee"] == data["fee"]
+            ), f"Prerequisites mismatch for subject {data['number']}"
+            assert current_results["equipment"] == data["equipment"], f"Equipment mismatch for subject {data['number']}"
+            assert current_results["fee"] == data["fee"], f"Fee mismatch for subject {data['number']}"
 
             current_results["sectionNumbers"].append(data["sectionNumbers"][0])
             current_results["rawSections"].append(data["rawSections"][0])
