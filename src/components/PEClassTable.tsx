@@ -40,7 +40,7 @@ const getFeeColor = (fee: number) => {
 /** A single row in the class table. */
 interface ClassTableRow {
   number: string;
-  classSize: string;
+  classSize: number;
   fee: number;
   name: string;
   class: PEClass;

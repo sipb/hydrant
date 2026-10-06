@@ -213,7 +213,7 @@ export interface RawPEClass {
   /** Raw (FireRoad format) section locations/times */
   rawSections: string[];
   /** Class size (for each section) */
-  classSize: string;
+  classSize: number;
 
   /** Start date, in ISO 8601 format */
   startDate: string;

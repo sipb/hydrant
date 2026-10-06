@@ -84,7 +84,7 @@ class PEWSchema(TypedDict):
     sectionNumbers: list[str]
     sections: list[tuple[list[tuple[int, int]], str]]
     rawSections: list[str]
-    classSize: str
+    classSize: int
     startDate: str
     endDate: str
     points: int
@@ -245,6 +245,9 @@ def split_section_code(section_code: str) -> tuple[str, str]:
 
     >>> split_section_code("PE.0613-4")
     ('PE.0613', '4')
+
+    >>> split_section_code("PE.0202MW-1")
+    ('PE.0202MW', '1')
     """
     if "-" not in section_code:
         raise ValueError(f"Invalid section code format: {section_code}")
@@ -355,7 +358,7 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "sectionNumbers": [section_num],
         "rawSections": [raw_section],
         "sections": [section],
-        "classSize": row["Capacity"],
+        "classSize": int(row["Capacity"]),
         "startDate": parse_date(row["Start Date"]).isoformat(),
         "endDate": parse_date(row["End Date"]).isoformat(),
         "points": int(row["GIR Points"]),
@@ -366,7 +369,7 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "prereqs": row["Prerequisites"] or "None",
         "equipment": row["Equipment"],
         "fee": row["Fee Amount"],
-        "description": get_pe_catalog_descriptions().get(number, ""),
+        "description": get_pe_catalog_descriptions().get(number[0:7], ""),
         "quarter": quarter,
         "waiver": row.get("Waiver", "None"),
         "healthForms": row.get("HealthForms", "None") or "None",
@@ -427,8 +430,10 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
             current_results["sections"].append(data["sections"][0])
 
             term_results[data["number"]] = current_results
+            term_results[data["number"]]["number"] = data["number"][0:7]
         else:
             term_results[data["number"]] = data
+            term_results[data["number"]]["number"] = data["number"][0:7]
 
         results[quarter] = term_results
 
