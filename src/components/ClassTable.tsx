@@ -353,11 +353,12 @@ function ClassFlags(props: {
   const { state } = useHydrantContext();
 
   // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
-    const result = new Map();
+  const [flags, setFlags] = useState(() => {
+    const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
-      result.set(flag, false);
+      result.set(flag[0], false);
     }
+
     return result;
   });
 

@@ -166,11 +166,37 @@ function ClassFlags(props: {
   const { state } = useHydrantContext();
 
   // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
-    const result = new Map();
+  const [flags, setFlags] = useState(() => {
+    const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
-      result.set(flag, false);
+      result.set(flag[0], false);
     }
+
+    // default to latest quarter
+    // TODO: DRY this out :(
+    result.set("latest", true);
+    setFlagsFilter(() => (cls?: PEClass) => {
+      if (!cls) return false;
+      let classResult = true;
+      result.forEach((value, flag) => {
+        if (
+          value &&
+          flag in filtersNonFlags &&
+          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+        ) {
+          classResult = false;
+        } else if (
+          value &&
+          !(flag in filtersNonFlags) &&
+          !cls.flags[flag as keyof typeof cls.flags]
+        ) {
+          classResult = false;
+        }
+      });
+      return classResult;
+    });
+
+
     return result;
   });
 
