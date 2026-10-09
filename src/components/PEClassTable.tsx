@@ -196,7 +196,6 @@ function ClassFlags(props: {
       return classResult;
     });
 
-
     return result;
   });
 
