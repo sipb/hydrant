@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Tabs } from "@chakra-ui/react";
+import { Tabs, type TabsValueChangeDetails } from "@chakra-ui/react";
 import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
 
@@ -33,6 +33,11 @@ export const ClassTypesSwitcher = () => {
     ...(state.peClasses.size > 0 ? [ClassType.PEW] : []),
   ]);
 
+  const handleTabChange = (e: TabsValueChangeDetails) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
+    setCurrentTab(e.value as ClassType);
+  };
+
   if (Object.keys(tabs).length > 1)
     return (
       <Tabs.Root
@@ -40,13 +45,11 @@ export const ClassTypesSwitcher = () => {
         size="sm"
         variant="line"
         value={currentTab}
-        onValueChange={(e) => {
-          setCurrentTab(e.value as ClassType);
-        }}
+        onValueChange={handleTabChange}
       >
         <Tabs.List>
           {Object.entries(tabs).map(([key, [Icon, _]]) => (
-            <Tabs.Trigger value={key as ClassType} key={key}>
+            <Tabs.Trigger value={key} key={key}>
               <Icon />
               {key}
             </Tabs.Trigger>
@@ -54,7 +57,7 @@ export const ClassTypesSwitcher = () => {
           <Tabs.Indicator />
         </Tabs.List>
         {Object.entries(tabs).map(([key, [_, Component]]) => (
-          <Tabs.Content value={key as ClassType} key={key}>
+          <Tabs.Content value={key} key={key}>
             <Component />
           </Tabs.Content>
         ))}
