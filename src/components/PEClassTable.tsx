@@ -173,31 +173,27 @@ function ClassFlags(props: {
     }
 
     // default to latest quarter
-    // TODO: DRY this out :(
     result.set("latest", true);
-    setFlagsFilter(() => (cls?: PEClass) => {
-      if (!cls) return false;
-      let classResult = true;
-      result.forEach((value, flag) => {
-        if (
-          value &&
-          flag in filtersNonFlags &&
-          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
-        ) {
-          classResult = false;
-        } else if (
-          value &&
-          !(flag in filtersNonFlags) &&
-          !cls.flags[flag as keyof typeof cls.flags]
-        ) {
-          classResult = false;
-        }
-      });
-      return classResult;
-    });
 
     return result;
   });
+
+  useEffect(() => {
+    // careful! we have to wrap it with a () => because otherwise React will
+    // think it's an updater function instead of the actual function.
+    setFlagsFilter(() => (cls?: PEClass) => {
+      if (!cls) return false;
+      for (const [flag, value] of flags) {
+        if (!value) continue;
+        const passes =
+          flag in filtersNonFlags
+            ? filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+            : cls.flags[flag as keyof typeof cls.flags];
+        if (!passes) return false;
+      }
+      return true;
+    });
+  }, [state, flags, setFlagsFilter]);
 
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
@@ -213,29 +209,6 @@ function ClassFlags(props: {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
     setFlags(newFlags);
-
-    // careful! we have to wrap it with a () => because otherwise React will
-    // think it's an updater function instead of the actual function.
-    setFlagsFilter(() => (cls?: PEClass) => {
-      if (!cls) return false;
-      let result = true;
-      newFlags.forEach((value, flag) => {
-        if (
-          value &&
-          flag in filtersNonFlags &&
-          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
-        ) {
-          result = false;
-        } else if (
-          value &&
-          !(flag in filtersNonFlags) &&
-          !cls.flags[flag as keyof typeof cls.flags]
-        ) {
-          result = false;
-        }
-      });
-      return result;
-    });
   };
 
   const renderGroup = (group: FilterGroup) => {
