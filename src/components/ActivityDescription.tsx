@@ -238,6 +238,34 @@ function ClassEval(props: { cls: Class }) {
   );
 }
 
+function quarterInfoTranslate(month: number, day: number): string {
+  const monthDay = Temporal.PlainMonthDay.from({ month, day });
+  return monthDay.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    calendar: "iso8601",
+  });
+}
+
+function ClassQuarterInfo(props: { cls: Class }) {
+  const { cls } = props;
+
+  const quarterInfo = cls.rawClass.quarterInfo;
+
+  if (!quarterInfo) {
+    return null;
+  }
+
+  const { start, end } = quarterInfo;
+
+  return (
+    <Text>
+      {start ? `Begins ${quarterInfoTranslate(...start)}. ` : ""}
+      {end ? `Ends ${quarterInfoTranslate(...end)}. ` : ""}
+    </Text>
+  );
+}
+
 /** Class description, person in-charge, and any URLs afterward. */
 function ClassBody(props: { cls: Class }) {
   const { cls } = props;
@@ -308,6 +336,7 @@ function ClassDescription(props: { cls: Class }) {
         <ClassRelated cls={cls} />
         <ClassCIM cls={cls} />
         <ClassEval cls={cls} />
+        <ClassQuarterInfo cls={cls} />
       </Flex>
       <ClassButtons cls={cls} />
       <ClassBody cls={cls} />
