@@ -14,6 +14,13 @@ import { useInjectStyles } from "./emotion/emotion-client";
 import { Provider } from "./components/ui/provider";
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
+import {
+  destroySession,
+  FIREROAD_VERIFY_URL,
+  getSession,
+  SessionContext,
+} from "./lib/auth";
+
 import "@fontsource-variable/ibm-plex-sans/index.css";
 import "@fontsource/ibm-plex-mono/index.css";
 
@@ -82,8 +89,34 @@ export const Layout = withEmotionCache((props: LayoutProps, cache) => {
   );
 });
 
-export default function Root() {
-  return <Outlet />;
+export async function clientLoader() {
+  const session = await getSession(document.cookie);
+
+  if (session.has("access_token")) {
+    const response = await fetch(FIREROAD_VERIFY_URL, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session.get("access_token") ?? ""}`,
+      },
+    });
+
+    if (!response.ok) {
+      // token expired
+      console.log("Token expired!");
+      document.cookie = await destroySession(session);
+      return { session: null };
+    }
+  }
+
+  return { session };
+}
+
+export default function Root({ loaderData }: Route.ComponentProps) {
+  return (
+    <SessionContext value={loaderData.session}>
+      <Outlet />
+    </SessionContext>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
