@@ -3,14 +3,9 @@ import { FIREROAD_LOGIN_URL } from "../lib/auth";
 
 import type { Route } from "./+types/auth.login";
 
-export function clientLoader({ request }: Route.ClientLoaderArgs) {
+export function clientLoader({ url }: Route.ClientLoaderArgs) {
   const authorizationURL = new URL(FIREROAD_LOGIN_URL);
-
-  const currentUrl = new URL(request.url);
-  const callbackUrl = new URL(
-    "/auth/callback" + currentUrl.search,
-    currentUrl.origin,
-  );
+  const callbackUrl = new URL("/auth/callback" + url.search, url.origin);
 
   authorizationURL.searchParams.set("redirect", callbackUrl.toString());
 

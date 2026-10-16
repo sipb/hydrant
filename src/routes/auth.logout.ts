@@ -3,8 +3,7 @@ import { replace } from "react-router";
 import { destroySession, getSession } from "../lib/auth";
 import type { Route } from "./+types/auth.callback";
 
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-  const url = new URL(request.url);
+export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const next = url.searchParams.get("next");
 
   const session = await getSession(document.cookie);
