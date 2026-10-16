@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Center,
   Flex,
@@ -10,12 +10,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 
-import { HydrantContext } from "../lib/hydrant";
-import { BANNER_MESSAGE } from "~/lib/schema";
+import { useHydrantContext } from "../lib/hydrant";
+import { BANNER_MESSAGE } from "../lib/schema";
 
 /** Main banner */
 export const AnnouncementsBanner = () => {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   return (
     <Presence
       present={state.showBanner}
@@ -31,9 +31,8 @@ export const AnnouncementsBanner = () => {
           py="2"
           px="3"
           bgGradient="to-r"
-          gradientFrom="cyan.700"
-          gradientVia="purple.600"
-          gradientTo="red.500"
+          gradientFrom="hydrant.900"
+          gradientTo="hydrant.700"
           color="white"
           textAlign="center"
         >
@@ -43,9 +42,10 @@ export const AnnouncementsBanner = () => {
             </Text>
             <CloseButton
               hideFrom="sm"
-              variant="ghost"
+              variant="plain"
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
+              _active={{ bg: "blackAlpha.400!" }}
               onClick={() => {
                 state.showBanner = false;
               }}
@@ -54,9 +54,10 @@ export const AnnouncementsBanner = () => {
         </Center>
         <Float placement="middle-end" offset="8" hideBelow="sm">
           <CloseButton
-            variant="ghost"
+            variant="plain"
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
+            _active={{ bg: "blackAlpha.400!" }}
             onClick={() => {
               state.showBanner = false;
             }}
@@ -69,9 +70,10 @@ export const AnnouncementsBanner = () => {
 
 /** Unknown subjects warning, same style as banner */
 export const UnknownSubjectsBanner = () => {
-  const { state } = useContext(HydrantContext);
-  const unknownSubjects = Array.from(state.unknownSubjects);
+  const { state } = useHydrantContext();
   const [unknownVisible, setUnknownVisible] = useState(true);
+
+  const unknownSubjects = Array.from(state.unknownSubjects);
 
   return (
     <Presence
@@ -87,9 +89,8 @@ export const UnknownSubjectsBanner = () => {
           py="2"
           px="3"
           bgGradient="to-r"
-          gradientFrom="red.700"
-          gradientVia="orange.600"
-          gradientTo="yellow.500"
+          gradientFrom="orange.900"
+          gradientTo="orange.700"
           color="white"
           textAlign="center"
         >
@@ -100,9 +101,10 @@ export const UnknownSubjectsBanner = () => {
             </Text>
             <CloseButton
               hideFrom="sm"
-              variant="ghost"
+              variant="plain"
               color="whiteAlpha.900"
               _hover={{ bg: "blackAlpha.300" }}
+              _active={{ bg: "blackAlpha.400!" }}
               onClick={() => {
                 setUnknownVisible(false);
               }}
@@ -111,9 +113,10 @@ export const UnknownSubjectsBanner = () => {
         </Center>
         <Float placement="middle-end" offset="8" hideBelow="sm">
           <CloseButton
-            variant="ghost"
+            variant="plain"
             color="whiteAlpha.900"
             _hover={{ bg: "blackAlpha.300" }}
+            _active={{ bg: "blackAlpha.400!" }}
             onClick={() => {
               setUnknownVisible(false);
             }}

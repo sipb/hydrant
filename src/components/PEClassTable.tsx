@@ -1,6 +1,4 @@
-// TODO factor out common pieces between ClassTable and PEClassTable
 import {
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -11,61 +9,26 @@ import {
 } from "react";
 
 import { AgGridReact } from "ag-grid-react";
-import {
-  ModuleRegistry,
-  ClientSideRowModelModule,
-  ValidationModule,
-  ExternalFilterModule,
-  RenderApiModule,
-  CellStyleModule,
-  RowStyleModule,
-  themeQuartz,
-  type IRowNode,
-  type ColDef,
-  type Module,
-} from "ag-grid-community";
+import type { IRowNode, ColDef } from "ag-grid-community";
+
+import { Box, Flex, Button, ButtonGroup } from "@chakra-ui/react";
+import { LuStar } from "react-icons/lu";
+import { LabelledButton } from "./ui/button";
 
 import {
-  Box,
-  Flex,
-  Input,
-  Button,
-  ButtonGroup,
-  InputGroup,
-  CloseButton,
-} from "@chakra-ui/react";
-import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
+  HYDRANT_THEME,
+  INITIAL_SORT,
+  sortProps,
+  ClassSearchInput,
+} from "./ClassTable";
 
-import { type PEFlags, type PEClass, getPEFlagEmoji } from "../lib/pe";
+import { type PEFlags, type PEClass, getPEFlagIcon } from "../lib/pe";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
 import { ColorStyles } from "../lib/colors";
 
 import styles from "./ClassTable.module.css";
-
-const hydrantTheme = themeQuartz.withParams({
-  accentColor: "var(--chakra-colors-fg)",
-  backgroundColor: "var(--chakra-colors-bg)",
-  borderColor: "var(--chakra-colors-border)",
-  browserColorScheme: "inherit",
-  fontFamily: "inherit",
-  foregroundColor: "var(--chakra-colors-fg)",
-  headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
-  rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-md)",
-});
-
-const GRID_MODULES: Module[] = [
-  ClientSideRowModelModule,
-  ExternalFilterModule,
-  CellStyleModule,
-  RowStyleModule,
-  RenderApiModule,
-  ...(import.meta.env.DEV ? [ValidationModule] : []),
-];
-
-ModuleRegistry.registerModules(GRID_MODULES);
 
 const getFeeColor = (fee: number) => {
   if (isNaN(fee)) return ColorStyles.Muted;
@@ -98,11 +61,10 @@ function ClassInput(props: {
   setInputFilter: SetClassFilter;
 }) {
   const { rowData, setInputFilter } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
   const searchResults = useRef<
@@ -159,45 +121,13 @@ function ClassInput(props: {
     }
   };
 
-  const clearButton = classInput ? (
-    <CloseButton
-      size="xs"
-      onClick={() => {
-        onClassInputChange("");
-        inputRef.current?.focus();
-      }}
-      me="-2"
-    />
-  ) : undefined;
-
   return (
-    <Flex justify="center">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onEnter();
-        }}
-        style={{ width: "100%", maxWidth: "30em" }}
-      >
-        <InputGroup
-          startElement={<LuSearch />}
-          endElement={clearButton}
-          width="fill-available"
-        >
-          <Input
-            type="search"
-            aria-label="Search for a class"
-            id="class-search"
-            placeholder="Class number or name"
-            value={classInput}
-            ref={inputRef}
-            onChange={(e) => {
-              onClassInputChange(e.target.value);
-            }}
-          />
-        </InputGroup>
-      </form>
-    </Flex>
+    <ClassSearchInput
+      value={classInput}
+      onChange={onClassInputChange}
+      onSubmit={onEnter}
+      placeholder="Class number or name"
+    />
   );
 }
 
@@ -210,24 +140,20 @@ const filtersNonFlags = {
 type Filter = keyof PEFlags | keyof typeof filtersNonFlags;
 type FilterGroup = [Filter, string, ReactNode?][];
 
-/** List of top filter IDs and their displayed names. */
-const CLASS_FLAGS_1: FilterGroup = [
+/**
+ * List of all class flags.
+ */
+const CLASS_FLAGS: FilterGroup = [
   ["starred", "Starred", <LuStar fill="currentColor" />],
   ["latest", "Latest quarter"],
   ["nofee", "No fee"],
   ["nopreq", "No prereq"],
   ["fits", "Fits schedule"],
+  ["wellness", "Wellness Wizard", getPEFlagIcon("wellness")],
+  ["pirate", "Pirate Certificate", getPEFlagIcon("pirate")],
+  ["swim", "Swim GIR", getPEFlagIcon("swim")],
+  ["remote", "Remote", getPEFlagIcon("remote")],
 ];
-
-/** List of hidden filter IDs, their displayed names, and image path, if any. */
-const CLASS_FLAGS_2: FilterGroup = [
-  ["wellness", "🔮 Wellness Wizard"],
-  ["pirate", "🏴‍☠️ Pirate Certificate"],
-  ["swim", "🌊 Swim GIR"],
-  ["remote", "💻 Remote"],
-];
-
-const CLASS_FLAGS = [...CLASS_FLAGS_1, ...CLASS_FLAGS_2];
 
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
@@ -237,19 +163,37 @@ function ClassFlags(props: {
   updateFilter: () => void;
 }) {
   const { setFlagsFilter, updateFilter } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
-    const result = new Map();
+  const [flags, setFlags] = useState(() => {
+    const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
-      result.set(flag, false);
+      result.set(flag[0], false);
     }
+
+    // default to latest quarter
+    result.set("latest", true);
+
     return result;
   });
 
-  // Show hidden flags?
-  const [allFlags, setAllFlags] = useState(false);
+  useEffect(() => {
+    // careful! we have to wrap it with a () => because otherwise React will
+    // think it's an updater function instead of the actual function.
+    setFlagsFilter(() => (cls?: PEClass) => {
+      if (!cls) return false;
+      for (const [flag, value] of flags) {
+        if (!value) continue;
+        const passes =
+          flag in filtersNonFlags
+            ? filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+            : cls.flags[flag as keyof typeof cls.flags];
+        if (!passes) return false;
+      }
+      return true;
+    });
+  }, [state, flags, setFlagsFilter]);
 
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
@@ -265,34 +209,11 @@ function ClassFlags(props: {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
     setFlags(newFlags);
-
-    // careful! we have to wrap it with a () => because otherwise React will
-    // think it's an updater function instead of the actual function.
-    setFlagsFilter(() => (cls?: PEClass) => {
-      if (!cls) return false;
-      let result = true;
-      newFlags.forEach((value, flag) => {
-        if (
-          value &&
-          flag in filtersNonFlags &&
-          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
-        ) {
-          result = false;
-        } else if (
-          value &&
-          !(flag in filtersNonFlags) &&
-          !cls.flags[flag as keyof typeof cls.flags]
-        ) {
-          result = false;
-        }
-      });
-      return result;
-    });
   };
 
   const renderGroup = (group: FilterGroup) => {
     return (
-      <ButtonGroup attached colorPalette="orange" wrap="wrap">
+      <ButtonGroup attached wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
@@ -307,16 +228,16 @@ function ClassFlags(props: {
 
           return image ? (
             // image is a react element, like an icon
-            <Button
+            <LabelledButton
               key={flag}
               onClick={() => {
                 onChange(flag, !checked);
               }}
-              aria-label={label}
+              title={label}
               variant={checked ? "solid" : "outline"}
             >
               {image}
-            </Button>
+            </LabelledButton>
           ) : (
             <Button
               key={flag}
@@ -335,20 +256,7 @@ function ClassFlags(props: {
 
   return (
     <Flex direction="column" align="center" gap={2}>
-      <Flex align="center">
-        {renderGroup(CLASS_FLAGS_1)}
-        <Button
-          onClick={() => {
-            setAllFlags(!allFlags);
-          }}
-          size="sm"
-          ml={2}
-        >
-          {allFlags ? <LuMinus /> : <LuPlus />}
-          {allFlags ? "Less filters" : "More filters"}
-        </Button>
-      </Flex>
-      {allFlags && <>{renderGroup(CLASS_FLAGS_2)}</>}
+      <Flex align="center">{renderGroup(CLASS_FLAGS)}</Flex>
     </Flex>
   );
 }
@@ -360,7 +268,7 @@ const StarButton = ({
   cls: PEClass;
   onStarToggle?: () => void;
 }) => {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const isStarred = state.isPEClassStarred(cls);
 
   return (
@@ -370,7 +278,7 @@ const StarButton = ({
         state.toggleStarPEClass(cls);
         onStarToggle?.();
       }}
-      variant="plain"
+      variant="ghost"
       size="sm"
       aria-label={isStarred ? "Unstar class" : "Star class"}
     >
@@ -381,16 +289,13 @@ const StarButton = ({
 
 /** The table of all classes, along with searching and filtering with flags. */
 export function PEClassTable() {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { peClasses } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string | number>[] = useMemo(() => {
-    const initialSort = "asc" as const;
-    const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
-    const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     return [
       {
         headerName: "",
@@ -415,9 +320,9 @@ export function PEClassTable() {
         field: "number",
         headerName: "Class",
         comparator: classSort,
-        initialSort,
-        maxWidth: 128,
-        cellClass: styles["underline-on-hover"],
+        initialSort: INITIAL_SORT,
+        maxWidth: 131,
+        cellClass: [styles["underline-on-hover"], styles.data],
         valueFormatter: (params) =>
           `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
         ...sortProps,
@@ -425,13 +330,19 @@ export function PEClassTable() {
       {
         field: "classSize",
         headerName: "Size",
+        cellDataType: "number",
         maxWidth: 85,
+        cellClass: styles.data,
         ...sortProps,
       },
       {
         field: "fee",
-        maxWidth: 87,
-        cellClass: (params) => getFeeColor(params.value as number),
+        maxWidth: 90,
+        cellDataType: "number",
+        cellClass: (params) => [
+          getFeeColor(params.value as number),
+          styles.data,
+        ],
         valueFormatter: (params) => "$" + (params.value as number).toFixed(2),
         ...sortProps,
       },
@@ -439,17 +350,6 @@ export function PEClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
-        valueFormatter: (params) =>
-          (
-            Object.entries(params.data?.class.flags ?? {}) as [
-              keyof PEFlags,
-              PEFlags[keyof PEFlags],
-            ][]
-          )
-            .filter(([_, val]) => val)
-            .map(([flag]) => getPEFlagEmoji(flag))
-            .concat([params.value?.toString() ?? ""])
-            .join(" "),
       },
     ];
   }, [state]);
@@ -500,7 +400,7 @@ export function PEClassTable() {
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
         <AgGridReact<ClassTableRow>
-          theme={hydrantTheme}
+          theme={HYDRANT_THEME}
           ref={gridRef}
           rowClass={styles.row}
           defaultColDef={defaultColDef}

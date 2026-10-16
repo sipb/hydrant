@@ -91,7 +91,7 @@ def is_not_offered_this_year(
     multi = len(course_nums) > 1
     results: dict[str, bool] = {}
 
-    icon_not_offered = html.find(attrs={"src": "/icns/nooffer.gif"})
+    icon_not_offered = html.find(None, attrs={"src": "/icns/nooffer.gif"})
     not_offered_regularly = html.find(
         string=re.compile("not offered regularly; consult department", re.IGNORECASE)
     )
@@ -122,9 +122,7 @@ def is_not_offered_next_year(html: BeautifulSoup) -> bool:
     Returns:
         bool: True if the class is not offered next year
     """
-    if html.find(attrs={"src": "/icns/nonext.gif"}):
-        return True
-    return False
+    return bool(html.find(None, attrs={"src": "/icns/nonext.gif"}))
 
 
 def is_repeat_allowed(html: BeautifulSoup):
@@ -137,9 +135,7 @@ def is_repeat_allowed(html: BeautifulSoup):
     Returns:
         bool: Whether you're allowed to retake the class for credit
     """
-    if html.find(attrs={"src": "/icns/repeat.gif"}):
-        return True
-    return False
+    return bool(html.find(None, attrs={"src": "/icns/repeat.gif"}))
 
 
 def get_url(html: BeautifulSoup) -> str:
@@ -168,9 +164,7 @@ def has_final(html: BeautifulSoup) -> bool:
     Returns:
         bool: Whether the class has a final
     """
-    if html.find(string="+final"):
-        return True
-    return False
+    return bool(html.find(string="+final"))
 
 
 def get_half(html: BeautifulSoup) -> int | bool:
@@ -202,9 +196,7 @@ def is_limited(html: BeautifulSoup) -> bool:
     Returns:
         bool: True if enrollment in the class is limited
     """
-    if html.find(string=LIMITED_REGEX):
-        return True
-    return False
+    return bool(html.find(string=LIMITED_REGEX))
 
 
 def is_new(html: BeautifulSoup) -> bool:
@@ -217,9 +209,7 @@ def is_new(html: BeautifulSoup) -> bool:
     Returns:
         bool: True if the class is new
     """
-    if html.find(string=re.compile(r"\(New\)|\.S")):
-        return True
-    return False
+    return bool(html.find(string=re.compile(r"\(New\)|\.S")))
 
 
 def get_course_data(filtered_html: BeautifulSoup) -> dict[str, bool | int | str]:

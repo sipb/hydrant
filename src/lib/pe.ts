@@ -1,7 +1,12 @@
+import type { ReactNode } from "react";
+
 import { Section, Sections, type BaseActivity } from "./activity";
 import { type RawPEClass, type RawSection } from "./raw";
 import { Event } from "./activity";
 import { fallbackColor, type ColorScheme } from "./colors";
+
+import type { IconType } from "react-icons";
+import { LuShipWheel, LuWand, LuWaves, LuLaptop } from "react-icons/lu";
 
 export const W35_PLUS_TEXT =
   "W31, W32, W33, W34 and W35 are all connected. Enter through W35.";
@@ -15,15 +20,15 @@ export interface PEFlags {
   nopreq: boolean;
 }
 
-const peFlagEmojis: { [k in keyof PEFlags]?: string } = {
-  wellness: "🔮",
-  pirate: "🏴‍☠️",
-  swim: "🌊",
-  remote: "💻",
-};
+const peFlagIcons: { [k in keyof PEFlags]?: IconType } = {
+  wellness: LuWand,
+  pirate: LuShipWheel,
+  swim: LuWaves,
+  remote: LuLaptop,
+} as const;
 
-export const getPEFlagEmoji = (flag: keyof PEFlags): string => {
-  return peFlagEmojis[flag] ?? "";
+export const getPEFlagIcon = (flag: keyof PEFlags): ReactNode => {
+  return (peFlagIcons[flag] ?? (() => null))({});
 };
 
 export class PESection extends Section {
@@ -145,11 +150,11 @@ export class PEClass implements BaseActivity {
   }
 
   get startDate() {
-    return new Date(this.rawClass.startDate);
+    return Temporal.PlainDate.from(this.rawClass.startDate);
   }
 
   get endDate() {
-    return new Date(this.rawClass.endDate);
+    return Temporal.PlainDate.from(this.rawClass.endDate);
   }
 
   /** Fee, in dollars */
@@ -172,13 +177,11 @@ export class PEClass implements BaseActivity {
   }
 
   get start(): [number, number] {
-    const startDate = new Date(this.rawClass.startDate);
-    return [startDate.getMonth() + 1, startDate.getDate()];
+    return [this.startDate.month, this.startDate.day];
   }
 
   get end(): [number, number] {
-    const endDate = new Date(this.rawClass.endDate);
-    return [endDate.getMonth() + 1, endDate.getDate()];
+    return [this.endDate.month, this.endDate.day];
   }
 
   get flags(): PEFlags {

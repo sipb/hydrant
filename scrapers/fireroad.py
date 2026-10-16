@@ -74,8 +74,11 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
 
     >>> parse_timeslot("W", "11-6 PM", True)
     (78, 14)
+
+    >>> parse_timeslot("M", "8-6 PM", True)
+    (4, 20)
     """
-    assert time_is_pm == slot.endswith(" PM")
+    # assert time_is_pm == slot.endswith(" PM")
     slot = slot.rstrip(" PM")
 
     if "-" in slot:
@@ -83,6 +86,11 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
         try:
             start_slot = find_timeslot(day, start, time_is_pm)
             end_slot = find_timeslot(day, end, time_is_pm)
+
+            if start_slot > end_slot:
+                raise ValueError(
+                    f"Start slot {start_slot} is later than end slot {end_slot}"
+                )
         # changed from KeyError to match the ValueError returned by find_timeslot
         except ValueError:
             # Maybe the start time is AM but the end time is PM
@@ -93,7 +101,7 @@ def parse_timeslot(day: str, slot: str, time_is_pm: bool) -> tuple[int, int]:
         # Slot is one hour long, so length is 2.
         end_slot = start_slot + 2
 
-    assert end_slot > start_slot
+    assert end_slot >= start_slot
 
     return start_slot, end_slot - start_slot
 
@@ -267,7 +275,7 @@ def parse_attributes(
     hass_code: list[str] = list(
         filter(
             lambda x: x != "X",
-            map(lambda x: x[-1], str(course.get("hass_attribute", "X")).split(",")),
+            (x[-1] for x in str(course.get("hass_attribute", "X")).split(",")),
         )
     )
     comms_code: str = str(course.get("communication_requirement", ""))
@@ -351,8 +359,7 @@ def get_course_data(
         | int
         | dict[str, tuple[int, int]]
         | list[str]
-        | dict[str, list[str] | bool]
-        | bool,
+        | dict[str, list[str] | bool],
     ] = {
         "number": course_code,
         "course": course_num,

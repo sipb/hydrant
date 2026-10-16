@@ -83,7 +83,6 @@ export function linkClasses(state: State, str: string): JSX.Element {
             onClick={() => {
               state.setViewedActivity(cls);
             }}
-            colorPalette="blue"
           >
             {text}
           </Link>

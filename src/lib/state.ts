@@ -314,7 +314,8 @@ export class State {
 
   /**
    * Update selected activities: reschedule them and assign colors. Call after
-   * every update of this.selectedClasses or this.selectedActivities.
+   * every update of this.selectedClasses, this.selectedPEClasses,
+   * or this.selectedCustomActivities.
    */
   updateActivities(save = true): void {
     chooseColors(this.selectedActivities, this.colorScheme);
@@ -420,7 +421,8 @@ export class State {
 
   set showBanner(show: boolean) {
     this.preferences.showBanner = show;
-    this.preferences.showBannerChanged = new Date().valueOf();
+    this.preferences.showBannerChanged =
+      Temporal.Now.instant().epochMilliseconds;
     this.updateState();
   }
 

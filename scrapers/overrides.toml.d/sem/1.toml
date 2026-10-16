@@ -1,0 +1,13 @@
+#:schema ../override-schema.json
+
+["1.S980"]
+name = "Games, Learning, and Security"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+same = "6.S974"
+prereqs = "	Linear algebra and optimization at the level of 18.C06; probability at the level of 6.3700; programming experience in Python. No prior background in game theory or reinforcement learning is needed; we build those up in the course. Graduate students from other departments may enroll with permission of the instructor."
+inCharge = "S. Amin, M. Dahan, A. Ozdaglar, T. Sapsis"
+description = "Studies decision-making in systems whose outcomes depend on the actions of other agents, human and artificial. Covers game-theoretic models of strategic interaction and equilibrium; reinforcement learning and multi-agent learning, including when learning agents converge to an equilibrium, cycle, or collude; design of incentives and mechanisms for steering dynamic trajectories towards outcomes with good welfare properties; attacks on learning systems and game-theoretic approaches to defense; and design for resilience against disruption, rare events, and strategic surprise. Introduces the relevant background in game theory, learning theory, and network science. Student teams build a semester-long computational wargame: they implement a simulation of a multi-agent system such as critical infrastructure, an autonomous system, or an algorithmic market, add strategic and learning agents, test attacks and defenses, and design for resilience."

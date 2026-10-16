@@ -14,7 +14,6 @@ import { useInjectStyles } from "./emotion/emotion-client";
 import { Provider } from "./components/ui/provider";
 import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
 
-import "@fontsource-variable/inter/index.css";
 import {
   destroySession,
   FIREROAD_VERIFY_URL,
@@ -22,7 +21,11 @@ import {
   SessionContext,
 } from "./lib/auth";
 
-// eslint-disable-next-line react-refresh/only-export-components
+import "@fontsource-variable/ibm-plex-sans/index.css";
+import "@fontsource/ibm-plex-mono/index.css";
+
+import "temporal-polyfill/global";
+
 export const links: Route.LinksFunction = () => [
   {
     rel: "icon",
@@ -66,7 +69,7 @@ export const Layout = withEmotionCache((props: LayoutProps, cache) => {
   useInjectStyles(cache);
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -86,7 +89,6 @@ export const Layout = withEmotionCache((props: LayoutProps, cache) => {
   );
 });
 
-// eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader() {
   const session = await getSession(document.cookie);
 

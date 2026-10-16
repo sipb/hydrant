@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { decode } from "html-entities";
 
 import {
@@ -12,17 +11,15 @@ import {
 } from "@chakra-ui/react";
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
+import { LuExternalLink, LuBadgePlus, LuStar } from "react-icons/lu";
+import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
 
 import { CustomActivity } from "../lib/activity";
 import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
 import { linkClasses } from "../lib/utils";
-import { HydrantContext } from "../lib/hydrant";
-
-import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
-import { LuExternalLink, LuStar } from "react-icons/lu";
-import { type PEFlags } from "../lib/pe";
-import { PEClass, getPEFlagEmoji } from "../lib/pe";
+import { useHydrantContext } from "../lib/hydrant";
+import { PEClass, getPEFlagIcon, type PEFlags } from "../lib/pe";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {
@@ -51,7 +48,7 @@ function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
 
   return (
     <Tooltip content={title}>
-      <Span>{getPEFlagEmoji(flag)}</Span>
+      <Span>{getPEFlagIcon(flag)}</Span>
     </Tooltip>
   );
 }
@@ -59,7 +56,7 @@ function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
 /** Header for class description; contains flags and units. */
 function ClassTypes(props: { cls: Class }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { flags, totalUnits, units } = cls;
 
   /**
@@ -181,7 +178,7 @@ function PEClassTypes(props: { cls: PEClass }) {
 /** List of related classes, appears after flags and before description. */
 function ClassRelated(props: { cls: Class }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { prereq, same, meets } = cls.related;
 
   return (
@@ -198,19 +195,19 @@ function ClassRelated(props: { cls: Class }) {
   );
 }
 
+const CIM_URL =
+  "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject";
+
 /** List of programs for which this class is a CI-M. */
 function ClassCIM(props: { cls: Class }) {
   const { cls } = props;
   const { cim } = cls;
 
-  const url =
-    "https://registrar.mit.edu/registration-academics/academic-requirements/communication-requirement/ci-m-subjects/subject";
-
   if (cim.length > 0) {
     return (
       <Text>
         CI-M for: {cim.join("; ")} (
-        <Link href={url} target="_blank" colorPalette="blue">
+        <Link href={CIM_URL} target="_blank">
           more info
         </Link>
         )
@@ -228,17 +225,51 @@ function ClassEval(props: { cls: Class }) {
 
   return (
     <Flex gap={4}>
-      <Text>Rating: {rating}</Text>
-      <Text>Hours: {hours}</Text>
-      <Text>Avg # of students: {people}</Text>
+      <Text>
+        Rating: <Span textStyle="data">{rating}</Span>
+      </Text>
+      <Text>
+        Hours: <Span textStyle="data">{hours}</Span>
+      </Text>
+      <Text>
+        Avg # of students: <Span textStyle="data">{people}</Span>
+      </Text>
     </Flex>
+  );
+}
+
+function quarterInfoTranslate(month: number, day: number): string {
+  const monthDay = Temporal.PlainMonthDay.from({ month, day });
+  return monthDay.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    calendar: "iso8601",
+  });
+}
+
+function ClassQuarterInfo(props: { cls: Class }) {
+  const { cls } = props;
+
+  const quarterInfo = cls.rawClass.quarterInfo;
+
+  if (!quarterInfo) {
+    return null;
+  }
+
+  const { start, end } = quarterInfo;
+
+  return (
+    <Text>
+      {start ? `Begins ${quarterInfoTranslate(...start)}. ` : ""}
+      {end ? `Ends ${quarterInfoTranslate(...end)}. ` : ""}
+    </Text>
   );
 }
 
 /** Class description, person in-charge, and any URLs afterward. */
 function ClassBody(props: { cls: Class }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { description, inCharge, extraUrls } = cls.description;
 
   return (
@@ -254,7 +285,6 @@ function ClassBody(props: { cls: Class }) {
               key={label}
               href={url}
               target="_blank"
-              colorPalette="blue"
               display="inline-block"
               flexGrow={1}
             >
@@ -270,14 +300,25 @@ function ClassBody(props: { cls: Class }) {
 /** Full class description, from title to URLs at the end. */
 function ClassDescription(props: { cls: Class }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const isStarred = state.isClassStarred(cls);
 
   return (
     <Flex direction="column" gap={4}>
       <Flex align="center" gap={2}>
         <Heading size="md" flex="1">
-          {cls.number}: {cls.name}
+          <Flex align="center" gap={1} h="100%">
+            <Span>
+              <Span textStyle="data">{cls.number}</Span>: {cls.name}
+            </Span>
+            {cls.new && (
+              <Tooltip content="New class!">
+                <Span display="inline-flex" color="hydrant.solid">
+                  <LuBadgePlus />
+                </Span>
+              </Tooltip>
+            )}
+          </Flex>
         </Heading>
         <Button
           variant="ghost"
@@ -295,6 +336,7 @@ function ClassDescription(props: { cls: Class }) {
         <ClassRelated cls={cls} />
         <ClassCIM cls={cls} />
         <ClassEval cls={cls} />
+        <ClassQuarterInfo cls={cls} />
       </Flex>
       <ClassButtons cls={cls} />
       <ClassBody cls={cls} />
@@ -305,7 +347,7 @@ function ClassDescription(props: { cls: Class }) {
 /** Full custom activity description, from title to timeslots. */
 function CustomActivityDescription(props: { activity: CustomActivity }) {
   const { activity } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   return (
     <Flex direction="column" gap={4}>
@@ -329,20 +371,19 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
   );
 }
 
+const fmt = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+});
+
 /** Full PE&W class description, from title to URLs at the end. */
 function PEClassDescription(props: { cls: PEClass }) {
   const { cls } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const isStarred = state.isPEClassStarred(cls);
   const { fee, startDate, endDate } = cls;
   const { number, name, prereqs, equipment, quarter } = cls.rawClass;
   const { description } = cls.description;
-
-  const fmt = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: "UTC",
-  });
 
   const start = fmt.format(startDate);
   const end = fmt.format(endDate);
@@ -370,7 +411,7 @@ function PEClassDescription(props: { cls: PEClass }) {
     <Flex direction="column" gap={4}>
       <Flex align="center" gap={2}>
         <Heading size="md" flex="1">
-          {number}: {name} (Quarter {quarter})
+          <Span textStyle="data">{number}</Span>: {name} (Quarter {quarter})
         </Heading>
         <Button
           variant="ghost"
@@ -419,7 +460,6 @@ function PEClassDescription(props: { cls: PEClass }) {
             key={label}
             href={url}
             target="_blank"
-            colorPalette="blue"
             display="inline-block"
             flexGrow={1}
           >
@@ -433,8 +473,9 @@ function PEClassDescription(props: { cls: PEClass }) {
 
 /** Activity description, whether class, PE class, or custom activity. */
 export function ActivityDescription() {
-  const { hydrantState } = useContext(HydrantContext);
+  const { hydrantState } = useHydrantContext();
   const { viewedActivity: activity } = hydrantState;
+
   if (!activity) {
     return null;
   }

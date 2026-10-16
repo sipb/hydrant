@@ -1,6 +1,13 @@
 import { useContext, useMemo } from "react";
 
-import { Center, Flex, Group, ButtonGroup } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Group,
+  ButtonGroup,
+  SkipNavContent,
+  SkipNavLink,
+} from "@chakra-ui/react";
 import { ActivityDescription } from "../components/ActivityDescription";
 import { Calendar } from "../components/Calendar";
 import { LeftFooter } from "../components/Footers";
@@ -27,7 +34,6 @@ import { SessionContext } from "../lib/auth";
 
 import type { Route } from "./+types/_index";
 
-// eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const searchParams = url.searchParams;
   const urlNameOrig = searchParams.get("t");
@@ -85,44 +91,56 @@ clientLoader.hydrate = true as const;
 function HydrantApp() {
   return (
     <>
+      <SkipNavLink>Skip to content</SkipNavLink>
       <Banner />
       <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
-        <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
+        <Flex
+          direction="column"
+          w={{ base: "100%", lg: "50%" }}
+          gap={6}
+          as="aside"
+        >
           <Header />
           <ScheduleOption />
           <Calendar />
           <LeftFooter />
         </Flex>
-        <Flex direction="column" w={{ base: "100%", lg: "50%" }} gap={6}>
-          <Center>
-            <Group wrap="wrap" justifyContent="center" gap={4}>
-              <TermSwitcher />
-              <Group>
-                <ScheduleSwitcher />
+        <SkipNavContent asChild>
+          <Flex
+            direction="column"
+            w={{ base: "100%", lg: "50%" }}
+            gap={6}
+            as="main"
+          >
+            <Center>
+              <Group wrap="wrap" justifyContent="center" gap={4}>
+                <TermSwitcher />
+                <Group>
+                  <ScheduleSwitcher />
+                </Group>
+                <Group>
+                  <PreferencesDialog />
+                  <AuthButton />
+                </Group>
               </Group>
-              <Group>
-                <PreferencesDialog />
-                <AuthButton />
-              </Group>
-            </Group>
-          </Center>
-          <Center>
-            <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
-              <ExportCalendar />
-              <PreregLink />
-              <MatrixLink />
-            </ButtonGroup>
-          </Center>
-          <SelectedActivities />
-          <ClassTypesSwitcher />
-          <ActivityDescription />
-        </Flex>
+            </Center>
+            <Center>
+              <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
+                <ExportCalendar />
+                <PreregLink />
+                <MatrixLink />
+              </ButtonGroup>
+            </Center>
+            <SelectedActivities />
+            <ClassTypesSwitcher />
+            <ActivityDescription />
+          </Flex>
+        </SkipNavContent>
       </Flex>
     </>
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant" },
   {

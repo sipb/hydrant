@@ -1,9 +1,9 @@
 import {
-  useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
+  useId,
   type Dispatch,
   type ReactNode,
   type SetStateAction,
@@ -26,6 +26,7 @@ import {
 
 import {
   Box,
+  Span,
   Flex,
   Image,
   Input,
@@ -34,30 +35,33 @@ import {
   InputGroup,
   CloseButton,
 } from "@chakra-ui/react";
-import { LuPlus, LuMinus, LuSearch, LuStar } from "react-icons/lu";
+import { LuPlus, LuMinus, LuSearch, LuBadgePlus, LuStar } from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
+import { Tooltip } from "./ui/tooltip";
 
 import type { Class, Flags } from "../lib/class";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import type { TSemester } from "../lib/dates";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 import type { State } from "../lib/state";
 import { ColorStyles } from "../lib/colors";
 
 import styles from "./ClassTable.module.css";
 
-const hydrantTheme = themeQuartz.withParams({
-  accentColor: "var(--chakra-colors-fg)",
-  backgroundColor: "var(--chakra-colors-bg)",
+// eslint-disable-next-line react-refresh/only-export-components
+export const HYDRANT_THEME = themeQuartz.withParams({
+  accentColor: "var(--chakra-colors-hydrant-solid)",
+  backgroundColor: "var(--chakra-colors-bg-panel)",
   borderColor: "var(--chakra-colors-border)",
   browserColorScheme: "inherit",
   fontFamily: "inherit",
   foregroundColor: "var(--chakra-colors-fg)",
   headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
+  headerTextColor: "var(--chakra-colors-fg-muted)",
   rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-md)",
+  wrapperBorderRadius: "var(--chakra-radii-l2)",
 });
 
 const GRID_MODULES: Module[] = [
@@ -70,6 +74,15 @@ const GRID_MODULES: Module[] = [
 ];
 
 ModuleRegistry.registerModules(GRID_MODULES);
+
+export const INITIAL_SORT = "asc" as const;
+const SORTING_ORDER: ("asc" | "desc")[] = ["asc", "desc"];
+// eslint-disable-next-line react-refresh/only-export-components
+export const sortProps = {
+  sortable: true,
+  unSortIcon: true,
+  sortingOrder: SORTING_ORDER,
+};
 
 const getRatingColor = (rating?: string | null) => {
   if (!rating || rating === "N/A") return ColorStyles.Muted;
@@ -130,6 +143,59 @@ type ClassFilter = (cls?: Class) => boolean;
 /** Type of filter on class list; null if no filter. */
 type SetClassFilter = Dispatch<SetStateAction<ClassFilter | null>>;
 
+/** the search box for class table */
+export function ClassSearchInput(props: {
+  value: string;
+  onChange: (value: string) => void;
+  onSubmit: () => void;
+  placeholder: string;
+}) {
+  const { value, onChange, onSubmit, placeholder } = props;
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const id = useId();
+
+  const clearButton = value ? (
+    <CloseButton
+      size="xs"
+      onClick={() => {
+        onChange("");
+        inputRef.current?.focus();
+      }}
+      me="-2"
+    />
+  ) : undefined;
+
+  return (
+    <Flex justify="center">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+        style={{ width: "100%", maxWidth: "30em" }}
+      >
+        <InputGroup
+          startElement={<LuSearch />}
+          endElement={clearButton}
+          width="fill-available"
+        >
+          <Input
+            type="search"
+            aria-label="Search for a class"
+            id={id}
+            placeholder={placeholder}
+            value={value}
+            ref={inputRef}
+            onChange={(e) => {
+              onChange(e.target.value);
+            }}
+          />
+        </InputGroup>
+      </form>
+    </Flex>
+  );
+}
+
 /**
  * Textbox for typing in the name or number of the class to search. Maintains
  * the {@link ClassFilter} that searches for a class name/number.
@@ -141,11 +207,10 @@ function ClassInput(props: {
   setInputFilter: SetClassFilter;
 }) {
   const { rowData, setInputFilter } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   // State for textbox input.
   const [classInput, setClassInput] = useState("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Search results for classes.
   const searchResults = useRef<
@@ -206,45 +271,13 @@ function ClassInput(props: {
     }
   };
 
-  const clearButton = classInput ? (
-    <CloseButton
-      size="xs"
-      onClick={() => {
-        onClassInputChange("");
-        inputRef.current?.focus();
-      }}
-      me="-2"
-    />
-  ) : undefined;
-
   return (
-    <Flex justify="center">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onEnter();
-        }}
-        style={{ width: "100%", maxWidth: "30em" }}
-      >
-        <InputGroup
-          startElement={<LuSearch />}
-          endElement={clearButton}
-          width="fill-available"
-        >
-          <Input
-            type="search"
-            aria-label="Search for a class"
-            id="class-search"
-            placeholder="Class number, name, or instructor"
-            value={classInput}
-            ref={inputRef}
-            onChange={(e) => {
-              onClassInputChange(e.target.value);
-            }}
-          />
-        </InputGroup>
-      </form>
-    </Flex>
+    <ClassSearchInput
+      value={classInput}
+      onChange={onClassInputChange}
+      onSubmit={onEnter}
+      placeholder="Class number, name, or instructor"
+    />
   );
 }
 
@@ -264,7 +297,16 @@ const CLASS_FLAGS_1: FilterGroup = [
   ["cih", "CI-H"],
   ["cim", "CI-M"],
   ["fits", "Fits schedule"],
-  ["new", "✨ New!"],
+  [
+    "new",
+    "",
+    <Flex align="center" gap={1} h="100%">
+      <Span display="inline-flex">
+        <LuBadgePlus />
+      </Span>
+      <Span as="span">New!</Span>
+    </Flex>,
+  ],
 ];
 
 /** List of hidden filter IDs, their displayed names, and image path, if any. */
@@ -308,14 +350,15 @@ function ClassFlags(props: {
   updateFilter: () => void;
 }) {
   const { setFlagsFilter, updateFilter } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
 
   // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
-    const result = new Map();
+  const [flags, setFlags] = useState(() => {
+    const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
-      result.set(flag, false);
+      result.set(flag[0], false);
     }
+
     return result;
   });
 
@@ -368,7 +411,7 @@ function ClassFlags(props: {
 
   const renderGroup = (group: FilterGroup) => {
     return (
-      <ButtonGroup attached colorPalette="orange" wrap="wrap">
+      <ButtonGroup attached wrap="wrap">
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
@@ -400,16 +443,16 @@ function ClassFlags(props: {
               </LabelledButton>
             ) : (
               // image is a react element, like an icon
-              <Button
+              <LabelledButton
                 key={flag}
                 onClick={() => {
                   onChange(flag, !checked);
                 }}
-                aria-label={label}
+                title={label}
                 variant={checked ? "solid" : "outline"}
               >
                 {image}
-              </Button>
+              </LabelledButton>
             )
           ) : (
             <Button
@@ -460,7 +503,7 @@ const StarButton = ({
   cls: Class;
   onStarToggle?: () => void;
 }) => {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const isStarred = state.isClassStarred(cls);
 
   return (
@@ -470,7 +513,7 @@ const StarButton = ({
         state.toggleStarClass(cls);
         onStarToggle?.();
       }}
-      variant="plain"
+      variant="ghost"
       size="sm"
       aria-label={isStarred ? "Unstar class" : "Star class"}
     >
@@ -481,16 +524,13 @@ const StarButton = ({
 
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable() {
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const { classes } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
 
   // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
-    const initialSort = "asc" as const;
-    const sortingOrder: ("asc" | "desc")[] = ["asc", "desc"];
-    const sortProps = { sortable: true, unSortIcon: true, sortingOrder };
     const numberSortProps = {
       // sort by number, N/A is infinity, tiebreak with class number
       comparator: (
@@ -532,35 +572,47 @@ export function ClassTable() {
         field: "number",
         headerName: "Class",
         comparator: classSort,
-        initialSort,
+        initialSort: INITIAL_SORT,
         maxWidth: 93,
-        cellClass: styles["underline-on-hover"],
+        cellClass: [styles["underline-on-hover"], styles.data],
         ...sortProps,
       },
       {
         field: "rating",
         maxWidth: 99,
-        cellClass: (params) => getRatingColor(params.value),
+        cellClass: (params) => [getRatingColor(params.value), styles.data],
         ...numberSortProps,
       },
       {
         field: "hours",
         maxWidth: 97,
-        cellClass: (params) =>
+        cellClass: (params) => [
           getHoursColor(
             params.value,
             params.data?.class.totalUnits,
             state.term.semester,
             params.data?.class.half,
           ),
+          styles.data,
+        ],
         ...numberSortProps,
       },
       {
         field: "name",
         sortable: false,
         flex: 1,
-        valueFormatter: (params) =>
-          (params.data?.class.new ? "✨ " : "") + (params.value ?? ""),
+        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
+          <Flex align="center" gap={1} h="100%">
+            {params.data.class.new && (
+              <Tooltip content="New class!">
+                <Span display="inline-flex" color="hydrant.solid">
+                  <LuBadgePlus />
+                </Span>
+              </Tooltip>
+            )}
+            <Span>{params.value}</Span>
+          </Flex>
+        ),
       },
     ];
   }, [state]);
@@ -612,7 +664,7 @@ export function ClassTable() {
       />
       <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
         <AgGridReact<ClassTableRow>
-          theme={hydrantTheme}
+          theme={HYDRANT_THEME}
           ref={gridRef}
           rowClass={styles.row}
           defaultColDef={defaultColDef}

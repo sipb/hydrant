@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from "react";
 
 import Form from "@rjsf/chakra-ui";
-import type { RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import type { JSONSchema7Definition } from "json-schema";
-import TOML from "smol-toml";
+import { parse, stringify } from "smol-toml";
 
 import { Link as RouterLink } from "react-router";
 import type { Route } from "./+types/overrides.($prefillId)";
@@ -22,6 +22,10 @@ import {
   Code,
   Select,
   Portal,
+  Heading,
+  Box,
+  SkipNavContent,
+  SkipNavLink,
 } from "@chakra-ui/react";
 
 const schema: RJSFSchema = {
@@ -68,7 +72,7 @@ const overrideNames = Object.entries(overrides)
 const getDataFromFile = async (fileName: string) => {
   try {
     const textToml = await overrides[fileName].data();
-    const mod = TOML.parse(textToml);
+    const mod = parse(textToml);
 
     const newData = Object.entries(mod).map(([key, value_1]) => {
       const { number: num, ...rest } = value_1 as Record<string, unknown>;
@@ -84,7 +88,33 @@ const getDataFromFile = async (fileName: string) => {
   }
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
+/** ensures class numbers are unique, since we change override from object to array */
+const validateUniqueNumbers: CustomValidator<Record<string, unknown>[]> = (
+  formData,
+  errors,
+) => {
+  const indicesByNumber = new Map<string, number[]>();
+  (formData ?? []).forEach((override, index) => {
+    const number = override.number;
+    if (typeof number !== "string" || number === "") return;
+    const indices = indicesByNumber.get(number) ?? [];
+    indices.push(index);
+    indicesByNumber.set(number, indices);
+  });
+
+  for (const [number, indices] of indicesByNumber) {
+    if (indices.length > 1) {
+      for (const index of indices) {
+        errors[index]?.number?.addError(
+          `Class number "${number}" is used more than once; class numbers must be unique.`,
+        );
+      }
+    }
+  }
+
+  return errors;
+};
+
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   let prefillData: Record<string, unknown>[] = [];
   const prefillIdPrelim = params.prefillId?.toUpperCase();
@@ -253,6 +283,9 @@ export default function App({ loaderData }: Route.ComponentProps) {
                     ...value,
                     "ui:title": value.title,
                     "ui:description": value.description,
+                    ...("type" in value && value.type === "boolean"
+                      ? { "ui:widget": "checkbox" }
+                      : {}),
                   },
                 ];
               } else {
@@ -274,7 +307,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
     async (fileName: string) => {
       try {
         const textToml = await overrides[fileName].data();
-        const mod = TOML.parse(textToml);
+        const mod = parse(textToml);
 
         const newData = Object.entries(mod).map(([key, value_1]) => {
           const { number: num, ...rest } = value_1 as Record<string, unknown>;
@@ -315,7 +348,8 @@ export default function App({ loaderData }: Route.ComponentProps) {
 
   return (
     <Container maxWidth="4xl" paddingX={4} paddingY={8}>
-      <Stack gap={4} paddingY={4}>
+      <SkipNavLink>Skip to content</SkipNavLink>
+      <Box as="header" paddingY={4}>
         <RouterLink
           to="/"
           style={{
@@ -325,115 +359,120 @@ export default function App({ loaderData }: Route.ComponentProps) {
         >
           <Image src={logo} alt="Hydrant logo" height="40px" />
         </RouterLink>
-        <Text textStyle="3xl">Submit Overrides</Text>
-        <Text>
-          This page is for department academic administrators to submit requests
-          for Hydrant to override the details of a class from the official
-          subject listing and catalog. For example, this can be used so that a
-          special subject shows up under its title for the current semester
-          rather than under a generic name.
-        </Text>
-        <Text>
-          You don't need to populate all of the available
-          fields&nbsp;&mdash;&nbsp;only the ones that differ from the course
-          catalog. Once you send us your overrides, we'll upload them and
-          they'll appear under the dropdown below. Thank you for your time, and
-          feel free to reach out to{" "}
-          <Link colorPalette="blue" asChild>
-            <RouterLink to="mailto:sipb-hydrant@mit.edu">
-              sipb-hydrant@mit.edu
-            </RouterLink>
-          </Link>{" "}
-          with any questions or concerns!
-        </Text>
-        <Select.Root
-          collection={overridesCollection}
-          value={selected}
-          onValueChange={handleChange}
-        >
-          <Select.HiddenSelect />
-          <Select.Label>Pre-fill data</Select.Label>
-          <Select.Control>
-            <Select.Trigger>
-              <Select.ValueText />
-            </Select.Trigger>
-            <Select.IndicatorGroup>
-              <Select.ClearTrigger />
-              <Select.Indicator />
-            </Select.IndicatorGroup>
-          </Select.Control>
-          <Portal>
-            <Select.Positioner>
-              <Select.Content>
-                {overridesCollection.items.map((override) => (
-                  <Select.Item item={override} key={override.value}>
-                    {override.label}
-                    <Select.ItemIndicator />
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Positioner>
-          </Portal>
-        </Select.Root>
-        <Form
-          schema={schema}
-          uiSchema={uischema}
-          validator={validator}
-          formData={data}
-          showErrorList={"top"}
-          liveValidate={"onChange"}
-          experimental_defaultFormStateBehavior={{
-            arrayMinItems: { populate: "never" },
-            allOf: "skipDefaults",
-            constAsDefaults: "always",
-            emptyObjectFields: "populateRequiredDefaults",
-            mergeDefaultsIntoFormData: "useFormDataIfPresent",
-          }}
-          liveOmit={"onChange"}
-          omitExtraData={true}
-          onChange={({ formData, errors }) => {
-            setData(formData as Record<string, unknown>[]);
-            setError(errors.length > 0 ? true : false);
-          }}
-          onSubmit={() => {
-            const contents =
-              "#:schema ../override-schema.json\n\n" +
-              TOML.stringify(
-                Object.fromEntries(
-                  data.map((override) => {
-                    const { number: num, ...rest } = override;
-                    return [num, rest];
-                  }),
-                ),
+      </Box>
+      <SkipNavContent asChild>
+        <Stack gap={4} as="main">
+          <Heading textStyle="3xl">Submit Overrides</Heading>
+          <Text>
+            This page is for department academic administrators to submit
+            requests for Hydrant to override the details of a class from the
+            official subject listing and catalog. For example, this can be used
+            so that a special subject shows up under its title for the current
+            semester rather than under a generic name.
+          </Text>
+          <Text>
+            You don't need to populate all of the available
+            fields&nbsp;&mdash;&nbsp;only the ones that differ from the course
+            catalog. Once you send us your overrides, we'll upload them and
+            they'll appear under the dropdown below. Thank you for your time,
+            and feel free to reach out to{" "}
+            <Link asChild>
+              <RouterLink to="mailto:sipb-hydrant@mit.edu">
+                sipb-hydrant@mit.edu
+              </RouterLink>
+            </Link>{" "}
+            with any questions or concerns!
+          </Text>
+          <Select.Root
+            collection={overridesCollection}
+            value={selected}
+            onValueChange={handleChange}
+          >
+            <Select.HiddenSelect />
+            <Select.Label>Pre-fill data</Select.Label>
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText />
+              </Select.Trigger>
+              <Select.IndicatorGroup>
+                <Select.ClearTrigger />
+                <Select.Indicator />
+              </Select.IndicatorGroup>
+            </Select.Control>
+            <Portal>
+              <Select.Positioner>
+                <Select.Content>
+                  {overridesCollection.items.map((override) => (
+                    <Select.Item item={override} key={override.value}>
+                      {override.label}
+                      <Select.ItemIndicator />
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Portal>
+          </Select.Root>
+          <Form
+            schema={schema}
+            uiSchema={uischema}
+            validator={validator}
+            customValidate={validateUniqueNumbers}
+            formData={data}
+            showErrorList={"top"}
+            liveValidate={"onChange"}
+            experimental_defaultFormStateBehavior={{
+              arrayMinItems: { populate: "never" },
+              allOf: "skipDefaults",
+              constAsDefaults: "always",
+              emptyObjectFields: "populateRequiredDefaults",
+              mergeDefaultsIntoFormData: "useFormDataIfPresent",
+            }}
+            liveOmit={"onChange"}
+            omitExtraData={true}
+            onChange={({ formData, errors }) => {
+              setData(formData as Record<string, unknown>[]);
+              setError(errors.length > 0 ? true : false);
+            }}
+            onSubmit={() => {
+              const contents =
+                "#:schema ../override-schema.json\n\n" +
+                stringify(
+                  Object.fromEntries(
+                    data.map((override) => {
+                      const { number: num, ...rest } = override;
+                      return [num, rest];
+                    }),
+                  ),
+                );
+
+              const element = document.createElement("a");
+              element.href = URL.createObjectURL(
+                new Blob([contents], { type: "application/octet-stream" }),
               );
+              element.download = "overrides.toml";
 
-            const element = document.createElement("a");
-            element.href = URL.createObjectURL(
-              new Blob([contents], { type: "application/octet-stream" }),
-            );
-            element.download = "overrides.toml";
-
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-          }}
-        />
-        <Text textStyle="sm">
-          Clicking "Download" will download a file <Code>overrides.toml</Code>{" "}
-          to your computer; please attach this file to an email addressed to{" "}
-          <Link colorPalette="blue" asChild>
-            <RouterLink to="mailto:sipb-hydrant@mit.edu">
-              sipb-hydrant@mit.edu
-            </RouterLink>
-          </Link>{" "}
-          in order to send your requested subject overrides to the Hydrant team.
-        </Text>
-      </Stack>
+              document.body.appendChild(element);
+              element.click();
+              document.body.removeChild(element);
+            }}
+          />
+          <Text textStyle="sm">
+            Clicking "Download" will download a file <Code>overrides.toml</Code>{" "}
+            to your computer; please attach this file to an email addressed to{" "}
+            <Link asChild>
+              <RouterLink to="mailto:sipb-hydrant@mit.edu">
+                sipb-hydrant@mit.edu
+              </RouterLink>
+            </Link>{" "}
+            in order to send your requested subject overrides to the Hydrant
+            team.
+          </Text>
+        </Stack>
+      </SkipNavContent>
     </Container>
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const meta: Route.MetaFunction = () => [
   { title: "Hydrant - Overrides Form" },
   {

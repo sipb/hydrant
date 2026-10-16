@@ -13,6 +13,7 @@
         "type": "string",
         "title": "Number",
         "description": "Class number",
+        "minLength": 1,
         "examples": ["6.3900"]
       },
       "oldNumber": {
@@ -25,12 +26,14 @@
         "type": "string",
         "title": "Course",
         "description": "Course number",
+        "minLength": 1,
         "examples": ["6"]
       },
       "subject": {
         "type": "string",
         "title": "Subject",
         "description": "Subject number without course",
+        "minLength": 1,
         "examples": ["3900"]
       },
       "tba": {
@@ -235,19 +238,19 @@
         }
       },
       "lectureUnits": {
-        "type": "integer",
+        "type": "number",
         "title": "Lecture units",
         "description": "Lecture or recitation units",
         "minimum": 0
       },
       "labUnits": {
-        "type": "integer",
+        "type": "number",
         "title": "Lab units",
         "description": "Lab or field work units",
         "minimum": 0
       },
       "preparationUnits": {
-        "type": "integer",
+        "type": "number",
         "title": "Preparation units",
         "description": "Outside class units",
         "minimum": 0
@@ -276,17 +279,21 @@
         "type": "string",
         "title": "Same as",
         "description": "Comma-separated list of classes with same number",
+        "minLength": 1,
         "examples": ["21A.103, WGS.225"]
       },
       "meets": {
         "type": "string",
         "title": "Meets with",
-        "description": "Comma-separated list of classes it meets with"
+        "description": "Comma-separated list of classes it meets with",
+        "minLength": 1,
+        "examples": ["5.111, 5.112"]
       },
       "terms": {
         "type": "array",
         "title": "Terms",
         "description": "Terms class is offered",
+        "uniqueItems": true,
         "items": {
           "type": "string",
           "oneOf": [
@@ -312,23 +319,28 @@
       "prereqs": {
         "type": "string",
         "title": "Prerequisites",
-        "description": "Prereqs, no specific format (but usually contains class numbers)"
+        "description": "Prereqs, no specific format (but usually contains class numbers)",
+        "minLength": 1,
+        "examples": ["6.100A, 6.1200"]
       },
       "description": {
         "type": "string",
         "title": "Description",
-        "description": "Description (~paragraph that appears in catalog)"
+        "description": "Description (~paragraph that appears in catalog)",
+        "minLength": 1
       },
       "name": {
         "type": "string",
         "title": "Name",
         "description": "Name of class",
+        "minLength": 1,
         "examples": ["Algebra I"]
       },
       "inCharge": {
         "type": "string",
         "title": "Instructors",
         "description": "(Person) in-charge",
+        "minLength": 1,
         "examples": ["Alyssa Hacker"]
       },
       "virtualStatus": {
@@ -350,7 +362,9 @@
         "type": "string",
         "title": "URL",
         "format": "uri",
-        "description": "Class website"
+        "description": "Class website",
+        "minLength": 1,
+        "examples": ["https://baseball.mit.edu"]
       },
       "final": {
         "type": "boolean",
@@ -547,6 +561,66 @@
             "hours",
             "size"
           ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "sectionKinds": {
+              "contains": {
+                "const": "lecture"
+              }
+            }
+          },
+          "required": ["sectionKinds"]
+        },
+        "then": {
+          "required": ["lectureSections", "lectureRawSections"]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "sectionKinds": {
+              "contains": {
+                "const": "recitation"
+              }
+            }
+          },
+          "required": ["sectionKinds"]
+        },
+        "then": {
+          "required": ["recitationSections", "recitationRawSections"]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "sectionKinds": {
+              "contains": {
+                "const": "lab"
+              }
+            }
+          },
+          "required": ["sectionKinds"]
+        },
+        "then": {
+          "required": ["labSections", "labRawSections"]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "sectionKinds": {
+              "contains": {
+                "const": "design"
+              }
+            }
+          },
+          "required": ["sectionKinds"]
+        },
+        "then": {
+          "required": ["designSections", "designRawSections"]
         }
       }
     ]

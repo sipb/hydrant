@@ -1,0 +1,10 @@
+#:schema ../override-schema.json
+
+['5.S52']
+name = "Tutorial in Chemical Biology (6-units)"
+half = 1
+description = "This is a 6-unit version of 5.52 Tutorial in Chemical Biology which provides an overview of the core principles of chemistry that underlie biological systems. Students explore research topics and methods in chemical biology by participating in laboratory rotations, then present on experiments performed during each rotation. Intended for first-year graduate students with a strong interest in chemical biology."
+lectureUnits = 1
+labUnits = 1
+preparationUnits = 4
+isVariableUnits = false

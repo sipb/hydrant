@@ -1,0 +1,59 @@
+#:schema ./override-schema.json
+
+["15.S03"]
+description = "'AI & Money' examines the evolving impact of artificial intelligence on finance, money, and risk. The goal is to help students gain critical reasoning skills on how to seize commercial opportunities - and maintain relevance - at the intersection of these two dynamically changing fields. One - AI - a set of rapidly changing tools. The other - finance - a dynamic network for the pricing and allocation of money and risk.\n\nStudents will explore how machine learning, generative AI, and advanced analytics are redefining asset management, trading, underwriting, finance functions, customer interactions, and compliance. The course also will touch on real-world commercial implications related to AI supply chain decisions, AI tech stacks, cyber risk, data centers, and regulatory frameworks.\n\nWe also explore how these developments in AI and finance could potentially affect economics, markets, and monetary policy around the world."
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+isVariableUnits = false
+level = "G"
+name = "AI & Money"
+inCharge = "G. Gensler"
+
+["15.S07"]
+level = "G"
+description = "The course will have two objectives.\nFirst, to present the investment philosophy, valuation approach, and diligence process associated with long-term, fundamental investing in a practical how to manner. Effectively, the course will address the investment analysis framework required to evaluate an investment that will be held for 5-10 years. This framework will resemble the approaches used in growth equity investing, private equity investing, and long-term public equity investing.\nSecond, to provide the nuances of those specific strategies and to allow for thoughtful dialogue with guest speakers who are investment practitioners themselves. Representative speakers from venture capital, private equity, public equity, search funds, and/or corporate M&A will attend. The course will be taught in an applied manner with the goal of students gaining a practical appreciation for investment analysis. As such, the class format will be interactive and class participation will be required."
+name = "Private Equity and Hedge Fund Long-Term Investing"
+inCharge = "T. Keith"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+
+["15.S08"]
+level = "G"
+description = "This course introduces students to Natural Language Processing (NLP), machine learning, and Large Language Models (LLMs) with a focus on applications in finance. The course begins with foundational ML and text representation techniques, progresses through deep learning and the transformer architecture, and culminates with modern topics including prompt engineering, fine-tuning, retrieval-augmented generation (RAG) with multimodal retrieval, domain NLP for finance, and agentic AI."
+name = "Natural Language Processing and Large Language Models in Finance"
+inCharge = "M. Chen, A. Zachary"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+isVariableUnits = false
+
+["15.S09"]
+level = "G"
+name = "Optimization of Energy Systems"
+inCharge = "A. Sun"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+isVariableUnits = false
+
+["15.S17"]
+level = "G"
+name = "Defense and Dual-use Ventures (DDuV) Lab"
+inCharge = "P. Budden, G. Kesselman, F. Murray"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+isVariableUnits = false
+
+["15.S51"]
+level = "G"
+description = "Real Life Lessons in the context of M&A, Restructuring, Public Offering, Private Investment and Other Transactions. Examines common complex deals a business leader will encounter, including VC and PE financings, M&A, restructurings and bankruptcy, public offerings, hostile transactions, cross-border deals and transactions in a crisis. Focus is on how business leaders make decisions under pressure. Students will evaluate real-world transactions, board-level dilemmas, term sheets and deal documents, legal compliance, and negotiation scenarios and failures. The instructor has 30+ years of hands-on transactional practice in leading private law firms. No prerequisites required or recommended.  Undergrads welcome."
+name = "Transactions, Strategic Dealmaking, and the Law"
+inCharge = "H. Stone"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false

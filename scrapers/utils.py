@@ -267,7 +267,7 @@ def read_csv(path: str, types_dict: type, encoding: str = "utf-8") -> list:
     assert hasattr(types_dict, "__annotations__"), "types_dict must be a TypedDict type"
 
     data = []
-    types = getattr(types_dict, "__annotations__")
+    types = types_dict.__annotations__
     cols = types.keys()
 
     path_is_url = is_url(path)

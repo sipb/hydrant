@@ -1,37 +1,61 @@
-import { Flex, Text, Button, ButtonGroup } from "@chakra-ui/react";
-import { useContext, type ComponentPropsWithoutRef } from "react";
+import {
+  Flex,
+  Text,
+  Button,
+  ButtonGroup,
+  type ButtonProps,
+} from "@chakra-ui/react";
+import { LuPlus } from "react-icons/lu";
 
 import type { Activity } from "../lib/activity";
 import { textColor } from "../lib/colors";
 import { Class } from "../lib/class";
-import { HydrantContext } from "../lib/hydrant";
+import { useHydrantContext } from "../lib/hydrant";
 
-import { LuPlus } from "react-icons/lu";
+export function ColorButton(props: ButtonProps & { color: string }) {
+  const { children, color, ...otherProps } = props;
+  const contractColor = textColor(color);
 
-export function ColorButton(
-  props: ComponentPropsWithoutRef<"button"> & { color: string },
-) {
-  const { children, color, style, ...otherProps } = props;
   return (
     <Button
-      {...otherProps}
+      variant="plain"
       backgroundColor={color}
-      borderColor={color}
-      color={textColor(color)}
-      style={{
-        ...style,
+      _hover={{
+        backgroundColor: `color-mix(in oklab, ${color} 92%, ${contractColor})`,
       }}
+      _active={{
+        backgroundColor: `color-mix(in oklab, ${color} 85%, ${contractColor}) !important`,
+      }}
+      borderColor={color}
+      color={contractColor}
+      {...otherProps}
     >
       {children}
     </Button>
   );
 }
 
+/** big value and smaller label. */
+function ScheduleStat(props: { value: string; label: string }) {
+  const { value, label } = props;
+  return (
+    <Flex align="baseline" gap={1.5}>
+      <Text textStyle="data" fontSize="lg" fontWeight="semibold">
+        {value}
+      </Text>
+      <Text fontSize="sm" color="fg.muted">
+        {label}
+      </Text>
+    </Flex>
+  );
+}
+
 /** A button representing a single, selected activity. */
 function ActivityButton(props: { activity: Activity }) {
   const { activity } = props;
-  const { state } = useContext(HydrantContext);
+  const { state } = useHydrantContext();
   const color = activity.backgroundColor;
+
   return (
     <ColorButton
       color={color}
@@ -49,17 +73,18 @@ function ActivityButton(props: { activity: Activity }) {
 
 /** List of selected activities; one button for each activity. */
 export function SelectedActivities() {
-  const { state, hydrantState } = useContext(HydrantContext);
+  const { state, hydrantState } = useHydrantContext();
   const { selectedActivities, units, hours, warnings } = hydrantState;
 
   return (
     <Flex direction="column" gap={2}>
       <Flex gap={8} justify="center">
-        <Text>{units} units</Text>
-        <Text>{hours.toFixed(1)} hours</Text>
-        <Text>
-          {state.finalsCount} final{state.finalsCount == 1 ? "" : "s"}
-        </Text>
+        <ScheduleStat value={units.toString()} label="units" />
+        <ScheduleStat value={hours.toFixed(1)} label="hours" />
+        <ScheduleStat
+          value={state.finalsCount.toString()}
+          label={`final${state.finalsCount == 1 ? "" : "s"}`}
+        />
       </Flex>
       <ButtonGroup gap={0} wrap="wrap">
         {selectedActivities.map((activity) => (
@@ -79,7 +104,9 @@ export function SelectedActivities() {
       </ButtonGroup>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
-          <Text fontSize="sm">{warning}</Text>
+          <Text fontSize="sm" color="fg.warning" textAlign="center">
+            {warning}
+          </Text>
         </Flex>
       ))}
     </Flex>

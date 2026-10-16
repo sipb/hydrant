@@ -1,0 +1,25 @@
+#:schema ../override-schema.json
+
+["22.S902"]
+name = "AI Agents for Nuclear Science and Engineering"
+meets = "22.S902"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+new = true
+description = "This project-based course explores how artificial intelligence and autonomous agents can accelerate research across nuclear science and engineering. Students will apply modern AI tools to problems in nuclear fission, fusion energy, radiation detection, materials, reactor monitoring, and related areas. Working in interdisciplinary teams, students will develop research questions, build and validate AI-enabled solutions, and critically assess their physical reliability and scientific impact. The course is designed to produce publication-quality projects, with the goal of submitting selected work to peer-reviewed journals or conferences."
+inCharge = "M. Li"
+
+["22.S906"]
+name = "Fusion Design and Engineering"
+prereqs = "22.061, 22.62 or permission of instructor"
+level = "G"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 6
+new = true
+isVariableUnits = false
+description = "Graduate level course focusing on the fusion science and technology required to harness burning plasmas for commercial energy production. This special course will be used to develop and test content for a future 12 unit graduate course on fusion engineering. The following topics are expected to be covered in depth: plasma-material interactions, first wall, and divertors; the deuterium-tritium fuel cycle and breeding blankets; superconductivity and large-scale superconducting fusion magnets; radiation damage in fusion materials; plant safety, material activation, and waste streams; and possibly even fusion power plant economics. Additional topics (e.g. fusion neutronics, 0D/1D device design tools, etc.) may be included based on time and instructor capacity. The course will be primarily based on in-class lectures with problem sets."
+inCharge = "Z. Hartwig"

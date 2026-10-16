@@ -6,10 +6,12 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 import time as time_c
 from datetime import date, time
 from functools import lru_cache
 from typing import Literal, Optional, TypedDict
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -52,11 +54,12 @@ PEWFile = TypedDict(
         "Title": str,
         "Capacity": str,
         "Day": str,
-        "Time": str,
+        "Start Time": str,
         "Location": str,
         "Start Date": str,
         "End Date": str,
         "Prerequisites": str,
+        "End Time": str,
         "Equipment": str,
         "Waivers": Optional[str],
         "HealthForms": Optional[str],
@@ -242,6 +245,9 @@ def split_section_code(section_code: str) -> tuple[str, str]:
 
     >>> split_section_code("PE.0613-4")
     ('PE.0613', '4')
+
+    >>> split_section_code("PE.0202MW-1")
+    ('PE.0202MW', '1')
     """
     if "-" not in section_code:
         raise ValueError(f"Invalid section code format: {section_code}")
@@ -272,7 +278,9 @@ def parse_date(date_str: str) -> date:
     return date(year, month, day)
 
 
-def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str:
+def parse_times_to_raw_section(
+    start_time: str, days: str, location: str, end_time: str | None = None
+) -> str:
     """
     Parses times from CSV to Fireroad format, for compatibility.
 
@@ -280,22 +288,35 @@ def parse_times_to_raw_section(start_time: str, days: str, location: str) -> str
         start_time (str): Start time of the class
         days (str): Days the class meets
         location (str): Location of the class
+        end_time (str | None): Optional end time of the class
 
     Returns:
         str: Formatted raw section string or None if start_time is empty
     """
     start_c = time_c.strptime(start_time, "%I:%M %p")
     start = time(start_c.tm_hour, start_c.tm_min)
-    # default to 1 hour, can be changed in overrides
+
+    evening = "1" if start.hour >= 17 else "0"
+
+    if end_time:
+        end_c = time_c.strptime(end_time, "%I:%M %p")
+        end = time(end_c.tm_hour, end_c.tm_min)
+
+        end_raw_time = "-" + (
+            f"{12 - ((- end.hour) % 12)}"
+            f"{'.30' if end.minute > 29 else ''}"
+            f"{' PM' if end.hour >= 17 else ''}"
+        )
+    else:
+        end_raw_time = ""
 
     start_raw_time = (
         f"{12 - ((- start.hour) % 12)}"
         f"{'.30' if start.minute > 29 else ''}"
-        f"{' PM' if start.hour >= 17 else ''}"
+        f"{' PM' if start.hour >= 17 and 'PM' not in end_raw_time else ''}"
     )
-    evening = "1" if start.hour >= 17 else "0"
 
-    return f"{location}/{days}/{evening}/{start_raw_time}"
+    return f"{location}/{days}/{evening}/{start_raw_time}{end_raw_time}"
 
 
 def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
@@ -311,9 +332,10 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
     """
     number, section_num = split_section_code(row["Section"])
     raw_section = parse_times_to_raw_section(
-        row["Time"],
+        row["Start Time"],
         row["Day"],
         augment_location(row["Location"]),
+        row["End Time"],
     )
     section = parse_section(raw_section)
 
@@ -347,7 +369,7 @@ def parse_data(row: PEWFile, quarter: int) -> PEWSchema:
         "prereqs": row["Prerequisites"] or "None",
         "equipment": row["Equipment"],
         "fee": row["Fee Amount"],
-        "description": get_pe_catalog_descriptions().get(number, ""),
+        "description": get_pe_catalog_descriptions().get(number[0:7], ""),
         "quarter": quarter,
         "waiver": row.get("Waiver", "None"),
         "healthForms": row.get("HealthForms", "None") or "None",
@@ -381,23 +403,37 @@ def pe_rows_to_schema(pe_rows: list[PEWFile]) -> dict[int, dict[str, PEWSchema]]
 
         if current_results:
             # ensure all data in current_results (except for section info) are the same
-            assert current_results["name"] == data["name"]
-            assert current_results["classSize"] == data["classSize"]
-            assert current_results["points"] == data["points"]
-            assert current_results["swimGIR"] == data["swimGIR"]
+            assert (
+                current_results["name"] == data["name"]
+            ), f"Name mismatch for subject {data['number']}"
+            assert (
+                current_results["classSize"] == data["classSize"]
+            ), f"Class size mismatch for subject {data['number']}"
+            assert (
+                current_results["points"] == data["points"]
+            ), f"Points mismatch for subject {data['number']}"
+            assert (
+                current_results["swimGIR"] == data["swimGIR"]
+            ), f"Swim GIR mismatch for subject {data['number']}"
             assert current_results["prereqs"] == data["prereqs"] or (
                 current_results["prereqs"] == "None" and not data["prereqs"]
-            )
-            assert current_results["equipment"] == data["equipment"]
-            assert current_results["fee"] == data["fee"]
+            ), f"Prerequisites mismatch for subject {data['number']}"
+            assert (
+                current_results["equipment"] == data["equipment"]
+            ), f"Equipment mismatch for subject {data['number']}"
+            assert (
+                current_results["fee"] == data["fee"]
+            ), f"Fee mismatch for subject {data['number']}"
 
             current_results["sectionNumbers"].append(data["sectionNumbers"][0])
             current_results["rawSections"].append(data["rawSections"][0])
             current_results["sections"].append(data["sections"][0])
 
             term_results[data["number"]] = current_results
+            term_results[data["number"]]["number"] = data["number"][0:7]
         else:
             term_results[data["number"]] = data
+            term_results[data["number"]]["number"] = data["number"][0:7]
 
         results[quarter] = term_results
 
@@ -466,7 +502,7 @@ def get_pe_quarters(url_name: str) -> list[str]:
     }[url_name[0]]
 
 
-def run():
+def run() -> dict[int, dict[str, PEWSchema]]:
     """
     Main entry point for PE data
     """
@@ -481,7 +517,12 @@ def run():
             # process the data as needed
             pe_files_data.extend(read_csv(os.path.join(pe_folder, pe_file), PEWFile))
 
-    pe_data = pe_rows_to_schema(pe_files_data)
+    try:
+        pe_data = pe_rows_to_schema(pe_files_data)
+    except (URLError, socket.timeout, UnicodeDecodeError) as e:
+        print(f"Unable to scrape PE data: {e}")
+        # couldn't scrape pe data, don't overwrite existing data if it exists
+        return {}
 
     for quarter, quarter_data in pe_data.items():
         print(f"Processed PE data for quarter {quarter}: {len(quarter_data)} subjects")

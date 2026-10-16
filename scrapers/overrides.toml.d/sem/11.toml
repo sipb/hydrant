@@ -1,0 +1,59 @@
+#:schema ../override-schema.json
+
+["11.S195"]
+name = "Indigenous Water and Energy Planning and Policy: Part 1 (Introduction)"
+description = "Introduces Indigenous approaches to water and energy planning, with emphasis on climate resilience, community-led research, and Indigenous sovereignty. Prepares students for field-based collaboration with Māori researchers and communities in Aotearoa New Zealand. Covers Indigenous water governance, energy planning, reflexive practice, community partnership, kaupapa Māori research methodologies, mātauranga Māori, Te Tiriti o Waitangi, and ethical responsibilities in cross-cultural planning work. Includes case-based learning, discussion of integrated land-water-resource planning frameworks, and engagement with project partners associated with Wai Ora, Kāinga Ora, a Māori-led research program addressing climate impacts on waterways, ecosystems, and kāinga wellbeing. Students develop a pre-departure project brief and positionality statement to support respectful, reciprocal participation in the related Global Classroom field subject."
+inCharge = "J. Knox-Hayes"
+level = "U"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+meets = "11.S945"
+
+["11.S938"]
+name = "Advanced Seminar on the Role of History in Planning the Just City"
+lectureUnits = 4
+labUnits = 0
+preparationUnits = 8
+isVariableUnits = false
+description = "This practicum brings together MIT CoLab, GROUND3D, Brooklyn Level Up (BKLVLUP), and the Central Brooklyn Economic Development Corporation (CBEDC) to advance community- led infrastructure planning in Central Brooklyn. Students will work at the intersection of climate resilience, community development, and transit-oriented development (TOD), using the proposed Interborough Express (IBX) as a catalyst for equitable neighborhood investment.\n\nStudents will support community partners in answering a central question: How can IBX investment be leveraged to strengthen—rather than destabilize—existing communities through resident-led planning, resilience infrastructure, and equitable development strategies?\n\nContext + Opportunity\nThe IBX corridor will connect historically underserved neighborhoods, serving over 900,000 residents and 260,000 workers. Without coordinated planning, similar investments have resulted in displacement, rising property values, and extractive development disconnected from community needs.\n\nThis practicum focuses on Brownsville and East Flatbush—neighborhoods shaped by strong community networks alongside long-standing disinvestment and climate vulnerability. "
+inCharge = "H. Harriel"
+
+["11.S939"]
+name = "Advanced Seminar on the Role of History in Planning the Just City"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 4
+isVariableUnits = false
+description = "Builds on the foundation acquired in 11.242 H1 on the theory and practice of history and its role in planning the just city. Through the design and completion of an individual research project, students apply historical research methods to explore how overlooked or silenced histories can be unearthed, honored, and told through urban design and planning."
+inCharge = "A. Spirn"
+prereqs = "11.242 or permission of instructor."
+
+["11.S945"]
+name = "Indigenous Water and Energy Planning and Policy: Part 1 (Introduction)"
+description = "Introduces Indigenous approaches to water and energy planning, with emphasis on climate resilience, community-led research, and Indigenous sovereignty. Prepares students for field-based collaboration with Māori researchers and communities in Aotearoa New Zealand. Covers Indigenous water governance, energy planning, reflexive practice, community partnership, kaupapa Māori research methodologies, mātauranga Māori, Te Tiriti o Waitangi, and ethical responsibilities in cross-cultural planning work. Includes case-based learning, discussion of integrated land-water-resource planning frameworks, and engagement with project partners associated with Wai Ora, Kāinga Ora, a Māori-led research program addressing climate impacts on waterways, ecosystems, and kāinga wellbeing. Students develop a pre-departure project brief and positionality statement to support respectful, reciprocal participation in the related Global Classroom field subject."
+inCharge = "J. Knox-Hayes"
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 3
+isVariableUnits = false
+meets = "11.S195"
+
+["11.S946"]
+name = "Impact Ventures: Venture Building in Growth Markets"
+isVariableUnits = true
+lectureUnits = 0
+labUnits = 0
+preparationUnits = 0
+description = "Impact Ventures: Venture Building in Global Growth Markets is a year-long course for MIT Kuo Sharper Center Student Fellows who are building innovation-driven ventures in Global Growth Markets (GGMs) across Africa, Asia, Latin America, and the Arab World. The course is open to graduate and undergraduate students from MIT who are selected for the fellowship. The course covers three modules: Module 1 — Leadership: adaptive leadership and values-based leadership for founders operating under uncertainty, resource constraint, and ethical complexity. Module 2 — Externalities: the macroeconomic, political, regulatory, and technological forces that shape ventures in Global Growth Markets. Module 3 — Venture Building: the disciplined, evidence-based process of moving a venture from an idea to an investment-ready business. The course involves weekly seminars in addition to workshops and a required international ecosystem tour experience. Course continues into the spring semester."
+inCharge = " G. Carolini, D. H. Sherif"
+
+["11.S947"]
+name = "Ecology, Sustainability, and Spirituality: (P)reparative Planning and Planetary Health"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 10
+isVariableUnits = false
+description = "This course analyzes how historical and cross-cultural ecological and spiritual traditions offer models of relationship among human, “more-than-human,” and other actors. These models of living may be both reparative—redressing past harms—and preparative—offering instructions on how best to mitigate future disruptions of our various ecosystems. We will explore global perspectives on embodiment, kinship, environmental stewardship, spirituality, and planetary health."
+inCharge = "E. Caple James"
