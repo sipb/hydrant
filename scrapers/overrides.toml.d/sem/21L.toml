@@ -48,6 +48,8 @@ name = "Major Authors: Epics of Human Choice: Spenser's Faerie Queene and Milton
 
 ["21L.706"]
 name = "Studies in Film: Color in Film"
+lectureRawSections = ["1-273/T/0/2-5"]
+lectureSections = [[[[50, 6]], "1-273"]]
 
 ["21L.903"]
 inCharge = "S. (Frampton) Seed"
