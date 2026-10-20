@@ -159,9 +159,9 @@ def zip_strict(*iterables: Iterable[Any]) -> Generator[tuple[Any, ...], Any, Non
     Yields:
         Tuple[Any, ...]: A generator, which you can iterate over.
     """
-    MISSING = object()
-    for group in zip_longest(*iterables, fillvalue=MISSING):
-        if any(MISSING is t for t in group):
+    missing_sentinel = object()
+    for group in zip_longest(*iterables, fillvalue=missing_sentinel):
+        if any(missing_sentinel is t for t in group):
             raise ValueError("Iterables have different lengths")
         yield group
 
