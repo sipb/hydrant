@@ -366,7 +366,7 @@ describe("Class", () => {
         {
           suffix: "+",
           messages: [
-            "+ Class has at least one section yet to be scheduled—check course catalog.",
+            "+ Class has at least one section yet to be scheduled. Check course catalog.",
           ],
         },
         "21H.143+",
@@ -377,7 +377,7 @@ describe("Class", () => {
         {
           suffix: "&",
           messages: [
-            "& Class schedule is unknown—check course catalog or department website.",
+            "& Class schedule is unknown. Check course catalog or department website.",
           ],
         },
         "21H.143&",

@@ -12,7 +12,7 @@ import { withEmotionCache } from "@emotion/react";
 import { useInjectStyles } from "./emotion/emotion-client";
 
 import { Provider } from "./components/ui/provider";
-import { Flex, Spinner, Text, Stack, Code } from "@chakra-ui/react";
+import { Flex, Spinner, Text, Stack, Code, Link } from "@chakra-ui/react";
 
 import {
   destroySession,
@@ -36,8 +36,18 @@ export const links: Route.LinksFunction = () => [
 
 export function HydrateFallback() {
   return (
-    <Flex w="100%" h="100vh" align="center" justify="center">
-      <Spinner />
+    <Flex
+      w="100%"
+      h="100dvh"
+      direction="column"
+      align="center"
+      justify="center"
+      gap={3}
+    >
+      <Spinner aria-hidden="true" />
+      <Text role="status" color="fg.muted">
+        Loading Hydrant data...
+      </Text>
     </Flex>
   );
 }
@@ -120,15 +130,16 @@ export default function Root({ loaderData }: Route.ComponentProps) {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
+  let message = "Hydrant couldn't load";
+  let details =
+    "The subject data may have failed to download. Check your connection and reload the page. If it keeps happening, email sipb-hydrant@mit.edu.";
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? "Page not found" : message;
     details =
       error.status === 404
-        ? "The requested page could not be found."
+        ? "There's no Hydrant page at this address."
         : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
@@ -136,12 +147,22 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <Flex as="main" w="100%" h="100vh" align="center" justify="center">
-      <Stack textAlign="center">
+    <Flex
+      as="main"
+      w="100%"
+      minH="100dvh"
+      align="center"
+      justify="center"
+      p={4}
+    >
+      <Stack textAlign="center" maxW="40em">
         <Text fontSize="2xl" fontWeight="bold">
           {message}
         </Text>
         <Text fontSize="lg">{details}</Text>
+        <Link href={import.meta.env.BASE_URL} alignSelf="center">
+          Go to Hydrant
+        </Link>
         {stack && (
           <pre
             style={{

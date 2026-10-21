@@ -406,12 +406,12 @@ export class Class implements BaseActivity {
     if (this.rawClass.tba) {
       suffixes.push("+");
       messages.push(
-        "+ Class has at least one section yet to be scheduled—check course catalog.",
+        "+ Class has at least one section yet to be scheduled. Check course catalog.",
       );
     } else if (this.sections.length === 0) {
       suffixes.push("&");
       messages.push(
-        "& Class schedule is unknown—check course catalog or department website.",
+        "& Class schedule is unknown. Check course catalog or department website.",
       );
     }
     if (this.rawClass.isVariableUnits) {

@@ -11,7 +11,13 @@ import {
 import { AgGridReact } from "ag-grid-react";
 import type { IRowNode, ColDef } from "ag-grid-community";
 
-import { Box, Flex, Button, ButtonGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Button,
+  ButtonGroup,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { LuStar } from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
 
@@ -20,6 +26,7 @@ import {
   INITIAL_SORT,
   sortProps,
   ClassSearchInput,
+  onRowKeyDown,
 } from "./ClassTable";
 
 import { type PEFlags, type PEClass, getPEFlagIcon } from "../lib/pe";
@@ -63,10 +70,8 @@ function ClassInput(props: {
   const { rowData, setInputFilter } = props;
   const { state } = useHydrantContext();
 
-  // State for textbox input.
   const [classInput, setClassInput] = useState("");
 
-  // Search results for classes.
   const searchResults = useRef<
     {
       number: string;
@@ -111,11 +116,9 @@ function ClassInput(props: {
       searchResults.current?.length === 1 ||
       (number && classNumberMatch(number, classInput, true))
     ) {
-      // first check if the first result matches
       state.toggleActivity(cls);
       onClassInputChange("");
     } else if (state.peClasses.has(classInput)) {
-      // else check if this number exists exactly
       const cls = state.peClasses.get(classInput);
       state.toggleActivity(cls);
     }
@@ -165,7 +168,6 @@ function ClassFlags(props: {
   const { setFlagsFilter, updateFilter } = props;
   const { state } = useHydrantContext();
 
-  // Map from flag to whether it's on.
   const [flags, setFlags] = useState(() => {
     const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
@@ -217,7 +219,6 @@ function ClassFlags(props: {
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
-          // hide starred button if no classes starred
           if (
             flag === "starred" &&
             state.getStarredPEClasses().length === 0 &&
@@ -227,7 +228,6 @@ function ClassFlags(props: {
           }
 
           return image ? (
-            // image is a react element, like an icon
             <LabelledButton
               key={flag}
               onClick={() => {
@@ -293,13 +293,16 @@ export function PEClassTable() {
   const { peClasses } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
+  // hide size and quarter suffix on small screens (eg phone)
+  const narrow =
+    useBreakpointValue({ base: true, sm: false }, { ssr: false }) ?? false;
 
-  // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string | number>[] = useMemo(() => {
     return [
       {
         headerName: "",
         field: "number",
+        width: 49,
         maxWidth: 49,
         cellRenderer: (params: { data: ClassTableRow }) => (
           <StarButton
@@ -321,22 +324,28 @@ export function PEClassTable() {
         headerName: "Class",
         comparator: classSort,
         initialSort: INITIAL_SORT,
-        maxWidth: 131,
+        width: narrow ? 105 : 150,
+        maxWidth: narrow ? 105 : 150,
         cellClass: [styles["underline-on-hover"], styles.data],
         valueFormatter: (params) =>
-          `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
+          narrow
+            ? (params.value?.toString() ?? "")
+            : `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
         ...sortProps,
       },
       {
         field: "classSize",
         headerName: "Size",
         cellDataType: "number",
+        width: 85,
         maxWidth: 85,
+        hide: narrow,
         cellClass: styles.data,
         ...sortProps,
       },
       {
         field: "fee",
+        width: 90,
         maxWidth: 90,
         cellDataType: "number",
         cellClass: (params) => [
@@ -352,7 +361,7 @@ export function PEClassTable() {
         flex: 1,
       },
     ];
-  }, [state]);
+  }, [state, narrow]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
     return {
@@ -360,7 +369,6 @@ export function PEClassTable() {
     };
   }, []);
 
-  // Setup rows
   const rowData: ClassTableRow[] = useMemo(
     () =>
       Array.from(peClasses.values(), (cls) => ({
@@ -384,7 +392,6 @@ export function PEClassTable() {
     };
   }, [inputFilter, flagsFilter]);
 
-  // Need to notify grid every time we update the filter
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     gridRef.current?.api?.onFilterChanged();
@@ -416,6 +423,18 @@ export function PEClassTable() {
           onRowDoubleClicked={(e) => {
             state.toggleActivity(e.data?.class);
           }}
+          onCellKeyDown={(e) => {
+            onRowKeyDown(
+              e,
+              (cls) => {
+                state.setViewedActivity(cls);
+              },
+              (cls) => {
+                state.toggleActivity(cls);
+              },
+            );
+          }}
+          suppressOverlays={["noRows"]}
           // these have to be set here, not in css:
           headerHeight={40}
           rowHeight={40}

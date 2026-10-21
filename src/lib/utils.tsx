@@ -78,13 +78,15 @@ export function linkClasses(state: State, str: string): JSX.Element {
         const cls = state.classes.get(text);
         if (!cls) return text;
         return (
-          <Link
-            key={i}
-            onClick={() => {
-              state.setViewedActivity(cls);
-            }}
-          >
-            {text}
+          <Link key={i} asChild>
+            <button
+              type="button"
+              onClick={() => {
+                state.setViewedActivity(cls);
+              }}
+            >
+              {text}
+            </button>
           </Link>
         );
       })}

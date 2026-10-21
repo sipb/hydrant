@@ -70,7 +70,7 @@
 
   /* neutral foregrounds */
   --fc-monarch-foreground: var(--chakra-colors-fg);
-  --fc-monarch-faint-foreground: var(--chakra-colors-fg-subtle);
+  --fc-monarch-faint-foreground: var(--chakra-colors-fg-muted);
   --fc-monarch-muted-foreground: var(--chakra-colors-fg-muted);
 
   /* neutral borders */
@@ -123,7 +123,7 @@
 .fc-slot-header-inner {
   line-height: 0.1rem;
   padding-block: 0.2rem;
-  opacity: 0.7;
+  color: var(--chakra-colors-fg-muted);
   font-size: 0.75rem;
   position: relative;
   top: -0.75rem;

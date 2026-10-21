@@ -43,7 +43,7 @@ interface ToggleButtonProps extends ButtonProps {
 }
 
 /**
- * A button that toggles the active value, and is outlined if active, solid
+ * A button that toggles the active value, and is outlined if active, subtle
  * if not.
  */
 function ToggleButton({
@@ -85,6 +85,7 @@ function OverrideLocations(props: { secs: Sections }) {
   return isOverriding ? (
     <Flex gap={1} mr={1} mt={2}>
       <Input
+        aria-label={`Custom location for ${secs.name}`}
         value={room}
         onChange={(e) => {
           setRoom(e.target.value);
@@ -98,10 +99,10 @@ function OverrideLocations(props: { secs: Sections }) {
         }}
         placeholder="26-100"
       />
-      <Button onClick={onConfirm}>
+      <Button onClick={onConfirm} aria-label="Save location">
         <CheckIcon />
       </Button>
-      <Button onClick={onCancel}>
+      <Button onClick={onCancel} aria-label="Cancel">
         <CloseIcon />
       </Button>
     </Flex>
@@ -199,7 +200,7 @@ function ClassManualSections(props: { cls: Class | PEClass }) {
   };
 
   return (
-    <Flex>
+    <Flex wrap="wrap" columnGap={6} rowGap={4}>
       <RenderOptions />
     </Flex>
   );
@@ -224,7 +225,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
 
   return (
     <Flex gap={2}>
-      <Flex direction="row" gap={2}>
+      <Flex direction="row" gap={2} wrap="wrap">
         <ColorPicker.Root
           value={color}
           onValueChange={(e) => {
@@ -232,6 +233,7 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
           }}
         >
           <ColorPicker.HiddenInput />
+          <ColorPicker.Label srOnly>Color (hex)</ColorPicker.Label>
           <ColorPicker.Control>
             <ColorPickerInput autoFocus />
             <ColorPicker.Trigger />
@@ -282,7 +284,7 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
             active={showManual}
             handleClick={() => {
               setShowManual(!showManual);
-              setShowColors(false); // untoggle colors
+              setShowColors(false);
             }}
           >
             Edit sections
@@ -293,7 +295,7 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
             active={showColors}
             handleClick={() => {
               setShowColors(!showColors);
-              setShowManual(false); // untoggle manual section assignment
+              setShowManual(false);
             }}
           >
             Edit color
@@ -325,9 +327,22 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
     Object.fromEntries(WEEKDAY_STRINGS.map((day) => [day, false])),
   );
   const [times, setTimes] = useState({ start: "10:00 AM", end: "1:00 PM" });
+  const [error, setError] = useState("");
 
   const onSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    if (!Object.values(days).some(Boolean)) {
+      setError("Pick at least one day.");
+      return;
+    }
+    if (
+      TIMESLOT_STRINGS.indexOf(times.end) <=
+      TIMESLOT_STRINGS.indexOf(times.start)
+    ) {
+      setError("End time must be after the start time.");
+      return;
+    }
+    setError("");
     for (const day in days) {
       if (!days[day]) continue;
       state.addTimeslot(
@@ -369,6 +384,9 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
       }}
     >
       <Select.HiddenSelect />
+      <Select.Label srOnly>
+        {key === "start" ? "Start time" : "End time"}
+      </Select.Label>
       <Select.Control>
         <Select.Trigger>
           <Select.ValueText />
@@ -405,6 +423,16 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
           {renderTimeDropdown("start")} to {renderTimeDropdown("end")}
         </Flex>
       </Flex>
+      {error && (
+        <Text
+          role="alert"
+          mt={2}
+          fontSize="sm"
+          color={{ _light: "red.700", _dark: "fg.error" }}
+        >
+          {error}
+        </Text>
+      )}
     </form>
   );
 }
@@ -428,6 +456,7 @@ export function CustomActivityButtons(props: { activity: CustomActivity }) {
     if (isRenaming) {
       return (
         <Input
+          aria-label="Activity name"
           value={name}
           onChange={(e) => {
             setName(e.target.value);
@@ -447,6 +476,7 @@ export function CustomActivityButtons(props: { activity: CustomActivity }) {
     } else if (isRelocating) {
       return (
         <Input
+          aria-label="Activity location"
           value={room}
           onChange={(e) => {
             setRoom(e.target.value);

@@ -207,6 +207,11 @@ export const system = createSystem(defaultConfig, {
         base: {
           fontWeight: "semibold",
           letterSpacing: "-0.005em",
+          // bigger touch targets on mobile
+          "@media (pointer: coarse)": {
+            minH: "11",
+            minW: "11",
+          },
         },
         variants: {
           variant: {

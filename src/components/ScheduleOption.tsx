@@ -20,7 +20,7 @@ export function ScheduleOption() {
               (selectedOption - 1 + totalOptions) % totalOptions,
             );
           }}
-          size="xs"
+          size="sm"
           variant="ghost"
           aria-label="Previous schedule"
         >
@@ -31,7 +31,7 @@ export function ScheduleOption() {
           onClick={() => {
             state.selectOption(selectedOption + 1);
           }}
-          size="xs"
+          size="sm"
           variant="ghost"
           aria-label="Next schedule"
         >
@@ -47,7 +47,7 @@ export function ScheduleOption() {
             endElement={
               <CloseButton
                 size="sm"
-                height={"1rem"}
+                aria-label="Dismiss tip"
                 onClick={() => {
                   setTooManyOptions(false);
                 }}

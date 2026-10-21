@@ -28,7 +28,6 @@ function download(filename: string, text: string) {
   document.body.removeChild(element);
 }
 
-// TODO: add tests for this...
 function toICalEvents(activity: Activity, term: Term): ICalEventData[] {
   return activity.events.flatMap((event) =>
     event.slots.map((slot) => {

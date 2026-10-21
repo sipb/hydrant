@@ -89,146 +89,140 @@ export function PreferencesDialog() {
   };
 
   return (
-    <>
-      <Dialog.Root
-        open={visible}
-        closeOnInteractOutside={false}
-        closeOnEscape={false}
-        onInteractOutside={() => {
-          // Clicking outside is easy to do by accident, so don't dismiss.
-          // Give a quick nudge instead so it's clear the click was ignored.
-          setShaking(true);
-          window.setTimeout(() => {
-            setShaking(false);
-          }, 300);
-        }}
-        onOpenChange={(e) => {
-          if (e.open) {
-            onOpen();
-          } else {
-            onCancel();
-          }
-        }}
-      >
-        <Dialog.Trigger asChild>
-          <IconButton size="sm" aria-label="Preferences" variant="outline">
-            <LuSettings />
-          </IconButton>
-        </Dialog.Trigger>
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content
-              animation={
-                shaking ? { _motionSafe: `${shake} 0.3s ease-in-out` } : "none"
-              }
-            >
-              <Dialog.Header>
-                <Dialog.Title>Preferences</Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body>
-                <Flex gap={4}>
-                  <Select.Root
-                    collection={colorSchemeCollection}
-                    value={[preferences.colorScheme?.name ?? ""]}
-                    onValueChange={(e) => {
-                      if (e.value[0] === "") {
-                        previewPreferences({
-                          ...preferences,
-                          colorScheme: null,
-                        });
-                        return;
-                      }
+    <Dialog.Root
+      open={visible}
+      closeOnInteractOutside={false}
+      onInteractOutside={() => {
+        // Clicking outside is easy to do by accident, so don't dismiss.
+        // Give a quick nudge instead so it's clear the click was ignored.
+        setShaking(true);
+        window.setTimeout(() => {
+          setShaking(false);
+        }, 300);
+      }}
+      onOpenChange={(e) => {
+        if (e.open) {
+          onOpen();
+        } else {
+          onCancel();
+        }
+      }}
+    >
+      <Dialog.Trigger asChild>
+        <IconButton size="sm" aria-label="Preferences" variant="outline">
+          <LuSettings />
+        </IconButton>
+      </Dialog.Trigger>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content
+            animation={
+              shaking ? { _motionSafe: `${shake} 0.3s ease-in-out` } : "none"
+            }
+          >
+            <Dialog.Header>
+              <Dialog.Title>Preferences</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body>
+              <Flex gap={4}>
+                <Select.Root
+                  collection={colorSchemeCollection}
+                  value={[preferences.colorScheme?.name ?? ""]}
+                  onValueChange={(e) => {
+                    if (e.value[0] === "") {
+                      previewPreferences({
+                        ...preferences,
+                        colorScheme: null,
+                      });
+                      return;
+                    }
 
-                      const colorScheme = COLOR_SCHEME_PRESETS.find(
-                        ({ name }) => name === e.value[0],
-                      );
-                      if (!colorScheme) return;
-                      previewPreferences({ ...preferences, colorScheme });
-                    }}
-                  >
-                    <Select.HiddenSelect />
-                    <Select.Label>Color scheme:</Select.Label>
-                    <Select.Control>
-                      <Select.Trigger>
-                        <Select.ValueText />
-                      </Select.Trigger>
-                      <Select.IndicatorGroup>
-                        <Select.Indicator />
-                      </Select.IndicatorGroup>
-                    </Select.Control>
-                    <Select.Positioner>
-                      <Select.Content>
-                        {colorSchemeCollection.items.map((colorScheme) => (
+                    const colorScheme = COLOR_SCHEME_PRESETS.find(
+                      ({ name }) => name === e.value[0],
+                    );
+                    if (!colorScheme) return;
+                    previewPreferences({ ...preferences, colorScheme });
+                  }}
+                >
+                  <Select.HiddenSelect />
+                  <Select.Label>Color scheme:</Select.Label>
+                  <Select.Control>
+                    <Select.Trigger>
+                      <Select.ValueText />
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                      <Select.Indicator />
+                    </Select.IndicatorGroup>
+                  </Select.Control>
+                  <Select.Positioner>
+                    <Select.Content>
+                      {colorSchemeCollection.items.map((colorScheme) => (
+                        <Select.Item item={colorScheme} key={colorScheme.value}>
+                          {colorScheme.label}
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Select.Root>
+                <Select.Root
+                  collection={measurementSystemCollection}
+                  value={[preferences.measurementSystem?.name ?? ""]}
+                  onValueChange={(e) => {
+                    if (e.value[0] === "") {
+                      previewPreferences({
+                        ...preferences,
+                        measurementSystem: null,
+                      });
+                      return;
+                    }
+
+                    const measurementSystem = MEASUREMENT_SYSTEM_PRESETS.find(
+                      ({ name }) => name === e.value[0],
+                    );
+                    if (!measurementSystem) return;
+                    previewPreferences({ ...preferences, measurementSystem });
+                  }}
+                >
+                  <Select.HiddenSelect />
+                  <Select.Label>Measurement system:</Select.Label>
+                  <Select.Control>
+                    <Select.Trigger>
+                      <Select.ValueText />
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                      <Select.Indicator />
+                    </Select.IndicatorGroup>
+                  </Select.Control>
+                  <Select.Positioner>
+                    <Select.Content>
+                      {measurementSystemCollection.items.map(
+                        (measurementSystem) => (
                           <Select.Item
-                            item={colorScheme}
-                            key={colorScheme.value}
+                            item={measurementSystem}
+                            key={measurementSystem.value}
                           >
-                            {colorScheme.label}
+                            {measurementSystem.label}
                             <Select.ItemIndicator />
                           </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Select.Root>
-                  <Select.Root
-                    collection={measurementSystemCollection}
-                    value={[preferences.measurementSystem?.name ?? ""]}
-                    onValueChange={(e) => {
-                      if (e.value[0] === "") {
-                        previewPreferences({
-                          ...preferences,
-                          measurementSystem: null,
-                        });
-                        return;
-                      }
-
-                      const measurementSystem = MEASUREMENT_SYSTEM_PRESETS.find(
-                        ({ name }) => name === e.value[0],
-                      );
-                      if (!measurementSystem) return;
-                      previewPreferences({ ...preferences, measurementSystem });
-                    }}
-                  >
-                    <Select.HiddenSelect />
-                    <Select.Label>Measurement system:</Select.Label>
-                    <Select.Control>
-                      <Select.Trigger>
-                        <Select.ValueText />
-                      </Select.Trigger>
-                      <Select.IndicatorGroup>
-                        <Select.Indicator />
-                      </Select.IndicatorGroup>
-                    </Select.Control>
-                    <Select.Positioner>
-                      <Select.Content>
-                        {measurementSystemCollection.items.map(
-                          (measurementSystem) => (
-                            <Select.Item
-                              item={measurementSystem}
-                              key={measurementSystem.value}
-                            >
-                              {measurementSystem.label}
-                              <Select.ItemIndicator />
-                            </Select.Item>
-                          ),
-                        )}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Select.Root>
-                </Flex>
-              </Dialog.Body>
-              <Dialog.Footer>
-                <Dialog.ActionTrigger asChild>
-                  <Button>Cancel</Button>
-                </Dialog.ActionTrigger>
-                <Button onClick={onConfirm}>Save</Button>
-              </Dialog.Footer>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
-    </>
+                        ),
+                      )}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Select.Root>
+              </Flex>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Dialog.ActionTrigger asChild>
+                <Button>Cancel</Button>
+              </Dialog.ActionTrigger>
+              <Button onClick={onConfirm}>Save</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   );
 }
 
@@ -282,8 +276,8 @@ export function Header() {
               </Text>
               <IconButton
                 variant="subtle"
-                size="xs"
-                aria-label="Close"
+                size="sm"
+                aria-label="Dismiss term notice"
                 onClick={onClose}
               >
                 <LuX />

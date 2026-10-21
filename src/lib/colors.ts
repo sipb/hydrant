@@ -116,11 +116,9 @@ function murmur3(str: string): () => number {
 
 export const getDefaultColorScheme = (): ColorScheme => {
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const prefersConstrast = window.matchMedia(
-    "(prefers-constrast: more)",
-  ).matches;
+  const prefersContrast = window.matchMedia("(prefers-contrast: more)").matches;
 
-  if (prefersConstrast) {
+  if (prefersContrast) {
     if (prefersDark) {
       return COLOR_SCHEME_DARK_CONTRAST;
     } else {
@@ -143,7 +141,6 @@ export function chooseColors(
   activities: Activity[],
   colorScheme: ColorScheme,
 ): void {
-  // above this length, we give up trying to be nice:
   const colorLen = colorScheme.backgroundColors.length;
   const indices: number[] = [];
   for (const activity of activities) {
@@ -189,6 +186,3 @@ export function canonicalizeColor(code: string): string | undefined {
   }
   return undefined;
 }
-
-/** The Google calendar background color. */
-// export const CALENDAR_COLOR = "#DB5E45";

@@ -61,41 +61,41 @@ describe("getDefaultColorScheme", () => {
     });
   }
 
-  test("prefers-color-scheme = light, prefers-constrast = no-preference", () => {
+  test("prefers-color-scheme = light, prefers-contrast = no-preference", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", false],
-        ["(prefers-constrast: more)", false],
+        ["(prefers-contrast: more)", false],
       ]),
     );
     expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_LIGHT);
   });
 
-  test("prefers-color-scheme = light, prefers-constrast = more", () => {
+  test("prefers-color-scheme = light, prefers-contrast = more", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", false],
-        ["(prefers-constrast: more)", true],
+        ["(prefers-contrast: more)", true],
       ]),
     );
     expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_LIGHT_CONTRAST);
   });
 
-  test("prefers-color-scheme = dark, prefers-constrast = no-preference", () => {
+  test("prefers-color-scheme = dark, prefers-contrast = no-preference", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", true],
-        ["(prefers-constrast: more)", false],
+        ["(prefers-contrast: more)", false],
       ]),
     );
     expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_DARK);
   });
 
-  test("prefers-color-scheme = dark, prefers-constrast = more", () => {
+  test("prefers-color-scheme = dark, prefers-contrast = more", () => {
     makeMatchMediaMock(
       new Map<string, boolean>([
         ["(prefers-color-scheme: dark)", true],
-        ["(prefers-constrast: more)", true],
+        ["(prefers-contrast: more)", true],
       ]),
     );
     expect(getDefaultColorScheme()).toStrictEqual(COLOR_SCHEME_DARK_CONTRAST);

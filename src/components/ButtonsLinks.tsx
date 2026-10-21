@@ -11,12 +11,13 @@ import {
 } from "react-icons/lu";
 import { Tooltip } from "./ui/tooltip";
 import { Link as RouterLink } from "react-router";
-import { Button, Image, Link } from "@chakra-ui/react";
+import { Button, Image, Link, Text } from "@chakra-ui/react";
 
 import sipbLogo from "../assets/simple-fuzzball.png";
 
 export function ExportCalendar() {
   const [isExporting, setIsExporting] = useState(false);
+  const [exportFailed, setExportFailed] = useState(false);
   // TODO: fix gcal export
   const onICSExport = useICSExport(
     () => {
@@ -24,25 +25,40 @@ export function ExportCalendar() {
     },
     () => {
       setIsExporting(false);
+      setExportFailed(true);
     },
   );
 
   return (
-    <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
-      <Button
-        variant="solid"
-        size="sm"
-        loading={isExporting}
-        loadingText="Loading..."
-        onClick={() => {
-          setIsExporting(true);
-          onICSExport();
-        }}
-      >
-        <LuCalendarArrowDown />
-        Export calendar
-      </Button>
-    </Tooltip>
+    <>
+      <Tooltip content="Currently, only manually exporting to an .ics file is supported.">
+        <Button
+          variant="solid"
+          size="sm"
+          loading={isExporting}
+          loadingText="Exporting..."
+          onClick={() => {
+            setIsExporting(true);
+            setExportFailed(false);
+            onICSExport();
+          }}
+        >
+          <LuCalendarArrowDown />
+          Export calendar
+        </Button>
+      </Tooltip>
+      {exportFailed && (
+        <Text
+          role="alert"
+          fontSize="sm"
+          color={{ _light: "red.700", _dark: "fg.error" }}
+          alignSelf="center"
+        >
+          Couldn't create the .ics file. Try again, or contact
+          sipb-hydrant@mit.edu if it keeps failing.
+        </Text>
+      )}
+    </>
   );
 }
 
@@ -70,13 +86,12 @@ export function MatrixLink() {
   );
 }
 
-/** A link to SIPB Matrix's class group chat importer UI */
+/** A link to WebSIS pre-reg, pre-filled with the selected classes. */
 export function PreregLink() {
   const {
     state: { selectedActivities },
   } = useHydrantContext();
 
-  // reference: https://github.com/gabrc52/class_group_chats/tree/main/src/routes/import
   const preregLink = `https://student.mit.edu/cgi-bin/sfprwtrm.sh?${selectedActivities
     .filter((activity) => activity instanceof Class)
     .map((cls) => cls.number)
@@ -99,7 +114,7 @@ export function SIPBLogo() {
     <Link variant="plain" fontSize="sm" fontWeight="500" asChild>
       <RouterLink to="https://sipb.mit.edu/" target="_blank" rel="noreferrer">
         by SIPB
-        <Image src={sipbLogo} alt="SIPB Logo" height="1lh" />
+        <Image src={sipbLogo} alt="" height="1lh" />
       </RouterLink>
     </Link>
   );
