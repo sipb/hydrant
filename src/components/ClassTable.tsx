@@ -22,6 +22,8 @@ import {
   type IRowNode,
   type ColDef,
   type Module,
+  type CellKeyDownEvent,
+  type FullWidthCellKeyDownEvent,
 } from "ag-grid-community";
 
 import {
@@ -34,6 +36,7 @@ import {
   ButtonGroup,
   InputGroup,
   CloseButton,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { LuPlus, LuMinus, LuSearch, LuBadgePlus, LuStar } from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
@@ -83,6 +86,29 @@ export const sortProps = {
   unSortIcon: true,
   sortingOrder: SORTING_ORDER,
 };
+
+/**
+ * enter to look at the class (single click), shift+enter to
+ * toggle the class (double click)
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function onRowKeyDown<T extends { class: unknown }>(
+  e: CellKeyDownEvent<T> | FullWidthCellKeyDownEvent<T>,
+  view: (cls: T["class"]) => void,
+  toggle: (cls: T["class"]) => void,
+) {
+  const event = e.event as KeyboardEvent | null | undefined;
+
+  if (event?.key !== "Enter" || !e.data) return;
+  if ((event.target as HTMLElement | null)?.closest("button")) return;
+
+  event.preventDefault();
+  if (event.shiftKey) {
+    toggle(e.data.class);
+  } else {
+    view(e.data.class);
+  }
+}
 
 const getRatingColor = (rating?: string | null) => {
   if (!rating || rating === "N/A") return ColorStyles.Muted;
@@ -156,7 +182,8 @@ export function ClassSearchInput(props: {
 
   const clearButton = value ? (
     <CloseButton
-      size="xs"
+      size="sm"
+      aria-label="Clear search"
       onClick={() => {
         onChange("");
         inputRef.current?.focus();
@@ -209,10 +236,8 @@ function ClassInput(props: {
   const { rowData, setInputFilter } = props;
   const { state } = useHydrantContext();
 
-  // State for textbox input.
   const [classInput, setClassInput] = useState("");
 
-  // Search results for classes.
   const searchResults = useRef<
     {
       numbers: string[];
@@ -261,11 +286,9 @@ function ClassInput(props: {
       searchResults.current?.length === 1 ||
       numbers?.some((number) => classNumberMatch(number, classInput, true))
     ) {
-      // first check if the first result matches
       state.toggleActivity(cls);
       onClassInputChange("");
     } else if (state.classes.has(classInput)) {
-      // else check if this number exists exactly
       const cls = state.classes.get(classInput);
       state.toggleActivity(cls);
     }
@@ -352,7 +375,6 @@ function ClassFlags(props: {
   const { setFlagsFilter, updateFilter } = props;
   const { state } = useHydrantContext();
 
-  // Map from flag to whether it's on.
   const [flags, setFlags] = useState(() => {
     const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
@@ -362,7 +384,6 @@ function ClassFlags(props: {
     return result;
   });
 
-  // Show hidden flags?
   const [allFlags, setAllFlags] = useState(false);
 
   // this callback needs to get called when the set of classes change, because
@@ -415,7 +436,6 @@ function ClassFlags(props: {
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
-          // hide starred button if no classes starred
           if (
             flag === "starred" &&
             state.getStarredClasses().length === 0 &&
@@ -426,7 +446,6 @@ function ClassFlags(props: {
 
           return image ? (
             typeof image === "string" ? (
-              // if image is a string, it's a path to an image
               <LabelledButton
                 key={flag}
                 onClick={() => {
@@ -442,7 +461,6 @@ function ClassFlags(props: {
                 />
               </LabelledButton>
             ) : (
-              // image is a react element, like an icon
               <LabelledButton
                 key={flag}
                 onClick={() => {
@@ -472,14 +490,13 @@ function ClassFlags(props: {
 
   return (
     <Flex direction="column" align="center" gap={2}>
-      <Flex align="center">
+      <Flex align="center" justify="center" wrap="wrap" gap={2}>
         {renderGroup(CLASS_FLAGS_1)}
         <Button
           onClick={() => {
             setAllFlags(!allFlags);
           }}
           size="sm"
-          ml={2}
         >
           {allFlags ? <LuMinus /> : <LuPlus />}
           {allFlags ? "Less filters" : "More filters"}
@@ -528,8 +545,10 @@ export function ClassTable() {
   const { classes } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
+  // hours hidden on small screens (eg phone)
+  const narrow =
+    useBreakpointValue({ base: true, sm: false }, { ssr: false }) ?? false;
 
-  // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
     const numberSortProps = {
       // sort by number, N/A is infinity, tiebreak with class number
@@ -552,6 +571,7 @@ export function ClassTable() {
       {
         headerName: "",
         field: "number",
+        width: 49,
         maxWidth: 49,
         cellRenderer: (params: { value: string; data: ClassTableRow }) => (
           <StarButton
@@ -573,19 +593,23 @@ export function ClassTable() {
         headerName: "Class",
         comparator: classSort,
         initialSort: INITIAL_SORT,
+        width: 93,
         maxWidth: 93,
         cellClass: [styles["underline-on-hover"], styles.data],
         ...sortProps,
       },
       {
         field: "rating",
+        width: 99,
         maxWidth: 99,
         cellClass: (params) => [getRatingColor(params.value), styles.data],
         ...numberSortProps,
       },
       {
         field: "hours",
+        width: 97,
         maxWidth: 97,
+        hide: narrow,
         cellClass: (params) => [
           getHoursColor(
             params.value,
@@ -615,7 +639,7 @@ export function ClassTable() {
         ),
       },
     ];
-  }, [state]);
+  }, [state, narrow]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
     return {
@@ -623,7 +647,6 @@ export function ClassTable() {
     };
   }, []);
 
-  // Setup rows
   const rowData: ClassTableRow[] = useMemo(
     () =>
       Array.from(classes.values(), (cls) => ({
@@ -648,7 +671,6 @@ export function ClassTable() {
     };
   }, [inputFilter, flagsFilter]);
 
-  // Need to notify grid every time we update the filter
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     gridRef.current?.api?.onFilterChanged();
@@ -680,6 +702,18 @@ export function ClassTable() {
           onRowDoubleClicked={(e) => {
             state.toggleActivity(e.data?.class);
           }}
+          onCellKeyDown={(e) => {
+            onRowKeyDown(
+              e,
+              (cls) => {
+                state.setViewedActivity(cls);
+              },
+              (cls) => {
+                state.toggleActivity(cls);
+              },
+            );
+          }}
+          suppressOverlays={["noRows"]}
           // these have to be set here, not in css:
           headerHeight={40}
           rowHeight={40}

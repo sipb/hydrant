@@ -104,7 +104,11 @@ export function SelectedActivities() {
       </ButtonGroup>
       {warnings.map((warning) => (
         <Flex key={warning} justify="center">
-          <Text fontSize="sm" color="fg.warning" textAlign="center">
+          <Text
+            fontSize="sm"
+            color={{ _light: "orange.700", _dark: "fg.warning" }}
+            textAlign="center"
+          >
             {warning}
           </Text>
         </Flex>

@@ -7,6 +7,7 @@ import type { JSONSchema7Definition } from "json-schema";
 import { parse, stringify } from "smol-toml";
 
 import { Link as RouterLink } from "react-router";
+import { Alert } from "../components/ui/alert";
 import type { Route } from "./+types/overrides.($prefillId)";
 
 import logo from "../assets/logo.svg";
@@ -37,6 +38,10 @@ const schema: RJSFSchema = {
   } as unknown as JSONSchema7Definition,
   $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
 };
+
+// less columns on smaller screens :/
+const COLS_3 = { base: "1fr", sm: "repeat(3, 1fr)" };
+const COLS_6 = { base: "1fr", sm: "repeat(3, 1fr)", md: "repeat(6, 1fr)" };
 
 const overrides = Object.assign(
   {},
@@ -119,6 +124,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   let prefillData: Record<string, unknown>[] = [];
   const prefillIdPrelim = params.prefillId?.toUpperCase();
   let prefillId = "";
+  let prefillError = "";
 
   if (prefillIdPrelim) {
     if (Object.keys(overrideNames).includes(prefillIdPrelim)) {
@@ -128,24 +134,25 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
         prefillId = overrideNames[prefillIdPrelim];
       } else {
         console.error("No data found for prefill ID:", prefillIdPrelim);
+        prefillError = `No existing overrides found for ${prefillIdPrelim}. Pick a department below or start from a blank form.`;
       }
     } else {
       console.error("Invalid prefill ID:", prefillIdPrelim);
+      prefillError = `There are no saved overrides named ${prefillIdPrelim}. Pick a department below or start from a blank form.`;
     }
   }
 
-  return { prefillData, prefillId };
+  return { prefillData, prefillId, prefillError };
 }
 
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
-  const { prefillData, prefillId } = loaderData;
+  const { prefillData, prefillId, prefillError } = loaderData;
 
   const [data, setData] = useState(prefillData);
   const [error, setError] = useState(false);
   const [selected, setSelected] = useState([prefillId]);
 
-  // TODO IN NEXT COMMIT: Make ui schema match what it did before :(
   const uischema = useMemo<UiSchema>(() => {
     const uiSchema = {
       "ui:title": "Overrides",
@@ -177,7 +184,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
               {
                 "ui:row": {
                   gap: 2,
-                  templateColumns: "repeat(3, 1fr)",
+                  templateColumns: COLS_3,
                   children: [
                     {
                       "ui:columns": ["number", "name", "include"],
@@ -188,7 +195,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
               {
                 "ui:row": {
                   gap: 2,
-                  templateColumns: "repeat(3, 1fr)",
+                  templateColumns: COLS_3,
                   children: [
                     {
                       "ui:columns": ["oldNumber", "same", "meets"],
@@ -210,7 +217,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
               {
                 "ui:row": {
                   gap: 2,
-                  templateColumns: "repeat(6, 1fr)",
+                  templateColumns: COLS_6,
                   children: [
                     {
                       "ui:columns": [
@@ -239,7 +246,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
               {
                 "ui:row": {
                   gap: 2,
-                  templateColumns: "repeat(3, 1fr)",
+                  templateColumns: COLS_3,
                   children: ["hass", "comms", "gir"],
                 },
               },
@@ -369,11 +376,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
             semester rather than under a generic name.
           </Text>
           <Text>
-            You don't need to populate all of the available
-            fields&nbsp;&mdash;&nbsp;only the ones that differ from the course
-            catalog. Once you send us your overrides, we'll upload them and
-            they'll appear under the dropdown below. Thank you for your time,
-            and feel free to reach out to{" "}
+            You don't need to populate all of the available fields, only the
+            ones that differ from the course catalog. Once you send us your
+            overrides, we'll upload them and they'll appear under the dropdown
+            below. Thank you for your time, and feel free to reach out to{" "}
             <Link asChild>
               <RouterLink to="mailto:sipb-hydrant@mit.edu">
                 sipb-hydrant@mit.edu
@@ -381,6 +387,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
             </Link>{" "}
             with any questions or concerns!
           </Text>
+          {prefillError && <Alert status="warning" title={prefillError} />}
           <Select.Root
             collection={overridesCollection}
             value={selected}
@@ -476,6 +483,6 @@ export const meta: Route.MetaFunction = () => [
   {
     name: "description",
     content:
-      "Form for department administrators to overrides to the Hydrant team.",
+      "Form for department administrators to submit class overrides to the Hydrant team.",
   },
 ];

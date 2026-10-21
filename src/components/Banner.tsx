@@ -27,15 +27,7 @@ export const AnnouncementsBanner = () => {
     >
       <Box position="relative">
         {/* Main banner */}
-        <Center
-          py="2"
-          px="3"
-          bgGradient="to-r"
-          gradientFrom="hydrant.900"
-          gradientTo="hydrant.700"
-          color="white"
-          textAlign="center"
-        >
+        <Center py="2" px="3" bg="hydrant.800" color="white" textAlign="center">
           <Flex align="center" textStyle="sm">
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
               {BANNER_MESSAGE}
@@ -85,15 +77,7 @@ export const UnknownSubjectsBanner = () => {
       animationDuration="moderate"
     >
       <Box position="relative">
-        <Center
-          py="2"
-          px="3"
-          bgGradient="to-r"
-          gradientFrom="orange.900"
-          gradientTo="orange.700"
-          color="white"
-          textAlign="center"
-        >
+        <Center py="2" px="3" bg="orange.800" color="white" textAlign="center">
           <Flex align="center" textStyle="sm">
             <Text fontWeight="medium" maxW={{ base: "32ch", md: "unset" }}>
               Unknown subjects: {unknownSubjects.join(", ")} may not be in

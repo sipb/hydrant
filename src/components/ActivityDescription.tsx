@@ -37,18 +37,21 @@ function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {
         src={getFlagImg(flag)}
         display="inline-block"
         filter={filter}
+        tabIndex={0}
       />
     </Tooltip>
   );
 }
 
-/** An emoji with tooltip indicating a flag, like Wellness Wizard. */
+/** An icon with tooltip indicating a flag, like Wellness Wizard. */
 function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
   const { flag, title } = props;
 
   return (
     <Tooltip content={title}>
-      <Span>{getPEFlagIcon(flag)}</Span>
+      <Span role="img" aria-label={title} tabIndex={0}>
+        {getPEFlagIcon(flag)}
+      </Span>
     </Tooltip>
   );
 }
@@ -126,8 +129,8 @@ function ClassTypes(props: { cls: Class }) {
     : `${totalUnits.toString()} units: ${units.join("-")}`;
 
   return (
-    <Flex gap={4} align="center">
-      <Flex align="center">
+    <Flex columnGap={4} rowGap={1} align="center" wrap="wrap">
+      <Flex align="center" wrap="wrap">
         {types1}
         <Flex mx={1} align="center">
           ({seasons})
@@ -167,7 +170,7 @@ function PEClassTypes(props: { cls: PEClass }) {
   ]);
 
   return (
-    <Flex gap={4} align="center">
+    <Flex columnGap={4} rowGap={1} align="center" wrap="wrap">
       <Text>Class size: {classSize}</Text>
       <Text>Awards {points} PE points</Text>
       <Flex align="center">{types}</Flex>
@@ -207,8 +210,8 @@ function ClassCIM(props: { cls: Class }) {
     return (
       <Text>
         CI-M for: {cim.join("; ")} (
-        <Link href={CIM_URL} target="_blank">
-          more info
+        <Link href={CIM_URL} target="_blank" rel="noreferrer">
+          see CI-M list
         </Link>
         )
       </Text>
@@ -224,7 +227,7 @@ function ClassEval(props: { cls: Class }) {
   const { rating, hours, people } = cls.evals;
 
   return (
-    <Flex gap={4}>
+    <Flex columnGap={4} rowGap={0.5} wrap="wrap">
       <Text>
         Rating: <Span textStyle="data">{rating}</Span>
       </Text>
@@ -279,7 +282,7 @@ function ClassBody(props: { cls: Class }) {
       </Text>
       {inCharge !== "" && <Text>In-charge: {inCharge}.</Text>}
       {extraUrls.length > 0 && (
-        <Flex gap={4}>
+        <Flex columnGap={4} rowGap={1} wrap="wrap">
           {extraUrls.map(({ label, url }) => (
             <Link
               key={label}
@@ -357,6 +360,7 @@ function CustomActivityDescription(props: { activity: CustomActivity }) {
           <Flex key={t.toString()} align="center" gap={2}>
             <Button
               size="sm"
+              aria-label={`Remove ${t.toString()}`}
               onClick={() => {
                 state.removeTimeslot(activity, t);
               }}
@@ -454,7 +458,7 @@ function PEClassDescription(props: { cls: PEClass }) {
           </Span>
         </Text>
       </Flex>
-      <Flex gap={4}>
+      <Flex columnGap={4} rowGap={1} wrap="wrap">
         {urls.map(({ label, url }) => (
           <Link
             key={label}
