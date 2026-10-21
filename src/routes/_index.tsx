@@ -1,3 +1,5 @@
+import { useContext, useMemo } from "react";
+
 import {
   Center,
   Flex,
@@ -6,6 +8,7 @@ import {
   SkipNavContent,
   SkipNavLink,
 } from "@chakra-ui/react";
+import { ActivityDescription } from "../components/ActivityDescription";
 import { Calendar } from "../components/Calendar";
 import { LeftFooter } from "../components/Footers";
 import { Header, PreferencesDialog } from "../components/Header";
@@ -14,6 +17,7 @@ import { ScheduleOption } from "../components/ScheduleOption";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
 import { TermSwitcher } from "../components/TermSwitcher";
 import { Banner } from "../components/Banner";
+import { AuthButton } from "../components/Auth";
 import {
   MatrixLink,
   PreregLink,
@@ -26,9 +30,9 @@ import { Term } from "../lib/dates";
 import { type SemesterData, getStateMaps } from "../lib/hydrant";
 import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
+import { SessionContext } from "../lib/auth";
 
 import type { Route } from "./+types/_index";
-import { ActivityDescription } from "~/components/ActivityDescription";
 
 export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const searchParams = url.searchParams;
@@ -81,6 +85,8 @@ export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   };
 }
 
+clientLoader.hydrate = true as const;
+
 /** The application entry. */
 function HydrantApp() {
   return (
@@ -109,10 +115,13 @@ function HydrantApp() {
             <Center>
               <Group wrap="wrap" justifyContent="center" gap={4}>
                 <TermSwitcher />
-                <Group gap={4}>
+                <Group>
                   <ScheduleSwitcher />
                 </Group>
-                <PreferencesDialog />
+                <Group>
+                  <PreferencesDialog />
+                  <AuthButton />
+                </Group>
               </Group>
             </Center>
             <Center>
@@ -143,7 +152,12 @@ export const meta: Route.MetaFunction = () => [
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
   const { globalState } = loaderData;
+  const session = useContext(SessionContext);
   const hydrantData = useHydrant({ globalState });
+
+  useMemo(() => {
+    hydrantData.state.loadAccessToken(session?.get("access_token"));
+  }, [session, hydrantData.state]);
 
   return (
     <HydrantContext value={hydrantData}>

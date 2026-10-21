@@ -126,8 +126,8 @@ function makeStateWithStarredClasses(
   const state = Object.create(State.prototype) as State;
   (state as unknown as { starredClasses: Set<string> }).starredClasses =
     starredClasses;
-  (state as unknown as { store: { set: () => void } }).store = {
-    set: () => undefined,
+  (state as unknown as { store: { globalSet: () => void } }).store = {
+    globalSet: () => undefined,
   };
   (state as unknown as { updateState: () => void }).updateState = () =>
     undefined;

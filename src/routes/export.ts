@@ -66,3 +66,5 @@ export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const filledCallback = `${callback}?hydrant=true${encodedClasses}`;
   return redirect(filledCallback);
 }
+
+clientLoader.hydrate = true as const;
