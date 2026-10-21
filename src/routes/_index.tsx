@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect } from "react";
 
 import {
   Center,
@@ -155,7 +155,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const session = useContext(SessionContext);
   const hydrantData = useHydrant({ globalState });
 
-  useMemo(() => {
+  useEffect(() => {
     hydrantData.state.loadAccessToken(session?.get("access_token"));
   }, [session, hydrantData.state]);
 

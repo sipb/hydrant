@@ -2,12 +2,12 @@ import type { Preferences, Save } from "./schema";
 
 export interface TermStore {
   saves: Save[];
-  /** Array of class numbers that are starred */
   [saveId: string]: unknown[];
 }
 
 export interface GlobalStore {
   preferences: Preferences;
+  /** Array of class numbers that are starred */
   starredClasses: string[];
 }
 

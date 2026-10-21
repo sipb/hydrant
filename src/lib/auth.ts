@@ -29,9 +29,9 @@ export const { getSession, commitSession, destroySession } =
       name: "__session",
       path: "/",
       sameSite: "lax",
-      httpOnly: import.meta.env.PROD,
+      httpOnly: false,
       secure: import.meta.env.PROD,
-      // since we don't send auth cookies to a server (since its all client-side), we don't need to sign them
+      // since we don't send auth cookies to a server (since its all client-side), we don't need to sign them (?)
       secrets: [],
     },
   });
@@ -39,6 +39,12 @@ export const { getSession, commitSession, destroySession } =
 export const SessionContext = createContext<Awaited<
   ReturnType<typeof getSession>
 > | null>(null);
+
+/** dont let redirect to external domains */
+export const safeNext = (next: string | null) =>
+  next?.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
+    ? next
+    : "/";
 
 // API FUNCTION CALLS
 

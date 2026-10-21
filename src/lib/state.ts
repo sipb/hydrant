@@ -657,25 +657,16 @@ export class State {
       }
     }
     // Load starred classes from storage
-    const storedStarred = this.store.globalGet("starredClasses") ?? [];
+    this.starredClasses = new Set(this.store.globalGet("starredClasses"));
 
     // backwards compatibility, change from term store to global store
     const storedStarredTerm = this.store.get("starredClasses") as
       string[] | null;
     if (storedStarredTerm) {
-      const totalStarred = storedStarred.concat(storedStarredTerm);
-      this.store.globalSet("starredClasses", totalStarred);
-
-      storedStarredTerm.forEach((cls) => {
-        if (!(cls in storedStarred)) {
-          storedStarred.push(cls);
-        }
-      });
-
+      storedStarredTerm.forEach((cls) => this.starredClasses.add(cls));
+      this.store.globalSet("starredClasses", Array.from(this.starredClasses));
       this.store.delete("starredClasses");
     }
-
-    this.starredClasses = new Set(storedStarred);
   }
 
   loadAccessToken(token?: string): void {
@@ -685,26 +676,25 @@ export class State {
 
     // token has changed!
     if (token) {
-      // user signed in
+      // user signed in, merge remote favorites with local ones
       getFavoriteCourses(token)
-        .then((favoriteCourses) => {
-          favoriteCourses.forEach((cls) => {
-            if (!this.starredClasses.has(cls)) {
-              this.starredClasses.add(cls);
-            }
-          });
+        .then(async (favoriteCourses) => {
+          favoriteCourses.forEach((cls) => this.starredClasses.add(cls));
 
-          this.store.globalSet(
-            "starredClasses",
-            Array.from(this.starredClasses),
-          );
+          const starredArray = Array.from(this.starredClasses);
+          this.store.globalSet("starredClasses", starredArray);
+          this.updateState(false);
+
+          // push stars made while signed out back up to fireroad
+          if (starredArray.length > favoriteCourses.length) {
+            await setFavoriteCourses(token, starredArray);
+          }
         })
         .catch((err: unknown) => {
-          console.error("Failed to fetch favorite courses:", err);
+          console.error("Failed to sync favorite courses:", err);
         });
-    } else {
-      // TODO: user signed out
     }
+    // on sign out, keep local favorites but dont sync anything
 
     this.accessToken = token;
   }

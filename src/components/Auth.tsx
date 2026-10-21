@@ -55,8 +55,8 @@ export function AuthButton() {
           to={{
             pathname,
             search:
-              location.pathname != "/"
-                ? `?next=${location.pathname}`
+              location.pathname != "/" || location.search
+                ? `?${new URLSearchParams({ next: location.pathname + location.search }).toString()}`
                 : undefined,
           }}
         >
