@@ -112,7 +112,6 @@ export async function clientLoader() {
 
     if (!response.ok) {
       // token expired
-      console.log("Token expired!");
       document.cookie = await destroySession(session);
       return { session: null };
     }

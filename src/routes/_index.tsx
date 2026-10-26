@@ -17,7 +17,11 @@ import { ScheduleOption } from "../components/ScheduleOption";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
 import { TermSwitcher } from "../components/TermSwitcher";
 import { Banner } from "../components/Banner";
-import { AuthButton } from "../components/Auth";
+import {
+  AuthButton,
+  SyncConflictDialog,
+  UntaggedSchedulesDialog,
+} from "../components/Auth";
 import {
   MatrixLink,
   PreregLink,
@@ -137,6 +141,8 @@ function HydrantApp() {
           </Flex>
         </SkipNavContent>
       </Flex>
+      <SyncConflictDialog />
+      <UntaggedSchedulesDialog />
     </>
   );
 }
@@ -156,7 +162,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const hydrantData = useHydrant({ globalState });
 
   useEffect(() => {
-    hydrantData.state.loadAccessToken(session?.get("access_token"));
+    hydrantData.state.loadAccessToken(
+      session?.get("access_token"),
+      session?.get("username"),
+    );
   }, [session, hydrantData.state]);
 
   return (

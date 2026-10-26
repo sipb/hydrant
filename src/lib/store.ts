@@ -9,6 +9,10 @@ export interface GlobalStore {
   preferences: Preferences;
   /** Array of class numbers that are starred */
   starredClasses: string[];
+  /** Name of this device when syncing with Fireroad */
+  syncAgent: string;
+  /** Untagged Fireroad schedules not to import, by Fireroad username */
+  syncSkipped: Record<string, number[]>;
 }
 
 /** Generic storage. */

@@ -1,6 +1,8 @@
 import { createContext } from "react";
 import { createCookieSessionStorage } from "react-router";
 
+import type { DeflatedSave } from "./schema";
+
 // https://pilcrowonpaper.com/blog/oauth-guide/
 
 export const FIREROAD_URL = import.meta.env.DEV
@@ -29,9 +31,10 @@ export const { getSession, commitSession, destroySession } =
       name: "__session",
       path: "/",
       sameSite: "lax",
+      // browsers ignore httpOnly cookies set from client
       httpOnly: false,
       secure: import.meta.env.PROD,
-      // since we don't send auth cookies to a server (since its all client-side), we don't need to sign them (?)
+      // no need to sign, the session only lives client-side (?)
       secrets: [],
     },
   });
@@ -40,238 +43,189 @@ export const SessionContext = createContext<Awaited<
   ReturnType<typeof getSession>
 > | null>(null);
 
-/** dont let redirect to external domains */
+/** don't let redirect to external domains */
 export const safeNext = (next: string | null) =>
   next?.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
     ? next
     : "/";
 
-// API FUNCTION CALLS
+/** fireroad sometimes uses error_msg instead of error... */
+type FireroadError = { success: false } & (
+  { error: string } | { error_msg: string }
+);
 
-type GetFavoriteResponse =
-  | {
-      success: false;
-      error: string;
-    }
-  | { success: true; favorites: string[] };
-
-export const getFavoriteCourses = async (authToken: string) => {
-  const response = await fetch(`${FIREROAD_URL}/prefs/favorites/`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
+/**
+ * Call a Fireroad API, POSTing `body` as JSON if given. Throws `failure`, with
+ * Fireroad's own message if there is one, when the request fails.
+ */
+async function fireroad<T>(
+  authToken: string,
+  path: string,
+  failure: string,
+  body?: unknown,
+): Promise<T> {
+  const headers = { Authorization: `Bearer ${authToken}` };
+  const response = await fetch(
+    `${FIREROAD_URL}${path}`,
+    body === undefined
+      ? { headers }
+      : {
+          method: "POST",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        },
+  );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch favorite courses");
+    throw new Error(failure);
   }
 
-  const result = (await response.json()) as GetFavoriteResponse;
+  const result = (await response.json()) as
+    FireroadError | ({ success: true } & T);
   if (!result.success) {
-    throw new Error("Failed to fetch favorite courses: " + result.error);
+    const message = "error" in result ? result.error : result.error_msg;
+    throw new Error(`${failure}: ${message}`);
   }
 
-  return result.favorites;
-};
+  return result;
+}
 
-type SetFavoriteResponse =
-  | {
-      success: false;
-      error: string;
-    }
-  | { success: true };
+export const getFavoriteCourses = async (authToken: string) =>
+  (
+    await fireroad<{ favorites: string[] }>(
+      authToken,
+      "/prefs/favorites/",
+      "Failed to fetch favorite courses",
+    )
+  ).favorites;
 
 export const setFavoriteCourses = async (
   authToken: string,
   favorites: string[],
 ) => {
-  const response = await fetch(`${FIREROAD_URL}/prefs/set_favorites/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
-    },
-    body: JSON.stringify(favorites),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to set favorite courses");
-  }
-
-  const result = (await response.json()) as SetFavoriteResponse;
-  if (!result.success) {
-    throw new Error("Failed to set favorite courses: " + result.error);
-  }
+  await fireroad(
+    authToken,
+    "/prefs/set_favorites/",
+    "Failed to set favorite courses",
+    favorites,
+  );
 };
 
-interface ScheduleContents {
-  selectedSubjects: {
-    units: string;
-    subject_id: string;
-    title: string;
-    allowedSections: {
-      Lecture?: number[];
-      Recitation?: number[];
-      Lab?: number[];
-      Design?: number[];
-    };
-    selectedSections: {
-      Lecture?: number;
-      Recitation?: number;
-      Lab?: number;
-      Design?: number;
-    };
-  }[];
+// Fireroad sync protocol: https://github.com/sipb/fireroad-server/blob/master/sync/operations.py
+
+/** "Custom" is only used by custom courses made in the old fireroad app */
+type FireroadSectionKind =
+  "Lecture" | "Recitation" | "Lab" | "Design" | "Custom";
+
+/** hydrant-specific data, stored alongside the fireroad format. */
+export interface HydrantScheduleData {
+  /** Term urlName, e.g. "f26" */
+  term: string;
+  /** Name of the save in Hydrant, without the term suffix */
+  name: string;
+  /** Output of State.deflate(), missing until Hydrant first loads the file */
+  state?: DeflatedSave;
 }
 
-type GetSchedulesWithIdResult =
-  | {
-      success: false;
-      error: string;
-    }
-  | {
-      success: true;
-      file: {
-        name: string;
-        id: string;
-        changed: string;
-        downloaded: string;
-        agent: string;
-        contents: ScheduleContents;
-      };
-    };
+export interface ScheduleContents {
+  selectedSubjects: {
+    subject_id: string;
+    title: string;
+    /** Total units; old app reads this as a number */
+    units: number;
+    /** Section indices the user allows, omitted by apps when unconstrained */
+    allowedSections?: Partial<Record<FireroadSectionKind, number[]>>;
+    /** Chosen section indices, omitted by apps before a schedule is picked */
+    selectedSections?: Partial<Record<FireroadSectionKind, number>>;
+  }[];
+  hydrant?: HydrantScheduleData;
+}
 
-type GetSchedulesWithoutIdResult =
-  | {
-      success: false;
-      error: string;
-    }
-  | {
-      success: true;
+export interface RemoteScheduleFile {
+  name: string;
+  id: number;
+  changed: string;
+  downloaded: string;
+  agent: string;
+  contents: ScheduleContents;
+}
+
+/** get a summary of all schedules, keyed by id. */
+export const getSchedules = async (authToken: string) =>
+  (
+    await fireroad<{
       files: Record<string, { name: string; changed: string; agent: string }>;
-    };
+    }>(authToken, "/sync/schedules/", "Failed to fetch schedules")
+  ).files;
 
-export const getSchedules = async (authToken: string, id?: string) => {
-  const response = await fetch(
-    `${FIREROAD_URL}/sync/schedules/${id ? `?id=${id}` : ""}`,
+/** get a single schedule, including contents. */
+export const getSchedule = async (authToken: string, id: number) =>
+  (
+    await fireroad<{ file: RemoteScheduleFile }>(
+      authToken,
+      `/sync/schedules/?id=${id.toString()}`,
+      "Failed to fetch schedule",
+    )
+  ).file;
+
+export const deleteSchedule = async (authToken: string, id: number) => {
+  await fireroad(
+    authToken,
+    "/sync/delete_schedule/",
+    "Failed to delete schedule",
     {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+      id,
     },
   );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch schedules");
-  }
-
-  if (typeof id == "string") {
-    // id specified, return single schedule
-    const result = (await response.json()) as GetSchedulesWithIdResult;
-    if (!result.success) {
-      throw new Error("Failed to fetch schedule: " + result.error);
-    }
-
-    return result.file;
-  } else {
-    // no id specified, return all schedules
-    const result = (await response.json()) as GetSchedulesWithoutIdResult;
-    if (!result.success) {
-      throw new Error("Failed to fetch schedules: " + result.error);
-    }
-
-    return result.files;
-  }
 };
 
-type DeleteScheduleResult =
+export type SyncScheduleResult =
+  | { result: "no_change"; changed: string }
   | {
-      success: false;
-      error: string;
+      result: "update_remote";
+      changed: string;
+      /** id is only present when a new file was created */
+      id?: number;
     }
-  | { success: true };
-
-export const deleteSchedule = async (authToken: string, id: string) => {
-  const response = await fetch(`${FIREROAD_URL}/delete_schedule/`, {
-    method: "POST",
-    body: JSON.stringify({ id }),
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to delete schedule");
-  }
-
-  const result = (await response.json()) as DeleteScheduleResult;
-  if (!result.success) {
-    throw new Error("Failed to delete schedule: " + result.error);
-  }
-
-  return result;
-};
-
-type SyncScheduleResult =
   | {
-      success: false;
-      error: string;
-    }
-  | { success: true; result: "no_change"; changed: string }
-  | { success: true; result: "update_remote"; changed: string }
-  | {
-      success: true;
       result: "update_local";
       contents: ScheduleContents;
       name: string;
-      id: string;
+      id: number;
       downloaded: string;
+      changed: string;
     }
   | {
-      success: true;
       result: "conflict";
       other_name: string;
       other_agent: string;
       other_date: string;
+      /** empty if the remote file was deleted */
       other_contents: ScheduleContents | "";
       this_agent: string;
       this_date: string;
     };
 
-export const syncSchedule = async (
+export interface SyncScheduleOperation {
+  /** Remote id; omit to create a new file */
+  id?: number;
+  name: string;
+  contents: ScheduleContents;
+  /** ISO time of the last local change */
+  changed: string;
+  /** ISO time of the last download, required for existing files */
+  downloaded?: string;
+  agent: string;
+  override?: boolean;
+}
+
+export const syncSchedule = (
   authToken: string,
-  id: string,
-  contents: ScheduleContents,
-  changed: string,
-  downloaded?: string,
-  name?: string,
-  agent?: string,
-  override?: boolean,
-) => {
-  const response = await fetch(`${FIREROAD_URL}/sync_schedule/`, {
-    method: "POST",
-    body: JSON.stringify({
-      id,
-      contents,
-      changed,
-      downloaded,
-      name,
-      agent,
-      override,
-    }),
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to sync schedule");
-  }
-
-  const result = (await response.json()) as SyncScheduleResult;
-  if (!result.success) {
-    throw new Error("Failed to sync schedule: " + result.error);
-  }
-
-  return result;
-};
+  operation: SyncScheduleOperation,
+) =>
+  fireroad<SyncScheduleResult>(
+    authToken,
+    "/sync/sync_schedule/",
+    "Failed to sync schedule",
+    operation,
+  );

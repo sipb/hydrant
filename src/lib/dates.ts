@@ -209,6 +209,11 @@ export function getUrlNames(latestUrlName: string): string[] {
   return res;
 }
 
+/** Every term Hydrant has data for, latest first. */
+export function getTerms(latestUrlName: string): Term[] {
+  return getUrlNames(latestUrlName).map((urlName) => new Term({ urlName }));
+}
+
 /**
  * Return the "closest" urlName to the one provided, as well as whether or not
  * the user should be shown a warning that this does not match the term

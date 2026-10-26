@@ -31,7 +31,8 @@
     "rrule-temporal": "^2.2.8",
     "smol-toml": "^1.9.1",
     "temporal-polyfill": "^1.0.5",
-    "timezones-ical-library": "^2.3.2"
+    "timezones-ical-library": "^2.3.2",
+    "ua-parser-js": "^2.0.10"
   },
   "scripts": {
     "dev": "react-router dev",

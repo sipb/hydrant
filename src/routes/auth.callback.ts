@@ -33,7 +33,6 @@ export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   }
 
   if (!response.ok) {
-    // error fetching token
     throw data(null, 400);
   }
 
