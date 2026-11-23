@@ -34,10 +34,39 @@ export const { getSession, commitSession, destroySession } =
       // browsers ignore httpOnly cookies set from client
       httpOnly: false,
       secure: import.meta.env.PROD,
-      // no need to sign, the session only lives client-side (?)
+      // since app is client-side, secret would be in bundle...
       secrets: [],
     },
   });
+
+const PENDING_LOGIN_KEY = "hydrant-pending-login";
+/**login codes expire after 10 minutes */
+const PENDING_LOGIN_TIMEOUT = 10 * 60 * 1000;
+
+/** store login state and redirect after login */
+export function startPendingLogin(next: string | null): void {
+  sessionStorage.setItem(
+    PENDING_LOGIN_KEY,
+    JSON.stringify({ next, started: Date.now() }),
+  );
+}
+
+/** rejects login codes from links that someone else made (login CSRF) */
+export function finishPendingLogin(): string | undefined {
+  const pending = sessionStorage.getItem(PENDING_LOGIN_KEY);
+  sessionStorage.removeItem(PENDING_LOGIN_KEY);
+  if (!pending) return undefined;
+  try {
+    const { next, started } = JSON.parse(pending) as {
+      next: string | null;
+      started: number;
+    };
+    const age = Date.now() - started;
+    return age >= 0 && age < PENDING_LOGIN_TIMEOUT ? safeNext(next) : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 export const SessionContext = createContext<Awaited<
   ReturnType<typeof getSession>

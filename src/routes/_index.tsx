@@ -109,11 +109,11 @@ function ScheduleToolbar() {
     <Group wrap="wrap" justifyContent="center" alignSelf="center" gap={4}>
       <TermSwitcher />
       <Group>
-      <ScheduleSwitcher />
+        <ScheduleSwitcher />
       </Group>
       <Group>
-      <PreferencesDialog />
-      <AuthButton />
+        <PreferencesDialog />
+        <AuthButton />
       </Group>
     </Group>
   );

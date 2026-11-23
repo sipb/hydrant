@@ -5,16 +5,17 @@ import type { SessionData } from "../lib/auth";
 import {
   commitSession,
   FIREROAD_FETCH_TOKEN_URL,
+  finishPendingLogin,
   getSession,
-  safeNext,
 } from "../lib/auth";
 import type { Route } from "./+types/auth.callback";
 
 export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const code = url.searchParams.get("code");
-  const next = url.searchParams.get("next");
+  const next = finishPendingLogin();
 
-  if (!code) {
+  // reject codes from logins this tab didn't start
+  if (next === undefined || !code) {
     throw data(null, 400);
   }
 
@@ -46,7 +47,7 @@ export async function clientLoader({ url }: Route.ClientLoaderArgs) {
 
   document.cookie = await commitSession(session);
 
-  return replace(safeNext(next));
+  return replace(next);
 }
 
 clientLoader.hydrate = true as const;
