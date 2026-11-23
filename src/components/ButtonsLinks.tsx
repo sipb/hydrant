@@ -11,7 +11,7 @@ import {
 } from "react-icons/lu";
 import { Tooltip } from "./ui/tooltip";
 import { Link as RouterLink } from "react-router";
-import { Button, Image, Link, Text } from "@chakra-ui/react";
+import { Button, ButtonGroup, Image, Link, Text } from "@chakra-ui/react";
 
 import sipbLogo from "../assets/simple-fuzzball.png";
 
@@ -106,6 +106,16 @@ export function PreregLink() {
         </RouterLink>
       </Button>
     </Tooltip>
+  );
+}
+
+export function ScheduleActions() {
+  return (
+    <ButtonGroup wrap="wrap" justifyContent="center" alignSelf="center" gap={2}>
+      <ExportCalendar />
+      <PreregLink />
+      <MatrixLink />
+    </ButtonGroup>
   );
 }
 

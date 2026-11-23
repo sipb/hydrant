@@ -27,7 +27,7 @@ dist-ssr
 # artifacts
 scrapers/*.json
 public/latest.json
-public/m26.json
+public/i27.json
 
 # python
 __pycache__

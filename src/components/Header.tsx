@@ -246,7 +246,7 @@ export function Header() {
   };
 
   return (
-    <Flex align="center" gap={3} wrap="wrap" as="header">
+    <Flex align="center" gap={3} wrap="wrap">
       <Image
         src={hydraAnt}
         alt="Hydrant ant logo"

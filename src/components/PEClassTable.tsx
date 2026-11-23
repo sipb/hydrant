@@ -405,7 +405,7 @@ export function PEClassTable() {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
-      <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
+      <Box h="clamp(320px, 50dvh, 640px)" w="full" overflow="auto">
         <AgGridReact<ClassTableRow>
           theme={HYDRANT_THEME}
           ref={gridRef}

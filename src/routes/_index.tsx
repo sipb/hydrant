@@ -1,39 +1,40 @@
 import { useContext, useEffect } from "react";
 
 import {
-  Center,
+  Box,
   Flex,
+  Grid,
   Group,
-  ButtonGroup,
   SkipNavContent,
   SkipNavLink,
+  type GridProps,
 } from "@chakra-ui/react";
+
 import { ActivityDescription } from "../components/ActivityDescription";
-import { Calendar } from "../components/Calendar";
-import { LeftFooter } from "../components/Footers";
+import { Banner } from "../components/Banner";
+import { ScheduleActions } from "../components/ButtonsLinks";
+import { CalendarPanel } from "../components/Calendar";
+import { ClassTypesSwitcher } from "../components/ClassTypes";
+import { Footer } from "../components/Footers";
 import { Header, PreferencesDialog } from "../components/Header";
 import { SelectedActivities } from "../components/SelectedActivities";
-import { ScheduleOption } from "../components/ScheduleOption";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
 import { TermSwitcher } from "../components/TermSwitcher";
-import { Banner } from "../components/Banner";
 import {
   AuthButton,
   SyncConflictDialog,
   UntaggedSchedulesDialog,
 } from "../components/Auth";
-import {
-  MatrixLink,
-  PreregLink,
-  ExportCalendar,
-} from "../components/ButtonsLinks";
-import { ClassTypesSwitcher } from "../components/ClassTypes";
 
 import { State } from "../lib/state";
-import { Term } from "../lib/dates";
-import { type SemesterData, getStateMaps } from "../lib/hydrant";
-import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
-import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
+import { Term, getClosestUrlName, type LatestTermInfo } from "../lib/dates";
+import {
+  useHydrant,
+  HydrantContext,
+  fetchNoCache,
+  getStateMaps,
+  type SemesterData,
+} from "../lib/hydrant";
 import { SessionContext } from "../lib/auth";
 
 import type { Route } from "./+types/_index";
@@ -89,6 +90,35 @@ export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   };
 }
 
+/** two col on desktop, one on mobile */
+const pageLayout: GridProps = {
+  w: "100%",
+  p: 4,
+  columnGap: 8,
+  rowGap: 6,
+  templateColumns: { base: "minmax(0, 1fr)", lg: "repeat(2, minmax(0, 1fr))" },
+  templateAreas: {
+    base: `"header" "main" "calendar" "footer"`,
+    lg: `"header main" "calendar main" "footer main"`,
+  },
+  templateRows: { lg: "auto 1fr auto" },
+};
+
+function ScheduleToolbar() {
+  return (
+    <Group wrap="wrap" justifyContent="center" alignSelf="center" gap={4}>
+      <TermSwitcher />
+      <Group>
+      <ScheduleSwitcher />
+      </Group>
+      <Group>
+      <PreferencesDialog />
+      <AuthButton />
+      </Group>
+    </Group>
+  );
+}
+
 clientLoader.hydrate = true as const;
 
 /** The application entry. */
@@ -97,50 +127,24 @@ function HydrantApp() {
     <>
       <SkipNavLink>Skip to content</SkipNavLink>
       <Banner />
-      <Flex w="100%" direction={{ base: "column", lg: "row" }} p={4} gap={8}>
-        <Flex
-          direction="column"
-          w={{ base: "100%", lg: "50%" }}
-          gap={6}
-          as="aside"
-        >
+      <Grid {...pageLayout}>
+        <Box as="header" gridArea="header">
           <Header />
-          <ScheduleOption />
-          <Calendar />
-          <LeftFooter />
-        </Flex>
+        </Box>
         <SkipNavContent asChild>
-          <Flex
-            direction="column"
-            w={{ base: "100%", lg: "50%" }}
-            gap={6}
-            as="main"
-          >
-            <Center>
-              <Group wrap="wrap" justifyContent="center" gap={4}>
-                <TermSwitcher />
-                <Group>
-                  <ScheduleSwitcher />
-                </Group>
-                <Group>
-                  <PreferencesDialog />
-                  <AuthButton />
-                </Group>
-              </Group>
-            </Center>
-            <Center>
-              <ButtonGroup wrap="wrap" justifyContent="center" gap={2}>
-                <ExportCalendar />
-                <PreregLink />
-                <MatrixLink />
-              </ButtonGroup>
-            </Center>
+          <Flex as="main" gridArea="main" direction="column" gap={6}>
+            <ScheduleToolbar />
+            <ScheduleActions />
             <SelectedActivities />
             <ClassTypesSwitcher />
             <ActivityDescription />
           </Flex>
         </SkipNavContent>
-      </Flex>
+        <CalendarPanel />
+        <Box as="footer" gridArea="footer">
+          <Footer />
+        </Box>
+      </Grid>
       <SyncConflictDialog />
       <UntaggedSchedulesDialog />
     </>
