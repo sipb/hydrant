@@ -27,6 +27,7 @@ import {
 } from "ag-grid-community";
 
 import {
+  Badge,
   Box,
   Span,
   Flex,
@@ -38,7 +39,14 @@ import {
   CloseButton,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { LuPlus, LuMinus, LuSearch, LuBadgePlus, LuStar } from "react-icons/lu";
+import {
+  LuPlus,
+  LuMinus,
+  LuSearch,
+  LuBadgePlus,
+  LuStar,
+  LuX,
+} from "react-icons/lu";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
@@ -358,12 +366,8 @@ const CLASS_FLAGS_4: FilterGroup = [
   ["notcih", "Not CI-H"],
 ];
 
-const CLASS_FLAGS = [
-  ...CLASS_FLAGS_1,
-  ...CLASS_FLAGS_2,
-  ...CLASS_FLAGS_3,
-  ...CLASS_FLAGS_4,
-];
+const HIDDEN_FLAGS = [...CLASS_FLAGS_2, ...CLASS_FLAGS_3, ...CLASS_FLAGS_4];
+const CLASS_FLAGS = [...CLASS_FLAGS_1, ...HIDDEN_FLAGS];
 
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
@@ -396,9 +400,20 @@ function ClassFlags(props: {
     };
   }, [state, flags, updateFilter]);
 
+  const hiddenActive = HIDDEN_FLAGS.filter(([flag]) => flags.get(flag)).length;
+  const anyActive = Array.from(flags.values()).some(Boolean);
+
   const onChange = (flag: Filter, value: boolean) => {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
+    applyFlags(newFlags);
+  };
+
+  const onClear = () => {
+    applyFlags(new Map(Array.from(flags.keys(), (flag) => [flag, false])));
+  };
+
+  const applyFlags = (newFlags: Map<Filter, boolean>) => {
     setFlags(newFlags);
 
     // careful! we have to wrap it with a () => because otherwise React will
@@ -500,7 +515,22 @@ function ClassFlags(props: {
         >
           {allFlags ? <LuMinus /> : <LuPlus />}
           {allFlags ? "Less filters" : "More filters"}
+          {!allFlags && hiddenActive > 0 && (
+            <Badge
+              variant="solid"
+              size="sm"
+              aria-label={`${hiddenActive.toString()} active`}
+            >
+              {hiddenActive}
+            </Badge>
+          )}
         </Button>
+        {anyActive && (
+          <Button onClick={onClear} size="sm" variant="ghost">
+            <LuX />
+            Clear filters
+          </Button>
+        )}
       </Flex>
       {allFlags && (
         <>
@@ -684,7 +714,7 @@ export function ClassTable() {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
-      <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
+      <Box h="clamp(320px, 50dvh, 640px)" w="full" overflow="auto">
         <AgGridReact<ClassTableRow>
           theme={HYDRANT_THEME}
           ref={gridRef}

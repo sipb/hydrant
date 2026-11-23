@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Circle, Float, Text } from "@chakra-ui/react";
+import { Box, Circle, Flex, Float, Text } from "@chakra-ui/react";
 import { Tooltip } from "./ui/tooltip";
 
 import FullCalendar, {
@@ -15,6 +15,7 @@ import type { Activity } from "../lib/activity";
 import { CustomActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
+import { ScheduleOption } from "./ScheduleOption";
 
 import "@fullcalendar/react/skeleton.css";
 import "@fullcalendar/react/themes/monarch/theme.css";
@@ -290,5 +291,36 @@ export function Calendar() {
         }
       }}
     />
+  );
+}
+
+export function CalendarPanel() {
+  const { hydrantState } = useHydrantContext();
+  const hasOptions = hydrantState.totalOptions > 1;
+
+  return (
+    <Box gridArea="calendar">
+      <Flex
+        as="aside"
+        aria-label="Calendar"
+        direction="column"
+        gap={2}
+        py={{ lg: 2 }}
+        // so the schedule options sit just under the logo
+        mt={{ lg: hasOptions ? -7 : 0 }}
+        css={{
+          // pin only when the whole calendar fits
+          "@media (min-width: 1024px) and (min-height: 880px)": {
+            position: "sticky",
+            top: 0,
+            maxH: "100dvh",
+            overflowY: "auto",
+          },
+        }}
+      >
+        <ScheduleOption />
+        <Calendar />
+      </Flex>
+    </Box>
   );
 }
