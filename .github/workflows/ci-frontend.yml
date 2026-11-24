@@ -8,7 +8,6 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - ".gitignore"
-      - ".prettierignore"
       - "scrapers/overrides.toml.d/override-schema.json"
   pull_request:
     branches: [main]
@@ -17,11 +16,10 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - ".gitignore"
-      - ".prettierignore"
       - "scrapers/overrides.toml.d/override-schema.json"
 
 jobs:
-  prettier:
+  format:
     name: Format
     runs-on: ubuntu-latest
     steps:

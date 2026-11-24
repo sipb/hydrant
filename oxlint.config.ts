@@ -1,7 +1,7 @@
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
-  plugins: ["typescript", "react", "unicorn", "import", "react-perf"],
+  plugins: ["oxc", "typescript", "react", "unicorn", "import", "jsx-a11y"],
   categories: {
     correctness: "error",
     suspicious: "warn",
@@ -43,6 +43,8 @@ export default defineConfig({
       },
     ],
     "react/rules-of-hooks": "error",
+    "jsx-a11y/no-autofocus": "off",
+    "jsx-a11y/prefer-tag-over-role": "warn",
   },
   overrides: [
     {
