@@ -46,7 +46,6 @@ const schema: RJSFSchema = {
     ...additionalProperties,
     required: ["number"],
   } as unknown as JSONSchema7Definition,
-  /* oxlint-enable typescript/no-unsafe-type-assertion */
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   definitions: definitions as Record<string, JSONSchema7Definition>,
 };
