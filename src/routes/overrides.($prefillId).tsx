@@ -41,7 +41,7 @@ const validator = customizeValidator<FormData>();
 const schema: RJSFSchema = {
   title: "Overrides",
   type: "array",
-  /* oxlint-disable typescript/no-unsafe-type-assertion */
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   items: {
     ...additionalProperties,
     required: ["number"],
@@ -90,18 +90,21 @@ const overrideNames = Object.entries(overrides)
     return accum;
   }, {});
 
+const isTomlTable = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" &&
+  value !== null &&
+  !Array.isArray(value) &&
+  !(value instanceof Date);
+
 const getDataFromFile = async (fileName: string) => {
   try {
     const textToml = await overrides[fileName].data();
     const mod = tomlParse(textToml);
 
-    const newData = Object.entries(mod).map(([key, value]) => {
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      const { number: _num, ...rest } = value as Record<string, unknown>;
-      return {
-        number: key,
-        ...rest,
-      };
+    const newData = Object.entries(mod).flatMap(([key, value]) => {
+      if (!isTomlTable(value)) return [];
+      const { number: _num, ...rest } = value;
+      return [{ number: key, ...rest }];
     });
     return newData;
   } catch (err) {

@@ -9,6 +9,8 @@ import {
   type SetStateAction,
 } from "react";
 
+import type { IRowNode, ColDef } from "ag-grid-community";
+
 import {
   Badge,
   Box,
@@ -22,21 +24,6 @@ import {
   Span,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import {
-  ModuleRegistry,
-  ClientSideRowModelModule,
-  ValidationModule,
-  ExternalFilterModule,
-  RenderApiModule,
-  CellStyleModule,
-  RowStyleModule,
-  themeQuartz,
-  type IRowNode,
-  type ColDef,
-  type Module,
-  type CellKeyDownEvent,
-  type FullWidthCellKeyDownEvent,
-} from "ag-grid-community";
 import { AgGridReact, type CustomCellRendererProps } from "ag-grid-react";
 import {
   LuPlus,
@@ -54,73 +41,18 @@ import type { State } from "../lib/state";
 import { DARK_IMAGES, getFlagImg } from "../lib/class";
 import { ColorStyles } from "../lib/colors";
 import { useHydrantContext } from "../lib/hydrant";
+import {
+  HYDRANT_THEME,
+  INITIAL_SORT,
+  onRowKeyDown,
+  sortProps,
+} from "../lib/table";
 import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
 import styles from "./ClassTable.module.css";
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const HYDRANT_THEME = themeQuartz.withParams({
-  accentColor: "var(--chakra-colors-hydrant-solid)",
-  backgroundColor: "var(--chakra-colors-bg-panel)",
-  borderColor: "var(--chakra-colors-border)",
-  browserColorScheme: "inherit",
-  fontFamily: "inherit",
-  foregroundColor: "var(--chakra-colors-fg)",
-  headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
-  headerTextColor: "var(--chakra-colors-fg-muted)",
-  rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-l2)",
-});
-
-const GRID_MODULES: Module[] = [
-  ClientSideRowModelModule,
-  ExternalFilterModule,
-  CellStyleModule,
-  RenderApiModule,
-  RowStyleModule,
-  ...(import.meta.env.DEV ? [ValidationModule] : []),
-];
-
-ModuleRegistry.registerModules(GRID_MODULES);
-
-export const INITIAL_SORT = "asc" as const;
-const SORTING_ORDER: ("asc" | "desc")[] = ["asc", "desc"];
-// eslint-disable-next-line react-refresh/only-export-components
-export const sortProps = {
-  sortable: true,
-  unSortIcon: true,
-  sortingOrder: SORTING_ORDER,
-};
-
-/**
- * enter to look at the class (single click), shift+enter to
- * toggle the class (double click)
- */
-// eslint-disable-next-line react-refresh/only-export-components
-export function onRowKeyDown<T extends { class: unknown }>(
-  e: CellKeyDownEvent<T> | FullWidthCellKeyDownEvent<T>,
-  view: (cls: T["class"]) => void,
-  toggle: (cls: T["class"]) => void,
-) {
-  const { event } = e;
-
-  if (!(event instanceof KeyboardEvent) || event.key !== "Enter" || !e.data) {
-    return;
-  }
-  if (event.target instanceof Element && event.target.closest("button")) {
-    return;
-  }
-
-  event.preventDefault();
-  if (event.shiftKey) {
-    toggle(e.data.class);
-  } else {
-    view(e.data.class);
-  }
-}
 
 const getRatingColor = (rating?: string | null) => {
   if (!rating || rating === "N/A") return ColorStyles.Muted;

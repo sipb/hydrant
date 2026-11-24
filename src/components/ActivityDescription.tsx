@@ -351,7 +351,6 @@ function ClassDescription(props: { cls: Class }) {
 
 /** Full custom activity description, from title to timeslots. */
 function CustomActivityDescription(props: { activity: CustomActivity }) {
-  "use no memo";
   const { activity } = props;
   const { state } = useHydrantContext();
 

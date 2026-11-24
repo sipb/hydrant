@@ -29,7 +29,7 @@ If this is the **first time** you're spinning up the website, the two steps have
 
 After the first time, the step order doesn't matter to bring up the site; in fact, backend step (1) can even be skipped -- since you'd already have locally cached data. Though backend commands are still necessary if you'd like to keep the data updated.
 
-Before making commits, run `black .` (for the backend) and `npm run format` (for the frontend) to ensure that your changes comply with the project's code style. (This will also get checked by CI when you open a pull request.) Both [Black](https://black.readthedocs.io/en/stable/integrations/editors.html) and [Prettier](https://prettier.io/docs/en/editors) have editor integrations as well.
+Before making commits, run `black .` (for the backend) and `npm run format` + `npm run lint` (for the frontend) to ensure that your changes comply with the project's code style. (This will also get checked by CI when you open a pull request.) [Black](https://black.readthedocs.io/en/stable/integrations/editors.html), [oxfmt](https://oxc.rs/docs/guide/usage/formatter/editors.html), and [oxlint](https://oxc.rs/docs/guide/usage/linter/editors.html) have editor integrations as well.
 
 ### Changing semesters
 

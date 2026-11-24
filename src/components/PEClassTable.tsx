@@ -26,14 +26,14 @@ import type { State } from "../lib/state";
 import { ColorStyles } from "../lib/colors";
 import { useHydrantContext } from "../lib/hydrant";
 import { type PEFlags, type PEClass, getPEFlagIcon } from "../lib/pe";
-import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import {
   HYDRANT_THEME,
   INITIAL_SORT,
-  sortProps,
-  ClassSearchInput,
   onRowKeyDown,
-} from "./ClassTable";
+  sortProps,
+} from "../lib/table";
+import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
+import { ClassSearchInput } from "./ClassTable";
 import { LabelledButton } from "./ui/button";
 
 import styles from "./ClassTable.module.css";

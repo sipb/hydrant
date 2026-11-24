@@ -204,7 +204,6 @@ const RenderOptions = (props: {
 
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class | PEClass }) {
-  "use no memo";
   const { cls } = props;
   const [selected, setSelected] = useState(genSelected(cls));
 
@@ -293,7 +292,6 @@ const RenderCheckboxes = (props: {
 
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class | PEClass }) {
-  "use no memo";
   const { cls } = props;
   const { state, hydrantState } = useHydrantContext();
   const [showManual, setShowManual] = useState(false);
