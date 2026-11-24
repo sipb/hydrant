@@ -75,9 +75,16 @@ export function useHydrant({ globalState }: { globalState: State }): {
   return { state, hydrantState };
 }
 
-export const HydrantContext = createContext({
-  hydrantState: DEFAULT_STATE,
-  state: {} as State,
-});
+export const HydrantContext = createContext<{
+  hydrantState: HydrantState;
+  state: State;
+} | null>(null);
 
-export const useHydrantContext = () => useContext(HydrantContext);
+export const useHydrantContext = () => {
+  const context = useContext(HydrantContext);
+  if (!context) {
+    throw new Error("useHydrantContext must be used within HydrantContext");
+  }
+
+  return context;
+};
