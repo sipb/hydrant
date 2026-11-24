@@ -1,0 +1,14 @@
+#:schema ../override-schema.json
+
+["21A.S01"]
+name = "Special Topic: Anthro-Engineering - Introduction to Community-Engaged Research"
+prereqs = "None"
+isVariableUnits = false
+lectureUnits = 2
+labUnits = 1
+preparationUnits = 9
+comms = ""
+gir = ""
+inCharge = "S. Atalay"
+description = "Introduces foundational concepts/methods of working with communities to carry out engineering, design, public health and other research endeavors. Students watch pre-recorded lecture material online (including examples of community-based projects from scientists and community members) then meet in-person to discuss and engage in hands-on activities. Prepares students to collaboratively design and conduct research/projects with communities. Topics include ethics, connecting with community partners, collaborative project design, protection of community IP/data, citizen science & collaborative fieldwork, arts-based approaches to share research results (e.g. comics, storybaskets)."
+url = "https://anthropology.mit.edu/node/408"
