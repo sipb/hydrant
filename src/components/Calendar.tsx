@@ -1,6 +1,13 @@
 import { useMemo } from "react";
 
-import { Box, Circle, Flex, Float, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Circle,
+  Flex,
+  Float,
+  Text,
+  VisuallyHidden,
+} from "@chakra-ui/react";
 import FullCalendar, {
   type EventDisplayInfo,
   type EventApi,
@@ -237,12 +244,11 @@ export function Calendar() {
                 color="white"
                 boxShadow="lg"
                 cursor={"initial"}
-                role="img"
-                aria-label="Long walk before this class"
                 tabIndex={0}
                 _print={{ boxShadow: "none" }}
               >
-                !
+                <span aria-hidden="true">!</span>
+                <VisuallyHidden>Long walk before this class</VisuallyHidden>
               </Circle>
             </Tooltip>
           </Float>

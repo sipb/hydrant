@@ -38,7 +38,7 @@ export function HydrateFallback() {
       gap={3}
     >
       <Spinner aria-hidden="true" />
-      <Text role="status" color="fg.muted">
+      <Text as="output" color="fg.muted">
         Loading Hydrant data...
       </Text>
     </Flex>

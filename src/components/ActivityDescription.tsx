@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   Span,
+  VisuallyHidden,
 } from "@chakra-ui/react";
 import { decode } from "html-entities";
 import { LuBadgePlus, LuExternalLink, LuStar } from "react-icons/lu";
@@ -49,8 +50,9 @@ function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
 
   return (
     <Tooltip content={title}>
-      <Span role="img" aria-label={title} tabIndex={0}>
-        {getPEFlagIcon(flag)}
+      <Span tabIndex={0}>
+        <Span aria-hidden="true">{getPEFlagIcon(flag)}</Span>
+        <VisuallyHidden>{title}</VisuallyHidden>
       </Span>
     </Tooltip>
   );

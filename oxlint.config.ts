@@ -44,7 +44,6 @@ export default defineConfig({
     ],
     "react/rules-of-hooks": "error",
     "jsx-a11y/no-autofocus": "off",
-    "jsx-a11y/prefer-tag-over-role": "warn",
   },
   overrides: [
     {
