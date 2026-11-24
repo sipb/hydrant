@@ -1,0 +1,14 @@
+#:schema ../override-schema.json
+
+["21H.S01"]
+name = "Special Topic: Palestinian Cultural History 1848-1948"
+prereqs = "None"
+isVariableUnits = false
+lectureUnits = 3
+labUnits = 0
+preparationUnits = 9
+comms = ""
+gir = ""
+inCharge = "F. Asla"
+description = "Introduces students to a century of Palestinian history, spanning the period from 1848 to 1948. Explores key dimensions of Palestinian cultural life and examines major developments that emerged during this era and continue to shape contemporary political and social realities. Topics include the arts, modern education, printing and publishing, libraries, photography, Western musical instruments, and radio. These cultural forms played an important role in the construction of modern Palestinian national identity and were also part of the broader Arab Nahda, or cultural renaissance."
+url = "https://history.mit.edu/21h-s01-special-subject-palestinian-cultural-history-1848-1948/"
