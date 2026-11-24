@@ -2,11 +2,11 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import type { TermInfo } from "../lib/dates";
 import type { HydrantState } from "../lib/schema";
+import type { State } from "../lib/state";
 import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
 
 import { useColorMode } from "../components/ui/color-mode";
 import { DEFAULT_STATE } from "../lib/schema";
-import { State } from "../lib/state";
 
 export interface SemesterData {
   classes: Record<string, RawClass>;
@@ -80,9 +80,13 @@ export function useHydrant({ globalState }: { globalState: State }): {
 export const HydrantContext = createContext<{
   hydrantState: HydrantState;
   state: State;
-}>({
-  hydrantState: DEFAULT_STATE,
-  state: Object.create(State.prototype),
-});
+} | null>(null);
 
-export const useHydrantContext = () => useContext(HydrantContext);
+export const useHydrantContext = () => {
+  const context = useContext(HydrantContext);
+  if (!context) {
+    throw new Error("useHydrantContext must be used within HydrantContext");
+  }
+
+  return context;
+};
