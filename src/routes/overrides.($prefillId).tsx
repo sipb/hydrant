@@ -426,9 +426,9 @@ export default function App({ loaderData }: Route.ComponentProps) {
             showErrorList={"top"}
             liveValidate={"onChange"}
             experimental_defaultFormStateBehavior={{
-              arrayMinItems: { populate: "never" },
-              allOf: "skipDefaults",
-              constAsDefaults: "always",
+              arrayMinItems: { populate: "requiredOnly" },
+              allOf: "populateDefaults",
+              constAsDefaults: "skipOneOf",
               emptyObjectFields: "populateRequiredDefaults",
               mergeDefaultsIntoFormData: "useFormDataIfPresent",
             }}
