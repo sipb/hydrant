@@ -127,6 +127,10 @@ export class State {
     this.initState();
   }
 
+  setCallback(callback: (state: HydrantState) => void): void {
+    this.callback = callback;
+  }
+
   setFitsScheduleCallback(callback: () => void): void {
     this.fitsScheduleCallback = callback;
   }

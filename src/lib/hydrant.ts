@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import type { TermInfo } from "../lib/dates";
 import type { HydrantState } from "../lib/schema";
@@ -44,24 +44,20 @@ export function useHydrant({ globalState }: { globalState: State }): {
   state: State;
   hydrantState: HydrantState;
 } {
-  const stateRef = useRef(globalState);
+  const [state] = useState(globalState);
 
   const [hydrantState, setHydrantState] = useState(DEFAULT_STATE);
-  const { colorMode, setColorMode, toggleColorMode } = useColorMode();
-
-  const state = stateRef.current;
+  const { colorMode, setColorMode } = useColorMode();
 
   useEffect(() => {
     // if colorScheme changes, change colorMode to match
-    state.callback = (newState: HydrantState) => {
+    state.setCallback((newState: HydrantState) => {
       setHydrantState(newState);
-      if (
-        newState.preferences.colorScheme &&
-        colorMode !== newState.preferences.colorScheme.colorMode
-      ) {
+      const { colorScheme } = newState.preferences;
+      if (colorScheme && colorMode !== colorScheme.colorMode) {
         // if the color scheme is not null, set the color mode to match
-        toggleColorMode();
-      } else if (newState.preferences.colorScheme === null) {
+        setColorMode(colorScheme.colorMode);
+      } else if (colorScheme === null) {
         // if the color scheme is null, set the color mode to match the system
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
           setColorMode("dark");
@@ -69,10 +65,9 @@ export function useHydrant({ globalState }: { globalState: State }): {
           setColorMode("light");
         }
       }
-    };
+    });
     state.updateState();
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorMode, state]);
+  }, [colorMode, state, setColorMode]);
 
   return { state, hydrantState };
 }
