@@ -2,15 +2,28 @@
   color: var(--chakra-colors-fg-muted);
 }
 
+/* not enough contrast on white background sigh */
 .success {
-  color: var(--chakra-colors-fg-success);
+  color: var(--chakra-colors-green-700);
 }
 
 .warning {
-  color: var(--chakra-colors-fg-warning);
+  color: var(--chakra-colors-orange-700);
 }
 
 .error {
+  color: var(--chakra-colors-red-700);
+}
+
+:global(.dark) .success {
+  color: var(--chakra-colors-fg-success);
+}
+
+:global(.dark) .warning {
+  color: var(--chakra-colors-fg-warning);
+}
+
+:global(.dark) .error {
   color: var(--chakra-colors-fg-error);
 }
 

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Circle, Float, Text } from "@chakra-ui/react";
+import { Box, Circle, Flex, Float, Text } from "@chakra-ui/react";
 import FullCalendar, {
   type EventDisplayInfo,
   type EventApi,
@@ -12,6 +12,7 @@ import timeGridPlugin from "@fullcalendar/react/timegrid";
 import { CustomActivity, isActivity, Timeslot } from "../lib/activity";
 import { Slot } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
+import { ScheduleOption } from "./ScheduleOption";
 import { Tooltip } from "./ui/tooltip";
 
 import "@fullcalendar/react/skeleton.css";
@@ -93,7 +94,6 @@ export function Calendar() {
    * Get the approximate distance (in feet) between two buildings on campus
    */
   const getBuildingDistance = (building1: string, building2: string) => {
-    // Get coordinates of each building
     const location1 = state.locations.get(building1);
     const location2 = state.locations.get(building2);
 
@@ -105,33 +105,21 @@ export function Calendar() {
   };
 
   /**
-   * Check if event1 ends at the same time that some other event starts. If
-   * this is the case and the commute distance between the two events' locations
-   * is more than half a mile, return an appropriate warning message. Otherwise,
-   * return undefined.
+   * If another event ends exactly when this one starts and the two buildings
+   * are at least DISTANCE_WARNING_THRESHOLD apart, describe that walk.
    */
-  const getDistanceWarning = (thisEvent: EventApi) => {
-    const thisRoom = thisEvent.extendedProps.room;
-    if (!thisEvent.start || !thisRoom) {
-      return undefined;
-    }
-
-    if (typeof thisRoom !== "string" && thisRoom !== undefined) {
-      return undefined;
-    }
-
-    thisRoom satisfies string | undefined;
-
+  const findDistanceWarning = (
+    start: Temporal.PlainDateTime,
+    thisRoom: string,
+  ) => {
     for (const beforeEvent of events) {
-      if (!beforeEvent.start || !beforeEvent.room) {
+      if (!beforeEvent.end || !beforeEvent.room) {
         continue;
       }
       if (
-        Temporal.Instant.compare(
-          thisEvent.start.toTemporalInstant(),
-          Temporal.PlainDateTime.from(beforeEvent.end)
-            .toZonedDateTime(USER_TZ)
-            .toInstant(),
+        Temporal.PlainDateTime.compare(
+          start,
+          Temporal.PlainDateTime.from(beforeEvent.end),
         ) !== 0
       ) {
         continue;
@@ -139,27 +127,45 @@ export function Calendar() {
 
       const thisBuilding = getBuildingNumber(thisRoom);
       const beforeBuilding = getBuildingNumber(beforeEvent.room);
-
-      // Approximate distance (in feet) between the two buildings
       const distance = getBuildingDistance(thisBuilding, beforeBuilding);
 
       if (distance === undefined || distance < DISTANCE_WARNING_THRESHOLD) {
         continue;
       }
 
-      const formattedDistance = state.measurementSystem.formatLength(distance);
-      const mins = (distance / WALKING_SPEED / 60).toFixed(0);
-
-      return (
-        <Text>
-          Warning: distance from {beforeBuilding} to {thisBuilding} is{" "}
-          {formattedDistance}
-          <br />
-          (about a {mins}-minute walk)
-        </Text>
-      );
+      return {
+        from: beforeBuilding,
+        to: thisBuilding,
+        distance: state.measurementSystem.formatLength(distance),
+        mins: (distance / WALKING_SPEED / 60).toFixed(0),
+      };
     }
     return undefined;
+  };
+
+  const getDistanceWarning = (thisEvent: EventApi) => {
+    const thisRoom: unknown = thisEvent.extendedProps.room;
+    if (!thisEvent.start || typeof thisRoom !== "string" || !thisRoom) {
+      return undefined;
+    }
+    const warning = findDistanceWarning(
+      thisEvent.start
+        .toTemporalInstant()
+        .toZonedDateTimeISO(USER_TZ)
+        .toPlainDateTime(),
+      thisRoom,
+    );
+    if (!warning) {
+      return undefined;
+    }
+    return (
+      <Text>
+        Warning: distance from {warning.from} to {warning.to} is{" "}
+        {warning.distance}
+        <br />
+        (about a {warning.mins}-minute walk)
+      </Text>
+    );
   };
 
   const renderEvent = ({
@@ -227,11 +233,13 @@ export function Calendar() {
             >
               <Circle
                 size="5"
-                bg="orange.solid"
-                color="orange.contrast"
+                bg="orange.700"
+                color="white"
                 boxShadow="lg"
                 cursor={"initial"}
-                colorPalette={"orange"}
+                role="img"
+                aria-label="Long walk before this class"
+                tabIndex={0}
                 _print={{ boxShadow: "none" }}
               >
                 !
@@ -317,5 +325,36 @@ export function Calendar() {
         }
       }}
     />
+  );
+}
+
+export function CalendarPanel() {
+  const { hydrantState } = useHydrantContext();
+  const hasOptions = hydrantState.totalOptions > 1;
+
+  return (
+    <Box gridArea="calendar">
+      <Flex
+        as="aside"
+        aria-label="Calendar"
+        direction="column"
+        gap={2}
+        py={{ lg: 2 }}
+        // so the schedule options sit just under the logo
+        mt={{ lg: hasOptions ? -7 : 0 }}
+        css={{
+          // pin only when the whole calendar fits
+          "@media (min-width: 1024px) and (min-height: 880px)": {
+            position: "sticky",
+            top: 0,
+            maxH: "100dvh",
+            overflowY: "auto",
+          },
+        }}
+      >
+        <ScheduleOption />
+        <Calendar />
+      </Flex>
+    </Box>
   );
 }

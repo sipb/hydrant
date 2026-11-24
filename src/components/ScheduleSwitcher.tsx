@@ -116,7 +116,7 @@ function SelectWithWarn(props: { saveId: string; saves: Save[] }) {
           <Dialog.Positioner>
             <Dialog.Content>
               <Dialog.Header>
-                <Dialog.Title>Are you sure?</Dialog.Title>
+                <Dialog.Title>Load without saving?</Dialog.Title>
               </Dialog.Header>
               <Dialog.Body>
                 The current schedule is loaded from a URL and is not saved. Are
@@ -167,9 +167,12 @@ function DeleteDialog(props: {
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Are you sure?</Dialog.Title>
+              <Dialog.Title>Delete {name}?</Dialog.Title>
             </Dialog.Header>
-            <Dialog.Body>Are you sure you want to delete {name}?</Dialog.Body>
+            <Dialog.Body>
+              This removes the saved schedule from your browser. It can't be
+              undone.
+            </Dialog.Body>
             <Dialog.Footer>
               <Dialog.ActionTrigger asChild>
                 <Button>Cancel</Button>
@@ -360,6 +363,7 @@ export function ScheduleSwitcher() {
     if (isRenaming) {
       const renderHeadingRenaming = () => (
         <Input
+          aria-label="Schedule name"
           value={name}
           onChange={(e) => {
             setName(e.target.value);

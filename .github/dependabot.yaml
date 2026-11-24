@@ -7,6 +7,23 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      "react-router":
+        patterns:
+          - "react-router"
+          - "@react-router/*"
+      "react":
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      "rjsf":
+        patterns:
+          - "@rjsf/*"
+      "chakra-ui":
+        patterns:
+          - "@chakra-ui/*"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:

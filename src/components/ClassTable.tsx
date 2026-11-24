@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import {
+  Badge,
   Box,
   Flex,
   Image,
@@ -19,6 +20,7 @@ import {
   InputGroup,
   CloseButton,
   Span,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import {
   ModuleRegistry,
@@ -32,9 +34,18 @@ import {
   type IRowNode,
   type ColDef,
   type Module,
+  type CellKeyDownEvent,
+  type FullWidthCellKeyDownEvent,
 } from "ag-grid-community";
 import { AgGridReact, type CustomCellRendererProps } from "ag-grid-react";
-import { LuPlus, LuMinus, LuSearch, LuStar, LuBadgePlus } from "react-icons/lu";
+import {
+  LuPlus,
+  LuMinus,
+  LuSearch,
+  LuStar,
+  LuBadgePlus,
+  LuX,
+} from "react-icons/lu";
 
 import type { Class, Flags } from "../lib/class";
 import type { TSemester } from "../lib/dates";
@@ -83,6 +94,33 @@ export const sortProps = {
   unSortIcon: true,
   sortingOrder: SORTING_ORDER,
 };
+
+/**
+ * enter to look at the class (single click), shift+enter to
+ * toggle the class (double click)
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function onRowKeyDown<T extends { class: unknown }>(
+  e: CellKeyDownEvent<T> | FullWidthCellKeyDownEvent<T>,
+  view: (cls: T["class"]) => void,
+  toggle: (cls: T["class"]) => void,
+) {
+  const { event } = e;
+
+  if (!(event instanceof KeyboardEvent) || event.key !== "Enter" || !e.data) {
+    return;
+  }
+  if (event.target instanceof Element && event.target.closest("button")) {
+    return;
+  }
+
+  event.preventDefault();
+  if (event.shiftKey) {
+    toggle(e.data.class);
+  } else {
+    view(e.data.class);
+  }
+}
 
 const getRatingColor = (rating?: string | null) => {
   if (!rating || rating === "N/A") return ColorStyles.Muted;
@@ -156,7 +194,8 @@ export function ClassSearchInput(props: {
 
   const clearButton = value ? (
     <CloseButton
-      size="xs"
+      size="sm"
+      aria-label="Clear search"
       onClick={() => {
         onChange("");
         inputRef.current?.focus();
@@ -209,10 +248,8 @@ function ClassInput(props: {
   const { rowData, setInputFilter } = props;
   const { state } = useHydrantContext();
 
-  // State for textbox input.
   const [classInput, setClassInput] = useState("");
 
-  // Search results for classes.
   const searchResults = useRef<
     {
       numbers: string[];
@@ -261,11 +298,9 @@ function ClassInput(props: {
       searchResults.current?.length === 1 ||
       numbers?.some((number) => classNumberMatch(number, classInput, true))
     ) {
-      // first check if the first result matches
       state.toggleActivity(cls);
       onClassInputChange("");
     } else if (state.classes.has(classInput)) {
-      // else check if this number exists exactly
       const clsCheck = state.classes.get(classInput);
       state.toggleActivity(clsCheck);
     }
@@ -352,12 +387,8 @@ const CLASS_FLAGS_4: FilterGroup = [
   ["notcih", "Not CI-H"],
 ];
 
-const CLASS_FLAGS = [
-  ...CLASS_FLAGS_1,
-  ...CLASS_FLAGS_2,
-  ...CLASS_FLAGS_3,
-  ...CLASS_FLAGS_4,
-];
+const HIDDEN_FLAGS = [...CLASS_FLAGS_2, ...CLASS_FLAGS_3, ...CLASS_FLAGS_4];
+const CLASS_FLAGS = [...CLASS_FLAGS_1, ...HIDDEN_FLAGS];
 
 function isFilterNonFlagKey(key: string): key is keyof typeof filtersNonFlags {
   return key in filtersNonFlags;
@@ -373,16 +404,15 @@ function ClassFlags(props: {
   const { setFlagsFilter, updateFilter } = props;
   const { state } = useHydrantContext();
 
-  // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
+  const [flags, setFlags] = useState(() => {
     const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
       result.set(flag[0], false);
     }
+
     return result;
   });
 
-  // Show hidden flags?
   const [allFlags, setAllFlags] = useState(false);
 
   // this callback needs to get called when the set of classes change, because
@@ -395,9 +425,20 @@ function ClassFlags(props: {
     });
   }, [state, flags, updateFilter]);
 
+  const hiddenActive = HIDDEN_FLAGS.filter(([flag]) => flags.get(flag)).length;
+  const anyActive = Array.from(flags.values()).some(Boolean);
+
   const onChange = (flag: Filter, value: boolean) => {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
+    applyFlags(newFlags);
+  };
+
+  const onClear = () => {
+    applyFlags(new Map(Array.from(flags.keys(), (flag) => [flag, false])));
+  };
+
+  const applyFlags = (newFlags: Map<Filter, boolean>) => {
     setFlags(newFlags);
 
     // careful! we have to wrap it with a () => because otherwise React will
@@ -436,7 +477,6 @@ function ClassFlags(props: {
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
-          // hide starred button if no classes starred
           if (
             flag === "starred" &&
             state.getStarredClasses().length === 0 &&
@@ -447,7 +487,6 @@ function ClassFlags(props: {
 
           return image ? (
             typeof image === "string" ? (
-              // if image is a string, it's a path to an image
               <LabelledButton
                 key={flag}
                 onClick={() => {
@@ -459,7 +498,6 @@ function ClassFlags(props: {
                 <Image src={image} alt={label} filter={filter(flag)} />
               </LabelledButton>
             ) : (
-              // image is a react element, like an icon
               <LabelledButton
                 key={flag}
                 onClick={() => {
@@ -489,18 +527,32 @@ function ClassFlags(props: {
 
   return (
     <Flex direction="column" align="center" gap={2}>
-      <Flex align="center">
+      <Flex align="center" justify="center" wrap="wrap" gap={2}>
         {renderGroup(CLASS_FLAGS_1)}
         <Button
           onClick={() => {
             setAllFlags(!allFlags);
           }}
           size="sm"
-          ml={2}
         >
           {allFlags ? <LuMinus /> : <LuPlus />}
           {allFlags ? "Less filters" : "More filters"}
+          {!allFlags && hiddenActive > 0 && (
+            <Badge
+              variant="solid"
+              size="sm"
+              aria-label={`${hiddenActive.toString()} active`}
+            >
+              {hiddenActive}
+            </Badge>
+          )}
         </Button>
+        {anyActive && (
+          <Button onClick={onClear} size="sm" variant="ghost">
+            <LuX />
+            Clear filters
+          </Button>
+        )}
       </Flex>
       {allFlags && (
         <>
@@ -558,8 +610,10 @@ export function ClassTable() {
   const { classes } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
+  // hours hidden on small screens (eg phone)
+  const narrow =
+    useBreakpointValue({ base: true, sm: false }, { ssr: false }) ?? false;
 
-  // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string>[] = useMemo(() => {
     const numberSortProps = {
       // sort by number, N/A is infinity, tiebreak with class number
@@ -582,6 +636,7 @@ export function ClassTable() {
       {
         headerName: "",
         field: "number",
+        width: 49,
         maxWidth: 49,
         cellRenderer: StarCellRenderer,
         sortable: false,
@@ -592,19 +647,23 @@ export function ClassTable() {
         headerName: "Class",
         comparator: classSort,
         initialSort: INITIAL_SORT,
+        width: 93,
         maxWidth: 93,
         cellClass: [styles["underline-on-hover"], styles.data],
         ...sortProps,
       },
       {
         field: "rating",
+        width: 99,
         maxWidth: 99,
         cellClass: (params) => [getRatingColor(params.value), styles.data],
         ...numberSortProps,
       },
       {
         field: "hours",
+        width: 97,
         maxWidth: 97,
+        hide: narrow,
         cellClass: (params) => [
           getHoursColor(
             params.value,
@@ -623,7 +682,7 @@ export function ClassTable() {
         cellRenderer: NameCellRenderer,
       },
     ];
-  }, [state]);
+  }, [state, narrow]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
     return {
@@ -631,7 +690,6 @@ export function ClassTable() {
     };
   }, []);
 
-  // Setup rows
   const rowData: ClassTableRow[] = useMemo(
     () =>
       Array.from(classes.values(), (cls) => ({
@@ -656,7 +714,6 @@ export function ClassTable() {
     };
   }, [inputFilter, flagsFilter]);
 
-  // Need to notify grid every time we update the filter
   useEffect(() => {
     gridRef.current?.api?.onFilterChanged();
     // oxlint-disable-next-line react/exhaustive-effect-dependencies
@@ -669,7 +726,7 @@ export function ClassTable() {
         setFlagsFilter={setFlagsFilter}
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
-      <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
+      <Box h="clamp(320px, 50dvh, 640px)" w="full" overflow="auto">
         <AgGridReact<ClassTableRow>
           theme={HYDRANT_THEME}
           ref={gridRef}
@@ -687,6 +744,18 @@ export function ClassTable() {
           onRowDoubleClicked={(e) => {
             state.toggleActivity(e.data?.class);
           }}
+          onCellKeyDown={(e) => {
+            onRowKeyDown(
+              e,
+              (cls) => {
+                state.setViewedActivity(cls);
+              },
+              (cls) => {
+                state.toggleActivity(cls);
+              },
+            );
+          }}
+          suppressOverlays={["noRows"]}
           // these have to be set here, not in css:
           headerHeight={40}
           rowHeight={40}

@@ -247,14 +247,14 @@ function LicenseDialog() {
 }
 
 /** The footer on the bottom of the calendar. */
-export function LeftFooter() {
+export function Footer() {
   const { state } = useHydrantContext();
   const updateTime = Temporal.PlainDateTime.from(state.lastUpdated)
     .toZonedDateTime("UTC")
     .toInstant();
 
   return (
-    <Flex as="footer" direction="row" align="center" justify="center" gap={5}>
+    <Flex direction="row" align="center" justify="center" gap={5}>
       <Image
         src={fuzzAndAnt}
         alt="Hydra ant and fuzzball stare at a calendar"

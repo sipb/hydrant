@@ -93,7 +93,7 @@ if __name__ == "__main__":
     print("Content-Type: text/plain\r\n\r")
     try:
         print(main())
-    # pylint: disable=broad-except
+    # pylint: disable-next=broad-exception-caught
     except Exception as e:
         print(traceback.format_exc(), file=stdout)
         with open(ERROR_LOG, "w", encoding="utf-8") as fe:

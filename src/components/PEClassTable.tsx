@@ -10,7 +10,13 @@ import {
 
 import type { IRowNode, ColDef } from "ag-grid-community";
 
-import { Box, Flex, Button, ButtonGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Button,
+  ButtonGroup,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { type CustomCellRendererProps } from "ag-grid-react";
 import { AgGridReact } from "ag-grid-react";
 import { LuStar } from "react-icons/lu";
@@ -26,6 +32,7 @@ import {
   INITIAL_SORT,
   sortProps,
   ClassSearchInput,
+  onRowKeyDown,
 } from "./ClassTable";
 import { LabelledButton } from "./ui/button";
 
@@ -72,10 +79,8 @@ function ClassInput(props: {
   const { rowData, setInputFilter } = props;
   const { state } = useHydrantContext();
 
-  // State for textbox input.
   const [classInput, setClassInput] = useState("");
 
-  // Search results for classes.
   const searchResults = useRef<
     {
       number: string;
@@ -120,11 +125,9 @@ function ClassInput(props: {
       searchResults.current?.length === 1 ||
       (number && classNumberMatch(number, classInput, true))
     ) {
-      // first check if the first result matches
       state.toggleActivity(cls);
       onClassInputChange("");
     } else if (state.peClasses.has(classInput)) {
-      // else check if this number exists exactly
       const clsCheck = state.peClasses.get(classInput);
       state.toggleActivity(clsCheck);
     }
@@ -195,14 +198,33 @@ function ClassFlags(props: {
   const { setFlagsFilter, updateFilter } = props;
   const { state } = useHydrantContext();
 
-  // Map from flag to whether it's on.
-  const [flags, setFlags] = useState<Map<Filter, boolean>>(() => {
+  const [flags, setFlags] = useState(() => {
     const result = new Map<Filter, boolean>();
     for (const flag of CLASS_FLAGS) {
       result.set(flag[0], false);
     }
+
+    // default to latest quarter
+    result.set("latest", true);
+
     return result;
   });
+
+  useEffect(() => {
+    // careful! we have to wrap it with a () => because otherwise React will
+    // think it's an updater function instead of the actual function.
+    setFlagsFilter(() => (cls?: PEClass) => {
+      if (!cls) return false;
+      for (const [flag, value] of flags) {
+        if (!value) continue;
+        const passes = isFilterNonFlagKey(flag)
+          ? filtersNonFlags[flag](state, cls)
+          : cls.flags[flag];
+        if (!passes) return false;
+      }
+      return true;
+    });
+  }, [state, flags, setFlagsFilter]);
 
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
@@ -218,29 +240,6 @@ function ClassFlags(props: {
     const newFlags = new Map(flags);
     newFlags.set(flag, value);
     setFlags(newFlags);
-
-    // careful! we have to wrap it with a () => because otherwise React will
-    // think it's an updater function instead of the actual function.
-    setFlagsFilter(() => (cls?: PEClass) => {
-      if (!cls) return false;
-      let result = true;
-      newFlags.forEach((flagVal, flagKey) => {
-        if (
-          flagVal &&
-          isFilterNonFlagKey(flagKey) &&
-          !filtersNonFlags[flagKey](state, cls)
-        ) {
-          result = false;
-        } else if (
-          flagVal &&
-          !isFilterNonFlagKey(flagKey) &&
-          !cls.flags[flagKey]
-        ) {
-          result = false;
-        }
-      });
-      return result;
-    });
   };
 
   const renderGroup = (group: FilterGroup) => {
@@ -249,7 +248,6 @@ function ClassFlags(props: {
         {group.map(([flag, label, image]) => {
           const checked = flags.get(flag);
 
-          // hide starred button if no classes starred
           if (
             flag === "starred" &&
             state.getStarredPEClasses().length === 0 &&
@@ -259,7 +257,6 @@ function ClassFlags(props: {
           }
 
           return image ? (
-            // image is a react element, like an icon
             <LabelledButton
               key={flag}
               onClick={() => {
@@ -325,13 +322,16 @@ export function PEClassTable() {
   const { peClasses } = state;
 
   const gridRef = useRef<AgGridReact<ClassTableRow>>(null);
+  // hide size and quarter suffix on small screens (eg phone)
+  const narrow =
+    useBreakpointValue({ base: true, sm: false }, { ssr: false }) ?? false;
 
-  // Setup table columns
   const columnDefs: ColDef<ClassTableRow, string | number>[] = useMemo(() => {
     return [
       {
         headerName: "",
         field: "number",
+        width: 49,
         maxWidth: 49,
         cellRenderer: StarCellRenderer,
         sortable: false,
@@ -342,22 +342,28 @@ export function PEClassTable() {
         headerName: "Class",
         comparator: classSort,
         initialSort: INITIAL_SORT,
-        maxWidth: 131,
+        width: narrow ? 105 : 150,
+        maxWidth: narrow ? 105 : 150,
         cellClass: [styles["underline-on-hover"], styles.data],
         valueFormatter: (params) =>
-          `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
+          narrow
+            ? (params.value?.toString() ?? "")
+            : `${params.value?.toString() ?? ""} (Q${params.data?.class.rawClass.quarter.toString() ?? ""})`,
         ...sortProps,
       },
       {
         field: "classSize",
         headerName: "Size",
         cellDataType: "number",
+        width: 85,
         maxWidth: 85,
+        hide: narrow,
         cellClass: styles.data,
         ...sortProps,
       },
       {
         field: "fee",
+        width: 90,
         maxWidth: 90,
         cellDataType: "number",
         cellClass: (params) => getFeeColor(params.value),
@@ -370,7 +376,7 @@ export function PEClassTable() {
         flex: 1,
       },
     ];
-  }, []);
+  }, [narrow]);
 
   const defaultColDef: ColDef<ClassTableRow, string> = useMemo(() => {
     return {
@@ -378,7 +384,6 @@ export function PEClassTable() {
     };
   }, []);
 
-  // Setup rows
   const rowData: ClassTableRow[] = useMemo(
     () =>
       Array.from(peClasses.values(), (cls) => ({
@@ -402,7 +407,6 @@ export function PEClassTable() {
     };
   }, [inputFilter, flagsFilter]);
 
-  // Need to notify grid every time we update the filter
   useEffect(() => {
     gridRef.current?.api?.onFilterChanged();
     // oxlint-disable-next-line react/exhaustive-effect-dependencies
@@ -415,7 +419,7 @@ export function PEClassTable() {
         setFlagsFilter={setFlagsFilter}
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
-      <Box style={{ height: "320px", width: "100%", overflow: "auto" }}>
+      <Box h="clamp(320px, 50dvh, 640px)" w="full" overflow="auto">
         <AgGridReact<ClassTableRow>
           theme={HYDRANT_THEME}
           ref={gridRef}
@@ -433,6 +437,18 @@ export function PEClassTable() {
           onRowDoubleClicked={(e) => {
             state.toggleActivity(e.data?.class);
           }}
+          onCellKeyDown={(e) => {
+            onRowKeyDown(
+              e,
+              (cls) => {
+                state.setViewedActivity(cls);
+              },
+              (cls) => {
+                state.toggleActivity(cls);
+              },
+            );
+          }}
+          suppressOverlays={["noRows"]}
           // these have to be set here, not in css:
           headerHeight={40}
           rowHeight={40}

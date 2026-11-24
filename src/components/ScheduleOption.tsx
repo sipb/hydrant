@@ -11,8 +11,10 @@ export function ScheduleOption() {
   const { state, hydrantState } = useHydrantContext();
   const { selectedOption, totalOptions } = hydrantState;
 
+  if (totalOptions <= 1) return null;
+
   return (
-    <Flex direction="column" align="end" gap={2} mt={-5}>
+    <Flex direction="column" align="end" gap={2}>
       <Flex gap={2} alignItems="center">
         <IconButton
           onClick={() => {
@@ -20,7 +22,7 @@ export function ScheduleOption() {
               (selectedOption - 1 + totalOptions) % totalOptions,
             );
           }}
-          size="xs"
+          size="sm"
           variant="ghost"
           aria-label="Previous schedule"
         >
@@ -31,7 +33,7 @@ export function ScheduleOption() {
           onClick={() => {
             state.selectOption(selectedOption + 1);
           }}
-          size="xs"
+          size="sm"
           variant="ghost"
           aria-label="Next schedule"
         >
@@ -47,7 +49,7 @@ export function ScheduleOption() {
             endElement={
               <CloseButton
                 size="sm"
-                height={"1rem"}
+                aria-label="Dismiss tip"
                 onClick={() => {
                   setTooManyOptions(false);
                 }}
