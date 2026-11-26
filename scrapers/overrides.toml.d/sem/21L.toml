@@ -1,0 +1,67 @@
+#:schema ../override-schema.json
+
+["21L.004"]
+inCharge = "J. Sylvester, J. Bennett"
+# both sections have different subtitles? idek
+
+["21L.007"]
+name = "World Literatures: Human Life in Verbs"
+
+["21L.009"]
+name = "Shakespeare: The Comedies"
+inCharge = "S. Raman"
+
+["21L.011"]
+inCharge = "C. Doyle"
+
+["21L.014"]
+inCharge = "S. (Frampton) Seed, E. Driscoll"
+
+["21L.024"]
+inCharge = "B. Mangrum"
+
+["21L.419"]
+name = "Books to Grow By: Books I Grew Up With (or Wish I Had)"
+
+["21L.433"]
+name = "Film Styles and Genres: Who Gets to Be Human? Monsters, Machines and Other Outsiders in Popular Genre Films"
+
+["21L.438"]
+inCharge = "B. Williams"
+
+["21L.458"]
+name = "The Bible: From Genesis to Apocalypse"
+
+["21L.487"]
+name = "Modern Poetry: Place, No Place, and Unifying Imagination"
+inCharge = "J. Sylvester"
+
+["21L.611"]
+inCharge = "S. (Frampton) Seed"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 4
+isVariableUnits = false
+
+["21L.612"]
+inCharge = "S. (Frampton) Seed"
+lectureUnits = 2
+labUnits = 0
+preparationUnits = 4
+isVariableUnits = false
+
+["21L.702"]
+name = "Studies in Fiction: Middlemarch (and Some Others)"
+inCharge = "J. Buzard"
+
+["21L.704"]
+name = "Studies in Poetry: Engineering Poems"
+inCharge = "J. Bennett"
+
+["21L.705"]
+name = "Major Authors: James Baldwin's Novels and America's Fictions"
+inCharge = "J. Terrones"
+
+["21L.706"]
+name = "Studies in Film: Embodied Analysis"
+inCharge = "J. Ruffin"
