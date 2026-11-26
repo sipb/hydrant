@@ -1,5 +1,13 @@
 import { expect, test } from "vitest";
-import { type Flags, getFlagImg, Class, ClassSections } from "../src/lib/class";
+
+import {
+  type DeflatedClass,
+  type Flags,
+  getFlagImg,
+  Class,
+  ClassSections,
+} from "../src/lib/class";
+import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 import {
   CI,
   GIR,
@@ -9,7 +17,6 @@ import {
   TermCode,
   type RawClass,
 } from "../src/lib/raw";
-import { COLOR_SCHEME_LIGHT } from "../src/lib/colors";
 
 // auxiliary object for testing getFlagImg; change as needed
 const flagNameValidity: [keyof Flags, boolean][] = [
@@ -248,6 +255,7 @@ describe("Class", () => {
     expect(myClass.new).toEqual(false);
   });
 
+  // oxlint-disable-next-line vitest/warn-todo
   test.todo("Class.events");
 
   test("Class.flags", () => {
@@ -567,11 +575,9 @@ describe("Class", () => {
      * - has section room overrides, doesn't have section room overrides
      */
 
-    type Deflated = (string | number | string[])[];
-
     test("no unlocked sections, no manual color, no section room overrides", () => {
       const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
-      const expectedDeflated: Deflated = ["21H.143", [""]];
+      const expectedDeflated: DeflatedClass = ["21H.143", [""]];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
 
       const myOtherClass: Class = new Class(
@@ -587,7 +593,7 @@ describe("Class", () => {
       const mySections: ClassSections | undefined = myClass.sections.at(0);
       assert(mySections instanceof ClassSections);
       mySections.locked = true;
-      const expectedDeflated: Deflated = ["21H.143", [""], -1];
+      const expectedDeflated: DeflatedClass = ["21H.143", [""], -1];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
 
       const myOtherClass: Class = new Class(
@@ -606,7 +612,7 @@ describe("Class", () => {
     test("has manual color", () => {
       const myClass: Class = new Class(myRawClass, COLOR_SCHEME_LIGHT);
       myClass.manualColor = true;
-      const expectedDeflated: Deflated = ["21H.143", "#475569", [""]];
+      const expectedDeflated: DeflatedClass = ["21H.143", "#475569", [""]];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
 
       const myOtherClass: Class = new Class(
@@ -622,7 +628,7 @@ describe("Class", () => {
       const mySections: ClassSections | undefined = myClass.sections.at(0);
       assert(mySections instanceof ClassSections);
       mySections.roomOverride = "lorem";
-      const expectedDeflated: Deflated = ["21H.143", ["lorem"]];
+      const expectedDeflated: DeflatedClass = ["21H.143", ["lorem"]];
       expect(myClass.deflate()).toStrictEqual(expectedDeflated);
 
       const myOtherClass: Class = new Class(

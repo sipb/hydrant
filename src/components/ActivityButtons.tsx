@@ -1,4 +1,9 @@
-import { useLayoutEffect, useState, type SubmitEventHandler } from "react";
+import {
+  useState,
+  type Dispatch,
+  type SetStateAction,
+  type SubmitEventHandler,
+} from "react";
 
 import {
   Button,
@@ -17,11 +22,10 @@ import {
   parseColor,
   type ButtonProps,
 } from "@chakra-ui/react";
-import { ColorPickerInput } from "./ui/colorpicker-input";
 import { LuCheck as CheckIcon, LuX as CloseIcon } from "react-icons/lu";
-import { Checkbox } from "./ui/checkbox";
-import { Field } from "./ui/field";
-import { Radio, RadioGroup } from "./ui/radio";
+
+import type { Class } from "../lib/class";
+import type { PEClass } from "../lib/pe";
 
 import {
   Timeslot,
@@ -31,11 +35,13 @@ import {
   type Sections,
   type SectionLockOption,
 } from "../lib/activity";
-import type { Class } from "../lib/class";
-import type { PEClass } from "../lib/pe";
-import { PESection } from "../lib/pe";
 import { Slot, TIMESLOT_STRINGS, WEEKDAY_STRINGS } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
+import { PESection } from "../lib/pe";
+import { Checkbox } from "./ui/checkbox";
+import { ColorPickerInput } from "./ui/colorpicker-input";
+import { Field } from "./ui/field";
+import { Radio, RadioGroup } from "./ui/radio";
 
 interface ToggleButtonProps extends ButtonProps {
   active: boolean;
@@ -74,7 +80,7 @@ function OverrideLocations(props: { secs: Sections }) {
     setRoom(secs.roomOverride);
   };
   const onConfirm = () => {
-    secs.roomOverride = room.trim();
+    secs.setRoomOverride(room.trim());
     setIsOverriding(false);
     state.updateActivities();
   };
@@ -138,70 +144,72 @@ const getLabel = (sec: SectionLockOption, humanReadable?: boolean) => {
   }
 };
 
+const RenderOptions = (props: {
+  cls: Class | PEClass;
+  selected: string[];
+  setSelected: Dispatch<SetStateAction<string[]>>;
+}) => {
+  const { state } = useHydrantContext();
+  const { cls, selected, setSelected } = props;
+
+  return (
+    <>
+      {cls.sections.map((secs, sectionIndex) => {
+        const options = [LockOption.Auto, LockOption.None, ...secs.sections];
+        return (
+          <Field key={secs.shortName} label={secs.name}>
+            <RadioGroup
+              orientation="vertical"
+              value={selected[sectionIndex]}
+              onValueChange={(e) => {
+                setSelected((oldArray) => {
+                  oldArray[sectionIndex] = e.value ?? "";
+                  return oldArray;
+                });
+
+                if (e.value === LockOption.Auto) {
+                  state.lockSection(secs, LockOption.Auto);
+                  return;
+                }
+
+                if (e.value === LockOption.None) {
+                  state.lockSection(secs, LockOption.None);
+                  return;
+                }
+
+                const foundSec = secs.sections.find(
+                  (sec) => sec.rawTime === e.value,
+                );
+
+                if (foundSec) {
+                  state.lockSection(secs, foundSec);
+                }
+              }}
+            >
+              <Stack>
+                {options.map((sec) => (
+                  <Radio key={getLabel(sec)} value={getLabel(sec)}>
+                    {getLabel(sec, true)}
+                  </Radio>
+                ))}
+              </Stack>
+            </RadioGroup>
+            <OverrideLocations secs={secs} />
+          </Field>
+        );
+      })}
+    </>
+  );
+};
+
 /** Div containing section manual selection interface. */
 function ClassManualSections(props: { cls: Class | PEClass }) {
   const { cls } = props;
-  const { state } = useHydrantContext();
   const [selected, setSelected] = useState(genSelected(cls));
-
-  useLayoutEffect(() => {
-    setSelected(genSelected(cls));
-  }, [cls]);
-
-  const RenderOptions = () => {
-    return (
-      <>
-        {cls.sections.map((secs, sectionIndex) => {
-          const options = [LockOption.Auto, LockOption.None, ...secs.sections];
-          return (
-            <Field key={secs.shortName} label={secs.name}>
-              <RadioGroup
-                orientation="vertical"
-                value={selected[sectionIndex]}
-                onValueChange={(e) => {
-                  setSelected((oldArray) => {
-                    oldArray[sectionIndex] = e.value ?? "";
-                    return oldArray;
-                  });
-
-                  if (e.value === LockOption.Auto) {
-                    state.lockSection(secs, LockOption.Auto);
-                    return;
-                  }
-
-                  if (e.value === LockOption.None) {
-                    state.lockSection(secs, LockOption.None);
-                    return;
-                  }
-
-                  const foundSec = secs.sections.find(
-                    (sec) => sec.rawTime === e.value,
-                  );
-
-                  if (foundSec) {
-                    state.lockSection(secs, foundSec);
-                  }
-                }}
-              >
-                <Stack>
-                  {options.map((sec) => (
-                    <Radio key={getLabel(sec)} value={getLabel(sec)}>
-                      {getLabel(sec, true)}
-                    </Radio>
-                  ))}
-                </Stack>
-              </RadioGroup>
-              <OverrideLocations secs={secs} />
-            </Field>
-          );
-        })}
-      </>
-    );
-  };
 
   return (
     <Flex wrap="wrap" columnGap={6} rowGap={4}>
-      <RenderOptions />
+      <RenderOptions cls={cls} selected={selected} setSelected={setSelected} />
     </Flex>
   );
 }
@@ -260,10 +268,32 @@ function ActivityColor(props: { activity: Activity; onHide: () => void }) {
   );
 }
 
+const RenderCheckboxes = (props: {
+  days: Record<string, boolean>;
+  setDays: Dispatch<SetStateAction<Record<string, boolean>>>;
+}) => {
+  const { days, setDays } = props;
+  return (
+    <>
+      {WEEKDAY_STRINGS.map((day) => (
+        <Checkbox
+          key={day}
+          checked={days[day]}
+          onCheckedChange={(e) => {
+            setDays({ ...days, [day]: !!e.checked });
+          }}
+        >
+          {day}
+        </Checkbox>
+      ))}
+    </>
+  );
+};
+
 /** Buttons in class description to add/remove class, and lock sections. */
 export function ClassButtons(props: { cls: Class | PEClass }) {
   const { cls } = props;
-  const { state } = useHydrantContext();
+  const { state, hydrantState } = useHydrantContext();
   const [showManual, setShowManual] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const isSelected = state.isSelectedActivity(cls);
@@ -302,7 +332,9 @@ export function ClassButtons(props: { cls: Class | PEClass }) {
           </ToggleButton>
         )}
       </ButtonGroup>
-      {isSelected && showManual && <ClassManualSections cls={cls} />}
+      {isSelected && showManual && (
+        <ClassManualSections cls={cls} key={cls.id + hydrantState.saveId} />
+      )}
       {isSelected && showColors && (
         <ActivityColor
           activity={cls}
@@ -355,24 +387,6 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
     }
   };
 
-  const RenderCheckboxes = () => {
-    return (
-      <>
-        {WEEKDAY_STRINGS.map((day) => (
-          <Checkbox
-            key={day}
-            checked={days[day]}
-            onCheckedChange={(e) => {
-              setDays({ ...days, [day]: !!e.checked });
-            }}
-          >
-            {day}
-          </Checkbox>
-        ))}
-      </>
-    );
-  };
-
   const renderTimeDropdown = (key: "start" | "end") => (
     <Select.Root
       collection={timesCollection}
@@ -417,7 +431,7 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
           Add time
         </Button>
         <Group wrap="wrap">
-          <RenderCheckboxes />
+          <RenderCheckboxes days={days} setDays={setDays} />
         </Group>
         <Flex align="center" gap={1}>
           {renderTimeDropdown("start")} to {renderTimeDropdown("end")}
@@ -437,6 +451,149 @@ function CustomActivityAddTime(props: { activity: CustomActivity }) {
   );
 }
 
+const RenderHeading = (props: {
+  isRenaming: boolean;
+  isRelocating: boolean;
+  activity: CustomActivity;
+  name: string;
+  room: string | undefined;
+  setName: Dispatch<SetStateAction<string>>;
+  setRoom: Dispatch<SetStateAction<string | undefined>>;
+  onConfirmRename: () => void;
+  onCancelRename: () => void;
+  onConfirmRelocating: () => void;
+  onCancelRelocating: () => void;
+}) => {
+  const {
+    isRenaming,
+    isRelocating,
+    activity,
+    name,
+    room,
+    setName,
+    setRoom,
+    onConfirmRename,
+    onCancelRename,
+    onConfirmRelocating,
+    onCancelRelocating,
+  } = props;
+
+  if (isRenaming) {
+    return (
+      <Input
+        aria-label="Activity name"
+        value={name}
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
+        fontWeight="bold"
+        placeholder="New Activity"
+        autoFocus
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            onConfirmRename();
+          } else if (e.key === "Escape") {
+            onCancelRename();
+          }
+        }}
+      />
+    );
+  } else if (isRelocating) {
+    return (
+      <Input
+        aria-label="Activity location"
+        value={room}
+        onChange={(e) => {
+          setRoom(e.target.value);
+        }}
+        placeholder="W20-557"
+        autoFocus
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            onConfirmRelocating();
+          } else if (e.key === "Escape") {
+            onCancelRelocating();
+          }
+        }}
+      />
+    );
+  } else {
+    return <Heading size="md">{activity.name}</Heading>;
+  }
+};
+
+const RenderButtons = (props: {
+  isRenaming: boolean;
+  isRelocating: boolean;
+  activity: CustomActivity;
+  isSelected: boolean;
+  showColors: boolean;
+  setShowColors: Dispatch<SetStateAction<boolean>>;
+  onRenameElse: () => void;
+  onRelocateElse: () => void;
+  onConfirmRename: () => void;
+  onCancelRename: () => void;
+  onConfirmRelocating: () => void;
+  onCancelRelocating: () => void;
+}) => {
+  const {
+    isRenaming,
+    isRelocating,
+    activity,
+    isSelected,
+    showColors,
+    setShowColors,
+    onRenameElse,
+    onRelocateElse,
+    onConfirmRename,
+    onCancelRename,
+    onConfirmRelocating,
+    onCancelRelocating,
+  } = props;
+  const { state } = useHydrantContext();
+
+  if (isRenaming) {
+    return (
+      <>
+        <Button onClick={onConfirmRename}>Confirm</Button>
+        <Button onClick={onCancelRename}>Cancel</Button>
+      </>
+    );
+  } else if (isRelocating) {
+    return (
+      <>
+        <Button onClick={onConfirmRelocating}>Confirm</Button>
+        <Button onClick={onCancelRelocating}>Cancel</Button>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Button
+          colorPalette={isSelected ? "red" : undefined}
+          onClick={() => {
+            state.toggleActivity(activity);
+          }}
+        >
+          {isSelected ? "Remove activity" : "Add activity"}
+        </Button>
+        <Button onClick={onRenameElse}>Rename activity</Button>
+        <Button onClick={onRelocateElse}>Edit location</Button>
+        {isSelected && (
+          <ToggleButton
+            active={showColors}
+            handleClick={() => {
+              setShowColors(!showColors);
+            }}
+          >
+            Edit color
+          </ToggleButton>
+        )}
+      </>
+    );
+  }
+};
+
 /**
  * Buttons in custom activity description to rename it, or add/edit/remove timeslots.
  */
@@ -451,51 +608,6 @@ export function CustomActivityButtons(props: { activity: CustomActivity }) {
 
   const [name, setName] = useState(activity.name);
   const [room, setRoom] = useState(activity.room);
-
-  const RenderHeading = () => {
-    if (isRenaming) {
-      return (
-        <Input
-          aria-label="Activity name"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-          fontWeight="bold"
-          placeholder="New Activity"
-          autoFocus
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              onConfirmRename();
-            } else if (e.key === "Escape") {
-              onCancelRename();
-            }
-          }}
-        />
-      );
-    } else if (isRelocating) {
-      return (
-        <Input
-          aria-label="Activity location"
-          value={room}
-          onChange={(e) => {
-            setRoom(e.target.value);
-          }}
-          placeholder="W20-557"
-          autoFocus
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              onConfirmRelocating();
-            } else if (e.key === "Escape") {
-              onCancelRelocating();
-            }
-          }}
-        />
-      );
-    } else {
-      return <Heading size="md">{activity.name}</Heading>;
-    }
-  };
 
   const onConfirmRename = () => {
     state.renameCustomActivity(activity, name);
@@ -521,53 +633,37 @@ export function CustomActivityButtons(props: { activity: CustomActivity }) {
     setIsRelocating(true);
   };
 
-  const RenderButtons = () => {
-    if (isRenaming) {
-      return (
-        <>
-          <Button onClick={onConfirmRename}>Confirm</Button>
-          <Button onClick={onCancelRename}>Cancel</Button>
-        </>
-      );
-    } else if (isRelocating) {
-      return (
-        <>
-          <Button onClick={onConfirmRelocating}>Confirm</Button>
-          <Button onClick={onCancelRelocating}>Cancel</Button>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Button
-            colorPalette={isSelected ? "red" : undefined}
-            onClick={() => {
-              state.toggleActivity(activity);
-            }}
-          >
-            {isSelected ? "Remove activity" : "Add activity"}
-          </Button>
-          <Button onClick={onRenameElse}>Rename activity</Button>
-          <Button onClick={onRelocateElse}>Edit location</Button>
-          {isSelected && (
-            <ToggleButton
-              active={showColors}
-              handleClick={() => {
-                setShowColors(!showColors);
-              }}
-            >
-              Edit color
-            </ToggleButton>
-          )}
-        </>
-      );
-    }
-  };
-
   return (
     <Flex direction="column" gap={4}>
-      {RenderHeading()}
-      <ButtonGroup wrap="wrap">{RenderButtons()}</ButtonGroup>
+      <RenderHeading
+        isRenaming={isRenaming}
+        isRelocating={isRelocating}
+        activity={activity}
+        name={name}
+        room={room}
+        setName={setName}
+        setRoom={setRoom}
+        onConfirmRename={onConfirmRename}
+        onCancelRename={onCancelRename}
+        onConfirmRelocating={onConfirmRelocating}
+        onCancelRelocating={onCancelRelocating}
+      />
+      <ButtonGroup wrap="wrap">
+        <RenderButtons
+          isRenaming={isRenaming}
+          isRelocating={isRelocating}
+          activity={activity}
+          isSelected={isSelected}
+          showColors={showColors}
+          setShowColors={setShowColors}
+          onRenameElse={onRenameElse}
+          onRelocateElse={onRelocateElse}
+          onConfirmRename={onConfirmRename}
+          onCancelRename={onCancelRename}
+          onConfirmRelocating={onConfirmRelocating}
+          onCancelRelocating={onCancelRelocating}
+        />
+      </ButtonGroup>
       {isSelected && showColors && (
         <ActivityColor
           activity={activity}

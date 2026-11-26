@@ -9,27 +9,11 @@ import {
   type SetStateAction,
 } from "react";
 
-import { AgGridReact } from "ag-grid-react";
-import {
-  ModuleRegistry,
-  ClientSideRowModelModule,
-  ValidationModule,
-  ExternalFilterModule,
-  RenderApiModule,
-  CellStyleModule,
-  RowStyleModule,
-  themeQuartz,
-  type IRowNode,
-  type ColDef,
-  type Module,
-  type CellKeyDownEvent,
-  type FullWidthCellKeyDownEvent,
-} from "ag-grid-community";
+import type { IRowNode, ColDef } from "ag-grid-community";
 
 import {
   Badge,
   Box,
-  Span,
   Flex,
   Image,
   Input,
@@ -37,86 +21,38 @@ import {
   ButtonGroup,
   InputGroup,
   CloseButton,
+  Span,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import { AgGridReact, type CustomCellRendererProps } from "ag-grid-react";
 import {
   LuPlus,
   LuMinus,
   LuSearch,
-  LuBadgePlus,
   LuStar,
+  LuBadgePlus,
   LuX,
 } from "react-icons/lu";
+
+import type { Class, Flags } from "../lib/class";
+import type { TSemester } from "../lib/dates";
+import type { State } from "../lib/state";
+
+import { DARK_IMAGES, getFlagImg } from "../lib/class";
+import { ColorStyles } from "../lib/colors";
+import { useHydrantContext } from "../lib/hydrant";
+import {
+  HYDRANT_THEME,
+  INITIAL_SORT,
+  onRowKeyDown,
+  sortProps,
+} from "../lib/table";
+import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
 import { LabelledButton } from "./ui/button";
 import { useColorModeValue } from "./ui/color-mode";
 import { Tooltip } from "./ui/tooltip";
 
-import type { Class, Flags } from "../lib/class";
-import { DARK_IMAGES, getFlagImg } from "../lib/class";
-import { classNumberMatch, classSort, simplifyString } from "../lib/utils";
-import type { TSemester } from "../lib/dates";
-import { useHydrantContext } from "../lib/hydrant";
-import type { State } from "../lib/state";
-import { ColorStyles } from "../lib/colors";
-
 import styles from "./ClassTable.module.css";
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const HYDRANT_THEME = themeQuartz.withParams({
-  accentColor: "var(--chakra-colors-hydrant-solid)",
-  backgroundColor: "var(--chakra-colors-bg-panel)",
-  borderColor: "var(--chakra-colors-border)",
-  browserColorScheme: "inherit",
-  fontFamily: "inherit",
-  foregroundColor: "var(--chakra-colors-fg)",
-  headerBackgroundColor: "var(--chakra-colors-bg-subtle)",
-  headerTextColor: "var(--chakra-colors-fg-muted)",
-  rowHoverColor: "var(--chakra-colors-color-palette-subtle)",
-  wrapperBorderRadius: "var(--chakra-radii-l2)",
-});
-
-const GRID_MODULES: Module[] = [
-  ClientSideRowModelModule,
-  ExternalFilterModule,
-  CellStyleModule,
-  RenderApiModule,
-  RowStyleModule,
-  ...(import.meta.env.DEV ? [ValidationModule] : []),
-];
-
-ModuleRegistry.registerModules(GRID_MODULES);
-
-export const INITIAL_SORT = "asc" as const;
-const SORTING_ORDER: ("asc" | "desc")[] = ["asc", "desc"];
-// eslint-disable-next-line react-refresh/only-export-components
-export const sortProps = {
-  sortable: true,
-  unSortIcon: true,
-  sortingOrder: SORTING_ORDER,
-};
-
-/**
- * enter to look at the class (single click), shift+enter to
- * toggle the class (double click)
- */
-// eslint-disable-next-line react-refresh/only-export-components
-export function onRowKeyDown<T extends { class: unknown }>(
-  e: CellKeyDownEvent<T> | FullWidthCellKeyDownEvent<T>,
-  view: (cls: T["class"]) => void,
-  toggle: (cls: T["class"]) => void,
-) {
-  const event = e.event as KeyboardEvent | null | undefined;
-
-  if (event?.key !== "Enter" || !e.data) return;
-  if ((event.target as HTMLElement | null)?.closest("button")) return;
-
-  event.preventDefault();
-  if (event.shiftKey) {
-    toggle(e.data.class);
-  } else {
-    view(e.data.class);
-  }
-}
 
 const getRatingColor = (rating?: string | null) => {
   if (!rating || rating === "N/A") return ColorStyles.Muted;
@@ -297,8 +233,8 @@ function ClassInput(props: {
       state.toggleActivity(cls);
       onClassInputChange("");
     } else if (state.classes.has(classInput)) {
-      const cls = state.classes.get(classInput);
-      state.toggleActivity(cls);
+      const clsCheck = state.classes.get(classInput);
+      state.toggleActivity(clsCheck);
     }
   };
 
@@ -312,6 +248,23 @@ function ClassInput(props: {
   );
 }
 
+const StarCellRenderer = (props: CustomCellRendererProps<ClassTableRow>) => {
+  const { data, api } = props;
+  if (!data) return null;
+
+  return (
+    <StarButton
+      cls={data.class}
+      onStarToggle={() => {
+        api.refreshCells({
+          force: true,
+          columns: ["number"],
+        });
+      }}
+    />
+  );
+};
+
 const filtersNonFlags = {
   fits: (state, cls) => state.fitsSchedule(cls),
   starred: (state, cls) => state.isClassStarred(cls),
@@ -323,7 +276,7 @@ type FilterGroup = [Filter, string, ReactNode?][];
 
 /** List of top filter IDs and their displayed names. */
 const CLASS_FLAGS_1: FilterGroup = [
-  ["starred", "Starred", <LuStar fill="currentColor" />],
+  ["starred", "Starred", <LuStar fill="currentColor" key="starred" />],
   ["hass", "HASS"],
   ["cih", "CI-H"],
   ["cim", "CI-M"],
@@ -331,7 +284,7 @@ const CLASS_FLAGS_1: FilterGroup = [
   [
     "new",
     "",
-    <Flex align="center" gap={1} h="100%">
+    <Flex align="center" gap={1} h="100%" key="new">
       <Span display="inline-flex">
         <LuBadgePlus />
       </Span>
@@ -369,6 +322,10 @@ const CLASS_FLAGS_4: FilterGroup = [
 const HIDDEN_FLAGS = [...CLASS_FLAGS_2, ...CLASS_FLAGS_3, ...CLASS_FLAGS_4];
 const CLASS_FLAGS = [...CLASS_FLAGS_1, ...HIDDEN_FLAGS];
 
+function isFilterNonFlagKey(key: string): key is keyof typeof filtersNonFlags {
+  return key in filtersNonFlags;
+}
+
 /** Div containing all the flags like "HASS". Maintains the flag filter. */
 function ClassFlags(props: {
   /** Callback for updating the class filter. */
@@ -393,11 +350,11 @@ function ClassFlags(props: {
   // this callback needs to get called when the set of classes change, because
   // the filter has to change as well
   useEffect(() => {
-    state.fitsScheduleCallback = () => {
+    state.setFitsScheduleCallback(() => {
       if (flags.get("fits")) {
         updateFilter();
       }
-    };
+    });
   }, [state, flags, updateFilter]);
 
   const hiddenActive = HIDDEN_FLAGS.filter(([flag]) => flags.get(flag)).length;
@@ -421,17 +378,17 @@ function ClassFlags(props: {
     setFlagsFilter(() => (cls?: Class) => {
       if (!cls) return false;
       let result = true;
-      newFlags.forEach((value, flag) => {
+      newFlags.forEach((flagVal, flagKey) => {
         if (
-          value &&
-          flag in filtersNonFlags &&
-          !filtersNonFlags[flag as keyof typeof filtersNonFlags](state, cls)
+          flagVal &&
+          isFilterNonFlagKey(flagKey) &&
+          !filtersNonFlags[flagKey](state, cls)
         ) {
           result = false;
         } else if (
-          value &&
-          !(flag in filtersNonFlags) &&
-          !cls.flags[flag as keyof typeof cls.flags]
+          flagVal &&
+          !isFilterNonFlagKey(flagKey) &&
+          !cls.flags[flagKey]
         ) {
           result = false;
         }
@@ -441,8 +398,9 @@ function ClassFlags(props: {
   };
 
   const filter = useColorModeValue(
-    (_flags: keyof Flags) => "",
-    (flag: keyof Flags) => (DARK_IMAGES.includes(flag) ? "invert()" : ""),
+    (_flags: Filter) => "",
+    (flag: Filter) =>
+      !isFilterNonFlagKey(flag) && DARK_IMAGES.includes(flag) ? "invert()" : "",
   );
 
   const renderGroup = (group: FilterGroup) => {
@@ -469,11 +427,7 @@ function ClassFlags(props: {
                 title={label}
                 variant={checked ? "solid" : "outline"}
               >
-                <Image
-                  src={image}
-                  alt={label}
-                  filter={filter(flag as keyof Flags)}
-                />
+                <Image src={image} alt={label} filter={filter(flag)} />
               </LabelledButton>
             ) : (
               <LabelledButton
@@ -569,6 +523,19 @@ const StarButton = ({
   );
 };
 
+const NameCellRenderer = (params: { value: string; data: ClassTableRow }) => (
+  <Flex align="center" gap={1} h="100%">
+    {params.data.class.new && (
+      <Tooltip content="New class!">
+        <Span display="inline-flex" color="hydrant.solid">
+          <LuBadgePlus />
+        </Span>
+      </Tooltip>
+    )}
+    <Span>{params.value}</Span>
+  </Flex>
+);
+
 /** The table of all classes, along with searching and filtering with flags. */
 export function ClassTable() {
   const { state } = useHydrantContext();
@@ -603,18 +570,7 @@ export function ClassTable() {
         field: "number",
         width: 49,
         maxWidth: 49,
-        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
-          <StarButton
-            cls={params.data.class}
-            onStarToggle={() => {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              gridRef.current?.api?.refreshCells({
-                force: true,
-                columns: ["number"],
-              });
-            }}
-          />
-        ),
+        cellRenderer: StarCellRenderer,
         sortable: false,
         cellStyle: { padding: 0 },
       },
@@ -655,18 +611,7 @@ export function ClassTable() {
         field: "name",
         sortable: false,
         flex: 1,
-        cellRenderer: (params: { value: string; data: ClassTableRow }) => (
-          <Flex align="center" gap={1} h="100%">
-            {params.data.class.new && (
-              <Tooltip content="New class!">
-                <Span display="inline-flex" color="hydrant.solid">
-                  <LuBadgePlus />
-                </Span>
-              </Tooltip>
-            )}
-            <Span>{params.value}</Span>
-          </Flex>
-        ),
+        cellRenderer: NameCellRenderer,
       },
     ];
   }, [state, narrow]);
@@ -702,8 +647,8 @@ export function ClassTable() {
   }, [inputFilter, flagsFilter]);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     gridRef.current?.api?.onFilterChanged();
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [doesExternalFilterPass]);
 
   return (
@@ -711,7 +656,6 @@ export function ClassTable() {
       <ClassInput rowData={rowData} setInputFilter={setInputFilter} />
       <ClassFlags
         setFlagsFilter={setFlagsFilter}
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         updateFilter={() => gridRef.current?.api?.onFilterChanged()}
       />
       <Box h="clamp(320px, 50dvh, 640px)" w="full" overflow="auto">

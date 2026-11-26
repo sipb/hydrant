@@ -1,6 +1,8 @@
 import { afterEach, expect, describe, test } from "vitest";
-import { Store } from "../src/lib/store";
+
 import type { Preferences } from "../src/lib/schema";
+
+import { Store } from "../src/lib/store";
 
 // note that jsdom supports localStorage since v11.12.0; c.f. github.com/jsdom/jsdom/blob/main/Changelog.md
 describe("Store", () => {

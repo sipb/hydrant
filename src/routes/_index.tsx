@@ -3,10 +3,12 @@ import {
   Flex,
   Grid,
   Group,
-  SkipNavContent,
   SkipNavLink,
+  SkipNavContent,
   type GridProps,
 } from "@chakra-ui/react";
+
+import type { Route } from "./+types/_index";
 
 import { ActivityDescription } from "../components/ActivityDescription";
 import { Banner } from "../components/Banner";
@@ -15,21 +17,14 @@ import { CalendarPanel } from "../components/Calendar";
 import { ClassTypesSwitcher } from "../components/ClassTypes";
 import { Footer } from "../components/Footers";
 import { Header, PreferencesDialog } from "../components/Header";
-import { SelectedActivities } from "../components/SelectedActivities";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
+import { SelectedActivities } from "../components/SelectedActivities";
 import { TermSwitcher } from "../components/TermSwitcher";
-
+import { Term } from "../lib/dates";
+import { getClosestUrlName, type LatestTermInfo } from "../lib/dates";
+import { type SemesterData, getStateMaps } from "../lib/hydrant";
+import { useHydrant, HydrantContext, fetchNoCache } from "../lib/hydrant";
 import { State } from "../lib/state";
-import { Term, getClosestUrlName, type LatestTermInfo } from "../lib/dates";
-import {
-  useHydrant,
-  HydrantContext,
-  fetchNoCache,
-  getStateMaps,
-  type SemesterData,
-} from "../lib/hydrant";
-
-import type { Route } from "./+types/_index";
 
 export async function clientLoader({ url }: Route.ClientLoaderArgs) {
   const searchParams = url.searchParams;

@@ -8,8 +8,9 @@ import {
 import { LuPlus } from "react-icons/lu";
 
 import type { Activity } from "../lib/activity";
-import { textColor } from "../lib/colors";
+
 import { Class } from "../lib/class";
+import { textColor } from "../lib/colors";
 import { useHydrantContext } from "../lib/hydrant";
 
 export function ColorButton(props: ButtonProps & { color: string }) {

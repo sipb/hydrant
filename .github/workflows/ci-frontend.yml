@@ -8,7 +8,6 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - ".gitignore"
-      - ".prettierignore"
       - "scrapers/overrides.toml.d/override-schema.json"
   pull_request:
     branches: [main]
@@ -17,12 +16,11 @@ on:
       - "{.vscode,deploy/cron_scripts,public}/**/*"
       - ".editorconfig"
       - ".gitignore"
-      - ".prettierignore"
       - "scrapers/overrides.toml.d/override-schema.json"
 
 jobs:
-  prettier:
-    name: Prettier
+  format:
+    name: Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -33,8 +31,8 @@ jobs:
           cache: "npm"
       - name: Install node dependencies
         run: npm ci
-      - name: Run Prettier
-        run: npm run ci-prettier
+      - name: Run Format
+        run: npm run format:check
   lint:
     name: Lint + Typecheck
     runs-on: ubuntu-latest
@@ -47,10 +45,8 @@ jobs:
           cache: "npm"
       - name: Install node dependencies
         run: npm ci
-      - name: Check types
-        run: npm run typecheck
-      - name: Run ESLint
-        run: npm run ci-eslint
+      - name: Run Lint + Typecheck
+        run: npm run lint
   test:
     name: Unit tests
     runs-on: ubuntu-latest

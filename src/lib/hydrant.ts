@@ -1,11 +1,12 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useColorMode } from "../components/ui/color-mode";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import type { TermInfo } from "../lib/dates";
-import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
 import type { HydrantState } from "../lib/schema";
-import { DEFAULT_STATE } from "../lib/schema";
 import type { State } from "../lib/state";
+import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
+
+import { useColorMode } from "../components/ui/color-mode";
+import { DEFAULT_STATE } from "../lib/schema";
 
 export interface SemesterData {
   classes: Record<string, RawClass>;
@@ -35,7 +36,7 @@ export const getStateMaps = (
 /** Fetch from the url, which is JSON of type T. */
 export const fetchNoCache = async <T>(url: string): Promise<T> => {
   const res = await fetch(url, { cache: "no-cache" });
-  return (await res.json()) as T;
+  return await res.json();
 };
 
 /** Hook to fetch data and initialize State object. */
@@ -43,24 +44,20 @@ export function useHydrant({ globalState }: { globalState: State }): {
   state: State;
   hydrantState: HydrantState;
 } {
-  const stateRef = useRef(globalState);
+  const [state] = useState(globalState);
 
   const [hydrantState, setHydrantState] = useState(DEFAULT_STATE);
-  const { colorMode, setColorMode, toggleColorMode } = useColorMode();
-
-  const state = stateRef.current;
+  const { colorMode, setColorMode } = useColorMode();
 
   useEffect(() => {
     // if colorScheme changes, change colorMode to match
-    state.callback = (newState: HydrantState) => {
+    state.setCallback((newState: HydrantState) => {
       setHydrantState(newState);
-      if (
-        newState.preferences.colorScheme &&
-        colorMode !== newState.preferences.colorScheme.colorMode
-      ) {
+      const { colorScheme } = newState.preferences;
+      if (colorScheme && colorMode !== colorScheme.colorMode) {
         // if the color scheme is not null, set the color mode to match
-        toggleColorMode();
-      } else if (newState.preferences.colorScheme === null) {
+        setColorMode(colorScheme.colorMode);
+      } else if (colorScheme === null) {
         // if the color scheme is null, set the color mode to match the system
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
           setColorMode("dark");
@@ -68,9 +65,9 @@ export function useHydrant({ globalState }: { globalState: State }): {
           setColorMode("light");
         }
       }
-    };
+    });
     state.updateState();
-  }, [colorMode, state]);
+  }, [colorMode, state, setColorMode]);
 
   return { state, hydrantState };
 }

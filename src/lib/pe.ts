@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
+import type { IconType } from "react-icons";
+
+import { LuShipWheel, LuWand, LuWaves, LuLaptop } from "react-icons/lu";
 
 import { Section, Sections, type BaseActivity } from "./activity";
-import { type RawPEClass, type RawSection } from "./raw";
 import { Event } from "./activity";
+import { type DeflatedClassEntry } from "./class";
 import { fallbackColor, type ColorScheme } from "./colors";
-
-import type { IconType } from "react-icons";
-import { LuShipWheel, LuWand, LuWaves, LuLaptop } from "react-icons/lu";
+import { type RawPEClass, type RawSection } from "./raw";
 
 export const W35_PLUS_TEXT =
   "W31, W32, W33, W34 and W35 are all connected. Enter through W35.";
@@ -30,6 +31,8 @@ const peFlagIcons: { [k in keyof PEFlags]?: IconType } = {
 export const getPEFlagIcon = (flag: keyof PEFlags): ReactNode => {
   return (peFlagIcons[flag] ?? (() => null))({});
 };
+
+export type DeflatedPEClass = [string, ...DeflatedClassEntry[]];
 
 export class PESection extends Section {
   sectionNumber: string;
@@ -204,7 +207,7 @@ export class PEClass implements BaseActivity {
   }
 
   /** Deflate a class to something JSONable. */
-  deflate() {
+  deflate(): DeflatedPEClass {
     const sections = this.sections.map((secs) =>
       !secs.locked
         ? null
@@ -216,11 +219,12 @@ export class PEClass implements BaseActivity {
       this.id,
       ...(this.manualColor ? [this.backgroundColor] : []), // string
       ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
-      ...(sections.length > 0 ? (sections as number[]) : []), // number
+      ...(sections.length > 0 ? sections : []), // number | null
     ];
   }
 
-  inflate(parsed: string | (string | number | string[])[]): void {
+  /** Inflate a class with info from the output of deflate. */
+  inflate(parsed: string | DeflatedPEClass): void {
     if (typeof parsed === "string") {
       // just the class id, ignore
       return;
@@ -232,9 +236,10 @@ export class PEClass implements BaseActivity {
       this.backgroundColor = parsed[1];
       this.manualColor = true;
     }
-    let sectionLocs: (string | number | string[])[] | null = null;
-    if (Array.isArray(parsed[offset])) {
-      sectionLocs = parsed[offset] as string[];
+    let sectionLocs: string[] | null = null;
+    const parsedEntry = parsed[offset];
+    if (Array.isArray(parsedEntry)) {
+      sectionLocs = parsedEntry;
       offset += 1;
     }
     this.sections.forEach((secs, i) => {
@@ -246,7 +251,7 @@ export class PEClass implements BaseActivity {
         secs.locked = false;
       } else {
         secs.locked = true;
-        secs.selected = secs.sections[parse as number];
+        secs.selected = secs.sections[Number(parse)];
       }
     });
   }

@@ -1,6 +1,7 @@
 import { CacheProvider } from "@emotion/react";
 import createEmotionServer from "@emotion/server/create-instance";
 import { renderToString } from "react-dom/server";
+
 import { Provider } from "../components/ui/provider";
 import { createEmotionCache } from "./emotion-cache";
 

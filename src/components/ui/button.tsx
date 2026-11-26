@@ -1,7 +1,10 @@
-import type { Tooltip as ChakraTooltip } from "@chakra-ui/react";
-import { Button, type ButtonProps } from "@chakra-ui/react";
-import { Tooltip } from "./tooltip";
 import type { RefObject } from "react";
+
+import type { Tooltip as ChakraTooltip } from "@chakra-ui/react";
+
+import { Button, type ButtonProps } from "@chakra-ui/react";
+
+import { Tooltip } from "./tooltip";
 
 export interface LabelledButtonProps extends ButtonProps {
   showArrow?: boolean;

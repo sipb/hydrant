@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import {
   Box,
@@ -28,6 +28,7 @@ import {
 } from "react-icons/lu";
 
 import type { Save } from "../lib/schema";
+
 import { useHydrantContext } from "../lib/hydrant";
 
 function SmallButton(props: ButtonProps) {
@@ -251,13 +252,116 @@ export function ScheduleSwitcher() {
   const [name, setName] = useState(currentName);
   const defaultScheduleId = state.defaultSchedule;
 
-  useEffect(() => {
+  const [prevSaves, setPrevSaves] = useState(saves);
+  const [prevSaveId, setPrevSaveId] = useState(saveId);
+
+  if (prevSaves !== saves) {
+    setPrevSaves(saves);
     setName(saves.find((save) => save.id === saveId)?.name ?? "");
-  }, [saves, saveId]);
+  }
+
+  if (prevSaveId !== saveId) {
+    setPrevSaveId(saveId);
+    setName(saves.find((save) => save.id === saveId)?.name ?? "");
+  }
+
+  const renderHeadingDefault = () => (
+    <SelectWithWarn saveId={saveId} saves={saves} />
+  );
+  const onRename = () => {
+    setIsRenaming(true);
+  };
+  const onSave = () => {
+    state.addSave(Boolean(saveId));
+  };
+  const onCopy = () => {
+    state.addSave(false, `${currentName} copy`);
+  };
+
+  const renderButtonsDefault = () => (
+    <Menu.Root unmountOnExit={false}>
+      <Menu.Trigger asChild>
+        <IconButton variant="outline" size="sm" aria-label="Schedule options">
+          <LuEllipsis />
+        </IconButton>
+      </Menu.Trigger>
+      <Portal>
+        <Menu.Positioner>
+          <Menu.Content>
+            {saveId && (
+              <Menu.Item value="rename" onClick={onRename}>
+                <LuPencilLine />
+                <Box flex="1">Rename&hellip;</Box>
+              </Menu.Item>
+            )}
+            <Menu.Item value="copy" onClick={onCopy}>
+              <LuCopy />
+              <Box flex="1">Make a copy</Box>
+            </Menu.Item>
+            {saveId && (
+              <DeleteDialog
+                saveId={saveId}
+                name={saves.find((save) => save.id === saveId)?.name ?? ""}
+              >
+                <Menu.Item
+                  value="delete"
+                  color="fg.error"
+                  _hover={{ bg: "bg.error", color: "fg.error" }}
+                >
+                  <LuTrash2 />
+                  <Box flex="1">Delete&hellip;</Box>
+                </Menu.Item>
+              </DeleteDialog>
+            )}
+            <Menu.Item value="new" onClick={onSave}>
+              {saveId ? (
+                <>
+                  <LuFilePlus2 />
+                  <Box flex="1">New</Box>
+                </>
+              ) : (
+                <>
+                  <LuSave />
+                  <Box flex="1">Save</Box>
+                </>
+              )}
+            </Menu.Item>
+            {saveId && (
+              <Menu.Item
+                value="toggleDefault"
+                onClick={() => {
+                  state.defaultSchedule =
+                    defaultScheduleId === saveId ? null : saveId;
+                }}
+              >
+                {defaultScheduleId === saveId ? (
+                  <>
+                    <LuPinOff />
+                    <Box flex="1">Unset as default</Box>
+                  </>
+                ) : (
+                  <>
+                    <LuPin />
+                    <Box flex="1">Set as default</Box>
+                  </>
+                )}
+              </Menu.Item>
+            )}
+            <ExportDialog>
+              <Menu.Item value="share">
+                <LuShare2 />
+                <Box flex="1">Share</Box>
+              </Menu.Item>
+            </ExportDialog>
+          </Menu.Content>
+        </Menu.Positioner>
+      </Portal>
+    </Menu.Root>
+  );
 
   const [renderHeading, renderButtons] = (() => {
     if (isRenaming) {
-      const renderHeading = () => (
+      const renderHeadingRenaming = () => (
         <Input
           aria-label="Schedule name"
           value={name}
@@ -285,108 +389,15 @@ export function ScheduleSwitcher() {
         setName(currentName);
         setIsRenaming(false);
       };
-      const renderButtons = () => (
+      const renderButtonsRenaming = () => (
         <>
           <SmallButton onClick={onConfirm}>Confirm</SmallButton>
           <SmallButton onClick={onCancel}>Cancel</SmallButton>
         </>
       );
-      return [renderHeading, renderButtons];
+      return [renderHeadingRenaming, renderButtonsRenaming];
     }
-
-    const renderHeading = () => (
-      <SelectWithWarn saveId={saveId} saves={saves} />
-    );
-    const onRename = () => {
-      setIsRenaming(true);
-    };
-    const onSave = () => {
-      state.addSave(Boolean(saveId));
-    };
-    const onCopy = () => {
-      state.addSave(false, `${currentName} copy`);
-    };
-    const renderButtons = () => (
-      <Menu.Root unmountOnExit={false}>
-        <Menu.Trigger asChild>
-          <IconButton variant="outline" size="sm" aria-label="Schedule options">
-            <LuEllipsis />
-          </IconButton>
-        </Menu.Trigger>
-        <Portal>
-          <Menu.Positioner>
-            <Menu.Content>
-              {saveId && (
-                <Menu.Item value="rename" onClick={onRename}>
-                  <LuPencilLine />
-                  <Box flex="1">Rename&hellip;</Box>
-                </Menu.Item>
-              )}
-              <Menu.Item value="copy" onClick={onCopy}>
-                <LuCopy />
-                <Box flex="1">Make a copy</Box>
-              </Menu.Item>
-              {saveId && (
-                <DeleteDialog
-                  saveId={saveId}
-                  name={saves.find((save) => save.id === saveId)?.name ?? ""}
-                >
-                  <Menu.Item
-                    value="delete"
-                    color="fg.error"
-                    _hover={{ bg: "bg.error", color: "fg.error" }}
-                  >
-                    <LuTrash2 />
-                    <Box flex="1">Delete&hellip;</Box>
-                  </Menu.Item>
-                </DeleteDialog>
-              )}
-              <Menu.Item value="new" onClick={onSave}>
-                {saveId ? (
-                  <>
-                    <LuFilePlus2 />
-                    <Box flex="1">New</Box>
-                  </>
-                ) : (
-                  <>
-                    <LuSave />
-                    <Box flex="1">Save</Box>
-                  </>
-                )}
-              </Menu.Item>
-              {saveId && (
-                <Menu.Item
-                  value="toggleDefault"
-                  onClick={() => {
-                    state.defaultSchedule =
-                      defaultScheduleId === saveId ? null : saveId;
-                  }}
-                >
-                  {defaultScheduleId === saveId ? (
-                    <>
-                      <LuPinOff />
-                      <Box flex="1">Unset as default</Box>
-                    </>
-                  ) : (
-                    <>
-                      <LuPin />
-                      <Box flex="1">Set as default</Box>
-                    </>
-                  )}
-                </Menu.Item>
-              )}
-              <ExportDialog>
-                <Menu.Item value="share">
-                  <LuShare2 />
-                  <Box flex="1">Share</Box>
-                </Menu.Item>
-              </ExportDialog>
-            </Menu.Content>
-          </Menu.Positioner>
-        </Portal>
-      </Menu.Root>
-    );
-    return [renderHeading, renderButtons];
+    return [renderHeadingDefault, renderButtonsDefault];
   })();
 
   return (

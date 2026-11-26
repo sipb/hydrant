@@ -1,5 +1,3 @@
-import { decode } from "html-entities";
-
 import {
   Flex,
   Heading,
@@ -8,18 +6,21 @@ import {
   Text,
   Button,
   Span,
+  VisuallyHidden,
 } from "@chakra-ui/react";
-import { useColorModeValue } from "./ui/color-mode";
-import { Tooltip } from "./ui/tooltip";
-import { LuExternalLink, LuBadgePlus, LuStar } from "react-icons/lu";
-import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
+import { decode } from "html-entities";
+import { LuBadgePlus, LuExternalLink, LuStar } from "react-icons/lu";
+
+import type { Flags } from "../lib/class";
 
 import { CustomActivity } from "../lib/activity";
-import type { Flags } from "../lib/class";
 import { Class, DARK_IMAGES, getFlagImg } from "../lib/class";
-import { linkClasses } from "../lib/utils";
 import { useHydrantContext } from "../lib/hydrant";
 import { PEClass, getPEFlagIcon, type PEFlags } from "../lib/pe";
+import { linkClasses } from "../lib/utils";
+import { ClassButtons, CustomActivityButtons } from "./ActivityButtons";
+import { useColorModeValue } from "./ui/color-mode";
+import { Tooltip } from "./ui/tooltip";
 
 /** A small image indicating a flag, like Spring or CI-H. */
 function ClassTypeSpan(props: { flag: keyof Flags; title: string }) {
@@ -49,8 +50,9 @@ function PEClassTypeSpan(props: { flag: keyof PEFlags; title: string }) {
 
   return (
     <Tooltip content={title}>
-      <Span role="img" aria-label={title} tabIndex={0}>
-        {getPEFlagIcon(flag)}
+      <Span tabIndex={0}>
+        <Span aria-hidden="true">{getPEFlagIcon(flag)}</Span>
+        <VisuallyHidden>{title}</VisuallyHidden>
       </Span>
     </Tooltip>
   );
@@ -69,7 +71,7 @@ function ClassTypes(props: { cls: Class }) {
    */
   const makeFlags = (arr: [keyof Flags, string][]) =>
     arr
-      .filter(([flag, _]) => flags[flag])
+      .filter(([flag]) => flags[flag])
       .map(([flag, title]) => (
         <ClassTypeSpan key={flag} flag={flag} title={title} />
       ));
@@ -157,7 +159,7 @@ function PEClassTypes(props: { cls: PEClass }) {
    */
   const makeFlags = (arr: [keyof PEFlags, string][]) =>
     arr
-      .filter(([flag, _]) => flags[flag])
+      .filter(([flag]) => flags[flag])
       .map(([flag, title]) => (
         <PEClassTypeSpan key={flag} flag={flag} title={title} />
       ));
@@ -494,4 +496,5 @@ export function ActivityDescription() {
   }
 
   activity satisfies never;
+  return null;
 }

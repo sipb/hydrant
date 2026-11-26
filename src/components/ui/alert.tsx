@@ -1,5 +1,6 @@
-import { Alert as ChakraAlert } from "@chakra-ui/react";
 import { forwardRef, type ReactNode, type ReactElement } from "react";
+
+import { Alert as ChakraAlert } from "@chakra-ui/react";
 
 export interface AlertProps extends Omit<ChakraAlert.RootProps, "title"> {
   startElement?: ReactNode;
@@ -13,7 +14,6 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
     const { title, children, icon, startElement, endElement, ...rest } = props;
     return (
       <ChakraAlert.Root ref={ref} {...rest}>
-        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
         {startElement || <ChakraAlert.Indicator>{icon}</ChakraAlert.Indicator>}
         {children ? (
           <ChakraAlert.Content>

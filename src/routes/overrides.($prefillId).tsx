@@ -1,17 +1,8 @@
-import { useCallback, useMemo, useState } from "react";
-
-import Form from "@rjsf/chakra-ui";
-import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv8";
-import type { JSONSchema7Definition } from "json-schema";
-import { parse, stringify } from "smol-toml";
-
+import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router";
-import { Alert } from "../components/ui/alert";
-import type { Route } from "./+types/overrides.($prefillId)";
 
-import logo from "../assets/logo.svg";
-import itemSchema from "../../scrapers/overrides.toml.d/override-schema.json";
+import type { CustomValidator, RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { JSONSchema7Definition } from "json-schema";
 
 import {
   Container,
@@ -28,23 +19,48 @@ import {
   SkipNavContent,
   SkipNavLink,
 } from "@chakra-ui/react";
+import { Theme as ChakraUITheme } from "@rjsf/chakra-ui";
+import { withTheme } from "@rjsf/core";
+import { customizeValidator } from "@rjsf/validator-ajv8";
+import { stringify as tomlStringify, parse as tomlParse } from "smol-toml";
+
+import type { Route } from "./+types/overrides.($prefillId)";
+
+import {
+  additionalProperties,
+  definitions,
+} from "../../scrapers/overrides.toml.d/override-schema.json";
+import logo from "../assets/logo.svg";
+import { Alert } from "../components/ui/alert";
+
+type FormData = Record<string, unknown>[];
+
+const Form = withTheme<FormData>(ChakraUITheme);
+const validator = customizeValidator<FormData>();
 
 const schema: RJSFSchema = {
   title: "Overrides",
   type: "array",
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   items: {
-    ...itemSchema.additionalProperties,
+    ...additionalProperties,
     required: ["number"],
   } as unknown as JSONSchema7Definition,
-  $defs: itemSchema.$defs as Record<string, JSONSchema7Definition>,
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  definitions: definitions as Record<string, JSONSchema7Definition>,
 };
 
 // less columns on smaller screens :/
 const COLS_3 = { base: "1fr", sm: "repeat(3, 1fr)" };
 const COLS_6 = { base: "1fr", sm: "repeat(3, 1fr)", md: "repeat(6, 1fr)" };
 
-const overrides = Object.assign(
-  {},
+type OverridesRecord = Record<
+  string,
+  { name: string; data: () => Promise<string> }
+>;
+
+const overrides: OverridesRecord = Object.assign(
+  {} as OverridesRecord,
   ...Object.entries(
     import.meta.glob("../../scrapers/overrides.toml.d/**/*.toml", {
       query: "raw",
@@ -56,7 +72,7 @@ const overrides = Object.assign(
 
     return { [key]: { name, data } };
   }),
-) as Record<string, { name: string; data: () => Promise<string> }>;
+);
 
 const overridesCollection = createListCollection({
   items: Object.entries(overrides)
@@ -64,7 +80,7 @@ const overridesCollection = createListCollection({
       label: name,
       value: key,
     }))
-    .sort((a, b) => a.label.localeCompare(b.label)),
+    .toSorted((a, b) => a.label.localeCompare(b.label)),
 });
 
 const overrideNames = Object.entries(overrides)
@@ -74,17 +90,21 @@ const overrideNames = Object.entries(overrides)
     return accum;
   }, {});
 
+const isTomlTable = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" &&
+  value !== null &&
+  !Array.isArray(value) &&
+  !(value instanceof Date);
+
 const getDataFromFile = async (fileName: string) => {
   try {
     const textToml = await overrides[fileName].data();
-    const mod = parse(textToml);
+    const mod = tomlParse(textToml);
 
-    const newData = Object.entries(mod).map(([key, value_1]) => {
-      const { number: num, ...rest } = value_1 as Record<string, unknown>;
-      return {
-        number: key,
-        ...rest,
-      };
+    const newData = Object.entries(mod).flatMap(([key, value]) => {
+      if (!isTomlTable(value)) return [];
+      const { number: _num, ...rest } = value;
+      return [{ number: key, ...rest }];
     });
     return newData;
   } catch (err) {
@@ -94,10 +114,7 @@ const getDataFromFile = async (fileName: string) => {
 };
 
 /** ensures class numbers are unique, since we change override from object to array */
-const validateUniqueNumbers: CustomValidator<Record<string, unknown>[]> = (
-  formData,
-  errors,
-) => {
+const validateUniqueNumbers: CustomValidator<FormData> = (formData, errors) => {
   const indicesByNumber = new Map<string, number[]>();
   (formData ?? []).forEach((override, index) => {
     const number = override.number;
@@ -121,7 +138,7 @@ const validateUniqueNumbers: CustomValidator<Record<string, unknown>[]> = (
 };
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  let prefillData: Record<string, unknown>[] = [];
+  let prefillData: FormData = [];
   const prefillIdPrelim = params.prefillId?.toUpperCase();
   let prefillId = "";
   let prefillError = "";
@@ -153,7 +170,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const [error, setError] = useState(false);
   const [selected, setSelected] = useState([prefillId]);
 
-  const uischema = useMemo<UiSchema>(() => {
+  const uischema = useMemo<UiSchema<FormData>>(() => {
     const uiSchema = {
       "ui:title": "Overrides",
       "ui:submitButtonOptions": {
@@ -162,7 +179,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
         },
         submitText: "Download",
       },
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       items: {
         "ui:title": "Class Override",
         "ui:field": "LayoutGridField",
@@ -279,7 +295,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           "ui:field": "LayoutHeaderField",
         },
         ...Object.fromEntries(
-          Object.entries(itemSchema.additionalProperties.properties).map(
+          Object.entries(additionalProperties.properties).map(
             ([key, value]) => {
               if ("description" in value) {
                 return [
@@ -302,33 +318,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
       },
     } satisfies UiSchema;
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     uiSchema.items.description["ui:widget"] = "textarea";
 
     return uiSchema;
   }, [data.length, error]);
-
-  const getDataFromFile = useCallback(
-    async (fileName: string) => {
-      try {
-        const textToml = await overrides[fileName].data();
-        const mod = parse(textToml);
-
-        const newData = Object.entries(mod).map(([key, value_1]) => {
-          const { number: num, ...rest } = value_1 as Record<string, unknown>;
-          return {
-            number: key,
-            ...rest,
-          };
-        });
-        return newData;
-      } catch (err) {
-        console.error("Error loading TOML file:", err);
-        return [];
-      }
-    },
-    [overrides],
-  );
 
   const handleChange = (e: Select.ValueChangeDetails) => {
     const fileName = e.value[0];
@@ -435,13 +428,13 @@ export default function App({ loaderData }: Route.ComponentProps) {
             liveOmit={"onChange"}
             omitExtraData={true}
             onChange={({ formData, errors }) => {
-              setData(formData as Record<string, unknown>[]);
-              setError(errors.length > 0 ? true : false);
+              setData(formData ?? []);
+              setError(errors.length > 0);
             }}
             onSubmit={() => {
               const contents =
                 "#:schema ../override-schema.json\n\n" +
-                stringify(
+                tomlStringify(
                   Object.fromEntries(
                     data.map((override) => {
                       const { number: num, ...rest } = override;

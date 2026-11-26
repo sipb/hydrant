@@ -10,8 +10,8 @@ Whenever someone pushes to the `deploy` branch, this script will build Hydrant f
 
 This runs two checks:
 
-- Prettier for formatting
-- ESLint linting + TypeScript typechecking (bundled as a single check)
+- Oxfmt for formatting
+- Oxlint for linting + TypeScript typechecking (bundled as a single check)
 
 This pipeline does NOT trigger on pull requests or commits that only affect backend-related code, documentation, or JSON/TOML data.
 

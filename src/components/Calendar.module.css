@@ -5,16 +5,8 @@
   /* primary */
   --fc-monarch-primary: var(--chakra-colors-hydrant-700);
   --fc-monarch-primary-foreground: #ffffff;
-  --fc-monarch-primary-over: color-mix(
-    in oklab,
-    var(--chakra-colors-hydrant-700) 88%,
-    #ffffff
-  );
-  --fc-monarch-primary-down: color-mix(
-    in oklab,
-    var(--chakra-colors-hydrant-700) 82%,
-    #000000
-  );
+  --fc-monarch-primary-over: color-mix(in oklab, var(--chakra-colors-hydrant-700) 88%, #ffffff);
+  --fc-monarch-primary-down: color-mix(in oklab, var(--chakra-colors-hydrant-700) 82%, #000000);
 
   /* secondary */
   --fc-monarch-secondary: var(--chakra-colors-hydrant-100);
@@ -29,25 +21,13 @@
   /* tertiary */
   --fc-monarch-tertiary: var(--chakra-colors-hydrant-500);
   --fc-monarch-tertiary-foreground: #ffffff;
-  --fc-monarch-tertiary-over: color-mix(
-    in oklab,
-    var(--chakra-colors-hydrant-500) 88%,
-    #ffffff
-  );
-  --fc-monarch-tertiary-down: color-mix(
-    in oklab,
-    var(--chakra-colors-hydrant-500) 82%,
-    #000000
-  );
+  --fc-monarch-tertiary-over: color-mix(in oklab, var(--chakra-colors-hydrant-500) 88%, #ffffff);
+  --fc-monarch-tertiary-down: color-mix(in oklab, var(--chakra-colors-hydrant-500) 82%, #000000);
 
   /* calendar content */
   --fc-monarch-event: var(--fc-monarch-primary);
   --fc-monarch-event-contrast: var(--fc-monarch-primary-foreground);
-  --fc-monarch-highlight: color-mix(
-    in oklab,
-    var(--chakra-colors-hydrant-500) 14%,
-    transparent
-  );
+  --fc-monarch-highlight: color-mix(in oklab, var(--chakra-colors-hydrant-500) 14%, transparent);
   --fc-monarch-now: var(--chakra-colors-red-600);
 
   /* controls */
@@ -101,11 +81,7 @@
     /* calendar content */
     --fc-monarch-event: var(--fc-monarch-primary);
     --fc-monarch-event-contrast: var(--fc-monarch-primary-foreground);
-    --fc-monarch-highlight: color-mix(
-      in oklab,
-      var(--chakra-colors-hydrant-400) 18%,
-      transparent
-    );
+    --fc-monarch-highlight: color-mix(in oklab, var(--chakra-colors-hydrant-400) 18%, transparent);
     --fc-monarch-now: var(--chakra-colors-red-400);
 
     /* controls */

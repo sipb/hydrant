@@ -1,12 +1,13 @@
 import { expect, test, describe } from "vitest";
+
 import { Timeslot, CustomActivity, Event } from "../src/lib/activity";
-import { Slot } from "../src/lib/dates";
 import {
   COLOR_SCHEME_LIGHT,
   COLOR_SCHEME_DARK,
   COLOR_SCHEME_LIGHT_CONTRAST,
   COLOR_SCHEME_DARK_CONTRAST,
 } from "../src/lib/colors";
+import { Slot } from "../src/lib/dates";
 
 import "temporal-polyfill/global";
 

@@ -1,6 +1,7 @@
+import type { JSX } from "react/jsx-runtime";
+
 import { Link } from "@chakra-ui/react";
 import { unpack, pack } from "msgpackr";
-import type { JSX } from "react/jsx-runtime";
 
 import type { State } from "./state";
 

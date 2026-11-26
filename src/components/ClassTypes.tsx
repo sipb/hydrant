@@ -1,41 +1,33 @@
 import { useState } from "react";
 
-import { Tabs, type TabsValueChangeDetails } from "@chakra-ui/react";
-import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
 import type { IconType } from "react-icons/lib";
 
+import { Tabs } from "@chakra-ui/react";
+import { LuGraduationCap, LuDumbbell } from "react-icons/lu";
+
+import { useHydrantContext } from "../lib/hydrant";
+import { ClassType } from "../lib/schema";
 import { ClassTable } from "./ClassTable";
 import { PEClassTable } from "./PEClassTable";
 
-import { ClassType } from "../lib/schema";
-import { useHydrantContext } from "../lib/hydrant";
+type ClassTypeComponent = Record<ClassType, [IconType, React.ComponentType]>;
 
-function classTypeComponents(termKeys: ClassType[]) {
-  const obj = {} as Record<ClassType, [IconType, React.ComponentType]>;
-
-  if (termKeys.includes(ClassType.ACADEMIC)) {
-    obj[ClassType.ACADEMIC] = [LuGraduationCap, ClassTable];
-  }
-
-  if (termKeys.includes(ClassType.PEW)) {
-    obj[ClassType.PEW] = [LuDumbbell, PEClassTable];
-  }
-
-  return obj;
-}
+const CLASS_TYPE_COMPONENTS: ClassTypeComponent = {
+  [ClassType.ACADEMIC]: [LuGraduationCap, ClassTable],
+  [ClassType.PEW]: [LuDumbbell, PEClassTable],
+};
 
 export const ClassTypesSwitcher = () => {
   const { state } = useHydrantContext();
-  const [currentTab, setCurrentTab] = useState(ClassType.ACADEMIC);
+  const [currentTab, setCurrentTab] = useState<string>(ClassType.ACADEMIC);
 
-  const tabs = classTypeComponents([
-    ...(state.classes.size > 0 ? [ClassType.ACADEMIC] : []),
-    ...(state.peClasses.size > 0 ? [ClassType.PEW] : []),
-  ]);
-
-  const handleTabChange = (e: TabsValueChangeDetails) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
-    setCurrentTab(e.value as ClassType);
+  const tabs: Partial<ClassTypeComponent> = {
+    ...(state.classes.size > 0
+      ? { [ClassType.ACADEMIC]: CLASS_TYPE_COMPONENTS[ClassType.ACADEMIC] }
+      : {}),
+    ...(state.peClasses.size > 0
+      ? { [ClassType.PEW]: CLASS_TYPE_COMPONENTS[ClassType.PEW] }
+      : {}),
   };
 
   if (Object.keys(tabs).length > 1)
@@ -45,10 +37,12 @@ export const ClassTypesSwitcher = () => {
         size="sm"
         variant="line"
         value={currentTab}
-        onValueChange={handleTabChange}
+        onValueChange={(e) => {
+          setCurrentTab(e.value);
+        }}
       >
         <Tabs.List>
-          {Object.entries(tabs).map(([key, [Icon, _]]) => (
+          {Object.entries(tabs).map(([key, [Icon]]) => (
             <Tabs.Trigger value={key} key={key}>
               <Icon />
               {key}
@@ -56,7 +50,7 @@ export const ClassTypesSwitcher = () => {
           ))}
           <Tabs.Indicator />
         </Tabs.List>
-        {Object.entries(tabs).map(([key, [_, Component]]) => (
+        {Object.entries(tabs).map(([key, [_i, Component]]) => (
           <Tabs.Content value={key} key={key}>
             <Component />
           </Tabs.Content>
