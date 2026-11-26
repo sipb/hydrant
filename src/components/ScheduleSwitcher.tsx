@@ -169,8 +169,8 @@ function DeleteDialog(props: {
               <Dialog.Title>Delete {name}?</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
-              This removes the saved schedule from your browser. It can't be
-              undone.
+              This removes the saved schedule from your browser, and from
+              Fireroad if you're logged in. It can't be undone.
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.ActionTrigger asChild>

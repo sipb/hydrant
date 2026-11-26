@@ -1,6 +1,6 @@
 import { createListCollection, Portal, Select } from "@chakra-ui/react";
 
-import { Term, toFullUrl, getUrlNames } from "../lib/dates";
+import { toFullUrl, getTerms } from "../lib/dates";
 import { useHydrantContext } from "../lib/hydrant";
 
 export function TermSwitcher() {
@@ -10,13 +10,10 @@ export function TermSwitcher() {
   const defaultValue = toUrl(state.term.urlName);
 
   const urlOptions = createListCollection({
-    items: getUrlNames(state.latestUrlName).map((urlName) => {
-      const { niceName } = new Term({ urlName });
-      return {
-        label: niceName,
-        value: toUrl(urlName),
-      };
-    }),
+    items: getTerms(state.latestUrlName).map((term) => ({
+      label: term.niceName,
+      value: toUrl(term.urlName),
+    })),
   });
 
   return (

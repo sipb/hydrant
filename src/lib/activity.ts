@@ -210,8 +210,8 @@ export class CustomActivity implements BaseActivity {
   }
 
   /** Deflate an activity to something JSONable. */
-  deflate(): (RawTimeslot[] | string)[] {
-    const res = [
+  deflate(): DeflatedCustomActivity {
+    const res: DeflatedCustomActivity = [
       this.timeslots.map<RawTimeslot>((slot) => [
         slot.startSlot.slot,
         slot.numSlots,
@@ -224,16 +224,14 @@ export class CustomActivity implements BaseActivity {
   }
 
   /** Inflate a custom activity with info from the output of deflate. */
-  inflate(parsed: (RawTimeslot[] | string)[]): void {
+  inflate(parsed: DeflatedCustomActivity): void {
     const [timeslots, name, backgroundColor, room] = parsed;
-    this.timeslots = (timeslots as RawTimeslot[]).map(
-      (slot) => new Timeslot(...slot),
-    );
-    this.name = name as string;
-    this.room = (room as string) || undefined;
+    this.timeslots = timeslots.map((slot) => new Timeslot(...slot));
+    this.name = name;
+    this.room = room === "" ? undefined : room;
     if (backgroundColor) {
       this.manualColor = true;
-      this.backgroundColor = backgroundColor as string;
+      this.backgroundColor = backgroundColor;
     }
   }
 }
@@ -378,4 +376,85 @@ export class Sections {
       this.selected = sec;
     }
   }
+}
+
+/** saved custom activity. old saves may lack `room`. */
+export type DeflatedCustomActivity = [
+  timeslots: RawTimeslot[],
+  name: string,
+  backgroundColor: string,
+  room?: string,
+];
+
+/**
+ * A saved class, as either its id or [id, color?, roomOverrides?, ...sections],
+ * where each section is its locked index or null if unlocked.
+ */
+export type DeflatedClass =
+  string | [id: string, ...rest: (string | string[] | number | null)[]];
+
+/** A non-custom class, whose color and locked sections are saved. */
+interface SavedClass {
+  backgroundColor: string;
+  manualColor: boolean;
+  readonly sections: Sections[];
+}
+
+/** Deflate some class to something JSONable. */
+export function deflateClass(id: string, cls: SavedClass): DeflatedClass {
+  const sections = cls.sections.map((secs) =>
+    !secs.locked
+      ? null
+      : secs.sections.findIndex((sec) => sec === secs.selected),
+  );
+  const sectionLocs = cls.sections.map((secs) => secs.roomOverride);
+  while (sections.at(-1) === null) sections.pop();
+  return [
+    id,
+    ...(cls.manualColor ? [cls.backgroundColor] : []), // string
+    ...(sectionLocs.length ? [sectionLocs] : []), // array[string]
+    ...sections, // number, or null if unlocked
+  ];
+}
+
+/** split a deflated class into its color, room overrides, and locked section indices. */
+export function parseDeflatedClass(parsed: DeflatedClass): {
+  color?: string;
+  roomOverrides?: string[];
+  sections: (number | null)[];
+} {
+  if (typeof parsed === "string") return { sections: [] };
+  let offset = 1;
+  const color = typeof parsed[1] === "string" ? parsed[1] : undefined;
+  if (color !== undefined) offset += 1;
+  const roomOverrides = Array.isArray(parsed[offset])
+    ? (parsed[offset] as string[])
+    : undefined;
+  if (roomOverrides) offset += 1;
+  const sections = parsed
+    .slice(offset)
+    .map((sec) => (typeof sec === "number" ? sec : null));
+  return { color, roomOverrides, sections };
+}
+
+/** inflate with info from the output of deflateClass. */
+export function inflateClass(cls: SavedClass, parsed: DeflatedClass): void {
+  const { color, roomOverrides, sections } = parseDeflatedClass(parsed);
+  if (color !== undefined) {
+    cls.backgroundColor = color;
+    cls.manualColor = true;
+  }
+  cls.sections.forEach((secs, i) => {
+    const roomOverride = roomOverrides?.[i];
+    if (typeof roomOverride === "string") {
+      secs.roomOverride = roomOverride;
+    }
+    const index = sections.at(i);
+    if (typeof index === "number") {
+      secs.locked = true;
+      secs.selected = secs.sections[index];
+    } else {
+      secs.locked = false;
+    }
+  });
 }

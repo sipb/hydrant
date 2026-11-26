@@ -10,15 +10,42 @@ import type {
 import { CustomActivity } from "./activity";
 import { scheduleSlots } from "./calendarSlots";
 import { Class } from "./class";
-import type { Term } from "./dates";
+import { Term, getTerms } from "./dates";
 import type { ColorScheme } from "./colors";
 import { chooseColors, fallbackColor, getDefaultColorScheme } from "./colors";
 import type { MeasurementSystem } from "./measurement";
 import { getDefaultMeasurementSystem } from "./measurement";
-import type { RawClass, RawTimeslot, RawPEClass, BuildingInfo } from "./raw";
+import type { RawClass, RawPEClass, BuildingInfo } from "./raw";
 import { Store } from "./store";
 import { sum, urldecode, urlencode } from "./utils";
-import type { HydrantState, Preferences, Save } from "./schema";
+import type {
+  DeflatedSave,
+  HydrantState,
+  Preferences,
+  Save,
+  SyncConflict,
+  SyncConflictChoice,
+  UntaggedSchedule,
+} from "./schema";
+import type { ScheduleContents, SyncScheduleOperation } from "./auth";
+import {
+  deleteSchedule,
+  getFavoriteCourses,
+  getSchedule,
+  getSchedules,
+  setFavoriteCourses,
+  syncSchedule,
+} from "./auth";
+import {
+  agentName,
+  fromScheduleContents,
+  isEmptyState,
+  isoNow,
+  notBefore,
+  remoteName,
+  termSuffix,
+  toScheduleContents,
+} from "./sync";
 import { BANNER_LAST_CHANGED, DEFAULT_PREFERENCES } from "./schema";
 import { PEClass } from "./pe";
 
@@ -69,6 +96,24 @@ export class State {
   private starredClasses = new Set<string>();
   /** Set of starred PE class numbers */
   private starredPEClasses = new Set<string>();
+  /** Current access token */
+  private accessToken?: string = undefined;
+  /** Fireroad username of the current access token */
+  private username?: string = undefined;
+  /** Saves changed both here and on Fireroad, shown to the user in order */
+  private syncConflicts: (SyncConflict & {
+    remoteId: number;
+    contents: ScheduleContents | "";
+  })[] = [];
+  /** Fireroad schedules from other clients, waiting for the user to pick a term */
+  private untaggedSchedules: (UntaggedSchedule & {
+    downloaded: string;
+    contents: ScheduleContents;
+  })[] = [];
+  /** Debounce timers for syncing each save */
+  private syncTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  /** Fireroad requests run one at a time, so files aren't created twice */
+  private syncQueue: Promise<void> = Promise.resolve();
 
   /** React callback to update state. */
   callback: ((state: HydrantState) => void) | undefined;
@@ -291,6 +336,8 @@ export class State {
       saveId: this.saveId,
       saves: this.saves,
       preferences: this.preferences,
+      syncConflict: this.syncConflicts[0],
+      untaggedSchedules: this.untaggedSchedules,
     });
     if (save) {
       this.storeSave(this.saveId, false);
@@ -362,7 +409,11 @@ export class State {
     } else {
       this.starredClasses.add(cls.id);
     }
-    this.store.set("starredClasses", Array.from(this.starredClasses));
+    const starredArray = Array.from(this.starredClasses);
+
+    this.store.globalSet("starredClasses", starredArray);
+    if (this.accessToken)
+      void setFavoriteCourses(this.accessToken, starredArray);
     this.updateState();
   }
 
@@ -456,7 +507,7 @@ export class State {
   }
 
   /** Deflate program state to something JSONable. */
-  deflate() {
+  deflate(): DeflatedSave {
     return [
       this.selectedClasses.map((cls) => cls.deflate()),
       this.selectedCustomActivities.length > 0
@@ -470,34 +521,15 @@ export class State {
   }
 
   /** Parse all program state. */
-  inflate(
-    obj:
-      | (
-          | number
-          | (string | number | string[])[][]
-          | (string | RawTimeslot[])[][]
-          | null
-        )[]
-      | null,
-  ): void {
+  inflate(obj: DeflatedSave | null): void {
     if (!obj) return;
     this.reset();
-    const [classes, customActivities, selectedOption, peClasses] = obj as [
-      (string | number | string[])[][],
-      (string | RawTimeslot[])[][] | null,
-      number | undefined,
-      (string | number | string[])[][] | undefined, // undefined for backwards compatability
-    ];
+    const [classes, customActivities, selectedOption, peClasses] = obj;
     for (const deflated of classes) {
-      const cls =
-        typeof deflated === "string"
-          ? this.classes.get(deflated)
-          : this.classes.get((deflated as string[])[0]);
+      const subject = typeof deflated === "string" ? deflated : deflated[0];
+      const cls = this.classes.get(subject);
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
-        const subject =
-          typeof deflated === "string" ? deflated : (deflated as string[])[0];
-
         this.unknownSubjects.add(subject);
         continue;
       }
@@ -514,19 +546,12 @@ export class State {
     }
     this.selectedOption = selectedOption ?? 0;
     for (const deflated of peClasses ?? []) {
+      const subject = typeof deflated === "string" ? deflated : deflated[0];
       // also look up Q3 for backwards compatibility
       const cls =
-        typeof deflated === "string"
-          ? (this.peClasses.get(deflated) ??
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            this.peClasses.get(`Q3.${deflated}`))
-          : (this.peClasses.get((deflated as string[])[0]) ??
-            this.peClasses.get(`Q3.${(deflated as string[])[0]}`));
+        this.peClasses.get(subject) ?? this.peClasses.get(`Q3.${subject}`);
       // if we can't find the class, add it to unknownSubjects so we can show a warning
       if (!cls) {
-        const subject =
-          typeof deflated === "string" ? deflated : (deflated as string[])[0];
-
         this.unknownSubjects.add(subject);
         continue;
       }
@@ -546,9 +571,9 @@ export class State {
       url.searchParams.delete("s");
       window.history.pushState({}, "", url);
     }
-    const storage = this.store.get(id);
+    const storage = this.storedSave(id);
     if (!storage) return;
-    this.inflate(storage as Parameters<State["inflate"]>[0]);
+    this.inflate(storage);
     this.saveId = id;
     this.updateState(false);
   }
@@ -556,7 +581,11 @@ export class State {
   /** Store state as a save in localStorage, and store save metadata. */
   storeSave(id?: string, update = true): void {
     if (id) {
-      this.store.set(id, this.deflate());
+      const deflated = this.deflate();
+      if (JSON.stringify(deflated) !== JSON.stringify(this.storedSave(id))) {
+        this.store.set(id, deflated);
+        this.markChanged(id);
+      }
     }
     this.store.set("saves", this.saves);
     this.store.globalSet("preferences", this.preferences);
@@ -579,14 +608,17 @@ export class State {
 
   /** Rename a given save. */
   renameSave(id: string, name: string): void {
-    const save = this.saves.find((save) => save.id === id);
+    const save = this.findSave(id);
     if (!save || !name) return;
     save.name = name;
+    this.markChanged(id);
     this.storeSave();
   }
 
   /** Remove the given slot.  */
   removeSave(id: string): void {
+    const removed = this.findSave(id);
+    if (removed) this.deleteRemote(removed);
     this.saves = this.saves.filter((save) => save.id !== id);
     if (this.saves.length === 0) {
       this.addSave(true);
@@ -636,7 +668,7 @@ export class State {
       this.addSave(true);
     }
     if (save) {
-      this.inflate(urldecode(save) as Parameters<State["inflate"]>[0]);
+      this.inflate(urldecode(save) as DeflatedSave);
     } else {
       // Try to load default schedule if set, otherwise load first save
       const defaultScheduleId = this.preferences.defaultScheduleId;
@@ -650,9 +682,440 @@ export class State {
       }
     }
     // Load starred classes from storage
-    const storedStarred = this.store.get("starredClasses");
-    if (storedStarred) {
-      this.starredClasses = new Set(storedStarred);
+    this.starredClasses = new Set(this.store.globalGet("starredClasses"));
+
+    // backwards compatibility, change from term store to global store
+    const storedStarredTerm = this.store.get("starredClasses") as
+      string[] | null;
+    if (storedStarredTerm) {
+      storedStarredTerm.forEach((cls) => this.starredClasses.add(cls));
+      this.store.globalSet("starredClasses", Array.from(this.starredClasses));
+      this.store.delete("starredClasses");
+    }
+  }
+
+  loadAccessToken(token?: string, username?: string): void {
+    if (token === this.accessToken) {
+      return;
+    }
+
+    this.accessToken = token;
+    this.username = username;
+    this.syncTimers.forEach((_, id) => {
+      this.cancelSync(id);
+    });
+    this.syncConflicts = [];
+    this.untaggedSchedules = [];
+
+    if (token && username) {
+      // pull schedules from other devices, then push everything here
+      this.enqueueSync(async () => {
+        await this.pullSaves(token, username);
+        this.saves.forEach((save) => {
+          this.enqueueSync(() => this.syncSave(save.id));
+        });
+      });
+    }
+
+    if (token) {
+      // user signed in, merge remote favorites with local ones
+      getFavoriteCourses(token)
+        .then(async (favoriteCourses) => {
+          favoriteCourses.forEach((cls) => this.starredClasses.add(cls));
+
+          const starredArray = Array.from(this.starredClasses);
+          this.store.globalSet("starredClasses", starredArray);
+          this.updateState(false);
+
+          // push stars made while signed out back up to fireroad
+          if (starredArray.length > favoriteCourses.length) {
+            await setFavoriteCourses(token, starredArray);
+          }
+        })
+        .catch((err: unknown) => {
+          console.error("Failed to sync favorite courses:", err);
+        });
+    }
+    // on sign out, keep local favorites but don't sync anything
+  }
+
+  //========================================================================
+  // Fireroad schedule sync
+
+  /** Name of this device on Fireroad, so other devices can tell it apart. */
+  private get syncAgent(): string {
+    let agent = this.store.globalGet("syncAgent");
+    if (!agent) {
+      agent = agentName(navigator.userAgent, nanoid(4));
+      this.store.globalSet("syncAgent", agent);
+    }
+    return agent;
+  }
+
+  /**
+   * A name not used by any other save, adding "(2)", "(3)", etc. if needed.
+   * Fireroad names must be unique, and this term's names match local ones.
+   */
+  private uniqueSaveName(name: string, save?: Save): string {
+    const taken = new Set(
+      this.saves.filter((other) => other !== save).map((other) => other.name),
+    );
+    const base = name.replace(/ \(\d+\)$/, "");
+    let unique = name;
+    for (let i = 2; taken.has(unique); i++) {
+      unique = `${base} (${i.toString()})`;
+    }
+    return unique;
+  }
+
+  private storedSave(id: string): DeflatedSave | null {
+    return this.store.get(id) as DeflatedSave | null;
+  }
+
+  private findSave(id: string): Save | undefined {
+    return this.saves.find((save) => save.id === id);
+  }
+
+  /** Add a save with contents from Fireroad, returning its id. */
+  private addRemoteSave(
+    name: string,
+    contents: ScheduleContents,
+    changed?: string,
+    remote?: Save["remote"],
+  ): string {
+    const id = nanoid(8);
+    this.saves.push({ id, name, changed, remote });
+    this.store.set(id, fromScheduleContents(contents, this.classes));
+    return id;
+  }
+
+  /** Fireroad copy of a save, if it belongs to the signed in user. */
+  private remoteOf(save: Save): Save["remote"] {
+    return save.remote && save.remote.user === this.username
+      ? save.remote
+      : undefined;
+  }
+
+  /** Run a Fireroad operation after all previous ones finish. */
+  private enqueueSync(op: () => Promise<void>): void {
+    this.syncQueue = this.syncQueue.then(op).catch((err: unknown) => {
+      console.error("Failed to sync schedules with Fireroad:", err);
+    });
+  }
+
+  /** Send a sync operation from this device to Fireroad. */
+  private sendSync(token: string, op: Omit<SyncScheduleOperation, "agent">) {
+    return syncSchedule(token, {
+      ...op,
+      changed: notBefore(op.changed, op.downloaded),
+      agent: this.syncAgent,
+    });
+  }
+
+  /** Cancel a pending debounced sync of a save. */
+  private cancelSync(id: string): void {
+    clearTimeout(this.syncTimers.get(id));
+    this.syncTimers.delete(id);
+  }
+
+  private dropConflicts(saveId: string): void {
+    this.syncConflicts = this.syncConflicts.filter(
+      (conflict) => conflict.saveId !== saveId,
+    );
+  }
+
+  /** Record that a save changed locally, and sync it soon. */
+  private markChanged(id: string): void {
+    const save = this.findSave(id);
+    if (!save) return;
+    save.changed = isoNow();
+
+    if (!this.accessToken) return;
+    this.cancelSync(id);
+    this.syncTimers.set(
+      id,
+      setTimeout(() => {
+        this.syncTimers.delete(id);
+        this.enqueueSync(() => this.syncSave(id));
+      }, SYNC_DELAY),
+    );
+  }
+
+  /** Delete the Fireroad copy of a save that is being removed. */
+  private deleteRemote(save: Save): void {
+    this.cancelSync(save.id);
+    this.dropConflicts(save.id);
+
+    const token = this.accessToken;
+    const remote = this.remoteOf(save);
+    if (!token || !remote) return;
+    this.enqueueSync(() => deleteSchedule(token, remote.id));
+  }
+
+  /** Add Fireroad schedules for this term that aren't on this device yet. */
+  private async pullSaves(token: string, username: string): Promise<void> {
+    const files = await getSchedules(token);
+    const known = new Set(
+      this.saves.flatMap((save) => {
+        const remote = this.remoteOf(save);
+        return remote ? [remote.id] : [];
+      }),
+    );
+    // if this device only has blank schedules, replace them
+    const blankIds = this.saves.every(
+      (save) => !this.remoteOf(save) && isEmptyState(this.storedSave(save.id)),
+    )
+      ? new Set(this.saves.map((save) => save.id))
+      : new Set<string>();
+
+    const skipped = new Set(this.store.globalGet("syncSkipped")?.[username]);
+    const ownSuffix = termSuffix(this.term);
+    const otherTermSuffixes = getTerms(this.latestUrlName)
+      .filter((term) => term.urlName !== this.term.urlName)
+      .map(termSuffix);
+
+    let added = false;
+    this.untaggedSchedules = [];
+    for (const [key, summary] of Object.entries(files)) {
+      const remoteId = parseInt(key, 10);
+      if (known.has(remoteId) || skipped.has(remoteId)) continue;
+      // other terms' schedules are pulled when that term is opened
+      if (
+        !summary.name.endsWith(ownSuffix) &&
+        otherTermSuffixes.some((suffix) => summary.name.endsWith(suffix))
+      ) {
+        continue;
+      }
+
+      const file = await getSchedule(token, remoteId);
+      const hydrant = file.contents.hydrant;
+      if (!hydrant) {
+        this.untaggedSchedules.push({
+          remoteId,
+          name: file.name,
+          changed: file.changed,
+          subjects: file.contents.selectedSubjects.map((s) => s.subject_id),
+          downloaded: file.downloaded,
+          contents: file.contents,
+        });
+        continue;
+      }
+      if (hydrant.term !== this.term.urlName) continue;
+
+      this.addRemoteSave(hydrant.name, file.contents, file.changed, {
+        id: remoteId,
+        user: username,
+        downloaded: file.downloaded,
+      });
+      added = true;
+    }
+
+    if (added && blankIds.size > 0) {
+      this.saves = this.saves.filter((save) => !blankIds.has(save.id));
+      blankIds.forEach((id) => {
+        this.store.delete(id);
+      });
+    }
+    this.storeSave();
+    if (added && blankIds.has(this.saveId)) this.loadSave(this.saves[0].id);
+  }
+
+  /**
+   * Tag untagged schedules with the chosen terms, or `null` to never import
+   * them. Schedules without a choice are asked about again next login.
+   */
+  importUntaggedSchedules(choices: Record<number, string | null>): void {
+    const token = this.accessToken;
+    const username = this.username;
+    if (!token || !username) return;
+
+    const chosen = this.untaggedSchedules.filter(
+      (file) => file.remoteId in choices,
+    );
+    this.untaggedSchedules = this.untaggedSchedules.filter(
+      (file) => !(file.remoteId in choices),
+    );
+
+    const skippedIds = chosen
+      .filter((file) => choices[file.remoteId] === null)
+      .map((file) => file.remoteId);
+    if (skippedIds.length > 0) {
+      const skipped = this.store.globalGet("syncSkipped") ?? {};
+      skipped[username] = [...(skipped[username] ?? []), ...skippedIds];
+      this.store.globalSet("syncSkipped", skipped);
+    }
+
+    chosen.forEach((file) => {
+      const term = choices[file.remoteId];
+      if (term) {
+        this.enqueueSync(() => this.tagSchedule(token, username, file, term));
+      }
+    });
+    this.updateState(false);
+  }
+
+  /** Close the untagged schedules dialog until next login. */
+  dismissUntaggedSchedules(): void {
+    this.untaggedSchedules = [];
+    this.updateState(false);
+  }
+
+  /** Save a term into an untagged Fireroad schedule, adding it if it's this term. */
+  private async tagSchedule(
+    token: string,
+    username: string,
+    file: State["untaggedSchedules"][number],
+    term: string,
+  ): Promise<void> {
+    const result = await this.sendSync(token, {
+      id: file.remoteId,
+      name: remoteName(file.name, new Term({ urlName: term })),
+      contents: { ...file.contents, hydrant: { term, name: file.name } },
+      changed: isoNow(),
+      downloaded: file.downloaded,
+    });
+    // anything else means it changed elsewhere since download; ask next login
+    if (result.result !== "update_remote") return;
+    if (term !== this.term.urlName || username !== this.username) return;
+
+    const id = this.addRemoteSave(
+      this.uniqueSaveName(file.name),
+      file.contents,
+      result.changed,
+      { id: file.remoteId, user: username, downloaded: result.changed },
+    );
+    // push the full Hydrant state, and the new name if it had to change
+    this.markChanged(id);
+    this.storeSave();
+  }
+
+  /** Sync one save with Fireroad, creating the Fireroad copy if needed. */
+  private async syncSave(id: string, override = false): Promise<void> {
+    const token = this.accessToken;
+    const username = this.username;
+    const save = this.findSave(id);
+    const state = this.storedSave(id);
+    if (!token || !username || !save || !state) return;
+
+    const remote = this.remoteOf(save);
+    // don't clutter Fireroad with blank schedules that were never synced
+    if (!remote && isEmptyState(state)) return;
+
+    if (!remote) save.name = this.uniqueSaveName(save.name, save);
+
+    const result = await this.sendSync(token, {
+      id: remote?.id,
+      name: remoteName(save.name, this.term),
+      contents: toScheduleContents(
+        state,
+        this.term.urlName,
+        save.name,
+        this.classes,
+      ),
+      changed: save.changed ?? isoNow(),
+      downloaded: remote?.downloaded,
+      override,
+    });
+
+    if (!this.saves.includes(save) || username !== this.username) {
+      // removed or signed out while syncing, so undo any new Fireroad file
+      if (result.result === "update_remote" && result.id !== undefined) {
+        await deleteSchedule(token, result.id);
+      }
+      return;
+    }
+
+    switch (result.result) {
+      case "no_change":
+      case "update_remote": {
+        const remoteId =
+          result.result === "update_remote" && result.id !== undefined
+            ? result.id
+            : remote?.id;
+        if (remoteId === undefined) return;
+        save.remote = {
+          id: remoteId,
+          user: username,
+          downloaded: result.changed,
+        };
+        this.storeSave();
+        break;
+      }
+      case "update_local":
+        this.applyRemote(save, result.contents, result.changed, {
+          id: result.id,
+          user: username,
+          downloaded: result.downloaded,
+        });
+        break;
+      case "conflict":
+        if (!remote) return;
+        this.dropConflicts(save.id);
+        this.syncConflicts.push({
+          saveId: save.id,
+          saveName: save.name,
+          otherAgent: result.other_agent,
+          otherDate: result.other_date,
+          deleted: result.other_contents === "",
+          remoteId: remote.id,
+          contents: result.other_contents,
+        });
+        this.updateState(false);
+        break;
+    }
+  }
+
+  /** Replace a save with its Fireroad copy. */
+  private applyRemote(
+    save: Save,
+    contents: ScheduleContents,
+    changed: string,
+    remote: NonNullable<Save["remote"]>,
+  ): void {
+    save.name = contents.hydrant?.name ?? save.name;
+    save.changed = changed;
+    save.remote = remote;
+    this.store.set(save.id, fromScheduleContents(contents, this.classes));
+    this.storeSave();
+    if (save.id === this.saveId) this.loadSave(save.id);
+  }
+
+  /**
+   * Resolve the first sync conflict, keeping this copy, Fireroad's copy, or
+   * both (with Fireroad's copy as a new save).
+   */
+  resolveSyncConflict(keep: SyncConflictChoice): void {
+    const conflict = this.syncConflicts.shift();
+    const save = conflict && this.findSave(conflict.saveId);
+    if (!conflict || !save || !this.username) {
+      this.updateState(false);
+      return;
+    }
+
+    if (keep === "both" && conflict.contents !== "") {
+      const id = this.addRemoteSave(
+        this.uniqueSaveName(conflict.contents.hydrant?.name ?? save.name),
+        conflict.contents,
+      );
+      this.markChanged(id);
+    }
+
+    if (keep !== "remote") {
+      this.enqueueSync(() => this.syncSave(save.id, true));
+      this.storeSave();
+    } else if (conflict.contents === "") {
+      // deleted on Fireroad, so delete it here too
+      save.remote = undefined;
+      this.removeSave(save.id);
+    } else {
+      this.applyRemote(save, conflict.contents, conflict.otherDate, {
+        id: conflict.remoteId,
+        user: this.username,
+        downloaded: conflict.otherDate,
+      });
     }
   }
 }
+
+/** How long to wait after the last change before syncing a save, in ms. */
+const SYNC_DELAY = 2000;

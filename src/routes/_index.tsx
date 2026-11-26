@@ -1,3 +1,5 @@
+import { useContext, useEffect } from "react";
+
 import {
   Box,
   Flex,
@@ -18,6 +20,11 @@ import { Header, PreferencesDialog } from "../components/Header";
 import { SelectedActivities } from "../components/SelectedActivities";
 import { ScheduleSwitcher } from "../components/ScheduleSwitcher";
 import { TermSwitcher } from "../components/TermSwitcher";
+import {
+  AuthButton,
+  SyncConflictDialog,
+  UntaggedSchedulesDialog,
+} from "../components/Auth";
 
 import { State } from "../lib/state";
 import { Term, getClosestUrlName, type LatestTermInfo } from "../lib/dates";
@@ -28,6 +35,7 @@ import {
   getStateMaps,
   type SemesterData,
 } from "../lib/hydrant";
+import { SessionContext } from "../lib/auth";
 
 import type { Route } from "./+types/_index";
 
@@ -100,11 +108,18 @@ function ScheduleToolbar() {
   return (
     <Group wrap="wrap" justifyContent="center" alignSelf="center" gap={4}>
       <TermSwitcher />
-      <ScheduleSwitcher />
-      <PreferencesDialog />
+      <Group>
+        <ScheduleSwitcher />
+      </Group>
+      <Group>
+        <PreferencesDialog />
+        <AuthButton />
+      </Group>
     </Group>
   );
 }
+
+clientLoader.hydrate = true as const;
 
 /** The application entry. */
 function HydrantApp() {
@@ -130,6 +145,8 @@ function HydrantApp() {
           <Footer />
         </Box>
       </Grid>
+      <SyncConflictDialog />
+      <UntaggedSchedulesDialog />
     </>
   );
 }
@@ -145,7 +162,15 @@ export const meta: Route.MetaFunction = () => [
 /** The main application. */
 export default function App({ loaderData }: Route.ComponentProps) {
   const { globalState } = loaderData;
+  const session = useContext(SessionContext);
   const hydrantData = useHydrant({ globalState });
+
+  useEffect(() => {
+    hydrantData.state.loadAccessToken(
+      session?.get("access_token"),
+      session?.get("username"),
+    );
+  }, [session, hydrantData.state]);
 
   return (
     <HydrantContext value={hydrantData}>
