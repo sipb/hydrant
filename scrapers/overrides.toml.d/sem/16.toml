@@ -1,0 +1,7 @@
+#:schema ../override-schema.json
+
+["16.89"]
+lectureSections = [[[[18, 4], [86, 4]], "9-255"]]
+lectureRawSections = ["9-255/MW/0/3-5"]
+labSections = [[[[148, 4]], "9-255"]]
+labRawSections = ["9-255/F/0/12-2"]
